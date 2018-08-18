@@ -10,7 +10,7 @@ namespace GBH_Movies_Test.Services
     /// DBRepository interface, it contains the CRUD Methods for the database. 
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-    public interface IDBRepository<T> where T : BaseEntity
+    public interface IDBRepository<T> where T : class
     {
         Task<T> GetEntity(int id);
         Task<IEnumerable<T>> GetEntities();

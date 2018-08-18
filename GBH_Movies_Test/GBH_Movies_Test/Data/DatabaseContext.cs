@@ -12,7 +12,7 @@ namespace GBH_Movies_Test.Data
     /// The DatabaseContext for the Database.
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-    public class DatabaseContext<T> : DbContext where T : BaseEntity 
+    public class DatabaseContext<T> : DbContext where T : class
     {
         public DbSet<T> Entity { get; set; }
 

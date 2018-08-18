@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 namespace GBH_Movies_Test.Data
 {
     /// <summary>
-    /// The DBRepository for the CRUD methods for the Database implemented fron IDBRepository interface
+    /// Implements the CRUD methods of IDBRepository interface
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-    public class DBRepository<T> : IDBRepository<T> where T : BaseEntity
+    public class DBRepository<T> : IDBRepository<T> where T : class
     {
         private readonly DatabaseContext<T> dbContext;
 
