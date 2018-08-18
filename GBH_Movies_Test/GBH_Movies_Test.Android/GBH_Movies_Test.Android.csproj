@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
+      <Version>2.1.1</Version>
+    </PackageReference>
     <PackageReference Include="MonkeyCache">
       <Version>0.1.0.10-beta</Version>
     </PackageReference>
