@@ -2,8 +2,11 @@
 <Application
     x:Class="GBH_Movies_Test.App"
     xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vmLocator="clr-namespace:GBH_Movies_Test.Services">
     <Application.Resources>
+
+        <vmLocator:ViewModelLocator x:Key="Locator" />
 
         <ResourceDictionary>
             <!--  Style for Frames  -->

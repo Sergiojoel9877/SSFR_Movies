@@ -2,6 +2,7 @@ using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using GBH_Movies_Test.Views;
+using GBH_Movies_Test.Services;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace GBH_Movies_Test
@@ -10,7 +11,9 @@ namespace GBH_Movies_Test
 	{
 		public App ()
 		{
-			InitializeComponent();
+            ContainerInitializer.Initialize();
+
+            InitializeComponent();
 
             var mainPage = new NavigationPage(new MainPage()) {
 
@@ -22,7 +25,7 @@ namespace GBH_Movies_Test
 
 		protected override void OnStart ()
 		{
-			// Handle when your app starts
+           
 		}
 
 		protected override void OnSleep ()
