@@ -1,8 +1,94 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GBH_Movies_Test.App">
-	<Application.Resources>
-    
-	</Application.Resources>
+<Application
+    x:Class="GBH_Movies_Test.App"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Application.Resources>
+
+        <ResourceDictionary>
+            <!--  Style for Frames  -->
+            <Style x:Key="FramesStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="#0088FF" />
+                <Setter Property="CornerRadius" Value="23" />
+                <Setter Property="WidthRequest" Value="95" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,18,0" />
+            </Style>
+            <!--  Style for labels  -->
+            <Style x:Key="LabelsStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            <!--  Style for the Search Bar (Frame)  -->
+            <Style x:Key="SearchBarStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="Black" />
+                <Setter Property="CornerRadius" Value="5" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="WidthRequest" Value="150" />
+                <Setter Property="Margin" Value="16, 20, 16, 0" />
+            </Style>
+            <!--  Style Entry SearchBar  -->
+            <Style x:Key="EntrySearchBar" TargetType="Entry">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="Placeholder" Value="Search" />
+                <Setter Property="PlaceholderColor" Value="#B2A4A0" />
+                <Setter Property="Text" Value="Search" />
+                <Setter Property="TextColor" Value="#B2A4A0" />
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="WidthRequest" Value="200" />
+            </Style>
+            <!--  Style Card AllMoviesPage  -->
+            <Style x:Key="CardStyle" TargetType="Frame">
+                <Setter Property="WidthRequest" Value="323" />
+                <Setter Property="HeightRequest" Value="273" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <!--<Setter Property="Margin" Value="16, 20, 16, 0" />-->
+                <Setter Property="HasShadow" Value="True" />
+            </Style>
+            <!--  Style Image Card AllMoviesPage  -->
+            <Style x:Key="ImageInsideCardStyle" TargetType="Image">
+                <Setter Property="WidthRequest" Value="323" />
+                <Setter Property="HeightRequest" Value="230" />
+            </Style>
+            <!--  Style StackLayout under Card image AllMoviesMape  -->
+            <Style x:Key="StackUnderImageStyle" TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="#312D2D" />
+                <!--<Setter Property="HeightRequest" Value="50" />-->
+                <Setter Property="WidthRequest" Value="323" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="Orientation" Value="Vertical" />
+            </Style>
+            <!--  Style Movie Title Style  -->
+            <Style x:Key="TitleStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="Margin" Value="16,0,0,0" />
+                <Setter Property="FontFamily" Value="Arial" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+            <!--  Style Movie Date Style  -->
+            <Style x:Key="DateStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="Arial" />
+                <Setter Property="Margin" Value="16,0,0,0" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#50FFFFFF" />
+            </Style>
+            <!--  Style UnPin icon movie Style  -->
+            <Style x:Key="UnPinStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Micro" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontFamily" Value="Arial" />
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+                <Setter Property="Margin" Value="16,0,0,0" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="#FFFFFF" />
+            </Style>
+        </ResourceDictionary>
+
+    </Application.Resources>
 </Application>

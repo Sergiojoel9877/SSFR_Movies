@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="GBH_Movies_Test.Views.FavoritesMoviesPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:GBH_Movies_Test.Views"
+    BackgroundColor="#161513">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <pages:MovieGenresBar />
+
+            <Frame Style="{StaticResource CardStyle}">
+                <StackLayout
+                    Margin="0"
+                    Padding="0"
+                    HeightRequest="273"
+                    Orientation="Vertical"
+                    WidthRequest="323">
+                    <Image Source="Search.png" Style="{StaticResource ImageInsideCardStyle}" />
+                    <StackLayout Style="{StaticResource StackUnderImageStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource TitleStyle}"
+                                Text="Title" />
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Style="{StaticResource DateStyle}"
+                                Text="18-08-2018" />
+                            <Image
+                                x:Name="UnPin"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="0,0,16,0"
+                                HeightRequest="34"
+                                HorizontalOptions="End"
+                                Source="Pin.png"
+                                WidthRequest="35">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="UnPin_Tapped" />
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource UnPinStyle}"
+                                Text="Quit from Favorites" />
+                        </Grid>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!--<ListView>
+
+            </ListView>-->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,6 +1,7 @@
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using GBH_Movies_Test.Views;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace GBH_Movies_Test
@@ -11,7 +12,12 @@ namespace GBH_Movies_Test
 		{
 			InitializeComponent();
 
-			MainPage = new MainPage();
+            var mainPage = new NavigationPage(new MainPage()) {
+
+                BarBackgroundColor = Color.FromHex("#272B2E")
+            };
+
+            MainPage = mainPage;
 		}
 
 		protected override void OnStart ()

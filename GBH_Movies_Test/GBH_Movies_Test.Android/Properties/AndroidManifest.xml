@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.GBH_Movies_Test">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.sergiojoelferreras.GBH_Movies_Test" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="27" />
-	<application android:label="GBH_Movies_Test.Android"></application>
+  <application android:hardwareAccelerated="true" android:label="GBH_Movies_Test.Android"></application>
 </manifest>
