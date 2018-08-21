@@ -48,6 +48,30 @@ namespace GBH_Movies_Test.Data
 
         }
 
+        public async Task<bool> EntityExits(long obj)
+        {
+            try
+            {
+                var found = await dbContext.Entity.FindAsync(obj);
+
+                var all = await dbContext.Entity.ToListAsync();
+
+                foreach (T L in all)
+                {
+                    if (L.Id == found.Id)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+            }
+            return false;
+        }
+        
         public async Task<IEnumerable<T>> GetEntities()
         {
             await Task.Yield();

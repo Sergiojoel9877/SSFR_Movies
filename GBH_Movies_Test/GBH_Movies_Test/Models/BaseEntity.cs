@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,7 @@ namespace GBH_Movies_Test.Models
     /// </summary>
     public class BaseEntity
     {
-        public int Id { get; set; }
+        [JsonProperty("id")]
+        public long Id { get; set; }
     }
 }

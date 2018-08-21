@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GBH_Movies_Test.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +11,13 @@ using Xamarin.Forms.Xaml;
 namespace GBH_Movies_Test.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class MovieGenresBar : ContentView
+	public partial class MovieDetailsPage : ContentPage
 	{
-		public MovieGenresBar ()
+		public MovieDetailsPage (Result movie)
 		{
 			InitializeComponent ();
-            Scrollview.Orientation = ScrollOrientation.Horizontal;
-        }
+
+            BindingContext = movie;
+		}
 	}
 }

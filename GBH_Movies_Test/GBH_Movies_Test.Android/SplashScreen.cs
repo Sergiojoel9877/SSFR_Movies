@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using GBH_Movies_Test.Services;
 
 namespace GBH_Movies_Test.Droid
 {
@@ -20,7 +21,13 @@ namespace GBH_Movies_Test.Droid
             base.OnCreate(savedInstanceState);
 
             this.StartActivity(typeof(MainActivity));
-            
+
+            Task.Run(new Action(InitializeIoCContainer));
         }
+
+        /// <summary>
+        /// Initialize the IoC container and its Service Locator
+        /// </summary>
+        private void InitializeIoCContainer() => ContainerInitializer.Initialize();
     }
 }

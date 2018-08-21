@@ -35,14 +35,14 @@ namespace GBH_Movies_Test.Data
 
                     path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", DbName);
 
-                    dbContextOptionsBuilder.UseSqlite($"FilePath={path}");
+                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
 
                     break;
                 case Device.Android:
 
                     path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), DbName);
 
-                    dbContextOptionsBuilder.UseSqlite($"FilePath={path}");
+                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
 
                     break;
 
