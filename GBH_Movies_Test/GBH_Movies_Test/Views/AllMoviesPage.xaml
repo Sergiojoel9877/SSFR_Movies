@@ -145,16 +145,12 @@
                 </Grid>
             </FlexLayout>
 
-            <ActivityIndicator
-                IsRunning="{Binding ActivityIndicatorRunning}"
-                IsVisible="{Binding ActivityIndicatorRunning}"
-                Color="#0088FF" />
-
             <ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
                 IsVisible="{Binding ListVisible}"
+                ItemAppearing="MoviesList_ItemAppearing"
                 ItemTapped="ItemSelected"
                 ItemsSource="{Binding AllMoviesList}"
                 RowHeight="350">
@@ -223,6 +219,10 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <ActivityIndicator
+                x:Name="activityIndicator"
+                Margin="0,0,0,58"
+                Color="#0088FF" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

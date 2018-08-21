@@ -93,7 +93,7 @@ namespace GBH_Movies_Test.Models
         public string ReleaseDate { get; set; }
 
     }
-
-    public enum OriginalLanguage { En };
+   
+    public enum OriginalLanguage { En, Ja, Zh, Ko, Ta, Fr, Ru, Es, No, Hi, Hr, Ht, Hu, Hy, Ar, As, Av, Az, Ba, Be, Bg, Bh, Bm, Bn, Bo, Br, Bs, Ca, Ce, Ch, Co, Cr, Cs, Cn, Cu, Cv, Cy, Da, De, Dv, Ee, El, Eo, Et, Eu, Fa, Ff, Fi, Fj, Fl, Fo, Fy, Ga, Gd, Gl, Gn, Gu, Gv, Ha, He, Ho, Hz, Ia, Id, Ie, Ig, Ii, Ik, Io, Is, It, Iu,  Jv, Ka, Kg, Ki, Kj, Kk, Kl, Km, Kn, Kr, Ks, Ku, Kv, Kw, Ky, La, Lb, Li, Ln, Lo, Lt, Lu, Lv, Mg, Mh, Mi, Mk, Ml, Mn, Mr, Ms, Mt, My, Na, Nb, Nd, Ne, Ng, Nl, Nn, Nr, Nv, Ny, Oc, Oj, Om, Or, Os, Pa, pi, Pl, Ps, Pt, Qu, Rm, Rn, Ro, Rw, Sa, Sc, Sd, Se,Sg, Si, Sk, Sl, Sm, Sn, So, Sq, Sr, Ss, St, Su, Sv, Sw, Te, Tg, Th, Ti, Tk, Tl, Tn, To, Tr, Ts, Tt, Tw, Ty, Ug, Uk, Ur, Uz, Ve, Vi, Vo, Wa, Wo, Xh, Yi, Yo, Za, Ah, Zu};
 }
 

@@ -43,32 +43,26 @@ namespace GBH_Movies_Test.ViewModels
 
         public void FillMoviesList()
         {
-            if (AllMoviesList.Count == 0)
-            {
                
-                var movies = Barrel.Current.Get<Movie>("Movies.Cached");
+            var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
-                foreach (var MovieResult in movies.Results)
-                {
-                    var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                    var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                    MovieResult.PosterPath = PosterPath;
-
-                    MovieResult.BackdropPath = Backdroppath;
-                   
-                    AllMoviesList.Add(MovieResult);
-                }
-
-                ListVisible = true;
-
-                ActivityIndicatorRunning = false;
-            }
-            else
+            foreach (var MovieResult in movies.Results)
             {
-                return;
+                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+
+                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+
+                MovieResult.PosterPath = PosterPath;
+
+                MovieResult.BackdropPath = Backdroppath;
+                   
+                AllMoviesList.Add(MovieResult);
             }
+
+            ListVisible = true;
+
+            ActivityIndicatorRunning = false;
+        
         }
         /// <summary>
         ///  Get movies from server and store them in cache.. with a TimeSpan limit.
@@ -89,6 +83,17 @@ namespace GBH_Movies_Test.ViewModels
                 {
                     FillMoviesList();
                 }
+
+            }));
+        }
+
+        private Command fillUpMoviesListAfterRefreshCommand;
+        public Command FillUpMoviesListAfterRefreshCommand
+        {
+            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command(async () =>
+            {
+
+                FillMoviesList();
 
             }));
         }

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using MonkeyCache;
 using MonkeyCache.FileStore;
+using GBH_Movies_Test.Helpers;
 
 namespace GBH_Movies_Test.Services
 {
@@ -28,6 +29,8 @@ namespace GBH_Movies_Test.Services
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1, int genres = 12)
         {
+            Settings.NextPage = page;
+
             await Task.Yield();
 
             var valid = genres <= 12 ? true : false;
@@ -42,6 +45,34 @@ namespace GBH_Movies_Test.Services
 
             return StoreInCache(results);
             
+        }
+
+        //CREATE GETMOVIESBYGENRE
+
+
+        public async Task<bool> GetAndStoreMovieGneresAsync()
+        {
+            
+            await Task.Yield();
+
+            var requestUri = $"/genre/movie/list?api_key={API_KEY}&language={LANG}";
+
+            var m = await App.httpClient.GetAsync(requestUri);
+
+            var results = await m.Content.ReadAsStringAsync();
+
+            return StoreGenresInCache(results);
+
+        }
+
+        private bool StoreGenresInCache(string results)
+        {
+            var movies = JsonConvert.DeserializeObject<Genres>(results);
+
+            //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
+            Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+
+            return true;
         }
 
         private bool StoreInCache(string results)

@@ -80,7 +80,11 @@ namespace GBH_Movies_Test.Views
                 {
 
                 }
-            };
+            }
+            else
+            {
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
+            }
         }
 
         protected override async void OnAppearing()
