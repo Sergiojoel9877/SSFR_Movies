@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using MonkeyCache.FileStore;
 using System.Threading.Tasks;
+using Plugin.Connectivity;
+using Xamarin.Forms;
 
 namespace GBH_Movies_Test.Services
 {
@@ -21,6 +23,17 @@ namespace GBH_Movies_Test.Services
     {
         public static void Initialize()
         {
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
             //Sets the barrel cache ID.. with out it, the Barrel cannot work
             Barrel.ApplicationId = "GBH_MOVIES_TEST";
 

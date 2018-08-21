@@ -37,8 +37,9 @@
                 <Setter Property="FontSize" Value="Medium" />
                 <Setter Property="Placeholder" Value="Search" />
                 <Setter Property="PlaceholderColor" Value="#B2A4A0" />
-                <Setter Property="Text" Value="Search" />
+                <Setter Property="Text" Value="" />
                 <Setter Property="TextColor" Value="#B2A4A0" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
                 <Setter Property="VerticalOptions" Value="Center" />
                 <Setter Property="WidthRequest" Value="200" />
             </Style>

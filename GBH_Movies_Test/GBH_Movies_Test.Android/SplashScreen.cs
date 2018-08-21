@@ -20,9 +20,12 @@ namespace GBH_Movies_Test.Droid
         {
             base.OnCreate(savedInstanceState);
 
+            Toast.MakeText(this, "Initializing Resources, please wait :)", ToastLength.Long).Show();
+
             this.StartActivity(typeof(MainActivity));
 
             Task.Run(new Action(InitializeIoCContainer));
+            
         }
 
         /// <summary>

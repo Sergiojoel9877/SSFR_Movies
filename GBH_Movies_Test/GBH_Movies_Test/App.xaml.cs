@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommonServiceLocator;
 using System.Net.Http;
 using MonkeyCache.FileStore;
+using GBH_Movies_Test.Helpers;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace GBH_Movies_Test
@@ -41,7 +42,9 @@ namespace GBH_Movies_Test
 
 		protected override void OnSleep ()
 		{
-			// Handle when your app sleeps
+            Settings.NextPage = 1;
+
+            Settings.NextPageForGenre = 1;
 		}
 
 		protected override void OnResume ()

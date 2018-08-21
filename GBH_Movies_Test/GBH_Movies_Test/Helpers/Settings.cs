@@ -55,5 +55,17 @@ namespace GBH_Movies_Test.Helpers
             }
         }
 
+        public static int NextPageForGenre
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault("NextPageForGenre", 0);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue("NextPageForGenre", value);
+            }
+        }
+
     }
 }

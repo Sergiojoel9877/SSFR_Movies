@@ -3,6 +3,8 @@ using GBH_Movies_Test.Data;
 using GBH_Movies_Test.Models;
 using GBH_Movies_Test.Services;
 using GBH_Movies_Test.ViewModels;
+using MonkeyCache.FileStore;
+using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,21 +32,46 @@ namespace GBH_Movies_Test.Views
 
             BindingContext = vm;
 
-            SearchEntry.Focused += SearchEntry_Focused;
-            SearchEntry.Unfocused += SearchEntry_Unfocused;
-
-            MoviesList.Focused += MoviesList_Focused;
-
-            Scrollview.Orientation = ScrollOrientation.Horizontal;
+            SetVisibility();
+            
         }
 
-        private async void MoviesList_Focused(object sender, FocusEventArgs e)
+        private async void SetVisibility()
         {
-            
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
+
+            Message.IsVisible = UnPin.IsVisible == true ? true : false;
+
+            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
+        }
+
+        private async void QuitVisibility()
+        {
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+            UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
+
+            Message.IsVisible = UnPin.IsVisible == true ? true : false;
+
+            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
+
         }
 
         private async void ItemSelected(object sender, ItemTappedEventArgs e)
         {
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
             if (e.Item == null)
             {
                 return;
@@ -74,11 +101,23 @@ namespace GBH_Movies_Test.Views
                         await Task.Delay(500);
 
                         MoviesList.EndRefresh();
+
+                        var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+                        if (moviesRemaining.Count() == 0)
+                        {
+                            QuitVisibility();
+                        }
                     }
                 }
                 catch (Exception)
                 {
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
 
+                        return false;
+                    });
                 }
             }
             else
@@ -91,10 +130,16 @@ namespace GBH_Movies_Test.Views
         {
             base.OnAppearing();
 
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
+
+            Message.IsVisible = UnPin.IsVisible == true ? true : false;
+
+            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
+    
             ForceLayout();
-
-            BindingContext = null;
-
+            
             vm.GetStoreMoviesCommand.Execute(null);
 
             BindingContext = vm;
@@ -108,43 +153,33 @@ namespace GBH_Movies_Test.Views
         }
 
         /// <summary>
-        /// To animate the Quit form Favorite list icon..
+        /// To animate the Quit from Favorite list icon..
         /// </summary>
         /// <param name="sender">the incoming object </param>
         /// <param name="e">the event arguments in that object</param>
         private async void UnPin_Tapped(object sender, EventArgs e)
         {
             var img = sender as Image;
+
             await img.ScaleTo(2, 500, Easing.BounceOut);
+
             await img.ScaleTo(1, 250, Easing.BounceIn);
         }
 
         private async void SearchEntry_Unfocused(object sender, FocusEventArgs e)
         {
-            var t = Scrollview.FadeTo(1, 250, Easing.Linear);
+            var t = MoviesList.TranslateTo(0, 0, 1000, Easing.SpringIn);
 
-            var t2 = Scrollview.TranslateTo(0, 0, 500, Easing.SpringOut);
-
-            var t3 = SearchFrame.TranslateTo(0, 0, 500, Easing.SpringOut);
-
-            var t4 = MoviesList.TranslateTo(0, 0, 1000, Easing.SpringIn);
-
-            await Task.WhenAll(t, t2, t3, t4);
+            await Task.WhenAll(t);
 
         }
 
         private async void SearchEntry_Focused(object sender, FocusEventArgs e)
         {
 
-            var t = Scrollview.FadeTo(0, 500, Easing.Linear);
+            var t = MoviesList.TranslateTo(2500, 0, 1000, Easing.SpringIn);
 
-            var t2 = Scrollview.TranslateTo(2500, 0, 1000, Easing.SpringOut);
-
-            var t3 = SearchFrame.TranslateTo(0, -60, 1000, Easing.SpringOut);
-
-            var t4 = MoviesList.TranslateTo(2500, 0, 1000, Easing.SpringIn);
-
-            await Task.WhenAll(t, t2, t3, t4);
+            await Task.WhenAll(t);
 
         }
     }

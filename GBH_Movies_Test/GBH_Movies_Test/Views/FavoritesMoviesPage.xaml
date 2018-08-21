@@ -4,169 +4,36 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-    xmlns:pages="clr-namespace:GBH_Movies_Test.Views"
     BackgroundColor="#161513">
     <ContentPage.Content>
         <StackLayout>
-            <FlexLayout Direction="Column">
 
-                <Grid FlexLayout.AlignSelf="Start">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <ffimage:CachedImage
+                x:Name="UnPin"
+                Grid.ColumnSpan="2"
+                BitmapOptimizations="True"
+                DownsampleToViewSize="True"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Source="Unpin.png"
+                WidthRequest="300" />
 
-                    <ScrollView
-                        x:Name="Scrollview"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="16,15,16,0"
-                        HeightRequest="40"
-                        HorizontalScrollBarVisibility="Never">
-
-                        <FlexLayout Direction="Row">
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Action" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Adventure" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Animation" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Comedy" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Crime" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Documentary" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Drama" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Family" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="History" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Horror" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Music" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Mystery" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Romance" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Science Fiction" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="TV Movie" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Thriller" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="War" />
-
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
-
-                                <Label Style="{StaticResource LabelsStyle}" Text="Western" />
-
-                            </Frame>
-
-                        </FlexLayout>
-
-                    </ScrollView>
-
-                    <Frame
-                        x:Name="SearchFrame"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Style="{StaticResource SearchBarStyle}">
-
-                        <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
-                            <Entry x:Name="SearchEntry" Style="{StaticResource EntrySearchBar}" />
-                            <Image
-                                HeightRequest="40"
-                                Source="Search.png"
-                                VerticalOptions="Center"
-                                WidthRequest="40" />
-                        </FlexLayout>
-
-                    </Frame>
-
-                    <!--<Image
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        HeightRequest="300"
-                        HorizontalOptions="Center"
-                        IsVisible="{Binding ListEmpty}"
-                        Source="Unpin.png"
-                        WidthRequest="300" />
-
-                    <Label
-                        Margin="0,20,0,0"
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center"
-                        IsVisible="{Binding ListEmpty}"
-                        Text="You have not picked any movie as a favorite one"
-                        TextColor="White" />-->
-                </Grid>
-            </FlexLayout>
+            <Label
+                x:Name="Message"
+                Margin="0,5,0,0"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding ListEmpty}"
+                Text="You have not picked any movie as a favorite one"
+                TextColor="White" />
 
             <ListView
                 x:Name="MoviesList"
+                Margin="0,20,0,0"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
-                IsVisible="{Binding ListVisible}"
                 ItemTapped="ItemSelected"
                 ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
                 RowHeight="350">
@@ -214,14 +81,7 @@
                                             HeightRequest="34"
                                             HorizontalOptions="End"
                                             Source="Unpin.png"
-                                            WidthRequest="35">
-                                            <!--<Image.GestureRecognizers>
-                                                <PanGestureRecognizer PanUpdated="Pin_Tapped" TouchPoints="1" />
-                                            </Image.GestureRecognizers>-->
-                                            <!--<Image.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="Pin_Tapped" />
-                                            </Image.GestureRecognizers>-->
-                                        </Image>
+                                            WidthRequest="35" />
                                         <Label
                                             Grid.Row="1"
                                             Grid.Column="1"
