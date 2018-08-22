@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    BackgroundColor="#161513">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <ffimage:CachedImage
+                x:Name="UnPin"
+                Grid.ColumnSpan="2"
+                BitmapOptimizations="True"
+                DownsampleToViewSize="True"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Source="Unpin.png"
+                WidthRequest="300" />
+
+            <Label
+                x:Name="Message"
+                Margin="0,5,0,0"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding ListEmpty}"
+                Text="You have not picked any movie as a favorite one"
+                TextColor="White" />
+
+            <ListView
+                x:Name="MoviesList"
+                Margin="0,20,0,0"
+                CachingStrategy="RecycleElementAndDataTemplate"
+                HasUnevenRows="True"
+                ItemTapped="ItemSelected"
+                ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
+                RowHeight="350">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <FlexLayout
+                                Margin="16,0,16,0"
+                                AlignContent="Center"
+                                Direction="Column">
+                                <ffimage:CachedImage
+                                    Margin="16,0,16,0"
+                                    BitmapOptimizations="True"
+                                    DownsampleToViewSize="False"
+                                    HeightRequest="300"
+                                    HorizontalOptions="Center"
+                                    Source="{Binding PosterPath}"
+                                    Style="{StaticResource ImageInsideCardStyle}"
+                                    WidthRequest="300" />
+                                <StackLayout Style="{StaticResource StackUnderImageStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Label
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Style="{StaticResource TitleStyle}"
+                                            Text="{Binding Title}" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Style="{StaticResource DateStyle}"
+                                            Text="{Binding ReleaseDate}" />
+                                        <Image
+                                            x:Name="Pin"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Margin="0,0,16,0"
+                                            HeightRequest="34"
+                                            HorizontalOptions="End"
+                                            Source="Unpin.png"
+                                            WidthRequest="35" />
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Style="{StaticResource UnPinStyle}"
+                                            Text="Quit from Favorites" />
+                                    </Grid>
+                                </StackLayout>
+                            </FlexLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

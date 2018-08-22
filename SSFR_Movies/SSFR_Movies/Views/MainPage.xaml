@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage
+    x:Class="SSFR_Movies.Views.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:SSFR_Movies.Views"
+    Title="SSFR Movies Home"
+    BarBackgroundColor="#272B2E"
+    NavigationPage.HasBackButton="False">
+
+    <pages:AllMoviesPage Title="All" Icon="Recent.png" />
+
+    <pages:FavoritesMoviesPage Title="Favorites" Icon="Heart.png" />
+
+</TabbedPage>
