@@ -26,6 +26,8 @@ namespace SSFR_Movies.Views
 
         AllMoviesPageViewModel vm;
 
+        bool itemAppeared;
+
         public AllMoviesPage()
         {
             InitializeComponent();
@@ -49,6 +51,7 @@ namespace SSFR_Movies.Views
             MoviesList.Unfocused += MoviesList_Unfocused;
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            
 
         }
 
@@ -69,9 +72,18 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            await Scrollview.ScrollToAsync(100, 0, true);
+            var t = Scrollview.ScrollToAsync(100, 0, true);
 
-            await Scrollview.ScrollToAsync(0, 0, true);
+            var t2 = Scrollview.ScrollToAsync(0, 0, true);
+
+            await Task.WhenAll(t, t2);
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            GC.Collect();
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
@@ -123,7 +135,7 @@ namespace SSFR_Movies.Views
         {
             try
             {
-
+                
                 if (e.Item == null)
                 {
                     return;
@@ -223,9 +235,10 @@ namespace SSFR_Movies.Views
 
         private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
         {
-
+            
             try
             {
+             
                 var list = (ListView)sender;
 
                 var Items = vm.AllMoviesList;
@@ -325,12 +338,19 @@ namespace SSFR_Movies.Views
                     var t6 = SearchFrame.TranslateTo(0, 0, 250, Easing.Linear);
 
                     await Task.WhenAll(t4, t5, t6);
-                } 
+
+                }
             }
         }
 
         private async void Genre_Tapped(object sender, EventArgs e)
         {
+            await Task.Yield();
+
+            activityIndicator.IsVisible = true;
+
+            activityIndicator.IsRunning = true;
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -344,8 +364,7 @@ namespace SSFR_Movies.Views
 
             try
             {
-                await Task.Yield();
-
+              
                 var genreType = ((Label)sender).Text;
 
                 var genres = Barrel.Current.Get<Genres>("Genres.Cached");
@@ -357,10 +376,6 @@ namespace SSFR_Movies.Views
                 if (stored)
                 {
                     await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
-
-                    activityIndicator.IsVisible = true;
-
-                    activityIndicator.IsRunning = true;
 
                     ForceLayout();
 
@@ -378,9 +393,10 @@ namespace SSFR_Movies.Views
 
                         MoviesList.EndRefresh();
 
+                        activityIndicator.IsRunning = false;
+
                         activityIndicator.IsVisible = false;
 
-                        activityIndicator.IsRunning = false;
                     });
                 }
                 else
@@ -426,72 +442,61 @@ namespace SSFR_Movies.Views
 
                         if (key != "")
                         {
-                            try
+  
+                            activityIndicator.IsVisible = true;
+
+                            activityIndicator.IsRunning = true;
+
+                            var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
+
+                            if (movie_results.Results.Capacity != 0)
                             {
-                                //await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
 
-                                activityIndicator.IsVisible = true;
+                                vm.AllMoviesList.Clear();
 
-                                activityIndicator.IsRunning = true;
-
-                                var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
-
-                                if (movie_results.Results.Capacity != 0)
+                                foreach (var MovieResult in movie_results.Results)
                                 {
+                                    var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
 
-                                    vm.AllMoviesList.Clear();
+                                    var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
 
-                                    foreach (var MovieResult in movie_results.Results)
-                                    {
-                                        var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+                                    MovieResult.PosterPath = PosterPath;
 
-                                        var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+                                    MovieResult.BackdropPath = Backdroppath;
 
-                                        MovieResult.PosterPath = PosterPath;
-
-                                        MovieResult.BackdropPath = Backdroppath;
-
-                                        vm.AllMoviesList.Add(MovieResult);
-
-                                    }
-
-                                    BindingContext = vm;
-
-                                    MoviesList.BeginRefresh();
-
-                                    //await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                                    await Task.Delay(100);
-
-                                    MoviesList.EndRefresh();
-
-                                    activityIndicator.IsVisible = false;
-
-                                    activityIndicator.IsRunning = false;
-
+                                    vm.AllMoviesList.Add(MovieResult);
 
                                 }
-                                else
-                                {
 
-                                    activityIndicator.IsVisible = false;
+                                BindingContext = vm;
 
-                                    activityIndicator.IsRunning = false;
+                                MoviesList.BeginRefresh();
 
-                                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                                    {
-                                        DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
+                                await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
-                                        return false;
-                                    });
-                                }
+                                await Task.Delay(100);
+
+                                MoviesList.EndRefresh();
+
+                                activityIndicator.IsVisible = false;
+
+                                activityIndicator.IsRunning = false;
+
+                                var firstItem = vm.AllMoviesList;
+
+                                MoviesList.ScrollTo(firstItem[firstItem.Count - 19], 0, true);
 
                             }
-                            catch (Exception)
+                            else
                             {
+
+                                activityIndicator.IsVisible = false;
+
+                                activityIndicator.IsRunning = false;
+
                                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                                 {
-                                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                                    DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
                                     return false;
                                 });
@@ -502,7 +507,7 @@ namespace SSFR_Movies.Views
                     {
                         Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                         {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                            DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
 
                             return false;
                         });

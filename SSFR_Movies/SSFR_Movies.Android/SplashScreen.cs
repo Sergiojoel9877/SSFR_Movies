@@ -38,6 +38,6 @@ namespace SSFR_Movies.Droid
         /// <summary>
         /// Initialize the IoC container and its Service Locator
         /// </summary>
-        private void InitializeIoCContainer() => ContainerInitializer.Initialize();
+        private async void InitializeIoCContainer() => ContainerInitializer.Initialize();
     }
 }

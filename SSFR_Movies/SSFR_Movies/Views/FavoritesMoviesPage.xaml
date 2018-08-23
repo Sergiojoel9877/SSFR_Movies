@@ -4,6 +4,7 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     BackgroundColor="#161513">
     <ContentPage.Content>
         <StackLayout>
@@ -41,53 +42,88 @@
                     <DataTemplate>
                         <ViewCell>
                             <FlexLayout
-                                Margin="16,0,16,0"
+                                Margin="16"
                                 AlignContent="Center"
                                 Direction="Column">
-                                <ffimage:CachedImage
-                                    Margin="16,0,16,0"
-                                    BitmapOptimizations="True"
-                                    DownsampleToViewSize="False"
-                                    HeightRequest="300"
-                                    HorizontalOptions="Center"
-                                    Source="{Binding PosterPath}"
-                                    Style="{StaticResource ImageInsideCardStyle}"
-                                    WidthRequest="300" />
-                                <StackLayout Style="{StaticResource StackUnderImageStyle}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-                                        <Label
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Style="{StaticResource TitleStyle}"
-                                            Text="{Binding Title}" />
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Style="{StaticResource DateStyle}"
-                                            Text="{Binding ReleaseDate}" />
-                                        <Image
-                                            x:Name="Pin"
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Margin="0,0,16,0"
-                                            HeightRequest="34"
-                                            HorizontalOptions="End"
-                                            Source="Unpin.png"
-                                            WidthRequest="35" />
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Style="{StaticResource UnPinStyle}"
-                                            Text="Quit from Favorites" />
-                                    </Grid>
+                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                    <StackLayout
+                                        Margin="16,0,16,0"
+                                        HeightRequest="300"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="FillAndExpand">
+                                        <AbsoluteLayout
+                                            AbsoluteLayout.LayoutBounds="0,0, 1,1"
+                                            AbsoluteLayout.LayoutFlags="All"
+                                            VerticalOptions="FillAndExpand">
+                                            <ffimage:CachedImage
+                                                AbsoluteLayout.LayoutBounds="0.5,0,1,1"
+                                                AbsoluteLayout.LayoutFlags="All"
+                                                BitmapOptimizations="True"
+                                                DownsampleToViewSize="False"
+                                                HeightRequest="300"
+                                                HorizontalOptions="FillAndExpand"
+                                                Scale="2"
+                                                Source="{Binding PosterPath}"
+                                                VerticalOptions="FillAndExpand"
+                                                WidthRequest="300">
+                                                <ffimage:CachedImage.Transformations>
+                                                    <fftransformations:BlurredTransformation Radius="60" />
+                                                </ffimage:CachedImage.Transformations>
+                                            </ffimage:CachedImage>
+                                            <ffimage:CachedImage
+                                                AbsoluteLayout.LayoutBounds="0.5,0,1,1"
+                                                AbsoluteLayout.LayoutFlags="All"
+                                                BitmapOptimizations="True"
+                                                DownsampleToViewSize="False"
+                                                HeightRequest="300"
+                                                HorizontalOptions="Center"
+                                                Source="{Binding PosterPath}"
+                                                Style="{StaticResource ImageInsideCardStyle}"
+                                                WidthRequest="300" />
+                                        </AbsoluteLayout>
+                                    </StackLayout>
+                                    <StackLayout>
+                                        <Frame Style="{StaticResource StackUnderImageStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <ScrollView
+                                                    x:Name="ScrollTitle"
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    HorizontalScrollBarVisibility="Never"
+                                                    Orientation="Horizontal"
+                                                    VerticalScrollBarVisibility="Never">
+                                                    <Label Style="{StaticResource TitleStyle}" Text="{Binding Title}" />
+                                                </ScrollView>
+                                                <Label
+                                                    Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Style="{StaticResource DateStyle}"
+                                                    Text="{Binding ReleaseDate}" />
+                                                <Image
+                                                    x:Name="Pin"
+                                                    Grid.Row="0"
+                                                    Grid.Column="1"
+                                                    Margin="0,0,16,0"
+                                                    HeightRequest="34"
+                                                    HorizontalOptions="End"
+                                                    Source="Pin.png"
+                                                    WidthRequest="35" />
+                                                <Label
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Style="{StaticResource UnPinStyle}"
+                                                    Text="Add to Favorites" />
+                                            </Grid>
+                                        </Frame>
+                                    </StackLayout>
                                 </StackLayout>
                             </FlexLayout>
                         </ViewCell>

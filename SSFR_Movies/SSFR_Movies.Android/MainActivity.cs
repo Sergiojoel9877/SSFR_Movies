@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace SSFR_Movies.Droid
 {
@@ -21,12 +22,11 @@ namespace SSFR_Movies.Droid
             base.OnCreate(bundle);
 
             Forms.SetFlags("FastRenderers_Experimental");
-            
-            global::Xamarin.Forms.Forms.Init(this, bundle);
-
+                
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             Android.Glide.Forms.Init();
+            global::Xamarin.Forms.Forms.Init(this, bundle);
 
             LoadApplication(new App());
         }

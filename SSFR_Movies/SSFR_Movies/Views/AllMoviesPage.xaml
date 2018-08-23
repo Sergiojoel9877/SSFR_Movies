@@ -245,10 +245,12 @@
                                             AbsoluteLayout.LayoutFlags="All"
                                             VerticalOptions="FillAndExpand">
                                             <ffimage:CachedImage
+                                                AbsoluteLayout.LayoutBounds="0.5,0,1,1"
+                                                AbsoluteLayout.LayoutFlags="All"
                                                 BitmapOptimizations="True"
                                                 DownsampleToViewSize="False"
                                                 HeightRequest="300"
-                                                HorizontalOptions="Center"
+                                                HorizontalOptions="FillAndExpand"
                                                 Scale="2"
                                                 Source="{Binding PosterPath}"
                                                 VerticalOptions="FillAndExpand"
@@ -280,11 +282,15 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
-                                                <Label
+                                                <ScrollView
+                                                    x:Name="ScrollTitle"
                                                     Grid.Row="0"
                                                     Grid.Column="0"
-                                                    Style="{StaticResource TitleStyle}"
-                                                    Text="{Binding Title}" />
+                                                    HorizontalScrollBarVisibility="Never"
+                                                    Orientation="Horizontal"
+                                                    VerticalScrollBarVisibility="Never">
+                                                    <Label Style="{StaticResource TitleStyle}" Text="{Binding Title}" />
+                                                </ScrollView>
                                                 <Label
                                                     Grid.Row="1"
                                                     Grid.Column="0"
@@ -316,7 +322,8 @@
 
             <ActivityIndicator
                 x:Name="activityIndicator"
-                Margin="0,0,0,58"
+                Margin="0,0,0,50"
+                BackgroundColor="Transparent"
                 Color="#0088FF" />
         </StackLayout>
     </ContentPage.Content>
