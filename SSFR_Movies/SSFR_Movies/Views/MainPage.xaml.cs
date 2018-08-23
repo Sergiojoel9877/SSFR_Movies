@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSFR_Movies.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,19 @@ namespace SSFR_Movies.Views
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(5.0f);
 
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            var c = DependencyService.Get<ICloseBackPress>();
+
+            if (c != null)
+            {
+                c.Close();
+                base.OnBackButtonPressed();
+            }
+
+            return true;
         }
     }
 }

@@ -95,6 +95,11 @@ namespace SSFR_Movies.Services
 
             return new Movie();
         }
+
+        //public async Task<MovieTrailer> GetMovieTrailer()
+        //{
+
+        //}
         
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)

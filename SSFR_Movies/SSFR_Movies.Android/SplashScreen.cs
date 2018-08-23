@@ -22,6 +22,13 @@ namespace SSFR_Movies.Droid
 
             Toast.MakeText(this, "Initializing Resources, please wait :)", ToastLength.Long).Show();
 
+            //MainApplication.activity = this;
+
+            //if (Intent.GetBooleanExtra("crash", false))
+            //{
+            //    Toast.MakeText(this, "App restarted after crash", ToastLength.Short).Show();
+            //}
+
             this.StartActivity(typeof(MainActivity));
 
             Task.Run(new Action(InitializeIoCContainer));

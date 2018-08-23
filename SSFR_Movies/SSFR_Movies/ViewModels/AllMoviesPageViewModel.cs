@@ -250,6 +250,17 @@ namespace SSFR_Movies.ViewModels
 
         public AllMoviesPageViewModel()
         {
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -276,6 +287,13 @@ namespace SSFR_Movies.ViewModels
 
                 FillMoviesList();
             }
+        }
+
+        private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
+        {
+            GetStoreMoviesCommand.Execute(null);
+
+            GetMoviesGenresCommand.Execute(null);
         }
     }
 }

@@ -19,5 +19,10 @@ namespace SSFR_Movies.Views
 
             BindingContext = movie;
 		}
-	}
+
+        private void PlayTrailer_Tapped(object sender, EventArgs e)
+        {
+            Device.OpenUri(new Uri("vnd.youtube://watch/z8h3LVb8cl8")); //TEST
+        }
+    }
 }

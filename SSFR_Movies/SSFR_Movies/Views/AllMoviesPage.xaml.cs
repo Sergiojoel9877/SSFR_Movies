@@ -48,15 +48,37 @@ namespace SSFR_Movies.Views
 
             MoviesList.Unfocused += MoviesList_Unfocused;
 
+            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+
         }
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
 
+            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
             await Scrollview.ScrollToAsync(100, 0, true);
 
             await Scrollview.ScrollToAsync(0, 0, true);
+        }
+
+        private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
+        {
+            vm.GetStoreMoviesCommand.Execute(null);
+
+            BindingContext = vm;
         }
 
         private async void MoviesList_Unfocused(object sender, FocusEventArgs e)
