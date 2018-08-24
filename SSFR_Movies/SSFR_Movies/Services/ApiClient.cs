@@ -31,38 +31,48 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1, int genres = 12)
         {
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-
-                return false;
-            }
-
-            Settings.NextPage = page;
-
             await Task.Yield();
 
-            var valid = genres <= 12 ? true : false;
+            try
+            {
+                //Verify if internet connection is available
+                if (!CrossConnectivity.Current.IsConnected)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        return false;
+                    });
 
-            string _genres = valid == true ? Convert.ToString(genres) : null;
+                    return false;
+                }
 
-            var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
+                Settings.NextPage = page;
 
-            var m = await App.httpClient.GetAsync(requestUri);
+                var valid = genres <= 12 ? true : false;
 
-            var results = await m.Content.ReadAsStringAsync();
+                string _genres = valid == true ? Convert.ToString(genres) : null;
 
-            return StoreInCache(results);
+                var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
+
+                var m = await App.httpClient.GetAsync(requestUri);
+
+                var results = await m.Content.ReadAsStringAsync();
+
+                return StoreInCache(results);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
             
         }
 
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
+
+            await Task.Yield();
+
             try
             {
                 //Verify if internet connection is available
@@ -76,8 +86,6 @@ namespace SSFR_Movies.Services
                     return null;
                 }
 
-                await Task.Yield();
-
                 var requestUri = $"/3/search/movie?api_key={API_KEY}&language={LANG}&query={name}&include_adult={include_adult.ToString().ToLower()}";
 
                 var m = await App.httpClient.GetAsync(requestUri);
@@ -88,7 +96,7 @@ namespace SSFR_Movies.Services
 
                 return movie;
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
             }
@@ -104,6 +112,9 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
+
+            await Task.Yield();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -116,8 +127,6 @@ namespace SSFR_Movies.Services
             }
             try
             {
-
-                await Task.Yield();
 
                 var valid = genre <= 12 ? true : false;
 
@@ -132,7 +141,7 @@ namespace SSFR_Movies.Services
                 return StoreMovieByGenresInCache(results);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -140,9 +149,10 @@ namespace SSFR_Movies.Services
 
                     return false;
                 });
+
+                return false;
             }
 
-            return false;
         }
 
         private bool StoreMovieByGenresInCache(string results)
@@ -191,7 +201,7 @@ namespace SSFR_Movies.Services
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -199,9 +209,10 @@ namespace SSFR_Movies.Services
 
                     return false;
                 });
+
+                return false;
             }
 
-            return false;
         }
     }
 }

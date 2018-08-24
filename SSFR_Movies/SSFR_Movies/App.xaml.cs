@@ -23,14 +23,14 @@ namespace SSFR_Movies
 	public partial class App : Application
 	{
         public static HttpClient httpClient { get; set; }
-
+        
         public App ()
 		{
            
             InitializeComponent();
             
-            SetHttpClient();
-            
+            ContainerInitializer.Initialize();
+
             var mainPage = new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")
@@ -38,9 +38,11 @@ namespace SSFR_Movies
 
             MainPage = mainPage;
 
+            SetHttpClient();
+
         }
 
-		protected override void OnStart ()
+        protected override void OnStart ()
 		{
             AppCenter.Start("android=8d9e8fc5-562a-434b-934c-cd959dc47068;", typeof(Analytics), typeof(Crashes));
         }
@@ -53,7 +55,6 @@ namespace SSFR_Movies
 		protected override void OnResume ()
 		{
           
-            ContainerInitializer.Initialize();
 		}
 
         /// <summary>
@@ -63,14 +64,6 @@ namespace SSFR_Movies
                                         {
                                             BaseAddress = new Uri("https://api.themoviedb.org")
                                         };
-
-     
-
-        /// <summary>
-        /// Returns an instance of the ViewModelLocator Class
-        /// </summary>
-        public static ViewModelLocator ViewModelLocator() => new ViewModelLocator();
-
       
     }
 }

@@ -19,9 +19,9 @@ namespace SSFR_Movies.ViewModels
     /// </summary>
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>();
 
-        public ObservableCollection<Result> AllMoviesByXGenreList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> AllMoviesByXGenreList { get; set; } = new Lazy<ObservableCollection<Result>>();
 
         private bool listVisible = false;
         public bool ListVisible
@@ -44,8 +44,10 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref activityIndicatorRunning, value);
         }
 
-        public void FillMoviesList()
+        public async Task FillMoviesList()
         {
+            await Task.Yield();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -69,7 +71,7 @@ namespace SSFR_Movies.ViewModels
 
                 MovieResult.BackdropPath = Backdroppath;
                    
-                AllMoviesList.Add(MovieResult);
+                AllMoviesList.Value.Add(MovieResult);
             }
 
             ListVisible = true;
@@ -78,8 +80,10 @@ namespace SSFR_Movies.ViewModels
         
         }
 
-        public void FillMoviesByGenreList()
+        public async Task FillMoviesByGenreList()
         {
+            await Task.Yield();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -93,7 +97,7 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
-            AllMoviesByXGenreList.Clear();
+            AllMoviesByXGenreList.Value.Clear();
 
             foreach (var MovieResult in movies.Results)
             {
@@ -105,7 +109,7 @@ namespace SSFR_Movies.ViewModels
 
                 MovieResult.BackdropPath = Backdroppath;
 
-                AllMoviesByXGenreList.Add(MovieResult);
+                AllMoviesByXGenreList.Value.Add(MovieResult);
 
                 AllMoviesList = null;
 
@@ -135,7 +139,7 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(true);
+            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
         }
 
         private Command getStoreMoviesCommand;
@@ -143,6 +147,8 @@ namespace SSFR_Movies.ViewModels
         {
             get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new Command( async () =>
             {
+                await Task.Yield();
+
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -160,7 +166,7 @@ namespace SSFR_Movies.ViewModels
 
                 if (MoviesStored)
                 {
-                    FillMoviesList();
+                    await FillMoviesList();
                 }
 
             }));
@@ -169,7 +175,7 @@ namespace SSFR_Movies.ViewModels
         private Command getStoreMoviesByGenresCommand;
         public Command GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command(async () =>
             {
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -182,7 +188,7 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                FillMoviesByGenreList();
+                await FillMoviesByGenreList();
          
             }));
         }
@@ -230,7 +236,7 @@ namespace SSFR_Movies.ViewModels
         private Command fillUpMoviesListAfterRefreshCommand;
         public Command FillUpMoviesListAfterRefreshCommand
         {
-            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command(async () =>
+            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command( async () =>
             {
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -243,22 +249,14 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                FillMoviesList();
+                await FillMoviesList();
 
             }));
         }
 
         public AllMoviesPageViewModel()
         {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }
+            
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
             //Verify if internet connection is available
@@ -285,7 +283,7 @@ namespace SSFR_Movies.ViewModels
 
                 ActivityIndicatorRunning = true;
 
-                FillMoviesList();
+                Task.Run(async() => { await FillMoviesList(); });
             }
         }
 

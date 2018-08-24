@@ -22,12 +22,9 @@ namespace SSFR_Movies.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AllMoviesPage : ContentPage
     {
-        bool IsLoading;
-
+       
         AllMoviesPageViewModel vm;
-
-        bool itemAppeared;
-
+        
         public AllMoviesPage()
         {
             InitializeComponent();
@@ -36,7 +33,9 @@ namespace SSFR_Movies.Views
 
             activityIndicator.IsVisible = false;
 
-            vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).AllMoviesPageViewModel;
+            //vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).AllMoviesPageViewModel;
+
+            vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
 
             BindingContext = vm;
 
@@ -52,7 +51,6 @@ namespace SSFR_Movies.Views
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
             
-
         }
 
         protected async override void OnAppearing()
@@ -83,14 +81,30 @@ namespace SSFR_Movies.Views
         {
             base.OnDisappearing();
 
+            BindingContext = null;
+            
             GC.Collect();
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
         {
-            vm.GetStoreMoviesCommand.Execute(null);
+            if(e.IsConnected)
+            {
+                MoviesList.BeginRefresh();
 
-            BindingContext = vm;
+                vm.GetStoreMoviesCommand.Execute(null);
+
+                BindingContext = vm;
+
+                MoviesList.EndRefresh();
+            }
+            else
+            {
+
+            }
+            
+            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+
         }
 
         private async void MoviesList_Unfocused(object sender, FocusEventArgs e)
@@ -189,7 +203,7 @@ namespace SSFR_Movies.Views
                     await Navigation.PushAsync(new MovieDetailsPage(movie));
                 }
             }
-            catch (Exception)
+            catch (Exception e4)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -241,11 +255,11 @@ namespace SSFR_Movies.Views
              
                 var list = (ListView)sender;
 
-                var Items = vm.AllMoviesList;
+                var Items = vm.AllMoviesList.Value;
 
                 list.ItemsSource = Items;
 
-                if (IsLoading || Items.Count == 0)
+                if (Items.Count == 0)
                 {
                     return;
                 }
@@ -265,11 +279,13 @@ namespace SSFR_Movies.Views
                         return;
                     }
 
+                    MoviesList.BeginRefresh();
+
                     await LoadMoreMovies();
 
                 }
             }
-            catch (Exception)
+            catch (Exception e1)
             {
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
@@ -284,62 +300,52 @@ namespace SSFR_Movies.Views
 
         private async Task LoadMoreMovies()
         {
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            await Task.Yield();
+            try
+            {
+
+                //Verify if internet connection is available
+                if (!CrossConnectivity.Current.IsConnected)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        return false;
+                    });
+                    return;
+                }
+
+                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+
+                if (MoviesDownloaded)
+                {
+                    BindingContext = null;
+
+                    vm.FillUpMoviesListAfterRefreshCommand.Execute(null);
+
+                    if (vm.ListVisible)
+                    {
+                        BindingContext = vm;
+
+                        Device.BeginInvokeOnMainThread( () =>
+                        {
+                          
+                            MoviesList.EndRefresh();
+
+                            ForceLayout();
+
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+
                     return false;
                 });
-                return;
-            }
-
-            await Task.Yield();
-
-            var t = MoviesList.TranslateTo(0, -60, 250, Easing.Linear);
-
-            var t2 = Scrollview.TranslateTo(0, -60, 250, Easing.Linear);
-
-            var t3 = SearchFrame.TranslateTo(0, -60, 250, Easing.Linear);
-
-            await Task.WhenAll(t, t2, t3);
-
-            activityIndicator.IsVisible = true;
-
-            activityIndicator.IsRunning = true;
-
-            var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-
-            if (MoviesDownloaded)
-            {
-                BindingContext = null;
-
-                vm.FillUpMoviesListAfterRefreshCommand.Execute(null);
-
-                if (vm.ListVisible)
-                {
-                    BindingContext = vm;
-
-                    MoviesList.BeginRefresh();
-
-                    await Task.Delay(2000);
-
-                    MoviesList.EndRefresh();
-                    
-                    activityIndicator.IsVisible = false;
-
-                    activityIndicator.IsRunning = false;
-
-                    var t4 = MoviesList.TranslateTo(0, 0, 250, Easing.Linear);
-
-                    var t5 = Scrollview.TranslateTo(0, 0, 250, Easing.Linear);
-
-                    var t6 = SearchFrame.TranslateTo(0, 0, 250, Easing.Linear);
-
-                    await Task.WhenAll(t4, t5, t6);
-
-                }
             }
         }
 
@@ -347,9 +353,7 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
-            activityIndicator.IsVisible = true;
-
-            activityIndicator.IsRunning = true;
+            MoviesList.BeginRefresh();
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -377,34 +381,28 @@ namespace SSFR_Movies.Views
                 {
                     await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
 
-                    ForceLayout();
-
                     vm.GetStoreMoviesByGenresCommand.Execute(null);
 
                     Device.BeginInvokeOnMainThread(async () =>
                     {
                         BindingContext = vm;
 
-                        MoviesList.BeginRefresh();
-
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
-                        await Task.Delay(2000);
-
                         MoviesList.EndRefresh();
-
-                        activityIndicator.IsRunning = false;
-
-                        activityIndicator.IsVisible = false;
+                        
+                        ForceLayout();
 
                     });
                 }
                 else
                 {
-                    DependencyService.Get<IToast>().LongAlert("An has ocurred!");
+                    MoviesList.EndRefresh();
+
+                    ForceLayout();
                 }
             }
-            catch (Exception)
+            catch (Exception e2)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -412,11 +410,20 @@ namespace SSFR_Movies.Views
 
                     return false;
                 });
+
+                MoviesList.EndRefresh();
+
+                ForceLayout();
             }
         }
 
         private async void Search_Tapped(object sender, EventArgs e)
         {
+
+            await Task.Yield();
+
+            MoviesList.BeginRefresh();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -428,91 +435,77 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            await Task.Yield();
-
-            await Task.Factory.StartNew(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
 
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    var key = SearchEntry.Text;
+                var key = SearchEntry.Text;
                     
-                    try
+                try
+                {
+
+                    if (key != "")
                     {
+ 
+                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
 
-                        if (key != "")
+                        if (movie_results.Results.Capacity != 0)
                         {
-  
-                            activityIndicator.IsVisible = true;
 
-                            activityIndicator.IsRunning = true;
+                            vm.AllMoviesList.Value.Clear();
 
-                            var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
-
-                            if (movie_results.Results.Capacity != 0)
+                            foreach (var MovieResult in movie_results.Results)
                             {
+                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
 
-                                vm.AllMoviesList.Clear();
+                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
 
-                                foreach (var MovieResult in movie_results.Results)
-                                {
-                                    var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+                                MovieResult.PosterPath = PosterPath;
 
-                                    var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+                                MovieResult.BackdropPath = Backdroppath;
 
-                                    MovieResult.PosterPath = PosterPath;
-
-                                    MovieResult.BackdropPath = Backdroppath;
-
-                                    vm.AllMoviesList.Add(MovieResult);
-
-                                }
-
-                                BindingContext = vm;
-
-                                MoviesList.BeginRefresh();
-
-                                await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                                await Task.Delay(100);
-
-                                MoviesList.EndRefresh();
-
-                                activityIndicator.IsVisible = false;
-
-                                activityIndicator.IsRunning = false;
-
-                                var firstItem = vm.AllMoviesList;
-
-                                MoviesList.ScrollTo(firstItem[firstItem.Count - 19], 0, true);
+                                vm.AllMoviesList.Value.Add(MovieResult);
 
                             }
-                            else
+
+                            BindingContext = vm;
+
+                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
+                            
+                            MoviesList.EndRefresh();
+
+                            var firstItem = vm.AllMoviesList.Value;
+
+                            MoviesList.ScrollTo(firstItem[firstItem.Count - 20], 0, true);
+
+                            ForceLayout();
+
+                        }
+                        else
+                        {
+                            MoviesList.EndRefresh();
+
+                            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                             {
+                                DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
-                                activityIndicator.IsVisible = false;
-
-                                activityIndicator.IsRunning = false;
-
-                                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                                {
-                                    DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
-
-                                    return false;
-                                });
-                            }
+                                return false;
+                            });
                         }
                     }
-                    catch (Exception)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                        {
-                            DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                }
+                catch (Exception e3)
+                {
 
-                            return false;
-                        });
-                    }
-                });
+                    MoviesList.EndRefresh();
+
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+
+                        return false;
+                    });
+                }
+
             });
         }
     }

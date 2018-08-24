@@ -22,22 +22,16 @@ namespace SSFR_Movies.Droid
 
             Toast.MakeText(this, "Initializing Resources, please wait :)", ToastLength.Long).Show();
 
-            //MainApplication.activity = this;
+            MainApplication.activity = this;
 
-            //if (Intent.GetBooleanExtra("crash", false))
-            //{
-            //    Toast.MakeText(this, "App restarted after crash", ToastLength.Short).Show();
-            //}
+            if (Intent.GetBooleanExtra("crash", false))
+            {
+                Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
+            }
 
             this.StartActivity(typeof(MainActivity));
 
-            Task.Run(new Action(InitializeIoCContainer));
-            
         }
 
-        /// <summary>
-        /// Initialize the IoC container and its Service Locator
-        /// </summary>
-        private async void InitializeIoCContainer() => ContainerInitializer.Initialize();
     }
 }

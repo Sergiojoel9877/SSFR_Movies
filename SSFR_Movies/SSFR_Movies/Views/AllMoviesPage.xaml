@@ -8,6 +8,13 @@
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     Title="SSFR Movies Home"
     BackgroundColor="#161513">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout>
 
@@ -219,14 +226,44 @@
                 </Grid>
             </FlexLayout>
 
+            <StackLayout
+                x:Name="NoNet"
+                HorizontalOptions="FillAndExpand"
+                Orientation="Vertical"
+                VerticalOptions="FillAndExpand">
+
+                <ffimage:CachedImage
+                    x:Name=""
+                    Grid.ColumnSpan="2"
+                    BitmapOptimizations="True"
+                    DownsampleToViewSize="True"
+                    HeightRequest="300"
+                    HorizontalOptions="Center"
+                    Source="NoInternet.png"
+                    WidthRequest="300" />
+
+                <Label
+                    x:Name="Message"
+                    Margin="0,5,0,0"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="It seems like you don't have an internet connection!"
+                    TextColor="White" />
+
+            </StackLayout>
+
             <ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
+                IsPullToRefreshEnabled="True"
                 IsVisible="{Binding ListVisible}"
                 ItemAppearing="MoviesList_ItemAppearing"
                 ItemTapped="ItemSelected"
-                ItemsSource="{Binding AllMoviesList}">
+                ItemsSource="{Binding AllMoviesList.Value}"
+                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -267,7 +304,6 @@
                                                 HeightRequest="300"
                                                 HorizontalOptions="Center"
                                                 Source="{Binding PosterPath}"
-                                                Style="{StaticResource ImageInsideCardStyle}"
                                                 WidthRequest="300" />
                                         </AbsoluteLayout>
                                     </StackLayout>

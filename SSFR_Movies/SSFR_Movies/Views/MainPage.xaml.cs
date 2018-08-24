@@ -18,6 +18,8 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
+            //Task.Run(new Action(InitializeIoCContainer));
+
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarItemColor(Color.FromHex("#0088FF"));
@@ -29,6 +31,11 @@ namespace SSFR_Movies.Views
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(5.0f);
 
         }
+
+        ///// <summary>
+        ///// Initialize the IoC container and its Service Locator
+        ///// </summary>
+        //private void InitializeIoCContainer() => ContainerInitializer.Initialize();
 
         protected override bool OnBackButtonPressed()
         {

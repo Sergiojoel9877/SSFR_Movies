@@ -11,6 +11,7 @@ namespace SSFR_Movies.Services
     /// </summary>
     public class ViewModelLocator
     {
+
         public AllMoviesPageViewModel AllMoviesPageViewModel
         {
             get => ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();

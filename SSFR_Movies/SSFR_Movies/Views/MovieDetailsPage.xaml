@@ -7,6 +7,10 @@
     Title="{Binding Title, StringFormat='{0} Details'}"
     BackgroundColor="#006FDE">
 
+    <ContentPage.Resources>
+        <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <FlexLayout Direction="Column" Wrap="NoWrap">
             <ScrollView VerticalOptions="FillAndExpand">
@@ -46,82 +50,56 @@
                                     </Grid.RowDefinitions>
 
                                     <StackLayout
-                                        Grid.Row="1"
+                                        Grid.Row="0"
                                         Grid.Column="0"
-                                        Margin="16,0,16,0"
-                                        HorizontalOptions="FillAndExpand"
-                                        Orientation="Horizontal">
+                                        Margin="16,8,16,0"
+                                        HorizontalOptions="End"
+                                        Orientation="Vertical"
+                                        VerticalOptions="Start">
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
                                             <Image
-                                                HeightRequest="35"
+                                                HeightRequest="40"
                                                 Source="Star.png"
-                                                WidthRequest="35" />
+                                                WidthRequest="40" />
                                             <Label
-                                                Margin="5,0,0,0"
                                                 FontAttributes="Bold"
-                                                FontSize="Small"
+                                                FontSize="Medium"
                                                 Style="{StaticResource LabelsStyle}"
                                                 Text="{Binding Popularity}" />
                                         </StackLayout>
-                                        <ScrollView
-                                            x:Name="ScrollTrailer"
-                                            HorizontalOptions="FillAndExpand"
-                                            HorizontalScrollBarVisibility="Never"
-                                            Orientation="Horizontal"
-                                            VerticalScrollBarVisibility="Never">
-                                            <StackLayout
-                                                Margin="0"
-                                                HorizontalOptions="End"
-                                                Orientation="Horizontal">
-                                                <StackLayout.GestureRecognizers>
-                                                    <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
-                                                </StackLayout.GestureRecognizers>
-                                                <ffimage:CachedImage
-                                                    HeightRequest="35"
-                                                    Source="YoutubeBtn.png"
-                                                    WidthRequest="35" />
-                                                <Label
-                                                    Margin="5,0,0,0"
-                                                    FontAttributes="Bold"
-                                                    FontSize="Small"
-                                                    HorizontalTextAlignment="End"
-                                                    LineBreakMode="NoWrap"
-                                                    Text="Play Trailer"
-                                                    TextColor="White"
-                                                    VerticalTextAlignment="Center" />
-                                            </StackLayout>
-                                        </ScrollView>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="End"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="{Binding ReleaseDate, StringFormat='{0}'}" />
                                     </StackLayout>
 
                                     <StackLayout
-                                        Grid.Row="0"
+                                        Grid.Row="1"
                                         Grid.Column="0"
-                                        Margin="0,5,16,0"
+                                        Margin="16,5,16,8"
                                         HorizontalOptions="FillAndExpand"
                                         Orientation="Vertical"
-                                        VerticalOptions="Start">
-                                        <!--<ScrollView
+                                        VerticalOptions="End">
+                                        <ScrollView
                                             x:Name="ScrollTitle"
                                             HorizontalOptions="End"
                                             HorizontalScrollBarVisibility="Never"
                                             Orientation="Horizontal"
-                                            VerticalScrollBarVisibility="Never">-->
-                                        <Label
-                                            x:Name="MovieTitle"
-                                            FontAttributes="Bold"
-                                            HorizontalTextAlignment="End"
-                                            LineBreakMode="NoWrap"
-                                            Style="{StaticResource LabelsStyle}"
-                                            Text="{Binding Title}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="TitleTapped" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                        <!--</ScrollView>-->
-                                        <Label
-                                            HorizontalTextAlignment="End"
-                                            Style="{StaticResource LabelsStyle}"
-                                            Text="{Binding ReleaseDate, StringFormat='{0}'}" />
+                                            VerticalScrollBarVisibility="Never">
+                                            <Label
+                                                x:Name="MovieTitle"
+                                                FontAttributes="Bold"
+                                                FontSize="Large"
+                                                HorizontalTextAlignment="Start"
+                                                LineBreakMode="NoWrap"
+                                                Style="{StaticResource LabelsStyle}"
+                                                Text="{Binding Title}">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="TitleTapped" />
+                                                </Label.GestureRecognizers>
+                                            </Label>
+                                        </ScrollView>
 
                                     </StackLayout>
                                 </Grid>
@@ -143,14 +121,46 @@
                         </AbsoluteLayout>
                     </StackLayout>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
-                        <Label
-                            Margin="16,5,0,0"
-                            FontAttributes="Bold"
-                            FontSize="Large"
-                            HorizontalOptions="Start"
-                            Text="Synopsis"
-                            TextColor="White"
-                            VerticalOptions="Start" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label
+                                Margin="16,5,16,0"
+                                FontAttributes="Bold"
+                                FontSize="Large"
+                                HorizontalOptions="Start"
+                                Text="Synopsis"
+                                TextColor="White"
+                                VerticalOptions="Start" />
+                            <ScrollView
+                                x:Name="ScrollTrailer"
+                                Margin="16,5,16,0"
+                                HorizontalOptions="FillAndExpand"
+                                HorizontalScrollBarVisibility="Never"
+                                Orientation="Horizontal"
+                                VerticalOptions="Start"
+                                VerticalScrollBarVisibility="Never">
+                                <StackLayout
+                                    Margin="0"
+                                    HorizontalOptions="End"
+                                    Orientation="Horizontal">
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
+                                    </StackLayout.GestureRecognizers>
+                                    <ffimage:CachedImage
+                                        HeightRequest="35"
+                                        Source="YoutubeBtn.png"
+                                        WidthRequest="35" />
+                                    <Label
+                                        Margin="5,0,0,0"
+                                        FontAttributes="Bold"
+                                        FontSize="Small"
+                                        HorizontalTextAlignment="End"
+                                        LineBreakMode="NoWrap"
+                                        Text="Play Trailer"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" />
+                                </StackLayout>
+                            </ScrollView>
+                        </StackLayout>
                         <Label
                             Margin="16,5,16,5"
                             FontSize="Medium"

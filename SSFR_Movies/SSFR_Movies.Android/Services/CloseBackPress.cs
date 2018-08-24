@@ -18,6 +18,11 @@ namespace SSFR_Movies.Droid.Services
 {
     public class CloseBackPress : Xamarin.Forms.Platform.Android.FormsAppCompatActivity, ICloseBackPress
     {
+
+        const int MSG = 1;
+
+        Handler handler;
+
 #pragma warning disable CS0618
         Activity activity = (MainActivity)Forms.Context;
 #pragma warning restore CS068
@@ -29,7 +34,9 @@ namespace SSFR_Movies.Droid.Services
 
         public override void OnBackPressed()
         {
-            ShowAlert("Exit", "Are you sure you wanna exit?");
+     
+            ShowAlert("Exit", "Are you sure that you wanna exit?");
+
         }
 
         AlertDialog.Builder Ab;
@@ -38,7 +45,7 @@ namespace SSFR_Movies.Droid.Services
         {
             AB(title, msg, "Ok");
         }
-
+        
         public void AB(string title, string msg, string yes)
         {
 
@@ -48,8 +55,27 @@ namespace SSFR_Movies.Droid.Services
 
             var create = Ab.Create();
 
-            create.Show();
-
+            try
+            {
+                create.Show();
+            }
+            catch (WindowManagerBadTokenException e)
+            {
+                activity.FinishAffinity();
+            }
+          
+            //handler = new Handler((p) =>
+            //{
+            //    switch (p.What)
+            //    {
+            //        case MSG:
+            //        if(!(activity).IsFinishing)
+            //        {
+            //            create.Show();
+            //        }
+            //        break;
+            //    }
+            //});
         }
 
         public void OnClick(object dialog, DialogClickEventArgs e)

@@ -28,7 +28,9 @@ namespace SSFR_Movies.Views
 		{
 			InitializeComponent ();
 
-            vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).FavoriteMoviesPageViewModel;
+            //vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).FavoriteMoviesPageViewModel;
+
+            vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().FavoriteMoviesPageViewModel;
 
             BindingContext = vm;
 
