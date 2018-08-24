@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -13,7 +14,7 @@ using SSFR_Movies.Services;
 
 namespace SSFR_Movies.Droid
 {
-    [Activity(Theme="@style/Theme.Splash", NoHistory= true, MainLauncher = true)]
+    [Activity(Theme="@style/Theme.Splash", NoHistory= true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashScreen : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

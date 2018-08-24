@@ -1,4 +1,6 @@
-﻿using SSFR_Movies.Models;
+﻿using CommonServiceLocator;
+using SSFR_Movies.Models;
+using SSFR_Movies.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +20,29 @@ namespace SSFR_Movies.Views
 			InitializeComponent ();
 
             BindingContext = movie;
-		}
+            
+        }
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
 
             var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);
-
+            
             await Task.WhenAll(t3);
+
+            var movie = (Result)BindingContext;
+
+            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+
+            if (video.Results.Count() == 0)
+            {
+                ScrollTrailer.IsVisible = false;
+            }
+            else
+            {
+                ScrollTrailer.IsVisible = true;
+            }
 
         }
         protected override void OnDisappearing()
@@ -36,9 +52,15 @@ namespace SSFR_Movies.Views
             GC.Collect();
         }
 
-        private void PlayTrailer_Tapped(object sender, EventArgs e)
+        private async void PlayTrailer_Tapped(object sender, EventArgs e)
         {
-            Device.OpenUri(new Uri("vnd.youtube://watch/z8h3LVb8cl8")); //TEST
+            await Task.Yield();
+
+            var movie = (Result)BindingContext;
+
+            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+
+            Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
         private async void TitleTapped(object sender, EventArgs e)

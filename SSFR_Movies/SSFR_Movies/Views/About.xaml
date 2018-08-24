@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SSFR_Movies.Views.About"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    BackgroundColor="#161513">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <ScrollView VerticalOptions="FillAndExpand">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
+                    <ffimage:CachedImage
+                        BitmapOptimizations="True"
+                        DownsampleToViewSize="True"
+                        HeightRequest="250"
+                        HorizontalOptions="Center"
+                        Source="icon.png"
+                        WidthRequest="250" />
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Large"
+                        HorizontalOptions="CenterAndExpand"
+                        HorizontalTextAlignment="Center"
+                        Text="SSFR Movies 1.0.0 BETA"
+                        TextColor="White" />
+
+                    <StackLayout
+                        Margin="16"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="End">
+
+                        <Label
+                            Margin="16"
+                            FontSize="Small"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="NoWrap"
+                            Text="Concept and development: Sergio J. Ferreras"
+                            TextColor="White" />
+
+                        <Label
+                            Margin="16"
+                            FontSize="Small"
+                            HorizontalTextAlignment="Center"
+                            Text="Logo designer: Elaine M. Jiménez"
+                            TextColor="White" />
+
+                        <Label
+                            Margin="16"
+                            FontSize="Micro"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap"
+                            Text=" ® All Rights Reserved, Sergio J. Ferreras - SSFR Movies™"
+                            TextColor="White" />
+
+                    </StackLayout>
+
+
+                </StackLayout>
+            </ScrollView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

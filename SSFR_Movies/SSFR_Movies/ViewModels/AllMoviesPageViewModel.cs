@@ -30,6 +30,13 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref listVisible, value);
         }
 
+        private bool msgVisible = false;
+        public bool MsgVisible
+        {
+            get => msgVisible;
+            set => SetProperty(ref msgVisible, value);
+        }
+
         private bool moviesStored = false;
         public bool MoviesStored
         {
@@ -76,6 +83,8 @@ namespace SSFR_Movies.ViewModels
 
             ListVisible = true;
 
+            MsgVisible = false;
+
             ActivityIndicatorRunning = false;
         
         }
@@ -116,8 +125,6 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList = AllMoviesByXGenreList;
                 
             }
-
-            ListVisible = true;
 
             ActivityIndicatorRunning = false;
         }
@@ -289,6 +296,18 @@ namespace SSFR_Movies.ViewModels
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
         {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (e.IsConnected)
+                {
+                    MsgVisible = false;
+                }
+                else
+                {
+                    MsgVisible = true;
+                }
+            });
+
             GetStoreMoviesCommand.Execute(null);
 
             GetMoviesGenresCommand.Execute(null);

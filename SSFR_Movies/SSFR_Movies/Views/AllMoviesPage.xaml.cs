@@ -33,8 +33,6 @@ namespace SSFR_Movies.Views
 
             activityIndicator.IsVisible = false;
 
-            //vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).AllMoviesPageViewModel;
-
             vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
 
             BindingContext = vm;
@@ -62,7 +60,7 @@ namespace SSFR_Movies.Views
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                     return false;
@@ -70,6 +68,8 @@ namespace SSFR_Movies.Views
                 return;
             }
 
+            BindingContext = vm;
+            
             var t = Scrollview.ScrollToAsync(100, 0, true);
 
             var t2 = Scrollview.ScrollToAsync(0, 0, true);
@@ -90,6 +90,11 @@ namespace SSFR_Movies.Views
         {
             if(e.IsConnected)
             {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    vm.MsgVisible = false;   
+                });
+                
                 MoviesList.BeginRefresh();
 
                 vm.GetStoreMoviesCommand.Execute(null);
@@ -100,7 +105,10 @@ namespace SSFR_Movies.Views
             }
             else
             {
-
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    vm.MsgVisible = true;
+                });
             }
             
             DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
@@ -158,7 +166,7 @@ namespace SSFR_Movies.Views
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
                         DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                         return false;
@@ -190,7 +198,7 @@ namespace SSFR_Movies.Views
                     }
                     catch (Exception)
                     {
-                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                         {
                             DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
 
@@ -205,7 +213,7 @@ namespace SSFR_Movies.Views
             }
             catch (Exception e4)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
 
@@ -288,14 +296,13 @@ namespace SSFR_Movies.Views
             catch (Exception e1)
             {
 
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                    DependencyService.Get<IToast>().LongAlert("An error has occurred!");
 
                     return false;
                 });
             }
-           
         }
 
         private async Task LoadMoreMovies()
@@ -307,7 +314,7 @@ namespace SSFR_Movies.Views
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
                         DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                         return false;
@@ -422,6 +429,15 @@ namespace SSFR_Movies.Views
 
             await Task.Yield();
 
+
+            var key = SearchEntry.Text;
+
+            if (key == "")
+            {
+                DependencyService.Get<IToast>().LongAlert("The name can't be empty");
+                return;
+            }
+
             MoviesList.BeginRefresh();
 
             //Verify if internet connection is available
@@ -438,8 +454,6 @@ namespace SSFR_Movies.Views
             Device.BeginInvokeOnMainThread(async () =>
             {
 
-                var key = SearchEntry.Text;
-                    
                 try
                 {
 
@@ -498,12 +512,6 @@ namespace SSFR_Movies.Views
 
                     MoviesList.EndRefresh();
 
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
-
-                        return false;
-                    });
                 }
 
             });

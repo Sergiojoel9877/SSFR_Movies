@@ -226,33 +226,26 @@
                 </Grid>
             </FlexLayout>
 
-            <StackLayout
-                x:Name="NoNet"
-                HorizontalOptions="FillAndExpand"
-                Orientation="Vertical"
-                VerticalOptions="FillAndExpand">
+            <ffimage:CachedImage
+                Grid.ColumnSpan="2"
+                BitmapOptimizations="True"
+                DownsampleToViewSize="True"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                IsVisible="{Binding MsgVisible}"
+                Source="NoInternet.png"
+                WidthRequest="300" />
 
-                <ffimage:CachedImage
-                    x:Name=""
-                    Grid.ColumnSpan="2"
-                    BitmapOptimizations="True"
-                    DownsampleToViewSize="True"
-                    HeightRequest="300"
-                    HorizontalOptions="Center"
-                    Source="NoInternet.png"
-                    WidthRequest="300" />
-
-                <Label
-                    x:Name="Message"
-                    Margin="0,5,0,0"
-                    FontAttributes="Bold"
-                    FontSize="Medium"
-                    HorizontalOptions="Center"
-                    HorizontalTextAlignment="Center"
-                    Text="It seems like you don't have an internet connection!"
-                    TextColor="White" />
-
-            </StackLayout>
+            <Label
+                x:Name="Message"
+                Margin="0,5,0,0"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding MsgVisible}"
+                Text="It seems like you don't have an internet connection!"
+                TextColor="White" />
 
             <ListView
                 x:Name="MoviesList"

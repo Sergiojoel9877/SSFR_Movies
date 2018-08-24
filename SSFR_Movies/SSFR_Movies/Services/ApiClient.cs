@@ -180,6 +180,21 @@ namespace SSFR_Movies.Services
 
         }
 
+        public async Task<MovieVideo> GetMovieVideosAsync(int id)
+        {
+
+            await Task.Yield();
+
+            var requestUri = $"/3/movie/{id}/videos?api_key={API_KEY}&language={LANG}";
+
+            var m = await App.httpClient.GetAsync(requestUri);
+
+            var results = await m.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<MovieVideo>(results);
+
+        }
+
         private bool StoreGenresInCache(string results)
         {
             var movies = JsonConvert.DeserializeObject<Genres>(results);

@@ -12,4 +12,6 @@
 
     <pages:FavoritesMoviesPage Title="Favorites" Icon="Heart.png" />
 
+    <pages:About Title="About" Icon="About.png" />
+
 </TabbedPage>
