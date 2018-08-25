@@ -39,7 +39,7 @@
                                 AbsoluteLayout.LayoutFlags="All"
                                 BackgroundColor="#00103B"
                                 HorizontalOptions="FillAndExpand"
-                                WidthRequest="300">
+                                WidthRequest="295">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -58,8 +58,9 @@
                                         VerticalOptions="Start">
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
                                             <Image
+                                                x:Name="AddToFav"
                                                 HeightRequest="40"
-                                                Source="Star.png"
+                                                Source="StarEmpty.png"
                                                 WidthRequest="40" />
                                             <Label
                                                 FontAttributes="Bold"
@@ -167,6 +168,20 @@
                             HorizontalTextAlignment="Start"
                             Style="{StaticResource LabelsStyle}"
                             Text="{Binding Overview}" />
+
+                        <StackLayout
+                            x:Name="AddToFavLayout"
+                            Margin="16"
+                            BackgroundColor="#44FFFFFF"
+                            HorizontalOptions="FillAndExpand">
+                            <Label
+                                Margin="16"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Center"
+                                Text="Add To Favorites List"
+                                TextColor="White" />
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
             </ScrollView>

@@ -23,9 +23,10 @@ namespace SSFR_Movies.Droid
 
             Forms.SetFlags("FastRenderers_Experimental");
                 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
-            Android.Glide.Forms.Init();
+            //Android.Glide.Forms.Init();
+
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
             LoadApplication(new App());

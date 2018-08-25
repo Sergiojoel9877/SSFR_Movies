@@ -14,7 +14,7 @@
     </Style>
     <!--  Style for labels  -->
     <Style x:Key="LabelsStyle" TargetType="Label">
-        <Setter Property="FontSize" Value="Medium" />
+        <Setter Property="FontSize" Value="Small" />
         <Setter Property="TextColor" Value="White" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
         <Setter Property="VerticalOptions" Value="Center" />
@@ -55,7 +55,6 @@
     <Style x:Key="StackUnderImageStyle" TargetType="Frame">
         <Setter Property="BackgroundColor" Value="#312D2D" />
         <Setter Property="CornerRadius" Value="5" />
-        <Setter Property="Margin" Value="0,0,0,0" />
         <!--<Setter Property="HeightRequest" Value="50" />-->
         <!--<Setter Property="WidthRequest" Value="323" />-->
         <Setter Property="HorizontalOptions" Value="FillAndExpand" />

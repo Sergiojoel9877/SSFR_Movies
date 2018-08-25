@@ -34,7 +34,6 @@
                             Margin="16"
                             FontSize="Small"
                             HorizontalTextAlignment="Center"
-                            LineBreakMode="NoWrap"
                             Text="Concept and development: Sergio J. Ferreras"
                             TextColor="White" />
 

@@ -24,6 +24,8 @@ namespace SSFR_Movies.Views
     {
        
         AllMoviesPageViewModel vm;
+
+        Result act_res { get; set; }
         
         public AllMoviesPage()
         {
@@ -54,6 +56,14 @@ namespace SSFR_Movies.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+            
+            BindingContext = vm;
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                vm.IsEnabled = true;
+                vm.IsRunning = true;
+            });
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
@@ -67,14 +77,19 @@ namespace SSFR_Movies.Views
                 });
                 return;
             }
-
-            BindingContext = vm;
             
             var t = Scrollview.ScrollToAsync(100, 0, true);
 
             var t2 = Scrollview.ScrollToAsync(0, 0, true);
 
             await Task.WhenAll(t, t2);
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                vm.IsEnabled = false;
+                vm.IsRunning = false;
+            });
+
         }
 
         protected override void OnDisappearing()
@@ -83,7 +98,6 @@ namespace SSFR_Movies.Views
 
             BindingContext = null;
             
-            GC.Collect();
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
@@ -153,6 +167,93 @@ namespace SSFR_Movies.Views
             await img.ScaleTo(1, 250, Easing.BounceIn);
         }
 
+        private async void AddToFavList(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                MoviesList.IsEnabled = false;
+            });
+
+            var opt = sender as MenuItem;
+
+            if (opt != null)
+            {
+            
+                var movie = opt.BindingContext as Result;
+
+                //Verify if internet connection is available
+                if (!CrossConnectivity.Current.IsConnected)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        return false;
+                    });
+                    return;
+                }
+
+                if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
+                {
+                    try
+                    {
+                        var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+
+                        if (movieExists)
+                        {
+                            await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
+
+                            act_res = null;
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+                        }
+
+                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+
+                        if (addMovie)
+                        {
+                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                            act_res = null;
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                        {
+                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+
+                            act_res = null;
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+
+                            return false;
+                        });
+                    }
+                }
+                else
+                {
+
+                    act_res = null;
+
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MoviesList.IsEnabled = true;
+                    });
+                }
+            }
+        }
+
         private async void ItemSelected(object sender, ItemTappedEventArgs e)
         {
             try
@@ -178,38 +279,8 @@ namespace SSFR_Movies.Views
 
                 ((ListView)sender).SelectedItem = null;
 
-                if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
-                {
-                    try
-                    {
-                        var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
-                        if (movieExists)
-                        {
-                            await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
-                        }
-
-                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                        if (addMovie)
-                        {
-                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                        {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
-                            return false;
-                        });
-                    }
-                }
-                else
-                {
-                    await Navigation.PushAsync(new MovieDetailsPage(movie));
-                }
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
+                
             }
             catch (Exception e4)
             {
@@ -237,7 +308,6 @@ namespace SSFR_Movies.Views
             var t6 = Search_Icon.ScaleTo(1, 500, Easing.BounceIn);
             
             await Task.WhenAll(t, t2, t3, t4, t5, t6);
-
         }
 
         private async void SearchEntry_Focused(object sender, FocusEventArgs e)
@@ -260,10 +330,11 @@ namespace SSFR_Movies.Views
             
             try
             {
-             
+                act_res = (Result)e.Item;
+
                 var list = (ListView)sender;
 
-                var Items = vm.AllMoviesList.Value;
+                var Items = vm.AllMoviesList;
 
                 list.ItemsSource = Items;
 
@@ -339,8 +410,6 @@ namespace SSFR_Movies.Views
                           
                             MoviesList.EndRefresh();
 
-                            ForceLayout();
-
                         });
                     }
                 }
@@ -397,16 +466,13 @@ namespace SSFR_Movies.Views
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
                         MoviesList.EndRefresh();
-                        
-                        ForceLayout();
-
+                       
                     });
                 }
                 else
                 {
                     MoviesList.EndRefresh();
-
-                    ForceLayout();
+                    
                 }
             }
             catch (Exception e2)
@@ -419,8 +485,7 @@ namespace SSFR_Movies.Views
                 });
 
                 MoviesList.EndRefresh();
-
-                ForceLayout();
+                
             }
         }
 
@@ -465,7 +530,7 @@ namespace SSFR_Movies.Views
                         if (movie_results.Results.Capacity != 0)
                         {
 
-                            vm.AllMoviesList.Value.Clear();
+                            vm.AllMoviesList.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
@@ -477,7 +542,7 @@ namespace SSFR_Movies.Views
 
                                 MovieResult.BackdropPath = Backdroppath;
 
-                                vm.AllMoviesList.Value.Add(MovieResult);
+                                vm.AllMoviesList.Add(MovieResult);
 
                             }
 
@@ -487,12 +552,10 @@ namespace SSFR_Movies.Views
                             
                             MoviesList.EndRefresh();
 
-                            var firstItem = vm.AllMoviesList.Value;
+                            //var firstItem = vm.AllMoviesList;
 
-                            MoviesList.ScrollTo(firstItem[firstItem.Count - 20], 0, true);
-
-                            ForceLayout();
-
+                            //MoviesList.ScrollTo(firstItem[firstItem.Count - 20], 0, true);
+                            
                         }
                         else
                         {
@@ -515,6 +578,19 @@ namespace SSFR_Movies.Views
                 }
 
             });
+        }
+
+        private async void SearchClicked(object sender, EventArgs e)
+        {
+            var t = Scrollview.FadeTo(0, 500, Easing.Linear);
+
+            var t2 = Scrollview.TranslateTo(2500, 0, 1000, Easing.SpringOut);
+
+            var t3 = SearchFrame.TranslateTo(0, -60, 1000, Easing.SpringOut);
+
+            var t4 = MoviesList.TranslateTo(2500, 0, 1000, Easing.SpringIn);
+
+            await Task.WhenAll(t, t2, t3, t4);
         }
     }
 }

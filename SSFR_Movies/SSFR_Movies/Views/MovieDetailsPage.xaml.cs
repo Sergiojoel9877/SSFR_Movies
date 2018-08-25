@@ -1,4 +1,6 @@
 ﻿using CommonServiceLocator;
+using Plugin.Connectivity;
+using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
@@ -15,16 +17,115 @@ namespace SSFR_Movies.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MovieDetailsPage : ContentPage
 	{
-		public MovieDetailsPage (Result movie)
+        TapGestureRecognizer tap = null;
+
+        public MovieDetailsPage (Result movie)
 		{
 			InitializeComponent ();
 
+            IsPresentInFavList(movie);
+
             BindingContext = movie;
             
+            tap = new TapGestureRecognizer();
+
+            AddToFavLayout.GestureRecognizers.Add(tap);
+
+            tap.Tapped += Tap_Tapped;
+
         }
 
+        private async void IsPresentInFavList( Result m)
+        {
+
+            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+
+            if (movieExists)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    AddToFav.Source = "Star.png";
+                });
+            }
+        }
+
+        private async void Tap_Tapped(object sender, EventArgs e)
+        {
+            await Task.Yield();
+
+            var t = AddToFav.ScaleTo(1.50, 250, Easing.SpringOut);
+
+            var t2 = AddToFav.ScaleTo(1, 500, Easing.SpringIn);
+
+            var t3 = AddToFavList();
+
+            await Task.WhenAll(t, t2, t3);
+        }
+
+        private async Task AddToFavList()
+        {
+            
+            var movie = (Result)BindingContext;
+
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
+            if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
+            {
+                try
+                {
+                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+
+                    if (movieExists)
+                    {
+                        await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            AddToFav.Source = "Star.png";
+                        });
+
+                    }
+
+                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+
+                    if (addMovie)
+                    {
+                        await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            AddToFav.Source = "Star.png";
+                        });
+                    }
+                }
+                catch (Exception)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                        
+                        return false;
+                    });
+                }
+            }
+            else
+            {
+
+            }
+        }
+        
         protected async override void OnAppearing()
         {
+
             base.OnAppearing();
 
             var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);

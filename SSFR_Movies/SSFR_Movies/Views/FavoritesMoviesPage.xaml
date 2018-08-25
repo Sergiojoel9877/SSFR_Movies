@@ -46,6 +46,15 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <ViewCell.ContextActions>
+
+                                <MenuItem
+                                    Clicked="AddToFavList"
+                                    CommandParameter="{Binding .}"
+                                    Icon="Star.png"
+                                    Text="Add To Favorites" />
+
+                            </ViewCell.ContextActions>
                             <FlexLayout
                                 Margin="16"
                                 AlignContent="Center"
@@ -119,13 +128,13 @@
                                                     Margin="0,0,16,0"
                                                     HeightRequest="34"
                                                     HorizontalOptions="End"
-                                                    Source="Pin.png"
+                                                    Source="Star.png"
                                                     WidthRequest="35" />
                                                 <Label
                                                     Grid.Row="1"
                                                     Grid.Column="1"
                                                     Style="{StaticResource UnPinStyle}"
-                                                    Text="Add to Favorites" />
+                                                    Text="Quit from Favorites" />
                                             </Grid>
                                         </Frame>
                                     </StackLayout>

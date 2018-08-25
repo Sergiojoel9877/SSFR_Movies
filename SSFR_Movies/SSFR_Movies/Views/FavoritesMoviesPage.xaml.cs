@@ -35,8 +35,89 @@ namespace SSFR_Movies.Views
             BindingContext = vm;
 
             SetVisibility();
-            
+
         }
+
+        private async void AddToFavList(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                MoviesList.IsEnabled = false;
+            });
+
+            var opt = sender as MenuItem;
+
+            if (opt != null)
+            {
+
+                var movie = opt.BindingContext as Result;
+
+                //Verify if internet connection is available
+                if (!CrossConnectivity.Current.IsConnected)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        return false;
+                    });
+                    return;
+                }
+
+                if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
+                {
+                    try
+                    {
+                        var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+
+                        if (movieExists)
+                        {
+                            await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
+
+                         
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+                        }
+
+                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+
+                        if (addMovie)
+                        {
+                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                        {
+                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsEnabled = true;
+                            });
+
+                            return false;
+                        });
+                    }
+                }
+                else
+                {
+                    
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MoviesList.IsEnabled = true;
+                    });
+                }
+            }
+        }
+
 
         private async void SetVisibility()
         {

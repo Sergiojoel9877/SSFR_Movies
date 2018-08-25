@@ -19,9 +19,9 @@ namespace SSFR_Movies.ViewModels
     /// </summary>
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>();
-
-        public Lazy<ObservableCollection<Result>> AllMoviesByXGenreList { get; set; } = new Lazy<ObservableCollection<Result>>();
+        public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
+    
+        public ObservableCollection<Result> AllMoviesByXGenreList { get; set; } = new ObservableCollection<Result>();
 
         private bool listVisible = false;
         public bool ListVisible
@@ -35,6 +35,27 @@ namespace SSFR_Movies.ViewModels
         {
             get => msgVisible;
             set => SetProperty(ref msgVisible, value);
+        }
+
+        private bool isRefreshing;
+        public bool IsRefreshing
+        {
+            get => isRefreshing;
+            set => SetProperty(ref isRefreshing, value);
+        }
+
+        private bool isEnabled;
+        public bool IsEnabled
+        {
+            get => isEnabled;
+            set => SetProperty(ref isEnabled, value);
+        }
+
+        private bool isRunning;
+        public bool IsRunning
+        {
+            get => isRunning;
+            set => SetProperty(ref isRunning, value);
         }
 
         private bool moviesStored = false;
@@ -54,6 +75,10 @@ namespace SSFR_Movies.ViewModels
         public async Task FillMoviesList()
         {
             await Task.Yield();
+
+
+            IsEnabled = true;
+            IsRunning = true;
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -78,7 +103,7 @@ namespace SSFR_Movies.ViewModels
 
                 MovieResult.BackdropPath = Backdroppath;
                    
-                AllMoviesList.Value.Add(MovieResult);
+                AllMoviesList.Add(MovieResult);
             }
 
             ListVisible = true;
@@ -86,7 +111,12 @@ namespace SSFR_Movies.ViewModels
             MsgVisible = false;
 
             ActivityIndicatorRunning = false;
-        
+
+            IsRefreshing = false;
+            
+            IsEnabled = false;
+            IsRunning = false;
+
         }
 
         public async Task FillMoviesByGenreList()
@@ -106,7 +136,7 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
-            AllMoviesByXGenreList.Value.Clear();
+            AllMoviesByXGenreList.Clear();
 
             foreach (var MovieResult in movies.Results)
             {
@@ -118,7 +148,7 @@ namespace SSFR_Movies.ViewModels
 
                 MovieResult.BackdropPath = Backdroppath;
 
-                AllMoviesByXGenreList.Value.Add(MovieResult);
+                AllMoviesByXGenreList.Add(MovieResult);
 
                 AllMoviesList = null;
 
@@ -255,7 +285,7 @@ namespace SSFR_Movies.ViewModels
                     });
                     return;
                 }
-
+                
                 await FillMoviesList();
 
             }));
