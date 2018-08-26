@@ -164,23 +164,10 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
                 var movie = (Result)e.Item;
 
                 ((ListView)sender).SelectedItem = null;
-
-                Vibration.Vibrate(0.5);
-
+                
                 await Navigation.PushAsync(new MovieDetailsPage(movie));
 
             }

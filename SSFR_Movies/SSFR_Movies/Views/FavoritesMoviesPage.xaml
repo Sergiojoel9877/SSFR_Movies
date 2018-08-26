@@ -101,7 +101,7 @@
                                                 WidthRequest="300" />
                                         </AbsoluteLayout>
                                     </StackLayout>
-                                    <StackLayout CompressedLayout.IsHeadless="True">
+                                    <StackLayout>
                                         <Frame HorizontalOptions="Center" Style="{StaticResource StackUnderImageStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
