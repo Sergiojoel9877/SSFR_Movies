@@ -22,9 +22,9 @@
     <ContentPage.Content>
         <StackLayout>
 
-            <FlexLayout Direction="Column">
+            <FlexLayout AlignContent="Center" Direction="Column">
 
-                <Grid FlexLayout.AlignSelf="Start">
+                <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>

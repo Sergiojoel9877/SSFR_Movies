@@ -4,7 +4,7 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-    Title="{Binding Title, StringFormat='{0} Details'}"
+    Title="Details"
     BackgroundColor="#006FDE">
 
     <ContentPage.Resources>
@@ -12,9 +12,15 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <FlexLayout Direction="Column" Wrap="NoWrap">
+        <FlexLayout
+            CompressedLayout.IsHeadless="True"
+            Direction="Column"
+            Wrap="NoWrap">
             <ScrollView VerticalOptions="FillAndExpand">
-                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <StackLayout
+                    CompressedLayout.IsHeadless="True"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand">
                     <StackLayout
                         BackgroundColor="#00103B"
                         HeightRequest="300"
@@ -22,6 +28,7 @@
                         <AbsoluteLayout
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                             AbsoluteLayout.LayoutFlags="All"
+                            CompressedLayout.IsHeadless="True"
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
@@ -40,7 +47,7 @@
                                 BackgroundColor="#00103B"
                                 HorizontalOptions="FillAndExpand"
                                 WidthRequest="295">
-                                <Grid>
+                                <Grid CompressedLayout.IsHeadless="True">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
@@ -79,6 +86,7 @@
                                         Grid.Row="1"
                                         Grid.Column="0"
                                         Margin="16,5,16,8"
+                                        CompressedLayout.IsHeadless="True"
                                         HorizontalOptions="FillAndExpand"
                                         Orientation="Vertical"
                                         VerticalOptions="End">
@@ -122,7 +130,7 @@
                         </AbsoluteLayout>
                     </StackLayout>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
-                        <StackLayout Orientation="Horizontal">
+                        <StackLayout CompressedLayout.IsHeadless="True" Orientation="Horizontal">
                             <Label
                                 Margin="16,5,16,0"
                                 FontAttributes="Bold"

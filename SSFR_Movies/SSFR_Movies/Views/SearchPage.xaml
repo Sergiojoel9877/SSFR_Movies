@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SSFR_Movies.Views.SearchPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    BackgroundColor="#161513"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+            <StackLayout
+                x:Name="Bar"
+                BackgroundColor="#272B2E"
+                HeightRequest="56"
+                HorizontalOptions="FillAndExpand"
+                Orientation="Horizontal"
+                VerticalOptions="Start">
+
+                <ffimage:CachedImage
+                    x:Name="back"
+                    Margin="16"
+                    BitmapOptimizations="True"
+                    HeightRequest="46"
+                    HorizontalOptions="Start"
+                    Source="Back.png"
+                    WidthRequest="46">
+                    <ffimage:CachedImage.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Back_Tapped" />
+                    </ffimage:CachedImage.GestureRecognizers>
+                </ffimage:CachedImage>
+
+                <SearchBar
+                    x:Name="searchBar"
+                    Margin="5,0,16,0"
+                    CancelButtonColor="White"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Search"
+                    PlaceholderColor="#65FFFFFF"
+                    SearchButtonPressed="SearchBar_SearchButtonPressed"
+                    TextColor="White"
+                    VerticalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <ActivityIndicator
+                x:Name="activityIndicator"
+                BackgroundColor="Transparent"
+                HeightRequest="50"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand"
+                WidthRequest="50"
+                Color="#0088FF" />
+
+            <ListView
+                x:Name="MoviesList"
+                CachingStrategy="RecycleElementAndDataTemplate"
+                HasUnevenRows="True"
+                IsPullToRefreshEnabled="True"
+                IsRefreshing="{Binding IsRefreshing}"
+                IsVisible="{Binding ListVisible}"
+                ItemTapped="ItemSelected"
+                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <customViewCell:CustomViewCell />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSFR_Movies.Helpers
@@ -49,7 +50,7 @@ namespace SSFR_Movies.Helpers
 
             Container = new StackLayout()
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
@@ -100,14 +101,16 @@ namespace SSFR_Movies.Helpers
 
             panelContainer = new StackLayout()
             {
-                HeightRequest = 100
+                HeightRequest = 100,
+                HorizontalOptions = LayoutOptions.Center,
+
             };
 
             FrameUnderImages = new Frame()
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Center,
             };
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
@@ -193,18 +196,21 @@ namespace SSFR_Movies.Helpers
             AbsoluteLayout.SetLayoutFlags(blurCachedImage, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage, AbsoluteLayoutFlags.All);
-
+            
             FrameUnderImages.Content = gridInsideFrame;
 
             absoluteLayout.Children.Add(blurCachedImage);
             absoluteLayout.Children.Add(cachedImage);
+            CompressedLayout.SetIsHeadless(absoluteLayout, true);
+
             panelContainer.Children.Add(FrameUnderImages);
 
             SubContainer.Children.Add(absoluteLayout);
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
+           
             FlexLayout.Children.Add(Container);
-            
+
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
 
             AddToFavListCtxAct.Clicked += AddToFavList;
@@ -226,6 +232,8 @@ namespace SSFR_Movies.Helpers
             cachedImage.Source = null;
 
             var item = BindingContext as SSFR_Movies.Models.Result;
+
+            //await IsPresentInFavList(item);
 
             if (item == null)
             {
@@ -290,6 +298,10 @@ namespace SSFR_Movies.Helpers
              
                         DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
+                        await SpeakNow("Added Successfully");
+
+                        Vibration.Vibrate(0.5);
+
                     }
                 }
                 catch (Exception)
@@ -298,7 +310,16 @@ namespace SSFR_Movies.Helpers
                 }
             }
         }
+        public async Task SpeakNow(string msg)
+        {
+            var settings = new SpeakSettings()
+            {
+                Volume = 1f,
+                Pitch = 1.0f
+            };
 
+            await TextToSpeech.SpeakAsync(msg, settings);
+        }
 
         public async Task IsPresentInFavList(Result m)
         {
@@ -312,6 +333,5 @@ namespace SSFR_Movies.Helpers
                 });
             }
         }
-
     }
 }

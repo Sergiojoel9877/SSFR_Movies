@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -101,6 +101,8 @@ namespace SSFR_Movies.Views
                     {
                         await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
 
+                        await SpeakNow("Added Successfully");
+
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             AddToFav.Source = "Star.png";
@@ -109,12 +111,7 @@ namespace SSFR_Movies.Views
                 }
                 catch (Exception)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-                        
-                        return false;
-                    });
+             
                 }
             }
             else
@@ -151,6 +148,17 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             GC.Collect();
+        }
+
+        public async Task SpeakNow(string msg)
+        {
+            var settings = new SpeakSettings()
+            {
+                Volume = 1f,
+                Pitch = 1.0f
+            };
+
+            await TextToSpeech.SpeakAsync(msg, settings);
         }
 
         private async void PlayTrailer_Tapped(object sender, EventArgs e)

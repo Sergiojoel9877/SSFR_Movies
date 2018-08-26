@@ -12,7 +12,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout CompressedLayout.IsHeadless="True">
 
             <ffimage:CachedImage
                 x:Name="UnPin"
@@ -40,6 +40,7 @@
                 Margin="0,20,0,0"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
+                HorizontalOptions="CenterAndExpand"
                 ItemTapped="ItemSelected"
                 ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
                 RowHeight="350">
@@ -59,7 +60,10 @@
                                 Margin="16"
                                 AlignContent="Center"
                                 Direction="Column">
-                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <StackLayout
+                                    CompressedLayout.IsHeadless="True"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="FillAndExpand">
                                     <StackLayout
                                         Margin="16,0,16,0"
                                         HeightRequest="300"
@@ -68,6 +72,7 @@
                                         <AbsoluteLayout
                                             AbsoluteLayout.LayoutBounds="0,0, 1,1"
                                             AbsoluteLayout.LayoutFlags="All"
+                                            CompressedLayout.IsHeadless="True"
                                             VerticalOptions="FillAndExpand">
                                             <ffimage:CachedImage
                                                 AbsoluteLayout.LayoutBounds="0.5,0,1,1"
@@ -96,8 +101,8 @@
                                                 WidthRequest="300" />
                                         </AbsoluteLayout>
                                     </StackLayout>
-                                    <StackLayout>
-                                        <Frame Style="{StaticResource StackUnderImageStyle}">
+                                    <StackLayout CompressedLayout.IsHeadless="True">
+                                        <Frame HorizontalOptions="Center" Style="{StaticResource StackUnderImageStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="3*" />
