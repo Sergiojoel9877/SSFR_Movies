@@ -25,9 +25,9 @@ namespace SSFR_Movies.Droid
                 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
-            //Android.Glide.Forms.Init();
-
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            Android.Glide.Forms.Init();
 
             LoadApplication(new App());
         }

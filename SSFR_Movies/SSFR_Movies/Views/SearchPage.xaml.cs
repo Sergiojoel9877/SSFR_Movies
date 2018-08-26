@@ -188,7 +188,7 @@ namespace SSFR_Movies.Views
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
 
                     Vibration.Vibrate();
 
@@ -210,7 +210,7 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PopModalAsync(false);
+            await Navigation.PopAsync(false);
         }
     }
 }

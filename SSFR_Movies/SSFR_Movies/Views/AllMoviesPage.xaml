@@ -262,6 +262,7 @@
                         </FlexLayout>
 
                     </ScrollView>
+
                     <Frame
                         x:Name="SearchFrame"
                         Grid.Row="1"
@@ -324,14 +325,14 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <ActivityIndicator
+            <!--<ActivityIndicator
                 x:Name="activityIndicator"
                 BackgroundColor="Transparent"
                 HorizontalOptions="FillAndExpand"
                 IsEnabled="{Binding IsEnabled}"
                 IsRunning="{Binding IsRunning}"
                 VerticalOptions="FillAndExpand"
-                Color="#0088FF" />
+                Color="#0088FF" />-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -25,16 +25,10 @@ namespace SSFR_Movies.Views
     {
        
         AllMoviesPageViewModel vm;
-
-        Result act_res { get; set; }
         
         public AllMoviesPage()
         {
             InitializeComponent();
-
-            activityIndicator.IsRunning = false;
-
-            activityIndicator.IsVisible = false;
 
             vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
 
@@ -51,7 +45,8 @@ namespace SSFR_Movies.Views
             MoviesList.Unfocused += MoviesList_Unfocused;
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-            
+
+            Task.Run(async () => { await SpeakNow("Initializing resources, please wait a sencond."); });
 
         }
 
@@ -79,7 +74,18 @@ namespace SSFR_Movies.Views
                 });
                 return;
             }
+            
+        }
 
+        private async Task SpeakNow(string msg)
+        {
+            var settings = new SpeakSettings()
+            {
+                Pitch = 1f,
+                Volume = 1f
+            };
+
+           await TextToSpeech.SpeakAsync(msg, settings);
         }
 
         protected override void OnDisappearing()
@@ -156,6 +162,7 @@ namespace SSFR_Movies.Views
             await img.ScaleTo(1, 250, Easing.BounceIn);
         }
 
+        #region Deprecated
         private async void AddToFavList(object sender, EventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
@@ -219,6 +226,7 @@ namespace SSFR_Movies.Views
                 }
             }
         }
+        #endregion
 
         private async void ItemSelected(object sender, ItemTappedEventArgs e)
         {
@@ -259,6 +267,7 @@ namespace SSFR_Movies.Views
             }
         }
 
+        #region Deprecated
         private async void SearchEntry_Unfocused(object sender, FocusEventArgs e)
         {
             var t = Scrollview.FadeTo(1, 250, Easing.Linear);
@@ -291,13 +300,13 @@ namespace SSFR_Movies.Views
 
         }
 
+        #endregion
+
         private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
         {
             
             try
             {
-                act_res = (Result)e.Item;
-
                 var list = (ListView)sender;
 
                 var Items = vm.AllMoviesList;
@@ -519,7 +528,6 @@ namespace SSFR_Movies.Views
                                 MovieResult.BackdropPath = Backdroppath;
 
                                 vm.AllMoviesList.Add(MovieResult);
-
                             }
 
                             BindingContext = vm;
@@ -549,15 +557,12 @@ namespace SSFR_Movies.Views
                     MoviesList.EndRefresh();
 
                 }
-
             });
         }
 
         private async void SearchClicked(object sender, EventArgs e)
         {
-
-            await Navigation.PushModalAsync(new SearchPage(), false);
-
+            await Navigation.PushAsync(new SearchPage(), false);
         }
     }
 }
