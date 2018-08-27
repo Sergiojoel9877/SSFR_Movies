@@ -38,12 +38,9 @@ namespace SSFR_Movies.Views
 
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
+        private async void QuitFromFavorites(object sender, EventArgs e)
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                MoviesList.IsEnabled = false;
-            });
+     
 
             var opt = sender as MenuItem;
 
@@ -63,45 +60,40 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
-                if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
+                if (await DisplayAlert("Suggestion", "Would you like to delete this movie from your favorites list?", "Yes", "No"))
                 {
                     try
                     {
-                        var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+    
+                        var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
-                        if (movieExists)
+                        if (deleteMovie)
                         {
-                            await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
+                            await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                         
-                            Device.BeginInvokeOnMainThread(() =>
+                            vm.FavMoviesList.Remove(movie);
+
+                            BindingContext = vm;
+
+                            MoviesList.BeginRefresh();
+
+                            await Task.Delay(500);
+
+                            MoviesList.EndRefresh();
+
+                            var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+                            if (moviesRemaining.Count() == 0)
                             {
-                                MoviesList.IsEnabled = true;
-                            });
-                        }
-
-                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                        if (addMovie)
-                        {
-                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
-
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                MoviesList.IsEnabled = true;
-                            });
+                                QuitVisibility();
+                            }
                         }
                     }
                     catch (Exception)
                     {
-                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                         {
                             DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                MoviesList.IsEnabled = true;
-                            });
 
                             return false;
                         });
@@ -109,11 +101,7 @@ namespace SSFR_Movies.Views
                 }
                 else
                 {
-                    
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        MoviesList.IsEnabled = true;
-                    });
+                
                 }
             }
         }
@@ -144,17 +132,7 @@ namespace SSFR_Movies.Views
 
         private async void ItemSelected(object sender, ItemTappedEventArgs e)
         {
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-
+            
             if (e.Item == null)
             {
                 return;
@@ -164,49 +142,8 @@ namespace SSFR_Movies.Views
 
             ((ListView)sender).SelectedItem = null;
 
-            if (await DisplayAlert("Suggestion", "Would you like to delete this movie from your favorites list?", "Yes", "No"))
-            {
-                try
-                {
-  
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
-
-                    if (deleteMovie)
-                    {
-                        await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
-
-                        vm.FavMoviesList.Remove(movie);
-
-                        BindingContext = vm;
-
-                        MoviesList.BeginRefresh();
-
-                        await Task.Delay(500);
-
-                        MoviesList.EndRefresh();
-
-                        var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-                        if (moviesRemaining.Count() == 0)
-                        {
-                            QuitVisibility();
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
-                        return false;
-                    });
-                }
-            }
-            else
-            {
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
-            }
+            await Navigation.PushAsync(new MovieDetailsPage(movie));
+            
         }
 
         protected override async void OnAppearing()

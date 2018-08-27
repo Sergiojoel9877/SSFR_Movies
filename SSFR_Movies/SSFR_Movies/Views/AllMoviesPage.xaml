@@ -15,14 +15,14 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Clicked="SearchClicked" Icon="Search.png" />
-    </ContentPage.ToolbarItems>
-
     <ContentPage.Content>
         <StackLayout>
 
-            <FlexLayout AlignContent="Center" Direction="Column">
+            <FlexLayout
+                x:Name="GenresContainer"
+                AlignContent="Center"
+                BackgroundColor="#272B2E"
+                Direction="Column">
 
                 <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
                     <Grid.ColumnDefinitions>
@@ -262,27 +262,6 @@
                         </FlexLayout>
 
                     </ScrollView>
-
-                    <Frame
-                        x:Name="SearchFrame"
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        IsVisible="False"
-                        Style="{StaticResource SearchBarStyle}">
-                        <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
-                            <customrenderers:TransparentEntry x:Name="SearchEntry" Style="{StaticResource EntrySearchBar}" />
-                            <ffimage:CachedImage
-                                x:Name="Search_Icon"
-                                HeightRequest="40"
-                                Source="Search.png"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
-                                <ffimage:CachedImage.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="Search_Tapped" />
-                                </ffimage:CachedImage.GestureRecognizers>
-                            </ffimage:CachedImage>
-                        </FlexLayout>
-                    </Frame>
                 </Grid>
             </FlexLayout>
 

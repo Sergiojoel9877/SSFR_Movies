@@ -25,29 +25,87 @@ namespace SSFR_Movies.Views
     {
        
         AllMoviesPageViewModel vm;
-        
+
+        FlexLayout genresContainer;
+
+        ToolbarItem updownList;
+
+        ToolbarItem searchToolbarItem;
+
         public AllMoviesPage()
         {
             InitializeComponent();
 
+            genresContainer = this.FindByName<FlexLayout>("GenresContainer");
+
+            genresContainer.IsVisible = false;
+
+            Task.Run(async () => { await Scrollview.TranslateTo(0, -60, 500, Easing.Linear); });
+            
             vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
 
             BindingContext = vm;
 
-            SearchEntry.Focused += SearchEntry_Focused;
+            searchToolbarItem = new ToolbarItem()
+            {
+                Text = "Search",
+                Icon = "Search.png",
+                Priority = 0,
 
-            SearchEntry.Unfocused += SearchEntry_Unfocused;
+                Command = new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SearchPage(), false);
+                })
+            };
 
+            updownList = new ToolbarItem()
+            {
+                Text = "Up",
+                Icon = "ListDown.png",
+                Priority = 1,
+
+                Command = new Command(async () =>
+                {
+                    updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+
+                    if (updownList.Icon == "ListDown.png")
+                    {
+                        genresContainer.IsVisible = false;
+
+                        var t = Scrollview.TranslateTo(0, -60, 150, Easing.Linear);
+
+                        await Task.WhenAll(t);
+                    }
+                    else
+                    {
+
+                        genresContainer.IsVisible = true;
+
+                        var t = Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+
+                        await Task.WhenAll(t);
+
+                    }
+                })
+            };
+
+            ToolbarItems.Add(searchToolbarItem);
+            ToolbarItems.Add(updownList);
+            
             Scrollview.Orientation = ScrollOrientation.Horizontal;
-
-            MoviesList.Focused += MoviesList_Focused;
-
-            MoviesList.Unfocused += MoviesList_Unfocused;
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
-            Task.Run(async () => { await SpeakNow("Initializing resources, please wait a sencond."); });
+            Task.Run(async () => { await SpeakNow("Initializing resources, please wait a sencond."); await SuperTask(); });
+            
+        }
 
+        public async Task SuperTask()
+        {
+            await Task.Yield();
+
+          
+             
         }
 
         protected async override void OnAppearing()
@@ -74,7 +132,7 @@ namespace SSFR_Movies.Views
                 });
                 return;
             }
-            
+           
         }
 
         private async Task SpeakNow(string msg)
@@ -93,6 +151,8 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
+
+            GC.Collect();
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
@@ -123,110 +183,6 @@ namespace SSFR_Movies.Views
             DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
 
         }
-
-        private async void MoviesList_Unfocused(object sender, FocusEventArgs e)
-        {
-            var t = Scrollview.TranslateTo(0, -50, 500, Easing.Linear);
-
-            var t2 = SearchFrame.TranslateTo(0, -100, 500, Easing.Linear);
-
-            var t3 = MoviesList.TranslateTo(0, -50, 500, Easing.Linear);
-
-            await Task.WhenAll(t, t2, t3);
-        }
-
-        private async void MoviesList_Focused(object sender, FocusEventArgs e)
-        {
-
-            var t = Scrollview.TranslateTo(0, -50, 500, Easing.Linear);
-
-            var t2 = SearchFrame.TranslateTo(0, -100, 500, Easing.Linear);
-
-            var t3 = MoviesList.TranslateTo(0, -50, 500, Easing.Linear);
-
-            await Task.WhenAll(t, t2, t3);
-
-        }
-
-        /// <summary>
-        /// To animate the Add to Favorite list icon..
-        /// </summary>
-        /// <param name="sender">the incoming object </param>
-        /// <param name="e">the event arguments in that object</param>
-        private async void Pin_Tapped(object sender, PanUpdatedEventArgs e)
-        {
-            var img = sender as Image;
-
-            await img.ScaleTo(2, 500, Easing.BounceOut);
-
-            await img.ScaleTo(1, 250, Easing.BounceIn);
-        }
-
-        #region Deprecated
-        private async void AddToFavList(object sender, EventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                MoviesList.IsEnabled = false;
-            });
-
-            var opt = sender as MenuItem;
-
-            if (opt != null)
-            {
-            
-                var movie = opt.BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
-                {
-                    try
-                    {
-                        var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
-                        if (movieExists)
-                        {
-                            await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
-                        }
-
-                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                        if (addMovie)
-                        {
-                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
-
-                            var duration = TimeSpan.FromSeconds(0.5);
-
-                            Vibration.Vibrate(duration);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                        {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-                            
-                            return false;
-                        });
-                    }
-                }
-                else
-                {
-              
-                }
-            }
-        }
-        #endregion
 
         private async void ItemSelected(object sender, ItemTappedEventArgs e)
         {
@@ -267,44 +223,10 @@ namespace SSFR_Movies.Views
             }
         }
 
-        #region Deprecated
-        private async void SearchEntry_Unfocused(object sender, FocusEventArgs e)
-        {
-            var t = Scrollview.FadeTo(1, 250, Easing.Linear);
-
-            var t2 = Scrollview.TranslateTo(0, 0, 500, Easing.SpringOut);
-
-            var t3 = SearchFrame.TranslateTo(0, 0, 500, Easing.SpringOut);
-
-            var t4 = MoviesList.TranslateTo(0, 0, 1000, Easing.SpringIn);
-
-            var t5 = Search_Icon.ScaleTo(2, 500, Easing.BounceOut);
-
-            var t6 = Search_Icon.ScaleTo(1, 500, Easing.BounceIn);
-            
-            await Task.WhenAll(t, t2, t3, t4, t5, t6);
-        }
-
-        private async void SearchEntry_Focused(object sender, FocusEventArgs e)
-        {
-
-            var t = Scrollview.FadeTo(0, 500, Easing.Linear);
-
-            var t2 = Scrollview.TranslateTo(2500, 0, 1000, Easing.SpringOut);
-
-            var t3 = SearchFrame.TranslateTo(0, -60, 1000, Easing.SpringOut);
-
-            var t4 = MoviesList.TranslateTo(2500, 0, 1000, Easing.SpringIn);
-
-            await Task.WhenAll(t, t2, t3, t4);
-
-        }
-
-        #endregion
-
         private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
         {
-            
+
+           
             try
             {
                 var list = (ListView)sender;
@@ -470,92 +392,6 @@ namespace SSFR_Movies.Views
 
                     MoviesList.EndRefresh();
                 
-                }
-            });
-        }
-
-        private async void Search_Tapped(object sender, EventArgs e)
-        {
-
-            await Task.Yield();
-
-
-            var key = SearchEntry.Text;
-
-            if (key == "")
-            {
-                DependencyService.Get<IToast>().LongAlert("The name can't be empty");
-                return;
-            }
-
-            MoviesList.BeginRefresh();
-
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-
-                try
-                {
-
-                    if (key != "")
-                    {
- 
-                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
-
-                        if (movie_results.Results.Capacity != 0)
-                        {
-
-                            vm.AllMoviesList.Clear();
-
-                            foreach (var MovieResult in movie_results.Results)
-                            {
-                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                                MovieResult.PosterPath = PosterPath;
-
-                                MovieResult.BackdropPath = Backdroppath;
-
-                                vm.AllMoviesList.Add(MovieResult);
-                            }
-
-                            BindingContext = vm;
-
-                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-                            
-                            MoviesList.EndRefresh();
-                            
-                            
-                        }
-                        else
-                        {
-                            MoviesList.EndRefresh();
-
-                            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                            {
-                                DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
-
-                                return false;
-                            });
-                        }
-                    }
-                }
-                catch (Exception e3)
-                {
-
-                    MoviesList.EndRefresh();
-
                 }
             });
         }

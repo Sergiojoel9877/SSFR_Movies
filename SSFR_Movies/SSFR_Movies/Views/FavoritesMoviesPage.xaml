@@ -37,7 +37,6 @@
 
             <ListView
                 x:Name="MoviesList"
-                Margin="0,20,0,0"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
                 HorizontalOptions="CenterAndExpand"
@@ -50,10 +49,10 @@
                             <ViewCell.ContextActions>
 
                                 <MenuItem
-                                    Clicked="AddToFavList"
+                                    Clicked="QuitFromFavorites"
                                     CommandParameter="{Binding .}"
-                                    Icon="Star.png"
-                                    Text="Add To Favorites" />
+                                    Icon="StarEmpty.png"
+                                    Text="Quit from Favorites" />
 
                             </ViewCell.ContextActions>
                             <FlexLayout
@@ -66,7 +65,7 @@
                                     VerticalOptions="FillAndExpand">
                                     <StackLayout
                                         Margin="16,0,16,0"
-                                        HeightRequest="300"
+                                        HeightRequest="280"
                                         HorizontalOptions="FillAndExpand"
                                         VerticalOptions="FillAndExpand">
                                         <AbsoluteLayout
@@ -79,12 +78,12 @@
                                                 AbsoluteLayout.LayoutFlags="All"
                                                 BitmapOptimizations="True"
                                                 DownsampleToViewSize="False"
-                                                HeightRequest="300"
+                                                HeightRequest="280"
                                                 HorizontalOptions="FillAndExpand"
                                                 Scale="2"
                                                 Source="{Binding PosterPath}"
                                                 VerticalOptions="FillAndExpand"
-                                                WidthRequest="300">
+                                                WidthRequest="280">
                                                 <ffimage:CachedImage.Transformations>
                                                     <fftransformations:BlurredTransformation Radius="60" />
                                                 </ffimage:CachedImage.Transformations>
@@ -94,18 +93,19 @@
                                                 AbsoluteLayout.LayoutFlags="All"
                                                 BitmapOptimizations="True"
                                                 DownsampleToViewSize="False"
-                                                HeightRequest="300"
+                                                HeightRequest="280"
                                                 HorizontalOptions="Center"
                                                 Source="{Binding PosterPath}"
                                                 Style="{StaticResource ImageInsideCardStyle}"
-                                                WidthRequest="300" />
+                                                WidthRequest="280" />
                                         </AbsoluteLayout>
                                     </StackLayout>
-                                    <StackLayout>
+                                    <StackLayout HeightRequest="100" HorizontalOptions="Center">
                                         <Frame HorizontalOptions="Center" Style="{StaticResource StackUnderImageStyle}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="3*" />
+                                                    <ColumnDefinition Width="1*" />
+                                                    <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
@@ -116,6 +116,7 @@
                                                     x:Name="ScrollTitle"
                                                     Grid.Row="0"
                                                     Grid.Column="0"
+                                                    Grid.ColumnSpan="2"
                                                     HorizontalScrollBarVisibility="Never"
                                                     Orientation="Horizontal"
                                                     VerticalScrollBarVisibility="Never">
@@ -126,20 +127,20 @@
                                                     Grid.Column="0"
                                                     Style="{StaticResource DateStyle}"
                                                     Text="{Binding ReleaseDate}" />
-                                                <Image
-                                                    x:Name="Pin"
+                                                <StackLayout
                                                     Grid.Row="0"
-                                                    Grid.Column="1"
-                                                    Margin="0,0,16,0"
-                                                    HeightRequest="34"
-                                                    HorizontalOptions="End"
-                                                    Source="Star.png"
-                                                    WidthRequest="35" />
-                                                <Label
-                                                    Grid.Row="1"
-                                                    Grid.Column="1"
-                                                    Style="{StaticResource UnPinStyle}"
-                                                    Text="Quit from Favorites" />
+                                                    Grid.RowSpan="2"
+                                                    Grid.Column="2"
+                                                    HeightRequest="50">
+                                                    <Image
+                                                        x:Name="Pin"
+                                                        Margin="0,0,16,0"
+                                                        HeightRequest="34"
+                                                        HorizontalOptions="End"
+                                                        Source="Star.png"
+                                                        WidthRequest="35" />
+                                                    <Label Style="{StaticResource UnPinStyle}" Text="Quit from Favorites" />
+                                                </StackLayout>
                                             </Grid>
                                         </Frame>
                                     </StackLayout>
