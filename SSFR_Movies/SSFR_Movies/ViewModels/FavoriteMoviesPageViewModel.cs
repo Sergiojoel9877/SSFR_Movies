@@ -8,14 +8,18 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
+using SSFR_Movies.Services;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
+  
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
+       
         public ObservableCollection<Result> FavMoviesList { get; set; } = new ObservableCollection<Result>();
 
         private bool listVisible = false;
@@ -42,7 +46,7 @@ namespace SSFR_Movies.ViewModels
         public async Task<bool> FillMoviesList()
         {
         
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var movies = await App.DBRepository.GetEntities();
 
             FavMoviesList.Clear();
 
@@ -78,7 +82,7 @@ namespace SSFR_Movies.ViewModels
             {
                 ListEmpty = true;
             }
-
+           
             GetStoreMoviesCommand.Execute(null);
         }
     }

@@ -17,10 +17,11 @@ namespace SSFR_Movies.ViewModels
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
+  
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
-    
+
         public ObservableCollection<Result> AllMoviesByXGenreList { get; set; } = new ObservableCollection<Result>();
 
         private bool listVisible = false;
@@ -75,7 +76,6 @@ namespace SSFR_Movies.ViewModels
         public async Task FillMoviesList()
         {
             await Task.Yield();
-
 
             IsEnabled = true;
             IsRunning = true;
@@ -176,7 +176,8 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
+            //return await ServiceLocator.Current.GetInstance<App.ApiClient>().GetAndStoreMoviesAsync(false);
+            return await App.ApiClient.GetAndStoreMoviesAsync(false);
         }
 
         private Command getStoreMoviesCommand;
@@ -266,7 +267,8 @@ namespace SSFR_Movies.ViewModels
 
             await Task.Yield();
 
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            //return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            return await App.ApiClient.GetAndStoreMovieGenresAsync();
 
         }
 
@@ -291,6 +293,7 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
+      
         public AllMoviesPageViewModel()
         {
             

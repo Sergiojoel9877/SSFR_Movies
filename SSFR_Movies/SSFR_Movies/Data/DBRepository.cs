@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Data
 {
@@ -12,13 +13,15 @@ namespace SSFR_Movies.Data
     /// Implements the CRUD methods of IDBRepository interface
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
+  
     public class DBRepository<T> : IDBRepository<T> where T : BaseEntity
     {
         private readonly DatabaseContext<T> dbContext;
-
-        public DBRepository(DatabaseContext<T> context)
+        
+      
+        public DBRepository()
         {
-            dbContext = context;        
+            dbContext = new DatabaseContext<T>();       
         }
 
         public async Task<bool> AddEntity(T obj)

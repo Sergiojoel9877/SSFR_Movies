@@ -18,7 +18,7 @@ namespace SSFR_Movies.Views
 	public partial class MovieDetailsPage : ContentPage
 	{
         TapGestureRecognizer tap = null;
-
+        
         public MovieDetailsPage (Result movie)
 		{
 			InitializeComponent ();
@@ -26,7 +26,7 @@ namespace SSFR_Movies.Views
             IsPresentInFavList(movie);
 
             BindingContext = movie;
-            
+
             tap = new TapGestureRecognizer();
 
             AddToFavLayout.GestureRecognizers.Add(tap);
@@ -38,7 +38,7 @@ namespace SSFR_Movies.Views
         private async void IsPresentInFavList( Result m)
         {
 
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            var movieExists = await App.DBRepository.EntityExits(m.Id);
 
             if (movieExists)
             {
@@ -82,7 +82,7 @@ namespace SSFR_Movies.Views
             {
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var movieExists = await App.DBRepository.EntityExits(movie.Id);
 
                     if (movieExists)
                     {
@@ -95,7 +95,7 @@ namespace SSFR_Movies.Views
 
                     }
 
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                    var addMovie = await App.DBRepository.AddEntity(movie);
 
                     if (addMovie)
                     {
@@ -131,7 +131,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await App.ApiClient.GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -167,7 +167,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await App.ApiClient.GetMovieVideosAsync((int)movie.Id);
 
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }

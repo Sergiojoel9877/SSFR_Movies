@@ -13,6 +13,9 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using System.Collections.Generic;
+using Xamarin.Forms.Internals;
+using SSFR_Movies.Data;
+using SSFR_Movies.Models;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace SSFR_Movies
@@ -20,24 +23,31 @@ namespace SSFR_Movies
     /// <summary>
     /// The main class of a Xamarin Fomrs App.
     /// </summary>
-	public partial class App : Application
+  
+    public partial class App : Application
 	{
-        public static HttpClient httpClient { get; set; }
-        
+        public static HttpClient httpClient { get; set; } 
+
+        public static DBRepository<Result> DBRepository { get; set; } = new DBRepository<Result>(); 
+
+        public static ApiClient ApiClient { get; set; } = new ApiClient();
+
+      
         public App ()
 		{
            
             InitializeComponent();
-            
-            ContainerInitializer.Initialize();
 
+            //Sets the barrel cache ID.. with out it, the Barrel cannot work
+            Barrel.ApplicationId = "SSFR_Movies";
+            
             var mainPage = new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")
             };
 
             MainPage = mainPage;
-
+    
             SetHttpClient();
 
         }

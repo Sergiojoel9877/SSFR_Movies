@@ -23,7 +23,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
+            vm = new AllMoviesPageViewModel();
 
             BindingContext = vm;
 
@@ -89,7 +89,7 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
+                        var movie_results = await App.ApiClient.SearchMovieByName(key);
 
                         if (movie_results.Results.Capacity != 0)
                         {

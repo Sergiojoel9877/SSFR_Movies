@@ -36,9 +36,10 @@ namespace SSFR_Movies.Helpers
         public MenuItem AddToFavListCtxAct = null;
 
         #endregion
-        
+
         public CustomViewCell()
         {
+            
             BindingContext = BindingContext;
 
             FlexLayout = new FlexLayout()
@@ -282,7 +283,7 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var movieExists = await App.DBRepository.EntityExits(movie.Id);
 
                     if (movieExists)
                     {
@@ -291,7 +292,7 @@ namespace SSFR_Movies.Helpers
                             
                     }
 
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                    var addMovie = await App.DBRepository.AddEntity(movie);
 
                     if (addMovie)
                     {
@@ -323,7 +324,7 @@ namespace SSFR_Movies.Helpers
 
         public async Task IsPresentInFavList(Result m)
         {
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            var movieExists = await App.DBRepository.EntityExits(m.Id);
 
             if (movieExists)
             {

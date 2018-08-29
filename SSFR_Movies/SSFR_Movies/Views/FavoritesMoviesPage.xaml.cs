@@ -24,18 +24,19 @@ namespace SSFR_Movies.Views
 	{
         FavoriteMoviesPageViewModel vm;
 
-		public FavoritesMoviesPage ()
+        public FavoritesMoviesPage ()
 		{
 			InitializeComponent ();
 
             //vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).FavoriteMoviesPageViewModel;
 
-            vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().FavoriteMoviesPageViewModel;
+            //vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().FavoriteMoviesPageViewModel;
+            vm = new FavoriteMoviesPageViewModel();
 
             BindingContext = vm;
 
             SetVisibility();
-
+            
         }
 
         private async void QuitFromFavorites(object sender, EventArgs e)
@@ -64,8 +65,10 @@ namespace SSFR_Movies.Views
                 {
                     try
                     {
-    
-                        var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+
+                        //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+
+                        var deleteMovie = await App.DBRepository.DeleteEntity(movie);
 
                         if (deleteMovie)
                         {
@@ -81,7 +84,7 @@ namespace SSFR_Movies.Views
 
                             MoviesList.EndRefresh();
 
-                            var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+                            var moviesRemaining = await App.DBRepository.GetEntities();
 
                             if (moviesRemaining.Count() == 0)
                             {
@@ -109,7 +112,7 @@ namespace SSFR_Movies.Views
 
         private async void SetVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var movies_db = await App.DBRepository.GetEntities();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
@@ -120,7 +123,7 @@ namespace SSFR_Movies.Views
 
         private async void QuitVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var movies_db = await App.DBRepository.GetEntities();
 
             UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
 
@@ -150,7 +153,7 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
 
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var movies_db = await App.DBRepository.GetEntities();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
@@ -184,23 +187,6 @@ namespace SSFR_Movies.Views
             await img.ScaleTo(2, 500, Easing.BounceOut);
 
             await img.ScaleTo(1, 250, Easing.BounceIn);
-        }
-
-        private async void SearchEntry_Unfocused(object sender, FocusEventArgs e)
-        {
-            var t = MoviesList.TranslateTo(0, 0, 1000, Easing.SpringIn);
-
-            await Task.WhenAll(t);
-
-        }
-
-        private async void SearchEntry_Focused(object sender, FocusEventArgs e)
-        {
-
-            var t = MoviesList.TranslateTo(2500, 0, 1000, Easing.SpringIn);
-
-            await Task.WhenAll(t);
-
         }
     }
 }

@@ -11,10 +11,12 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SSFR_Movies.Android")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
+
+[assembly: Android.LinkerSafe]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Data
 {
@@ -12,12 +13,14 @@ namespace SSFR_Movies.Data
     /// The DatabaseContext for the Database.
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
+  
     public class DatabaseContext<T> : DbContext where T : class
     {
         public DbSet<T> Entity { get; set; }
 
         string DbName = "GBH_Movies.db3";
-
+        
+      
         public DatabaseContext()
         {
             Database.EnsureCreated();

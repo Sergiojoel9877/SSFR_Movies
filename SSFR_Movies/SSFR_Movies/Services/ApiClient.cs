@@ -13,21 +13,19 @@ using MonkeyCache.FileStore;
 using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
+  
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
 
         private const string LANG = "en-US";
-
-        public ApiClient()
-        {
-        }
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1, int genres = 12)
         {

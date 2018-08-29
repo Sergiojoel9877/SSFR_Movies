@@ -14,9 +14,11 @@ using SSFR_Movies.Services;
 
 namespace SSFR_Movies.Droid
 {
+   
     [Activity(Theme="@style/Theme.Splash", NoHistory= true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashScreen : Activity
     {
+       
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);

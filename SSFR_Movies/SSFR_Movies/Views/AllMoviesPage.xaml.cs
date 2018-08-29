@@ -14,12 +14,14 @@ using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Views
 {
     /// <summary>
     /// AllMoviesPage Code Behind
     /// </summary>
+  
 	[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AllMoviesPage : ContentPage
     {
@@ -32,19 +34,20 @@ namespace SSFR_Movies.Views
 
         ToolbarItem searchToolbarItem;
 
+      
         public AllMoviesPage()
         {
             InitializeComponent();
+
+            vm = new AllMoviesPageViewModel();
+
+            BindingContext = vm;
 
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
             genresContainer.IsVisible = false;
 
             Task.Run(async () => { await Scrollview.TranslateTo(0, -60, 500, Easing.Linear); });
-            
-            vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().AllMoviesPageViewModel;
-
-            BindingContext = vm;
 
             searchToolbarItem = new ToolbarItem()
             {
@@ -96,17 +99,10 @@ namespace SSFR_Movies.Views
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
-            Task.Run(async () => { await SpeakNow("Initializing resources, please wait a sencond."); await SuperTask(); });
+            Task.Run(async () => { await SpeakNow("Initializing resources, please wait a sencond.");});
             
         }
-
-        public async Task SuperTask()
-        {
-            await Task.Yield();
-
-          
-             
-        }
+        
 
         protected async override void OnAppearing()
         {
@@ -151,8 +147,6 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
-
-            GC.Collect();
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
@@ -178,9 +172,10 @@ namespace SSFR_Movies.Views
                 {
                     vm.MsgVisible = true;
                 });
+                
+                DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+
             }
-            
-            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
 
         }
 
@@ -225,8 +220,7 @@ namespace SSFR_Movies.Views
 
         private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
         {
-
-           
+            
             try
             {
                 var list = (ListView)sender;
@@ -242,7 +236,7 @@ namespace SSFR_Movies.Views
 
                 if (e.Item == Items[Items.Count - 1])
                 {
-                    Settings.NextPage++;
+                    ++Settings.NextPage;
 
                     //Verify if internet connection is available
                     if (!CrossConnectivity.Current.IsConnected)
@@ -276,6 +270,7 @@ namespace SSFR_Movies.Views
         private async Task LoadMoreMovies()
         {
             await Task.Yield();
+
             try
             {
 
@@ -290,7 +285,8 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
-                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                var MoviesDownloaded = await App.ApiClient.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
                 if (MoviesDownloaded)
                 {
@@ -353,7 +349,8 @@ namespace SSFR_Movies.Views
 
                     var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                    var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                    //var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                    var stored = await App.ApiClient.GetAndStoreMoviesByGenreAsync((int)generId, false);
 
                     if (stored)
                     {
@@ -399,6 +396,7 @@ namespace SSFR_Movies.Views
         private async void SearchClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SearchPage(), false);
+            
         }
     }
 }

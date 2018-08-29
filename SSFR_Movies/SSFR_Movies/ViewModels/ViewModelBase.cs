@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// ViewModelBae: to make ease the implementation of INotifyPorpertyChanged in the properties of the ViewModels
     /// </summary>
+  
     public class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

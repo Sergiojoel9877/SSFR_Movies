@@ -296,7 +296,8 @@
                 ItemAppearing="MoviesList_ItemAppearing"
                 ItemTapped="ItemSelected"
                 ItemsSource="{Binding AllMoviesList}"
-                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
+                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}"
+                VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <customViewCell:CustomViewCell />

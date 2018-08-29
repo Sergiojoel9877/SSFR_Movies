@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Services
 {
@@ -10,6 +11,7 @@ namespace SSFR_Movies.Services
     /// DBRepository interface, it contains the CRUD Methods for the database. 
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
+  
     public interface IDBRepository<T> where T : class
     {
         Task<T> GetEntity(int id);

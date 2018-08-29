@@ -13,33 +13,33 @@ using MonkeyCache.FileStore;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// Constainer to implement IoC
     /// </summary>
+  
     public class ContainerInitializer
     {
+      
+        public ContainerInitializer()
+        {
+                
+        }
+
       
         public static void Initialize()
         {
          
-            //Sets the barrel cache ID.. with out it, the Barrel cannot work
-            Barrel.ApplicationId = "SSFR_Movies";
-
+      
             var container = new UnityContainer();
 
             var serviceLocator = new UnityServiceLocator(container);
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);
-
-            container.RegisterInstance(typeof(AllMoviesPageViewModel));
-            container.RegisterInstance(typeof(FavoriteMoviesPageViewModel));
-            container.RegisterInstance(typeof(ApiClient));
-            container.RegisterInstance(typeof(DBRepository<>));
-            container.RegisterInstance(typeof(ViewModelLocator));
-
+            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {

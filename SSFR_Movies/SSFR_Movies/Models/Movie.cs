@@ -1,39 +1,15 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-
-//namespace SSFR_Movies.Models
-//{
-//    /// <summary>
-//    /// The Movie obj model
-//    /// </summary>
-//    public class Movie : BaseEntity
-//    {  
-//        //public string BackDropPath { get; set; }
-//        //public string PosterPath { get; set; }
-//        //public List<Genre> Genres { get; set; }
-//        //public int VoteCount { get; set; }
-//        //public string OriginalTitle { get; set; }
-//        //public string Overview { get; set; }
-//        //public string ReleaseDate { get; set; }
-
-//    }
-//}
-// To parse this JSON data, add NuGet 'Newtonsoft.Json' then do:
-//
-//    using QuickType;
-//
-//    var movie = Movie.FromJson(jsonString);
+﻿
     using System;
     using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Models
 {
-
+  
     public class Movie : BaseEntity
     {
         [JsonProperty("page")]
@@ -50,6 +26,7 @@ namespace SSFR_Movies.Models
        
     }
 
+  
     public class Result : BaseEntity
     {
         [JsonProperty("vote_count")]
