@@ -6,6 +6,7 @@ using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.ResourceDictionaries;
 using SSFR_Movies.Services;
+using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,23 +19,24 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCell : ViewCell
     {
         #region Controls
-        public CachedImage blurCachedImage = null;
-        public CachedImage cachedImage = null;
-        public FlexLayout FlexLayout = null;
-        public StackLayout Container = null;
-        public StackLayout SubContainer = null;
-        public AbsoluteLayout absoluteLayout = null;
-        public StackLayout panelContainer = null;
-        public Frame FrameUnderImages = null;
-        public Grid gridInsideFrame = null;
-        public ScrollView scrollTitle = null;
-        public Label releaseDate = null;
-        public Label title = null;
-        public Image pin2FavList = null;
-        public Label add2FavList = null;
-        public StackLayout compat = null;
-        public MenuItem AddToFavListCtxAct = null;
-        public TapGestureRecognizer tap = null;
+        private CachedImage blurCachedImage = null;
+        private CachedImage cachedImage = null;
+        private FlexLayout FlexLayout = null;
+        private StackLayout Container = null;
+        private StackLayout SubContainer = null;
+        private AbsoluteLayout absoluteLayout = null;
+        private StackLayout panelContainer = null;
+        private Frame FrameUnderImages = null;
+        private Grid gridInsideFrame = null;
+        private ScrollView scrollTitle = null;
+        private Label releaseDate = null;
+        private Label title = null;
+        private Image pin2FavList = null;
+        private Label add2FavList = null;
+        private StackLayout compat = null;
+        private MenuItem AddToFavListCtxAct = null;
+        private TapGestureRecognizer tap = null;
+        private TapGestureRecognizer imageTapped = null;
 
         #endregion
 
@@ -92,10 +94,9 @@ namespace SSFR_Movies.Helpers
                 BitmapOptimizations = true,
                 DownsampleToViewSize = false,
                 HeightRequest = 280,
-                LoadingPlaceholder = "Recent.png",
                 FadeAnimationEnabled = true,
                 FadeAnimationForCachedImages = true,
-                HorizontalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
@@ -105,7 +106,6 @@ namespace SSFR_Movies.Helpers
             {
                 HeightRequest = 100,
                 HorizontalOptions = LayoutOptions.Center,
-
             };
 
             FrameUnderImages = new Frame()
@@ -150,6 +150,7 @@ namespace SSFR_Movies.Helpers
                 FontFamily = "Arial",
                 FontAttributes = FontAttributes.Bold
             };
+            title.SetBinding(Label.TextProperty, "Title");
 
             scrollTitle.Content = title;
 
@@ -162,6 +163,7 @@ namespace SSFR_Movies.Helpers
                 FontFamily = "Arial",
                 FontAttributes = FontAttributes.Bold
             };
+            releaseDate.SetBinding(Label.TextProperty, "ReleaseDate");
 
             compat = new StackLayout()
             {
@@ -170,9 +172,8 @@ namespace SSFR_Movies.Helpers
 
             pin2FavList = new Image()
             {
-                HeightRequest = 35,
-                Source = "StarEmpty.png",
-                WidthRequest = 35
+                HeightRequest = 40,
+                WidthRequest = 40
             };
             
             add2FavList = new Label()
@@ -208,6 +209,7 @@ namespace SSFR_Movies.Helpers
             panelContainer.Children.Add(FrameUnderImages);
 
             SubContainer.Children.Add(absoluteLayout);
+            CompressedLayout.SetIsHeadless(SubContainer, true);
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
            
@@ -218,73 +220,68 @@ namespace SSFR_Movies.Helpers
             AddToFavListCtxAct.Clicked += AddToFavList;
 
             ContextActions.Add(AddToFavListCtxAct);
-
-            View = FlexLayout;
             
             tap = new TapGestureRecognizer();
 
+            imageTapped = new TapGestureRecognizer();
+
             tap.Tapped += AddToFavListTap;
+
+            imageTapped.Tapped += PosterTapped;
 
             compat.GestureRecognizers.Add(tap);
 
-            //Resolve issue: When a movie is selected.. the ItemTapped event doesn't get fired..
+            cachedImage.GestureRecognizers.Add(imageTapped);
 
+            View = FlexLayout;
+            
         }
 
-        protected async override void OnBindingContextChanged()
+        private void PosterTapped(object sender, EventArgs e)
+        {
+            var movie = BindingContext as Result;
+
+            Device.BeginInvokeOnMainThread( () =>
+            {
+                App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+            });
+        }
+
+        protected override async void OnBindingContextChanged()
         {
             await Task.Yield();
 
             pin2FavList.Source = "StarEmpty.png";
-
-            tap.Tapped -= AddToFavListTap;
-
-            compat.GestureRecognizers.Clear();
-
-            AddToFavListCtxAct.Clicked -= AddToFavList;
-
-            ContextActions.Clear();
 
             blurCachedImage.Source = null;
 
             cachedImage.Source = null;
 
             var item = BindingContext as SSFR_Movies.Models.Result;
-            
+
             if (item == null)
             {
                 return;
             }
-
-            AddToFavListCtxAct.Clicked += AddToFavList;
             
-            ContextActions.Add(AddToFavListCtxAct);
-
-            compat.GestureRecognizers.Add(tap);
-
-            tap.Tapped += AddToFavListTap;
-
             blurCachedImage.Source = item.PosterPath;
+
             cachedImage.Source = item.PosterPath;
 
-            title.Text = item.Title;
+            await Task.Factory.StartNew(async () =>
+            {
+                await IsPresentInFavList(item);
+            });
 
-            releaseDate.Text = item.ReleaseDate;
-
-            var t4 = scrollTitle.ScrollToAsync(100, 0, true);
-            var t5 = scrollTitle.ScrollToAsync(0, 0, true);
-            var t6 = scrollTitle.ScrollToAsync(100, 0, true);
-
-            var t7 = IsPresentInFavList(item);
-
-            await Task.WhenAll(t7, t4, t5, t6);
-            
             base.OnBindingContextChanged();
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)
         {
-            
+            await Task.Yield();
+
+            await pin2FavList.ScaleTo(1.50, 500, Easing.BounceOut);
+
             if (sender != null)
             {
 
@@ -310,6 +307,7 @@ namespace SSFR_Movies.Helpers
 
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
 
+                        await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
                     }
                     
                     var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
@@ -321,13 +319,14 @@ namespace SSFR_Movies.Helpers
 
                         await SpeakNow("Added Successfully");
 
-                        Vibration.Vibrate(0.5);
+                        Vibration.Vibrate(1);
 
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             pin2FavList.Source = "Star.png";
                         });
 
+                        await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
                     }
                 }
                 catch (Exception e15)
@@ -339,13 +338,10 @@ namespace SSFR_Movies.Helpers
 
         private async void AddToFavList(object sender, EventArgs e)
         {
-      
-            var opt = sender as StackLayout;
-
-            if (opt != null)
+            
+            if (sender is MenuItem opt)
             {
-
-                var movie = BindingContext as Result;
+                var movie = opt.BindingContext as Result;
 
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -364,16 +360,14 @@ namespace SSFR_Movies.Helpers
 
                     if (movieExists)
                     {
-
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-                            
                     }
 
                     var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
                     if (addMovie)
                     {
-             
+
                         DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
                         await SpeakNow("Added Successfully");
@@ -384,7 +378,7 @@ namespace SSFR_Movies.Helpers
                 }
                 catch (Exception e15)
                 {
-               
+
                 }
             }
         }
@@ -401,7 +395,9 @@ namespace SSFR_Movies.Helpers
 
         public async Task IsPresentInFavList(Result m)
         {
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            await Task.Yield();
+
+            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
 
             if (movieExists)
             {
