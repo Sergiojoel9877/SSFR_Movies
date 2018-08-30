@@ -39,7 +39,12 @@ namespace SSFR_Movies.Services
             var serviceLocator = new UnityServiceLocator(container);
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);
-            
+
+            container.RegisterInstance(typeof(DBRepository<>));
+            container.RegisterInstance(typeof(DatabaseContext<>));
+            container.RegisterType(typeof(DatabaseContext<>));
+            container.RegisterType(typeof(DbContextOptionsBuilder));
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {

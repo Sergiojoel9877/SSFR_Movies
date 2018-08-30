@@ -19,9 +19,9 @@ namespace SSFR_Movies.Data
         private readonly DatabaseContext<T> dbContext;
         
       
-        public DBRepository()
+        public DBRepository(DatabaseContext<T> databaseContext)
         {
-            dbContext = new DatabaseContext<T>();       
+            dbContext = databaseContext;    
         }
 
         public async Task<bool> AddEntity(T obj)

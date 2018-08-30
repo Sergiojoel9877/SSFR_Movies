@@ -28,7 +28,7 @@ namespace SSFR_Movies
 	{
         public static HttpClient httpClient { get; set; } 
 
-        public static DBRepository<Result> DBRepository { get; set; } = new DBRepository<Result>(); 
+        public static DBRepository<Result> DBRepository { get; set; } 
 
         public static ApiClient ApiClient { get; set; } = new ApiClient();
 
@@ -37,6 +37,8 @@ namespace SSFR_Movies
 		{
            
             InitializeComponent();
+
+            ContainerInitializer.Initialize();
 
             //Sets the barrel cache ID.. with out it, the Barrel cannot work
             Barrel.ApplicationId = "SSFR_Movies";

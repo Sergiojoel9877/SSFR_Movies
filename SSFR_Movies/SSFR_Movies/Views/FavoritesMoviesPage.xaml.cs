@@ -68,7 +68,7 @@ namespace SSFR_Movies.Views
 
                         //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
-                        var deleteMovie = await App.DBRepository.DeleteEntity(movie);
+                        var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
                         if (deleteMovie)
                         {
@@ -84,7 +84,7 @@ namespace SSFR_Movies.Views
 
                             MoviesList.EndRefresh();
 
-                            var moviesRemaining = await App.DBRepository.GetEntities();
+                            var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
                             if (moviesRemaining.Count() == 0)
                             {
@@ -112,7 +112,7 @@ namespace SSFR_Movies.Views
 
         private async void SetVisibility()
         {
-            var movies_db = await App.DBRepository.GetEntities();
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
@@ -123,7 +123,7 @@ namespace SSFR_Movies.Views
 
         private async void QuitVisibility()
         {
-            var movies_db = await App.DBRepository.GetEntities();
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
             UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
 
@@ -153,7 +153,7 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
 
-            var movies_db = await App.DBRepository.GetEntities();
+            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 

@@ -34,6 +34,7 @@ namespace SSFR_Movies.Helpers
         public Label add2FavList = null;
         public StackLayout compat = null;
         public MenuItem AddToFavListCtxAct = null;
+        public TapGestureRecognizer tap = null;
 
         #endregion
 
@@ -173,17 +174,17 @@ namespace SSFR_Movies.Helpers
                 Source = "StarEmpty.png",
                 WidthRequest = 35
             };
-
+            
             add2FavList = new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
                 TextColor = Color.White,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.End,
-                Text = "Push down to Add To Fav. List",
-                FontAttributes = FontAttributes.Bold,
+                Text = "Tap the star to Add To Fav. List",
+                FontAttributes = FontAttributes.Bold
             };
-
+                 
             compat.Children.Add(pin2FavList);
             compat.Children.Add(add2FavList);
 
@@ -219,56 +220,75 @@ namespace SSFR_Movies.Helpers
             ContextActions.Add(AddToFavListCtxAct);
 
             View = FlexLayout;
+            
+            tap = new TapGestureRecognizer();
+
+            tap.Tapped += AddToFavListTap;
+
+            compat.GestureRecognizers.Add(tap);
+
+            //Resolve issue: When a movie is selected.. the ItemTapped event doesn't get fired..
+
         }
 
         protected async override void OnBindingContextChanged()
         {
             await Task.Yield();
 
+            pin2FavList.Source = "StarEmpty.png";
+
+            tap.Tapped -= AddToFavListTap;
+
+            compat.GestureRecognizers.Clear();
+
             AddToFavListCtxAct.Clicked -= AddToFavList;
 
             ContextActions.Clear();
 
             blurCachedImage.Source = null;
+
             cachedImage.Source = null;
 
             var item = BindingContext as SSFR_Movies.Models.Result;
-
-            //await IsPresentInFavList(item);
-
+            
             if (item == null)
             {
                 return;
             }
 
             AddToFavListCtxAct.Clicked += AddToFavList;
-
+            
             ContextActions.Add(AddToFavListCtxAct);
+
+            compat.GestureRecognizers.Add(tap);
+
+            tap.Tapped += AddToFavListTap;
 
             blurCachedImage.Source = item.PosterPath;
             cachedImage.Source = item.PosterPath;
 
             title.Text = item.Title;
+
             releaseDate.Text = item.ReleaseDate;
 
             var t4 = scrollTitle.ScrollToAsync(100, 0, true);
             var t5 = scrollTitle.ScrollToAsync(0, 0, true);
             var t6 = scrollTitle.ScrollToAsync(100, 0, true);
 
-            await Task.WhenAll(t4, t5, t6);
+            var t7 = IsPresentInFavList(item);
+
+            await Task.WhenAll(t7, t4, t5, t6);
             
             base.OnBindingContextChanged();
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
+        private async void AddToFavListTap(object sender, EventArgs e)
         {
-      
-            var opt = sender as MenuItem;
-
-            if (opt != null)
+            
+            if (sender != null)
             {
 
-                var movie = opt.BindingContext as Result;
+                var movie = BindingContext as Result;
 
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -283,7 +303,64 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await App.DBRepository.EntityExits(movie.Id);
+                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+
+                    if (movieExists)
+                    {
+
+                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
+
+                    }
+                    
+                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+
+                    if (addMovie)
+                    {
+
+                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+
+                        await SpeakNow("Added Successfully");
+
+                        Vibration.Vibrate(0.5);
+
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            pin2FavList.Source = "Star.png";
+                        });
+
+                    }
+                }
+                catch (Exception e15)
+                {
+
+                }
+            }
+        }
+
+        private async void AddToFavList(object sender, EventArgs e)
+        {
+      
+            var opt = sender as StackLayout;
+
+            if (opt != null)
+            {
+
+                var movie = BindingContext as Result;
+
+                //Verify if internet connection is available
+                if (!CrossConnectivity.Current.IsConnected)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        return false;
+                    });
+                    return;
+                }
+
+                try
+                {
+                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
                     if (movieExists)
                     {
@@ -292,7 +369,7 @@ namespace SSFR_Movies.Helpers
                             
                     }
 
-                    var addMovie = await App.DBRepository.AddEntity(movie);
+                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
                     if (addMovie)
                     {
@@ -305,7 +382,7 @@ namespace SSFR_Movies.Helpers
 
                     }
                 }
-                catch (Exception)
+                catch (Exception e15)
                 {
                
                 }
@@ -324,7 +401,7 @@ namespace SSFR_Movies.Helpers
 
         public async Task IsPresentInFavList(Result m)
         {
-            var movieExists = await App.DBRepository.EntityExits(m.Id);
+            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
 
             if (movieExists)
             {

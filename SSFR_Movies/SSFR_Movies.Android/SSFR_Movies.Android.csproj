@@ -53,15 +53,17 @@
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+    <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AotAssemblies>true</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>armeabi-v7a;x86_64</AndroidSupportedAbis>
+    <EnableLLVM>true</EnableLLVM>
+    <AndroidSupportedAbis>
+    </AndroidSupportedAbis>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EnableProguard>false</EnableProguard>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
+    <BundleAssemblies>true</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />

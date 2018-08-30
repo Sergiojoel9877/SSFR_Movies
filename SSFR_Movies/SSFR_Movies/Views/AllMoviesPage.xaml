@@ -300,7 +300,11 @@
                 VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <customViewCell:CustomViewCell />
+                        <customViewCell:CustomViewCell>
+
+                            <!--    -->
+
+                        </customViewCell:CustomViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
