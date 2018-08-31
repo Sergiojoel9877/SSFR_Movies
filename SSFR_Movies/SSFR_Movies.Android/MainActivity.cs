@@ -8,6 +8,7 @@ using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using Android.Gms.Ads;
 
 namespace SSFR_Movies.Droid
 {
@@ -26,6 +27,8 @@ namespace SSFR_Movies.Droid
             Forms.SetFlags("FastRenderers_Experimental");
                 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+
+            MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 

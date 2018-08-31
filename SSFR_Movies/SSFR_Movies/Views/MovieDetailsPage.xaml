@@ -190,6 +190,20 @@
                                 Text="Add To Favorites List"
                                 TextColor="White" />
                         </StackLayout>
+
+                        <StackLayout
+                            x:Name="QuitFromFavLayout"
+                            Margin="16"
+                            BackgroundColor="#FF0000"
+                            HorizontalOptions="FillAndExpand">
+                            <Label
+                                Margin="16"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Center"
+                                Text="Quit from the favorites list"
+                                TextColor="White" />
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
             </ScrollView>

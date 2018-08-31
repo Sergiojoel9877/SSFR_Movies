@@ -14,14 +14,15 @@ using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class MovieDetailsPage : ContentPage
-	{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class MovieDetailsPage : ContentPage
+    {
         TapGestureRecognizer tap = null;
-        
-        public MovieDetailsPage (Result movie)
-		{
-			InitializeComponent ();
+        TapGestureRecognizer quitTap = null;
+
+        public MovieDetailsPage(Result movie)
+        {
+            InitializeComponent();
 
             IsPresentInFavList(movie);
 
@@ -29,23 +30,39 @@ namespace SSFR_Movies.Views
 
             tap = new TapGestureRecognizer();
 
-            AddToFavLayout.GestureRecognizers.Add(tap);
-
             tap.Tapped += Tap_Tapped;
+
+            quitTap = new TapGestureRecognizer();
+
+            quitTap.Tapped += QuitFromFavorites;
+
+            QuitFromFavLayout.GestureRecognizers.Add(quitTap);
+
+            AddToFavLayout.GestureRecognizers.Add(tap);
 
         }
 
-        private async void IsPresentInFavList( Result m)
+        private async void IsPresentInFavList(Result m)
         {
 
             var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
 
             if (movieExists)
             {
+                AddToFavLayout.IsVisible = false;
+
+                QuitFromFavLayout.IsVisible = true;
+
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     AddToFav.Source = "Star.png";
                 });
+            }
+            else
+            {
+                AddToFavLayout.IsVisible = true;
+
+                QuitFromFavLayout.IsVisible = false;
             }
         }
 
@@ -64,7 +81,7 @@ namespace SSFR_Movies.Views
 
         private async Task AddToFavList()
         {
-            
+
             var movie = (Result)BindingContext;
 
             //Verify if internet connection is available
@@ -107,11 +124,69 @@ namespace SSFR_Movies.Views
                         {
                             AddToFav.Source = "Star.png";
                         });
+
+                        AddToFavLayout.IsVisible = false;
+
+                        QuitFromFavLayout.IsVisible = true;
                     }
                 }
                 catch (Exception)
                 {
-             
+
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        private async void QuitFromFavorites(object sender, EventArgs e)
+        {
+            var movie = (Result)BindingContext;
+
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
+            if (await DisplayAlert("Suggestion", "Would you like to delete this movie from your favorites list?", "Yes", "No"))
+            {
+                try
+                {
+
+                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+
+                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+
+                    if (deleteMovie)
+                    {
+                        await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
+                        
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            AddToFav.Source = "StarEmpty.png";
+
+                            AddToFavLayout.IsVisible = true;
+
+                            QuitFromFavLayout.IsVisible = false;
+                        });
+                    }
+                }
+                catch (Exception)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    {
+                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+
+                        return false;
+                    });
                 }
             }
             else
@@ -124,6 +199,10 @@ namespace SSFR_Movies.Views
         {
 
             base.OnAppearing();
+
+            var item = BindingContext as Result;
+
+            IsPresentInFavList(item);
 
             var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);
             
@@ -146,7 +225,7 @@ namespace SSFR_Movies.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-
+            
             GC.Collect();
         }
 

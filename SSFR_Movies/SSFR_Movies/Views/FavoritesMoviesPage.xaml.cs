@@ -42,7 +42,6 @@ namespace SSFR_Movies.Views
         private async void QuitFromFavorites(object sender, EventArgs e)
         {
      
-
             var opt = sender as MenuItem;
 
             if (opt != null)
