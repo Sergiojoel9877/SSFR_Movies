@@ -26,20 +26,19 @@ namespace SSFR_Movies.Views
     public partial class AllMoviesPage : ContentPage
     {
        
-        AllMoviesPageViewModel vm;
+        AllMoviesPageViewModel vm = null;
 
-        FlexLayout genresContainer;
+        FlexLayout genresContainer = null;
 
-        ToolbarItem updownList;
+        ToolbarItem updownList = null;
 
-        ToolbarItem searchToolbarItem;
-
-      
+        ToolbarItem searchToolbarItem = null;
+        
         public AllMoviesPage()
         {
             InitializeComponent();
-
-            vm = new AllMoviesPageViewModel();
+            
+            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
 
             BindingContext = vm;
 
@@ -147,6 +146,7 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
+            
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
@@ -236,7 +236,7 @@ namespace SSFR_Movies.Views
 
                 if (e.Item == Items[Items.Count - 1])
                 {
-                    ++Settings.NextPage;
+                    Settings.NextPage++;
 
                     //Verify if internet connection is available
                     if (!CrossConnectivity.Current.IsConnected)
@@ -285,8 +285,11 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
-                //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-                var MoviesDownloaded = await App.ApiClient.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                vm.AllMoviesList.Clear();
+                
+                GC.Collect(0, GCCollectionMode.Optimized, false);
+
+                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage++);
 
                 if (MoviesDownloaded)
                 {
@@ -348,9 +351,8 @@ namespace SSFR_Movies.Views
                     var genres = Barrel.Current.Get<Genres>("Genres.Cached");
 
                     var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
-
-                    //var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
-                    var stored = await App.ApiClient.GetAndStoreMoviesByGenreAsync((int)generId, false);
+                    
+                    var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
 
                     if (stored)
                     {
@@ -396,7 +398,24 @@ namespace SSFR_Movies.Views
         private async void SearchClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SearchPage(), false);
-            
+
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            GC.Collect(0, GCCollectionMode.Optimized, false);
+
+        }
+
+        protected override void OnParentSet()
+        {
+            base.OnParentSet();
+
+            if (Parent == null)
+            {
+                BindingContext = null;
+
+                vm.AllMoviesList.Clear();
+
+                FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            }
         }
     }
 }

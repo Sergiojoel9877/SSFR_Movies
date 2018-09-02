@@ -23,7 +23,9 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = new AllMoviesPageViewModel();
+            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
+
+            activityIndicator.IsVisible = false;
 
             BindingContext = vm;
 
@@ -44,6 +46,8 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
+
+            GC.Collect(0, GCCollectionMode.Optimized, false);
 
         }
         
@@ -89,7 +93,7 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await App.ApiClient.SearchMovieByName(key);
+                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
 
                         if (movie_results.Results.Capacity != 0)
                         {

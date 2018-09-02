@@ -27,7 +27,7 @@ namespace SSFR_Movies.Services
 
         private const string LANG = "en-US";
 
-        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1, int genres = 12)
+        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
             await Task.Yield();
 
@@ -56,7 +56,7 @@ namespace SSFR_Movies.Services
                 var m = await App.httpClient.GetAsync(requestUri);
 
                 var results = await m.Content.ReadAsStringAsync();
-
+                
                 return StoreInCache(results);
             }
             catch (Exception e)
@@ -91,7 +91,7 @@ namespace SSFR_Movies.Services
                 var results = await m.Content.ReadAsStringAsync();
 
                 var movie = JsonConvert.DeserializeObject<Movie>(results);
-
+                
                 return movie;
             }
             catch (Exception e)
@@ -101,11 +101,6 @@ namespace SSFR_Movies.Services
 
             return new Movie();
         }
-
-        //public async Task<MovieTrailer> GetMovieTrailer()
-        //{
-
-        //}
         
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
@@ -157,7 +152,21 @@ namespace SSFR_Movies.Services
         {
             var movies = JsonConvert.DeserializeObject<Movie>(results);
 
-            //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
+            var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
+
+            var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
+
+            movies.Results.ForEach(r =>
+            {
+                r.PosterPath = PosterPath + r.PosterPath;
+            });
+
+            movies.Results.ForEach(e =>
+            {
+                e.BackdropPath = Backdroppath + e.BackdropPath;
+            });
+
+            //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
             Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
             return true;
@@ -189,6 +198,8 @@ namespace SSFR_Movies.Services
 
             var results = await m.Content.ReadAsStringAsync();
 
+            
+
             return JsonConvert.DeserializeObject<MovieVideo>(results);
 
         }
@@ -208,6 +219,20 @@ namespace SSFR_Movies.Services
             try
             {
                 var movies = JsonConvert.DeserializeObject<Movie>(results);
+
+                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
+
+                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
+
+                movies.Results.ForEach(r =>
+                {
+                    r.PosterPath = PosterPath + r.PosterPath;
+                });
+
+                movies.Results.ForEach(e =>
+                {
+                    e.BackdropPath = Backdroppath + e.BackdropPath;
+                });
 
                 //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
                 Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));

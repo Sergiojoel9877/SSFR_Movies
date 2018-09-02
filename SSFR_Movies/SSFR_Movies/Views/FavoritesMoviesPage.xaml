@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
 
     <ContentPage.Resources>
@@ -120,7 +121,10 @@
                                                     HorizontalScrollBarVisibility="Never"
                                                     Orientation="Horizontal"
                                                     VerticalScrollBarVisibility="Never">
-                                                    <Label Style="{StaticResource TitleStyle}" Text="{Binding Title}" />
+                                                    <Label
+                                                        LineBreakMode="TailTruncation"
+                                                        Style="{StaticResource TitleStyle}"
+                                                        Text="{Binding Title}" />
                                                 </ScrollView>
                                                 <Label
                                                     Grid.Row="1"
@@ -131,6 +135,7 @@
                                                     Grid.Row="0"
                                                     Grid.RowSpan="2"
                                                     Grid.Column="2"
+                                                    CompressedLayout.IsHeadless="True"
                                                     HeightRequest="50">
                                                     <Image
                                                         x:Name="Pin"
@@ -139,7 +144,7 @@
                                                         HorizontalOptions="End"
                                                         Source="Star.png"
                                                         WidthRequest="35" />
-                                                    <Label Style="{StaticResource UnPinStyle}" Text="Quit from Favorites" />
+                                                    <Label Style="{StaticResource UnPinStyle}" Text="Push/Hold down to delete." />
                                                 </StackLayout>
                                             </Grid>
                                         </Frame>
@@ -150,6 +155,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
+            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

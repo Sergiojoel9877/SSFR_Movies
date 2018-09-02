@@ -9,6 +9,9 @@ using Android.OS;
 using Xamarin.Forms;
 using System.Threading.Tasks;
 using Android.Gms.Ads;
+using FFImageLoading;
+using FFImageLoading.Helpers;
+using Android.Content;
 
 namespace SSFR_Movies.Droid
 {
@@ -16,18 +19,26 @@ namespace SSFR_Movies.Droid
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-       
+
         protected override void OnCreate(Bundle bundle)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
+
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
 
             Forms.SetFlags("FastRenderers_Experimental");
-                
+
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
+            //ImageService.Instance.Initialize(new FFImageLoading.Config.Configuration
+            //{
+            //    ClearMemoryCacheOnOutOfMemory = true,
+            //    InvalidateLayout = true,
+            //    DownsampleInterpolationMode = FFImageLoading.Work.InterpolationMode.Low
+            //});
+            
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
@@ -36,6 +47,23 @@ namespace SSFR_Movies.Droid
 
             LoadApplication(new App());
         }
+
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        {
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+
+            base.OnTrimMemory(level);
+        }
+
+        public override void OnLowMemory()
+        {
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+
+            base.OnLowMemory();
+        }
+        
     }
 }
 

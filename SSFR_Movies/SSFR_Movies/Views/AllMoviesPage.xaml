@@ -3,7 +3,6 @@
     x:Class="SSFR_Movies.Views.AllMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="SSFR Movies Home"
@@ -37,7 +36,7 @@
                         x:Name="Scrollview"
                         Grid.Row="0"
                         Grid.Column="0"
-                        Margin="16,15,16,0"
+                        Margin="0,15,0,0"
                         HeightRequest="40"
                         HorizontalScrollBarVisibility="Never">
 

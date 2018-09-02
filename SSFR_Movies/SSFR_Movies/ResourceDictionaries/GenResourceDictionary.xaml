@@ -11,7 +11,7 @@
         <Setter Property="HasShadow" Value="True" />
         <Setter Property="WidthRequest" Value="95" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0,0,18,0" />
+        <Setter Property="Margin" Value="16,0,0,0" />
     </Style>
     <!--  Style for labels  -->
     <Style x:Key="LabelsStyle" TargetType="Label">

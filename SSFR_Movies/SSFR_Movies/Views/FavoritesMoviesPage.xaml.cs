@@ -28,10 +28,7 @@ namespace SSFR_Movies.Views
 		{
 			InitializeComponent ();
 
-            //vm = ((ViewModelLocator)Application.Current.Resources["Locator"]).FavoriteMoviesPageViewModel;
-
-            //vm = ServiceLocator.Current.GetInstance<ViewModelLocator>().FavoriteMoviesPageViewModel;
-            vm = new FavoriteMoviesPageViewModel();
+            vm = ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>();
 
             BindingContext = vm;
 
@@ -64,9 +61,7 @@ namespace SSFR_Movies.Views
                 {
                     try
                     {
-
-                        //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
-
+                        
                         var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
                         if (deleteMovie)
@@ -145,7 +140,9 @@ namespace SSFR_Movies.Views
             ((ListView)sender).SelectedItem = null;
 
             await Navigation.PushAsync(new MovieDetailsPage(movie));
-            
+
+            GC.Collect(0, GCCollectionMode.Optimized, false);
+
         }
 
         protected override async void OnAppearing()

@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513"
     NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
@@ -23,10 +24,10 @@
                     x:Name="back"
                     Margin="16,16,0,16"
                     BitmapOptimizations="True"
-                    HeightRequest="46"
+                    HeightRequest="30"
                     HorizontalOptions="Start"
                     Source="Back.png"
-                    WidthRequest="46">
+                    WidthRequest="30">
                     <ffimage:CachedImage.GestureRecognizers>
                         <TapGestureRecognizer Tapped="Back_Tapped" />
                     </ffimage:CachedImage.GestureRecognizers>
@@ -34,11 +35,11 @@
 
                 <SearchBar
                     x:Name="searchBar"
-                    Margin="14,0,16,0"
+                    Margin="0,0,26,0"
                     CancelButtonColor="White"
                     FontAttributes="Bold"
                     FontSize="Medium"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Center"
                     Placeholder="Search"
                     PlaceholderColor="#65FFFFFF"
                     SearchButtonPressed="SearchBar_SearchButtonPressed"
@@ -66,10 +67,13 @@
                 RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <customViewCell:CustomViewCell />
+                        <helpers:CustomViewCell />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
+            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
 
         </StackLayout>
 

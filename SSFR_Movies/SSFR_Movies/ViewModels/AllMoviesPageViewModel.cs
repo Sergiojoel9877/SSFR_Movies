@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommonServiceLocator;
 using SSFR_Movies.Services;
+using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
 
 namespace SSFR_Movies.ViewModels
@@ -21,8 +22,6 @@ namespace SSFR_Movies.ViewModels
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
-
-        public ObservableCollection<Result> AllMoviesByXGenreList { get; set; } = new ObservableCollection<Result>();
 
         private bool listVisible = false;
         public bool ListVisible
@@ -93,18 +92,7 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
-            foreach (var MovieResult in movies.Results)
-            {
-                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                MovieResult.PosterPath = PosterPath;
-
-                MovieResult.BackdropPath = Backdroppath;
-                   
-                AllMoviesList.Add(MovieResult);
-            }
+            movies.Results.ForEach(r => AllMoviesList.Add(r));
 
             ListVisible = true;
 
@@ -136,25 +124,9 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
-            AllMoviesByXGenreList.Clear();
+            AllMoviesList.Clear();
 
-            foreach (var MovieResult in movies.Results)
-            {
-                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                MovieResult.PosterPath = PosterPath;
-
-                MovieResult.BackdropPath = Backdroppath;
-
-                AllMoviesByXGenreList.Add(MovieResult);
-
-                AllMoviesList = null;
-
-                AllMoviesList = AllMoviesByXGenreList;
-                
-            }
+            movies.Results.ForEach(r => AllMoviesList.Add(r));
 
             ActivityIndicatorRunning = false;
         }
@@ -176,8 +148,8 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            //return await ServiceLocator.Current.GetInstance<App.ApiClient>().GetAndStoreMoviesAsync(false);
-            return await App.ApiClient.GetAndStoreMoviesAsync(false);
+            //return await ServiceLocator.Current.GetInstance<await ServiceLocator.Current.GetInstance<ApiClient>()>().GetAndStoreMoviesAsync(false);
+            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
         }
 
         private Command getStoreMoviesCommand;
@@ -267,8 +239,8 @@ namespace SSFR_Movies.ViewModels
 
             await Task.Yield();
 
-            //return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await App.ApiClient.GetAndStoreMovieGenresAsync();
+            //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
 
         }
 

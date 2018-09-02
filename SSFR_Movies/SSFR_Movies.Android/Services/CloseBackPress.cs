@@ -19,10 +19,6 @@ namespace SSFR_Movies.Droid.Services
     public class CloseBackPress : Xamarin.Forms.Platform.Android.FormsAppCompatActivity, ICloseBackPress
     {
 
-        const int MSG = 1;
-
-        Handler handler;
-
 #pragma warning disable CS0618
         Activity activity = (MainActivity)Forms.Context;
 #pragma warning restore CS068
@@ -63,19 +59,7 @@ namespace SSFR_Movies.Droid.Services
             {
                 activity.FinishAffinity();
             }
-          
-            //handler = new Handler((p) =>
-            //{
-            //    switch (p.What)
-            //    {
-            //        case MSG:
-            //        if(!(activity).IsFinishing)
-            //        {
-            //            create.Show();
-            //        }
-            //        break;
-            //    }
-            //});
+         
         }
 
         public void OnClick(object dialog, DialogClickEventArgs e)

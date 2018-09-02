@@ -26,10 +26,17 @@ namespace SSFR_Movies.Views
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarSelectedItemColor(Color.White);
 
-            On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(5.0f);
+            On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6);
 
         }
-        
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            GC.Collect(0, GCCollectionMode.Optimized, false);
+        }
+
         protected override bool OnBackButtonPressed()
         {
             var c = DependencyService.Get<ICloseBackPress>();

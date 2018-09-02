@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Gms.Ads;
@@ -32,7 +32,14 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
             if (e.NewElement != null && Control == null)
             {
-                SetNativeControl(CreateView());
+                try
+                {
+                    SetNativeControl(CreateView());
+                }
+                catch (DeadObjectException)
+                {
+                    
+                }
             }
         }
 
@@ -48,17 +55,34 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
         private AdView CreateView()
         {
-            var adView = new AdView(Context)
+            try
             {
-                AdSize = AdSize.Banner,
-                AdUnitId = Element.AdUnitId
-            };
+                var adView = new AdView(Context)
+                {
+                    AdSize = AdSize.Banner,
+                    AdUnitId = Element.AdUnitId
+                };
 
-            adView.LayoutParameters = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+                adView.LayoutParameters = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
 
-            adView.LoadAd(new AdRequest.Builder().Build());
+                adView.LoadAd(new AdRequest.Builder().Build());
 
-            return adView;
+                return adView;
+            }
+            catch (DeadObjectException e)
+            {
+                var adView = new AdView(Context)
+                {
+                    AdSize = AdSize.Banner,
+                    AdUnitId = Element.AdUnitId
+                };
+
+                adView.LayoutParameters = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+
+                adView.LoadAd(new AdRequest.Builder().Build());
+
+                return adView;
+            }
         }
     }
 }

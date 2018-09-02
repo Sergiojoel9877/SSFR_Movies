@@ -81,6 +81,7 @@ namespace SSFR_Movies.Helpers
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
                 HeightRequest = 280,
+                CacheType = FFImageLoading.Cache.CacheType.All,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 2,
                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -92,10 +93,9 @@ namespace SSFR_Movies.Helpers
             cachedImage = new CachedImage()
             {
                 BitmapOptimizations = true,
-                DownsampleToViewSize = false,
+                DownsampleToViewSize = true,
                 HeightRequest = 280,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
+                CacheType = FFImageLoading.Cache.CacheType.All,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
@@ -145,7 +145,7 @@ namespace SSFR_Movies.Helpers
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 TextColor = Color.White,
-                LineBreakMode = LineBreakMode.NoWrap,
+                LineBreakMode = LineBreakMode.TailTruncation,
                 Margin = new Thickness(16, 0, 0, 0),
                 FontFamily = "Arial",
                 FontAttributes = FontAttributes.Bold
@@ -247,8 +247,9 @@ namespace SSFR_Movies.Helpers
             });
         }
 
-        protected override async void OnBindingContextChanged()
+        protected async override void OnBindingContextChanged()
         {
+
             await Task.Yield();
 
             pin2FavList.Source = "StarEmpty.png";
@@ -376,7 +377,7 @@ namespace SSFR_Movies.Helpers
 
                     }
                 }
-                catch (Exception e15)
+                catch (Exception)
                 {
 
                 }

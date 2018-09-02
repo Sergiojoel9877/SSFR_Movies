@@ -24,22 +24,21 @@ namespace SSFR_Movies.Services
     public class ContainerInitializer
     {
       
-        public ContainerInitializer()
-        {
-                
-        }
-
-      
         public static void Initialize()
         {
-         
-      
+
+            //Sets the barrel cache ID.. with out it, the Barrel cannot work
+            Barrel.ApplicationId = "SSFR_Movies";
+
             var container = new UnityContainer();
 
             var serviceLocator = new UnityServiceLocator(container);
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);
-
+            
+            container.RegisterInstance(typeof(ApiClient));
+            container.RegisterInstance(typeof(AllMoviesPageViewModel));
+            container.RegisterInstance(typeof(FavoriteMoviesPageViewModel));
             container.RegisterInstance(typeof(DBRepository<>));
             container.RegisterInstance(typeof(DatabaseContext<>));
             container.RegisterType(typeof(DatabaseContext<>));

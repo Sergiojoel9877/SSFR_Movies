@@ -210,7 +210,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await App.ApiClient.GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -226,7 +226,7 @@ namespace SSFR_Movies.Views
         {
             base.OnDisappearing();
             
-            GC.Collect();
+            GC.Collect(0, GCCollectionMode.Optimized, false);
         }
 
         public async Task SpeakNow(string msg)
@@ -246,7 +246,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await App.ApiClient.GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
