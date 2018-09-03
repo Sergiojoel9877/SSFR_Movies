@@ -81,9 +81,9 @@ namespace SSFR_Movies.Helpers
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
                 HeightRequest = 280,
-                CacheType = FFImageLoading.Cache.CacheType.All,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 2,
+                LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
                 WidthRequest = 280,
@@ -95,7 +95,6 @@ namespace SSFR_Movies.Helpers
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
                 HeightRequest = 280,
-                CacheType = FFImageLoading.Cache.CacheType.All,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
@@ -182,7 +181,7 @@ namespace SSFR_Movies.Helpers
                 TextColor = Color.White,
                 HorizontalTextAlignment = TextAlignment.Center,
                 VerticalTextAlignment = TextAlignment.End,
-                Text = "Tap the star to Add To Fav. List",
+                Text = "Add To Fav. List",
                 FontAttributes = FontAttributes.Bold
             };
                  
@@ -247,11 +246,9 @@ namespace SSFR_Movies.Helpers
             });
         }
 
-        protected async override void OnBindingContextChanged()
+        protected override void OnBindingContextChanged()
         {
-
-            await Task.Yield();
-
+           
             pin2FavList.Source = "StarEmpty.png";
 
             blurCachedImage.Source = null;
@@ -269,10 +266,10 @@ namespace SSFR_Movies.Helpers
 
             cachedImage.Source = item.PosterPath;
 
-            await Task.Factory.StartNew(async () =>
-            {
-                await IsPresentInFavList(item);
-            });
+            //await Task.Factory.StartNew(async () =>
+            //{
+            //    await IsPresentInFavList(item);
+            //});
 
             base.OnBindingContextChanged();
         }
@@ -396,8 +393,6 @@ namespace SSFR_Movies.Helpers
 
         public async Task IsPresentInFavList(Result m)
         {
-            await Task.Yield();
-
             bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
 
             if (movieExists)

@@ -42,6 +42,8 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
+            activityIndicator.IsVisible = false;
+
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
             genresContainer.IsVisible = false;
@@ -177,45 +179,6 @@ namespace SSFR_Movies.Views
 
             }
 
-        }
-
-        private async void ItemSelected(object sender, ItemTappedEventArgs e)
-        {
-            try
-            {
-                
-                if (e.Item == null)
-                {
-                    return;
-                }
-
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                var movie = (Result)e.Item;
-
-                ((ListView)sender).SelectedItem = null;
-
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
-                
-            }
-            catch (Exception e4)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
-                    return false;
-                });
-            }
         }
 
         private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
@@ -398,8 +361,7 @@ namespace SSFR_Movies.Views
         private async void SearchClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new SearchPage(), false);
-
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            
             GC.Collect(0, GCCollectionMode.Optimized, false);
 
         }
@@ -411,10 +373,6 @@ namespace SSFR_Movies.Views
             if (Parent == null)
             {
                 BindingContext = null;
-
-                vm.AllMoviesList.Clear();
-
-                FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
             }
         }
     }

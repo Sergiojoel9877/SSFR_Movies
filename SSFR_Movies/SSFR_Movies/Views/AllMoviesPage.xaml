@@ -285,6 +285,17 @@
                 Text="It seems like you don't have an internet connection!"
                 TextColor="White" />
 
+            <ActivityIndicator
+                x:Name="activityIndicator"
+                BackgroundColor="Transparent"
+                HeightRequest="50"
+                HorizontalOptions="FillAndExpand"
+                IsRunning="{Binding IsRunning}"
+                IsVisible="{Binding IsEnabled}"
+                VerticalOptions="FillAndExpand"
+                WidthRequest="50"
+                Color="#0088FF" />
+
             <ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"

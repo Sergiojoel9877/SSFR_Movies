@@ -51,7 +51,7 @@ namespace SSFR_Movies.Droid
         public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
 
             base.OnTrimMemory(level);
         }
@@ -59,7 +59,7 @@ namespace SSFR_Movies.Droid
         public override void OnLowMemory()
         {
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
 
             base.OnLowMemory();
         }
