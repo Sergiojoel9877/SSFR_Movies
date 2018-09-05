@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using SSFR_Movies.Helpers;
 
 namespace SSFR_Movies.Views
 {
@@ -24,9 +25,22 @@ namespace SSFR_Movies.Views
 	{
         FavoriteMoviesPageViewModel vm;
 
+        Label _title;
+
         public FavoritesMoviesPage ()
 		{
 			InitializeComponent ();
+
+            /* Here is how to deal with the items inside a ViewCell I must use reflection.. kinda expenpensive from a performance perspective 
+             * but it works..., or make use of a custom viewCell, it's a better option in terms of performance.
+             *  https://stackoverflow.com/questions/35849187/xamarin-forms-get-all-cells-items-of-a-listview
+             */
+            //_title = this.FindByName<Label>("title");
+
+            //Task.Run(async () =>
+            //{
+            //    await _title.SetAnimation();
+            //});
 
             vm = ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>();
 
@@ -186,3 +200,4 @@ namespace SSFR_Movies.Views
         }
     }
 }
+ 

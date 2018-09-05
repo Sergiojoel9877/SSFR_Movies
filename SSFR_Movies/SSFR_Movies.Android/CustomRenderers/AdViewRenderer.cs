@@ -36,7 +36,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 {
                     SetNativeControl(CreateView());
                 }
-                catch (DeadObjectException)
+                catch (DeadObjectException e1)
                 {
                     
                 }
@@ -65,23 +65,14 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
                 adView.LayoutParameters = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
 
+
                 adView.LoadAd(new AdRequest.Builder().Build());
 
                 return adView;
             }
             catch (DeadObjectException e)
             {
-                var adView = new AdView(Context)
-                {
-                    AdSize = AdSize.Banner,
-                    AdUnitId = Element.AdUnitId
-                };
-
-                adView.LayoutParameters = new LinearLayout.LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
-
-                adView.LoadAd(new AdRequest.Builder().Build());
-
-                return adView;
+                return null;
             }
         }
     }

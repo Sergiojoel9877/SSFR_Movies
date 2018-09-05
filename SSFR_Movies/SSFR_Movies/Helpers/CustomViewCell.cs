@@ -30,7 +30,7 @@ namespace SSFR_Movies.Helpers
         private Grid gridInsideFrame = null;
         private ScrollView scrollTitle = null;
         private Label releaseDate = null;
-        private Label title = null;
+        public Label title = null;
         private Image pin2FavList = null;
         private Label add2FavList = null;
         private StackLayout compat = null;
@@ -147,10 +147,16 @@ namespace SSFR_Movies.Helpers
                 LineBreakMode = LineBreakMode.TailTruncation,
                 Margin = new Thickness(16, 0, 0, 0),
                 FontFamily = "Arial",
-                FontAttributes = FontAttributes.Bold
+                FontAttributes = FontAttributes.Bold,
+               
             };
             title.SetBinding(Label.TextProperty, "Title");
 
+            Task.Run(async () =>
+            {
+                await title.SetAnimation();
+            });
+            
             scrollTitle.Content = title;
 
             releaseDate = new Label()
@@ -184,7 +190,7 @@ namespace SSFR_Movies.Helpers
                 Text = "Add To Fav. List",
                 FontAttributes = FontAttributes.Bold
             };
-                 
+            
             compat.Children.Add(pin2FavList);
             compat.Children.Add(add2FavList);
 
@@ -233,7 +239,17 @@ namespace SSFR_Movies.Helpers
             cachedImage.GestureRecognizers.Add(imageTapped);
 
             View = FlexLayout;
-            
+
+        }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            var result = BindingContext as Result;
+
+            await result.IsPresentInFavList(pin2FavList, result.Id);
+
         }
 
         private void PosterTapped(object sender, EventArgs e)
@@ -254,7 +270,7 @@ namespace SSFR_Movies.Helpers
             blurCachedImage.Source = null;
 
             cachedImage.Source = null;
-
+            
             var item = BindingContext as SSFR_Movies.Models.Result;
 
             if (item == null)
@@ -265,12 +281,7 @@ namespace SSFR_Movies.Helpers
             blurCachedImage.Source = item.PosterPath;
 
             cachedImage.Source = item.PosterPath;
-
-            //await Task.Factory.StartNew(async () =>
-            //{
-            //    await IsPresentInFavList(item);
-            //});
-
+            
             base.OnBindingContextChanged();
         }
 
@@ -391,9 +402,31 @@ namespace SSFR_Movies.Helpers
             await TextToSpeech.SpeakAsync(msg, settings);
         }
 
-        public async Task IsPresentInFavList(Result m)
+        
+    }
+
+    public static class Extensions
+    {
+        public async static Task SetAnimation(this Label lbl)
         {
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            await Task.Yield();
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var right = new Animation(d => lbl.TranslationX = d, -350, 250);
+
+                right.Commit(lbl, "Animation", 300, 5000, Easing.Linear, (d, b) =>
+                {
+                    lbl.TranslationX = -350;
+                }, () => true);
+            });
+        }
+
+        public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
+        {
+            await Task.Yield();
+
+            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id);
 
             if (movieExists)
             {

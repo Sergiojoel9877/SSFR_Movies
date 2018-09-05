@@ -138,6 +138,11 @@
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
       <Version>70.1501.0-preview2</Version>
     </PackageReference>
+    <PackageReference Include="XFControls">
+      <Version>1.0.0.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\AdViewRenderer.cs" />

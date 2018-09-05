@@ -304,7 +304,6 @@
                 IsRefreshing="{Binding IsRefreshing}"
                 IsVisible="{Binding ListVisible}"
                 ItemAppearing="MoviesList_ItemAppearing"
-                ItemTapped="ItemSelected"
                 ItemsSource="{Binding AllMoviesList}"
                 RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}"
                 VerticalOptions="FillAndExpand">
@@ -318,7 +317,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -1,6 +1,7 @@
 ﻿using CommonServiceLocator;
 using Plugin.Connectivity;
 using SSFR_Movies.Data;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
@@ -40,6 +41,11 @@ namespace SSFR_Movies.Views
 
             AddToFavLayout.GestureRecognizers.Add(tap);
 
+            Task.Run(async () =>
+            {
+                await MovieTitle.SetAnimation();
+            });
+            
         }
 
         private async void IsPresentInFavList(Result m)

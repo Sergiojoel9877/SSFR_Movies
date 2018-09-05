@@ -3,19 +3,14 @@
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
-using System.Threading.Tasks;
 using Android.Gms.Ads;
-using FFImageLoading;
-using FFImageLoading.Helpers;
 using Android.Content;
 
 namespace SSFR_Movies.Droid
 {
-   
+
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

@@ -122,6 +122,7 @@
                                                     Orientation="Horizontal"
                                                     VerticalScrollBarVisibility="Never">
                                                     <Label
+                                                        x:Name="title"
                                                         LineBreakMode="TailTruncation"
                                                         Style="{StaticResource TitleStyle}"
                                                         Text="{Binding Title}" />
