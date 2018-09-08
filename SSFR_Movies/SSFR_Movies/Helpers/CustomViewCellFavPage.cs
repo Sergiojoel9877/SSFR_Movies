@@ -4,8 +4,8 @@ using FFImageLoading.Transformations;
 using Plugin.Connectivity;
 using SSFR_Movies.Data;
 using SSFR_Movies.Models;
-using SSFR_Movies.ResourceDictionaries;
 using SSFR_Movies.Services;
+using SSFR_Movies.ViewModels;
 using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using Xamarin.Forms;
 
 namespace SSFR_Movies.Helpers
 {
-    public class CustomViewCell : ViewCell
+    public class CustomViewCellFavPage : ViewCell
     {
         #region Controls
         private CachedImage blurCachedImage = null;
@@ -31,18 +31,18 @@ namespace SSFR_Movies.Helpers
         private ScrollView scrollTitle = null;
         private Label releaseDate = null;
         public Label title = null;
-        private Image pin2FavList = null;
-        private Label add2FavList = null;
+        private Image unPinFromFavList = null;
+        private Label quitFromFavList = null;
         private StackLayout compat = null;
-        private MenuItem AddToFavListCtxAct = null;
+        private MenuItem QuitFromFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
 
         #endregion
 
-        public CustomViewCell()
+        public CustomViewCellFavPage()
         {
-            
+
             BindingContext = BindingContext;
 
             FlexLayout = new FlexLayout()
@@ -72,9 +72,9 @@ namespace SSFR_Movies.Helpers
             };
 
             List<FFImageLoading.Work.ITransformation> Blur = new List<FFImageLoading.Work.ITransformation>
-            {
-                new BlurredTransformation(60)
-            };
+                {
+                    new BlurredTransformation(60)
+                };
 
             blurCachedImage = new CachedImage()
             {
@@ -115,17 +115,17 @@ namespace SSFR_Movies.Helpers
             };
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
-            {
-                new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
-                new ColumnDefinition() { Width = GridLength.Star},
-                new ColumnDefinition() { Width = GridLength.Star}
-            };
-            
+                {
+                    new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition() { Width = GridLength.Star},
+                    new ColumnDefinition() { Width = GridLength.Star}
+                };
+
             RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
-            {
-                new RowDefinition() { Height = GridLength.Star},
-                new RowDefinition() { Height = GridLength.Star}
-            };
+                {
+                    new RowDefinition() { Height = GridLength.Star},
+                    new RowDefinition() { Height = GridLength.Star}
+                };
 
             gridInsideFrame = new Grid()
             {
@@ -148,7 +148,7 @@ namespace SSFR_Movies.Helpers
                 Margin = new Thickness(16, 0, 0, 0),
                 FontFamily = "Arial",
                 FontAttributes = FontAttributes.Bold,
-               
+
             };
             title.SetBinding(Label.TextProperty, "Title");
 
@@ -156,7 +156,7 @@ namespace SSFR_Movies.Helpers
             {
                 await title.SetAnimation();
             });
-            
+
             scrollTitle.Content = title;
 
             releaseDate = new Label()
@@ -172,38 +172,39 @@ namespace SSFR_Movies.Helpers
 
             compat = new StackLayout()
             {
+                HeightRequest = 50
             };
 
-            pin2FavList = new Image()
+            unPinFromFavList = new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40
             };
 
-            //add2FavList = new Label()
-            //{
-            //    FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
-            //    TextColor = Color.White,
-            //    HorizontalTextAlignment = TextAlignment.Center,
-            //    VerticalTextAlignment = TextAlignment.End,
-            //    Text = "Add To Fav. List",
-            //    FontAttributes = FontAttributes.Bold
-            //};
+            quitFromFavList = new Label()
+            {
+                FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
+                TextColor = Color.White,
+                HorizontalTextAlignment = TextAlignment.Center,
+                VerticalTextAlignment = TextAlignment.End,
+                Text = "Quit from Fav. List",
+                FontAttributes = FontAttributes.Bold
+            };
 
-            compat.Children.Add(pin2FavList);
-            //compat.Children.Add(add2FavList);
+            compat.Children.Add(unPinFromFavList);
+            compat.Children.Add(quitFromFavList);
 
             gridInsideFrame.Children.Add(scrollTitle, 0, 0);
-            Grid.SetColumnSpan(scrollTitle, 3);
+            Grid.SetColumnSpan(scrollTitle, 2);
             gridInsideFrame.Children.Add(releaseDate, 0, 1);
-            gridInsideFrame.Children.Add(compat, 2, 1);
-            //Grid.SetRowSpan(compat, 2);
+            gridInsideFrame.Children.Add(compat, 2, 0);
+            Grid.SetRowSpan(compat, 2);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage, AbsoluteLayoutFlags.All);
-            
+
             FrameUnderImages.Content = gridInsideFrame;
 
             absoluteLayout.Children.Add(blurCachedImage);
@@ -216,20 +217,20 @@ namespace SSFR_Movies.Helpers
             CompressedLayout.SetIsHeadless(SubContainer, true);
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
-           
+
             FlexLayout.Children.Add(Container);
 
-            AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
+            QuitFromFavListCtxAct = new MenuItem { Text = "Quit from Favorites", Icon = "StarEmpty.png" };
 
-            AddToFavListCtxAct.Clicked += AddToFavList;
+            QuitFromFavListCtxAct.Clicked += QuitFromFavList;
 
-            ContextActions.Add(AddToFavListCtxAct);
-            
+            ContextActions.Add(QuitFromFavListCtxAct);
+
             tap = new TapGestureRecognizer();
 
             imageTapped = new TapGestureRecognizer();
 
-            tap.Tapped += AddToFavListTap;
+            tap.Tapped += QuitFromFavListTap;
 
             imageTapped.Tapped += PosterTapped;
 
@@ -238,7 +239,6 @@ namespace SSFR_Movies.Helpers
             cachedImage.GestureRecognizers.Add(imageTapped);
 
             View = FlexLayout;
-
         }
 
         protected async override void OnAppearing()
@@ -247,7 +247,7 @@ namespace SSFR_Movies.Helpers
 
             var result = BindingContext as Result;
 
-            await result.IsPresentInFavList(pin2FavList, result.Id);
+            await result.IsPresentInFavList(unPinFromFavList, result.Id);
 
         }
 
@@ -255,7 +255,7 @@ namespace SSFR_Movies.Helpers
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread( () =>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
             });
@@ -263,32 +263,32 @@ namespace SSFR_Movies.Helpers
 
         protected override void OnBindingContextChanged()
         {
-           
-            pin2FavList.Source = "StarEmpty.png";
+
+            unPinFromFavList.Source = "StarEmpty.png";
 
             blurCachedImage.Source = null;
 
             cachedImage.Source = null;
-            
+
             var item = BindingContext as SSFR_Movies.Models.Result;
 
             if (item == null)
             {
                 return;
             }
-            
+
             blurCachedImage.Source = item.PosterPath;
 
             cachedImage.Source = item.PosterPath;
-            
+
             base.OnBindingContextChanged();
         }
 
-        private async void AddToFavListTap(object sender, EventArgs e)
+        private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
 
-            await pin2FavList.ScaleTo(1.50, 500, Easing.BounceOut);
+            await unPinFromFavList.ScaleTo(1.50, 500, Easing.BounceOut);
 
             if (sender != null)
             {
@@ -308,34 +308,17 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
-                    if (movieExists)
+                    if (deleteMovie)
                     {
+                        ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>().FavMoviesList.Remove(movie);
 
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
+                        MessagingCenter.Send(this, "RefreshList", true);
 
-                        await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
+                        await unPinFromFavList.ScaleTo(1, 500, Easing.BounceIn);
                     }
-                    
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                    if (addMovie)
-                    {
-
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-
-                        await SpeakNow("Added Successfully");
-
-                        Vibration.Vibrate(1);
-
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            pin2FavList.Source = "Star.png";
-                        });
-
-                        await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
-                    }
+                
                 }
                 catch (Exception e15)
                 {
@@ -344,9 +327,9 @@ namespace SSFR_Movies.Helpers
             }
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
+        private async void QuitFromFavList(object sender, EventArgs e)
         {
-            
+
             if (sender is MenuItem opt)
             {
                 var movie = opt.BindingContext as Result;
@@ -364,21 +347,20 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
-                    if (movieExists)
+                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+
+                    if (deleteMovie)
                     {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-                    }
+                        ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>().FavMoviesList.Remove(movie);
 
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                        await unPinFromFavList.ScaleTo(1, 500, Easing.BounceIn);
 
-                    if (addMovie)
-                    {
+                        MessagingCenter.Send(this, "RefreshList", true);
 
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+                        DependencyService.Get<IToast>().LongAlert("Removed Successfully, The movie " + movie.Title + " was removed from your favorite list!");
 
-                        await SpeakNow("Added Successfully");
+                        await SpeakNow("Removed Successfully");
 
                         Vibration.Vibrate(0.5);
 
@@ -399,43 +381,6 @@ namespace SSFR_Movies.Helpers
             };
 
             await TextToSpeech.SpeakAsync(msg, settings);
-        }
-
-        
-    }
-
-    public static class Extensions
-    {
-        //Verify the length of the incoming string
-        //to assign its value to the initial range of the animation.........
-        public async static Task SetAnimation(this Label lbl)
-        {
-            await Task.Yield();
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var right = new Animation(d => lbl.TranslationX = d, 350, -500);
-
-                right.Commit(lbl, "Animation", 300, 7500, Easing.Linear, (d, b) =>
-                {
-                    lbl.TranslationX = 350;
-                }, () => true);
-            });
-        }
-
-        public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
-        {
-            await Task.Yield();
-
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id);
-
-            if (movieExists)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    pin2FavList.Source = "Star.png";
-                });
-            }
         }
     }
 }

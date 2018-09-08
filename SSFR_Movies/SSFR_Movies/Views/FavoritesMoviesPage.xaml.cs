@@ -47,7 +47,30 @@ namespace SSFR_Movies.Views
             BindingContext = vm;
 
             SetVisibility();
-            
+
+            SubscribeToMessage();
+        }
+
+        private void SubscribeToMessage()
+        {
+            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "RefreshList", async (s, e) =>
+            {
+                if (e)
+                { 
+                    MoviesList.BeginRefresh();
+
+                    await Task.Delay(500);
+
+                    MoviesList.EndRefresh();
+
+                    var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+                    if (moviesRemaining.Count() == 0)
+                    {
+                        QuitVisibility();
+                    }
+                }
+            });
         }
 
         private async void QuitFromFavorites(object sender, EventArgs e)

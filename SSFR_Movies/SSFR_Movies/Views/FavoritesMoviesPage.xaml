@@ -3,6 +3,7 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
@@ -46,7 +47,10 @@
                 RowHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
+                        <helpers:CustomViewCellFavPage>
+                            <!--    -->
+                        </helpers:CustomViewCellFavPage>
+                        <!--<ViewCell>
                             <ViewCell.ContextActions>
 
                                 <MenuItem
@@ -152,7 +156,7 @@
                                     </StackLayout>
                                 </StackLayout>
                             </FlexLayout>
-                        </ViewCell>
+                        </ViewCell>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
