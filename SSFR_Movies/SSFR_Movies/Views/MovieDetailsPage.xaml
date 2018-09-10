@@ -93,7 +93,7 @@
                                         VerticalOptions="End">
                                         <ScrollView
                                             x:Name="ScrollTitle"
-                                            HorizontalOptions="End"
+                                            HorizontalOptions="FillAndExpand"
                                             HorizontalScrollBarVisibility="Never"
                                             Orientation="Horizontal"
                                             VerticalScrollBarVisibility="Never">

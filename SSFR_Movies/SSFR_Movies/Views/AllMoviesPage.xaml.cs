@@ -104,11 +104,10 @@ namespace SSFR_Movies.Views
             
         }
         
-
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-
+            
             BindingContext = vm;
 
             var t5 = Scrollview.ScrollToAsync(100, 0, true);
@@ -148,7 +147,6 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
-            
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)

@@ -172,6 +172,7 @@ namespace SSFR_Movies.Helpers
 
             compat = new StackLayout()
             {
+                HeightRequest = 50
             };
 
             pin2FavList = new Image()
@@ -250,7 +251,7 @@ namespace SSFR_Movies.Helpers
             await result.IsPresentInFavList(pin2FavList, result.Id);
 
         }
-
+        
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
@@ -258,6 +259,7 @@ namespace SSFR_Movies.Helpers
             Device.BeginInvokeOnMainThread( () =>
             {
                 App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+                BindingContext = null;
             });
         }
 
@@ -276,7 +278,7 @@ namespace SSFR_Movies.Helpers
             {
                 return;
             }
-            
+
             blurCachedImage.Source = item.PosterPath;
 
             cachedImage.Source = item.PosterPath;
@@ -325,16 +327,15 @@ namespace SSFR_Movies.Helpers
 
                         DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
-                        await SpeakNow("Added Successfully");
-
-                        Vibration.Vibrate(1);
-
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             pin2FavList.Source = "Star.png";
                         });
 
                         await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
+
+                        await SpeakNow("Added Successfully");
+               
                     }
                 }
                 catch (Exception e15)

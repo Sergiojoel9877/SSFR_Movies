@@ -53,22 +53,26 @@ namespace SSFR_Movies.Views
 
         private void SubscribeToMessage()
         {
-            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "RefreshList", async (s, e) =>
+            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "RefreshList", (s, e) =>
             {
                 if (e)
-                { 
-                    MoviesList.BeginRefresh();
-
-                    await Task.Delay(500);
-
-                    MoviesList.EndRefresh();
-
-                    var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-                    if (moviesRemaining.Count() == 0)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
                     {
-                        QuitVisibility();
-                    }
+                        vm.GetStoreMoviesCommand.Execute(null);
+                       
+                        MoviesList.BeginRefresh();
+
+                        MoviesList.EndRefresh();
+
+                        var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+
+                        if (moviesRemaining.Count() == 0)
+                        {
+                            QuitVisibility();
+                        }
+                        
+                    });
                 }
             });
         }
@@ -89,7 +93,7 @@ namespace SSFR_Movies.Views
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
                         DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
+                        return false;  
                     });
                     return;
                 }
@@ -194,19 +198,22 @@ namespace SSFR_Movies.Views
 
             MoviesList.IsVisible = Message.IsVisible == true ? false : true;
     
-            ForceLayout();
-            
             vm.GetStoreMoviesCommand.Execute(null);
 
             BindingContext = vm;
 
             MoviesList.BeginRefresh();
 
-            await Task.Delay(500);
+            await Task.Delay(200);
 
             MoviesList.EndRefresh();
 
         }
+
+	    protected override void OnDisappearing()
+	    {
+	        base.OnDisappearing();
+	    }
 
         /// <summary>
         /// To animate the Quit from Favorite list icon..
