@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage
     x:Class="SSFR_Movies.Views.AllMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
@@ -265,6 +265,7 @@
             </FlexLayout>
 
             <ffimage:CachedImage
+                x:Name="MessageImg"
                 Grid.ColumnSpan="2"
                 BitmapOptimizations="True"
                 DownsampleToViewSize="True"
@@ -287,14 +288,13 @@
 
             <ActivityIndicator
                 x:Name="activityIndicator"
-                BackgroundColor="Transparent"
                 HeightRequest="50"
                 HorizontalOptions="FillAndExpand"
                 IsRunning="{Binding IsRunning}"
                 IsVisible="{Binding IsEnabled}"
                 VerticalOptions="FillAndExpand"
                 WidthRequest="50"
-                Color="#0088FF" />
+                Color="#FFF" />
 
             <ListView
                 x:Name="MoviesList"

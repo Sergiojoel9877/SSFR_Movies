@@ -42,7 +42,9 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
-            activityIndicator.IsVisible = false;
+            Message.IsVisible = false;
+
+            MessageImg.IsVisible = false;
 
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
@@ -114,6 +116,11 @@ namespace SSFR_Movies.Views
 
             var t6 = Scrollview.ScrollToAsync(0, 0, true);
 
+            //if (MoviesList.ItemsSource == null)
+            //{
+
+            //}
+
             await Task.WhenAll(t5, t6);
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
@@ -179,7 +186,7 @@ namespace SSFR_Movies.Views
 
         }
 
-        private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
+        private void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
         {
             
             try
@@ -210,10 +217,12 @@ namespace SSFR_Movies.Views
                         return;
                     }
 
-                    MoviesList.BeginRefresh();
+                    Parallel.Invoke(async ()=>
+                    {
+                        MoviesList.BeginRefresh();
 
-                    await LoadMoreMovies();
-
+                        await LoadMoreMovies();
+                    });
                 }
             }
             catch (Exception e1)
@@ -312,34 +321,37 @@ namespace SSFR_Movies.Views
                     var genres = Barrel.Current.Get<Genres>("Genres.Cached");
 
                     var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
-                    
-                    var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
 
-                    if (stored)
-                    {
-                        await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
+                    //Parallel.Invoke(async ()=>
+                    //{
+                        var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
 
-                        vm.GetStoreMoviesByGenresCommand.Execute(null);
-
-                        Device.BeginInvokeOnMainThread(async () =>
+                        if (stored)
                         {
-                            BindingContext = vm;
+                            await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
+
+                            vm.GetStoreMoviesByGenresCommand.Execute(null);
+
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                BindingContext = vm;
+
+                                MoviesList.ItemsSource = vm.AllMoviesList;
+
+                                await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
+
+                                MoviesList.EndRefresh();
+
+                            });
+                        }
+                        else
+                        {
+                            MoviesList.EndRefresh();
 
                             MoviesList.ItemsSource = vm.AllMoviesList;
 
-                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                            MoviesList.EndRefresh();
-                       
-                        });
-                    }
-                    else
-                    {
-                        MoviesList.EndRefresh();
-
-                        MoviesList.ItemsSource = vm.AllMoviesList;
-
-                    }
+                        }
+                    //});
                 }
                 catch (Exception e2)
                 {
@@ -361,7 +373,6 @@ namespace SSFR_Movies.Views
             await Navigation.PushAsync(new SearchPage(), false);
             
             GC.Collect(0, GCCollectionMode.Optimized, false);
-
         }
 
         protected override void OnParentSet()

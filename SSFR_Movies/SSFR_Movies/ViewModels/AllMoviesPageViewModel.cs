@@ -44,7 +44,7 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref isRefreshing, value);
         }
 
-        private bool isEnabled;
+        private bool isEnabled = false;
         public bool IsEnabled
         {
             get => isEnabled;
@@ -92,7 +92,12 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
-            movies.Results.ForEach(r => AllMoviesList.Add(r));
+            //movies.Results.ForEach(r => AllMoviesList.Add(r));
+
+            movies.Results.ForEach((r)=>
+            {
+                AllMoviesList.Add(r);
+            });
 
             ListVisible = true;
 
@@ -126,7 +131,12 @@ namespace SSFR_Movies.ViewModels
 
             AllMoviesList.Clear();
 
-            movies.Results.ForEach(r => AllMoviesList.Add(r));
+            //movies.Results.ForEach(r => AllMoviesList.Add(r));
+
+            movies.Results.ForEach((r)=>
+            {
+                AllMoviesList.Add(r);
+            });
 
             ActivityIndicatorRunning = false;
         }
@@ -176,7 +186,11 @@ namespace SSFR_Movies.ViewModels
 
                 if (MoviesStored)
                 {
-                    await FillMoviesList();
+                    //await FillMoviesList();
+                    Parallel.Invoke(async ()=>
+                    {
+                        await FillMoviesList();
+                    });
                 }
 
             }));
@@ -219,8 +233,11 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                await GetMoviesGenres();
-
+                Parallel.Invoke(async ()=>
+                {
+                    await GetMoviesGenres();
+                });
+                
             }));
         }
 
@@ -265,12 +282,13 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
-      
         public AllMoviesPageViewModel()
         {
             
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            MsgVisible = false;
 
+            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -286,16 +304,18 @@ namespace SSFR_Movies.ViewModels
             if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
                 GetStoreMoviesCommand.Execute(null);
-
+                 
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
                 ListVisible = false;
 
+                MsgVisible = false;
+
                 ActivityIndicatorRunning = true;
 
-                Task.Run(async() => { await FillMoviesList(); });
+                Task.Run(async () => { await FillMoviesList(); });
             }
         }
 

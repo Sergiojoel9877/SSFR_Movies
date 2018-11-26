@@ -198,8 +198,6 @@ namespace SSFR_Movies.Services
 
             var results = await m.Content.ReadAsStringAsync();
 
-            
-
             return JsonConvert.DeserializeObject<MovieVideo>(results);
 
         }
@@ -229,10 +227,20 @@ namespace SSFR_Movies.Services
                     r.PosterPath = PosterPath + r.PosterPath;
                 });
 
+                //Parallel.ForEach(movies.Results, (r)=>
+                //{
+                //    r.PosterPath = PosterPath + r.PosterPath;
+                //});
+
                 movies.Results.ForEach(e =>
                 {
-                    e.BackdropPath = Backdroppath + e.BackdropPath;
+                     e.BackdropPath = Backdroppath + e.BackdropPath;
                 });
+
+                //Parallel.ForEach(movies.Results, (e)=>
+                //{
+                //    e.BackdropPath = Backdroppath + e.BackdropPath;
+                //});
 
                 //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
                 Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));

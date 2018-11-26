@@ -216,17 +216,19 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
-
-            if (video.Results.Count() == 0)
+            Parallel.Invoke(async ()=>
             {
-                ScrollTrailer.IsVisible = false;
-            }
-            else
-            {
-                ScrollTrailer.IsVisible = true;
-            }
+                var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
+                if (video.Results.Count() == 0)
+                {
+                    ScrollTrailer.IsVisible = false;
+                }
+                else
+                {
+                    ScrollTrailer.IsVisible = true;
+                }
+            });
         }
         protected override void OnDisappearing()
         {
