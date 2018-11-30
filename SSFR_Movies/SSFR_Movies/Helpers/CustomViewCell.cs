@@ -9,6 +9,7 @@ using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -32,7 +33,6 @@ namespace SSFR_Movies.Helpers
         private Label releaseDate = null;
         public Label title = null;
         private Image pin2FavList = null;
-        private Label add2FavList = null;
         private StackLayout compat = null;
         private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
@@ -340,7 +340,7 @@ namespace SSFR_Movies.Helpers
                 }
                 catch (Exception e15)
                 {
-
+                    Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
         }
@@ -400,43 +400,6 @@ namespace SSFR_Movies.Helpers
             };
 
             await TextToSpeech.SpeakAsync(msg, settings);
-        }
-
-        
-    }
-
-    public static class Extensions
-    {
-        //Verify the length of the incoming string
-        //to assign its value to the initial range of the animation.........
-        public async static Task SetAnimation(this Label lbl)
-        {
-            await Task.Yield();
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var right = new Animation(d => lbl.TranslationX = d, 350, -500);
-
-                right.Commit(lbl, "Animation", 300, 7500, Easing.Linear, (d, b) =>
-                {
-                    lbl.TranslationX = 350;
-                }, () => true);
-            });
-        }
-
-        public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
-        {
-            await Task.Yield();
-
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id);
-
-            if (movieExists)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    pin2FavList.Source = "Star.png";
-                });
-            }
         }
     }
 }

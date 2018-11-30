@@ -51,6 +51,11 @@ namespace SSFR_Movies.Data
 
         }
 
+        public void Dispose()
+        {
+            this.Dispose();
+        }
+
         public async Task<bool> EntityExits(long obj)
         {
             try

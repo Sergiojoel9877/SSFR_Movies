@@ -55,7 +55,7 @@ namespace SSFR_Movies.Droid.Services
             {
                 create.Show();
             }
-            catch (WindowManagerBadTokenException e)
+            catch (WindowManagerBadTokenException)
             {
                 activity.FinishAffinity();
             }

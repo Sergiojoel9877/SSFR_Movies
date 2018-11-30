@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
 {
@@ -322,7 +323,7 @@ namespace SSFR_Movies.Helpers
                 }
                 catch (Exception e15)
                 {
-
+                    Debug.Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
         }

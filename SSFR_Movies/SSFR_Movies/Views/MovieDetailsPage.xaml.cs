@@ -6,6 +6,7 @@ using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,20 +56,23 @@ namespace SSFR_Movies.Views
 
             if (movieExists)
             {
-                AddToFavLayout.IsVisible = false;
-
-                QuitFromFavLayout.IsVisible = true;
-
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     AddToFav.Source = "Star.png";
+
+                    AddToFavLayout.IsVisible = false;
+
+                    QuitFromFavLayout.IsVisible = true;
                 });
             }
             else
             {
-                AddToFavLayout.IsVisible = true;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    AddToFavLayout.IsVisible = true;
 
-                QuitFromFavLayout.IsVisible = false;
+                    QuitFromFavLayout.IsVisible = false;
+                });
             }
         }
 
@@ -110,35 +114,33 @@ namespace SSFR_Movies.Views
                     if (movieExists)
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
-
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            AddToFav.Source = "Star.png";
-                        });
-
+                        AddToFav.Source = "Star.png";
                     }
-
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                    if (addMovie)
+                    else
                     {
-                        await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
-                        await SpeakNow("Added Successfully");
-
-                        Device.BeginInvokeOnMainThread(() =>
+                        if (addMovie)
                         {
-                            AddToFav.Source = "Star.png";
-                        });
 
-                        AddToFavLayout.IsVisible = false;
+                            //await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
 
-                        QuitFromFavLayout.IsVisible = true;
-                    }
+                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                            Device.BeginInvokeOnMainThread(()=>
+                            {
+                                AddToFav.Source = "Star.png";
+
+                                AddToFavLayout.IsVisible = false;
+
+                                QuitFromFavLayout.IsVisible = true;
+                            });
+                        }
+                    } 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    Debug.WriteLine("Error: " + e.InnerException);
                 }
             }
             else
@@ -167,22 +169,17 @@ namespace SSFR_Movies.Views
                 try
                 {
 
-                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
-
                     var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
                     if (deleteMovie)
                     {
                         await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
-                        
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            AddToFav.Source = "StarEmpty.png";
 
-                            AddToFavLayout.IsVisible = true;
+                        AddToFav.Source = "StarEmpty.png";
 
-                            QuitFromFavLayout.IsVisible = false;
-                        });
+                        AddToFavLayout.IsVisible = true;
+
+                        QuitFromFavLayout.IsVisible = false;
                     }
                 }
                 catch (Exception)
@@ -216,25 +213,22 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            Parallel.Invoke(async ()=>
-            {
-                var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
-                if (video.Results.Count() == 0)
-                {
-                    ScrollTrailer.IsVisible = false;
-                }
-                else
-                {
-                    ScrollTrailer.IsVisible = true;
-                }
-            });
+            if (video.Results.Count() == 0)
+            {
+                ScrollTrailer.IsVisible = false;
+            }
+            else
+            {
+                ScrollTrailer.IsVisible = true;
+            }
         }
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             
-            GC.Collect(0, GCCollectionMode.Optimized, false);
+            GC.Collect(1, GCCollectionMode.Optimized, false);
         }
 
         public async Task SpeakNow(string msg)

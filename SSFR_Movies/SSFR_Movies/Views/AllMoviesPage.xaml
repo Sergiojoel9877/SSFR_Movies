@@ -275,7 +275,7 @@
                 Source="NoInternet.png"
                 WidthRequest="300" />
 
-            <Label
+             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"
                 FontAttributes="Bold"
@@ -283,7 +283,7 @@
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
                 IsVisible="{Binding MsgVisible}"
-                Text="It seems like you don't have an internet connection!"
+                Text="{Binding MsgText}"
                 TextColor="White" />
 
             <ActivityIndicator

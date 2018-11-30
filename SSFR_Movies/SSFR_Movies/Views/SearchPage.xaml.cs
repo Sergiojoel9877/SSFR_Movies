@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -151,7 +152,7 @@ namespace SSFR_Movies.Views
                 }
                 catch (Exception e3)
                 {
-
+                    Debug.WriteLine("Error: " + e3.InnerException);
                     MoviesList.EndRefresh();
 
                 }
@@ -180,7 +181,7 @@ namespace SSFR_Movies.Views
                 Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
-
+                    Debug.WriteLine("Error: " + e4.InnerException);
                     Vibration.Vibrate();
 
                     return false;

@@ -25,8 +25,6 @@ namespace SSFR_Movies.Views
 	{
         FavoriteMoviesPageViewModel vm;
 
-        Label _title;
-
         public FavoritesMoviesPage ()
 		{
 			InitializeComponent ();

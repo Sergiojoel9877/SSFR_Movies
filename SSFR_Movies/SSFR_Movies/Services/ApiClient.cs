@@ -14,6 +14,9 @@ using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using System.Threading;
+using System.IO;
+using System.Diagnostics;
 
 namespace SSFR_Movies.Services
 {
@@ -26,8 +29,8 @@ namespace SSFR_Movies.Services
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
 
         private const string LANG = "en-US";
-
-        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
+        
+        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
             await Task.Yield();
 
@@ -53,14 +56,15 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
 
-                var m = await App.httpClient.GetAsync(requestUri);
-
-                var results = await m.Content.ReadAsStringAsync();
-                
-                return StoreInCache(results);
+                using (var m = await App.httpClient.GetAsync(requestUri))
+                {
+                    var results = await m.Content.ReadAsStringAsync();
+                    return StoreInCache(results);
+                }
             }
             catch (Exception e)
             {
+                Debug.WriteLine("Error: " + e.InnerException);
                 return false;
             }
             
@@ -86,17 +90,18 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/search/movie?api_key={API_KEY}&language={LANG}&query={name}&include_adult={include_adult.ToString().ToLower()}";
 
-                var m = await App.httpClient.GetAsync(requestUri);
+                using (var m = await App.httpClient.GetAsync(requestUri))
+                {
+                    var results = await m.Content.ReadAsStringAsync();
 
-                var results = await m.Content.ReadAsStringAsync();
+                    var movie = JsonConvert.DeserializeObject<Movie>(results);
 
-                var movie = JsonConvert.DeserializeObject<Movie>(results);
-                
-                return movie;
+                    return movie; 
+                }
             }
             catch (Exception e)
             {
-
+                Debug.WriteLine("Error: " + e.InnerException);
             }
 
             return new Movie();
@@ -127,19 +132,19 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={genre}";
 
-                var m = await App.httpClient.GetAsync(requestUri);
+                using (var m = await App.httpClient.GetAsync(requestUri))
+                {
+                    var results = await m.Content.ReadAsStringAsync();
 
-                var results = await m.Content.ReadAsStringAsync();
-
-                return StoreMovieByGenresInCache(results);
-
+                    return StoreMovieByGenresInCache(results);
+                }
             }
             catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
 
@@ -179,11 +184,12 @@ namespace SSFR_Movies.Services
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
 
-            var m = await App.httpClient.GetAsync(requestUri);
+            using (var m = await App.httpClient.GetAsync(requestUri))
+            {
+                var results = await m.Content.ReadAsStringAsync();
 
-            var results = await m.Content.ReadAsStringAsync();
-
-            return StoreGenresInCache(results);
+                return StoreGenresInCache(results); 
+            }
 
         }
 
@@ -207,7 +213,15 @@ namespace SSFR_Movies.Services
             var movies = JsonConvert.DeserializeObject<Genres>(results);
 
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
-            Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+            try
+            {
+                Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Debug.WriteLine("No storage left");
+                return false;
+            }
 
             return true;
         }
@@ -227,32 +241,29 @@ namespace SSFR_Movies.Services
                     r.PosterPath = PosterPath + r.PosterPath;
                 });
 
-                //Parallel.ForEach(movies.Results, (r)=>
-                //{
-                //    r.PosterPath = PosterPath + r.PosterPath;
-                //});
-
                 movies.Results.ForEach(e =>
                 {
                      e.BackdropPath = Backdroppath + e.BackdropPath;
                 });
 
-                //Parallel.ForEach(movies.Results, (e)=>
-                //{
-                //    e.BackdropPath = Backdroppath + e.BackdropPath;
-                //});
-
-                //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
-                Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
-
+                try
+                {
+                    //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
+                    Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
+                }
+                catch (DirectoryNotFoundException e)
+                {
+                    Debug.WriteLine("No storage left" + e.InnerException);
+                    return false;
+                }
                 return true;
             }
             catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
 

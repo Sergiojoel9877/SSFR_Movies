@@ -72,7 +72,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new Command(async () =>
             {
-                    await FillMoviesList();
+                await FillMoviesList();
             }));
         }
 

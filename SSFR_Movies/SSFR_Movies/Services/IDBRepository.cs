@@ -12,7 +12,7 @@ namespace SSFR_Movies.Services
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
   
-    public interface IDBRepository<T> where T : class
+    public interface IDBRepository<T> : IDisposable where T : class
     {
         Task<T> GetEntity(int id);
         Task<IEnumerable<T>> GetEntities();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Android.App;
@@ -21,6 +22,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
 {
     public class AdViewRenderer : ViewRenderer<AdMobView, AdView>
     {
+        [SecurityCritical]
         public AdViewRenderer(Context context) : base(context)
         {
 
@@ -38,7 +40,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 }
                 catch (DeadObjectException e1)
                 {
-                    
+                    System.Diagnostics.Debug.WriteLine("Error: " + e1.InnerException);
                 }
             }
         }
