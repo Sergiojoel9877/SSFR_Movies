@@ -300,6 +300,7 @@
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
+                RefreshControlColor="Blue"
                 IsPullToRefreshEnabled="True"
                 IsRefreshing="{Binding IsRefreshing}"
                 IsVisible="{Binding ListVisible}"

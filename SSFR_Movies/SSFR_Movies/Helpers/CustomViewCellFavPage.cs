@@ -13,10 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
 {
+    [Preserve(AllMembers = true)]
     public class CustomViewCellFavPage : ViewCell
     {
         #region Controls
@@ -375,7 +377,7 @@ namespace SSFR_Movies.Helpers
         }
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions()
             {
                 Volume = 1f,
                 Pitch = 1.0f

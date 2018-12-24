@@ -19,6 +19,7 @@ namespace SSFR_Movies.Droid
 #else
 [Application(Debuggable = false)]
 #endif
+    [Android.Runtime.Preserve(AllMembers = true)]
     public class MainApplication : Application
     {
         public static MainApplication instance;

@@ -15,6 +15,7 @@ using SSFR_Movies.Services;
 [assembly: Xamarin.Forms.Dependency(typeof(SSFR_Movies.Droid.ToastAlert))]
 namespace SSFR_Movies.Droid
 {
+    [Android.Runtime.Preserve(AllMembers = true)]
     [SecurityCritical]
     public class ToastAlert : IToast
     {

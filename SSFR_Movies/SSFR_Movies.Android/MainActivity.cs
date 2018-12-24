@@ -10,7 +10,7 @@ using Android.Content;
 
 namespace SSFR_Movies.Droid
 {
-
+    [Android.Runtime.Preserve(AllMembers = true)]
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

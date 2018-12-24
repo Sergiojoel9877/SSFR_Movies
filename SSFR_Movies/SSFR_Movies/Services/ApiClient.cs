@@ -1,29 +1,22 @@
-﻿using CommonServiceLocator;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using SSFR_Movies.Models;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.ObjectModel;
+﻿using MonkeyCache.FileStore;
 using Newtonsoft.Json;
-using MonkeyCache;
-using MonkeyCache.FileStore;
-using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
+using SSFR_Movies.Helpers;
+using SSFR_Movies.Models;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";

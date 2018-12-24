@@ -20,6 +20,7 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(AdMobView), typeof(AdViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
+    [Preserve(AllMembers = true)]
     public class AdViewRenderer : ViewRenderer<AdMobView, AdView>
     {
         [SecurityCritical]

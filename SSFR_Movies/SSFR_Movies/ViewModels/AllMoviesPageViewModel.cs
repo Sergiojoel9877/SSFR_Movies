@@ -20,7 +20,7 @@ namespace SSFR_Movies.ViewModels
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
@@ -127,7 +127,7 @@ namespace SSFR_Movies.ViewModels
         public async Task FillMoviesByGenreList()
         {
             await Task.Yield();
-
+    
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -222,8 +222,8 @@ namespace SSFR_Movies.ViewModels
                     {
                         MsgVisible = true;
                         MsgText = "Low storage left!";
-                        IsRunning = true;
-                        IsEnabled = true;
+                        IsRunning = false;
+                        IsEnabled = false;
                     });
                 }
 

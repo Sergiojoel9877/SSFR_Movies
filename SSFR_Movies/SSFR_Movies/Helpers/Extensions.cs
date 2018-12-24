@@ -3,9 +3,11 @@ using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Helpers
 {
+    [Preserve(AllMembers = true)]
     public static class Extensions
     {
         //Verify the length of the incoming string

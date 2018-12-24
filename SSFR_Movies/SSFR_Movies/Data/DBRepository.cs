@@ -13,7 +13,7 @@ namespace SSFR_Movies.Data
     /// Implements the CRUD methods of IDBRepository interface
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-  
+    [Preserve(AllMembers = true)]
     public class DBRepository<T> : IDBRepository<T> where T : BaseEntity
     {
         private readonly DatabaseContext<T> dbContext;

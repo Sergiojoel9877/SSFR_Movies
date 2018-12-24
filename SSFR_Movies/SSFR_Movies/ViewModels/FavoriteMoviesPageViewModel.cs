@@ -16,7 +16,7 @@ namespace SSFR_Movies.ViewModels
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        

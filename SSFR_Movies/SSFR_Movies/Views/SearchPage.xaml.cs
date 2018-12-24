@@ -11,10 +11,12 @@ using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
+    [Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchPage : ContentPage
     {
@@ -112,7 +114,6 @@ namespace SSFR_Movies.Views
                                 MovieResult.BackdropPath = Backdroppath;
 
                                 vm.AllMoviesList.Add(MovieResult);
-
                             }
 
                             BindingContext = vm;
@@ -154,7 +155,6 @@ namespace SSFR_Movies.Views
                 {
                     Debug.WriteLine("Error: " + e3.InnerException);
                     MoviesList.EndRefresh();
-
                 }
             });
         }
@@ -191,7 +191,7 @@ namespace SSFR_Movies.Views
 
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions()
             {
                 Volume = 1f,
                 Pitch = 1.0f

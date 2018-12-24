@@ -13,7 +13,7 @@ namespace SSFR_Movies.Data
     /// The DatabaseContext for the Database.
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-  
+    [Preserve(AllMembers = true)]
     public class DatabaseContext<T> : DbContext where T : class
     {
         public DbSet<T> Entity { get; set; }

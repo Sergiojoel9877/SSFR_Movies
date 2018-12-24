@@ -12,10 +12,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
+    [Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
@@ -91,6 +93,7 @@ namespace SSFR_Movies.Views
 
         private async Task AddToFavList()
         {
+            await Task.Yield();
 
             var movie = (Result)BindingContext;
 
@@ -123,7 +126,7 @@ namespace SSFR_Movies.Views
                         if (addMovie)
                         {
 
-                            //await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
+                            await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
 
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
 
@@ -233,7 +236,7 @@ namespace SSFR_Movies.Views
 
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions()
             {
                 Volume = 1f,
                 Pitch = 1.0f

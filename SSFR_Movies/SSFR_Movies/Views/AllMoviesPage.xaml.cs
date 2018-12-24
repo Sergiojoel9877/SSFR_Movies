@@ -23,8 +23,8 @@ namespace SSFR_Movies.Views
     /// <summary>
     /// AllMoviesPage Code Behind
     /// </summary>
-  
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [Preserve(AllMembers = true)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AllMoviesPage : ContentPage
     {
        
@@ -118,6 +118,8 @@ namespace SSFR_Movies.Views
             {
                 vm.MsgVisible = true;
                 vm.MsgText = "It seems like you don't have an internet connection!";
+                vm.IsEnabled = false;
+                vm.IsRunning = false;
             }
             else
             {
@@ -146,7 +148,7 @@ namespace SSFR_Movies.Views
 
         private async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions()
             {
                 Pitch = 1f,
                 Volume = 1f
@@ -193,6 +195,8 @@ namespace SSFR_Movies.Views
                     vm.MsgVisible = true;
                     vm.MsgText = "It seems like you don't have an internet connection!";
                     vm.ListVisible = false;
+                    vm.IsRunning = false;
+                    vm.IsEnabled = false;
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                 });
             }
@@ -311,7 +315,12 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
-            MoviesList.BeginRefresh();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                vm.IsEnabled = true;
+                vm.IsRunning = true;
+                MoviesList.BeginRefresh();
+            });
 
             MoviesList.ItemsSource = null;
 
@@ -352,14 +361,23 @@ namespace SSFR_Movies.Views
 
                         MoviesList.EndRefresh();
 
+                        vm.IsEnabled = false;
+
+                        vm.IsRunning = false;
+
                     });
                 }
                 else
                 {
-                    MoviesList.EndRefresh();
-
+                 
                     MoviesList.ItemsSource = vm.AllMoviesList;
 
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MoviesList.EndRefresh();
+                        vm.IsRunning = false;
+                        vm.IsEnabled = false;
+                    });
                 }
             }
             catch (Exception e2)
@@ -370,6 +388,14 @@ namespace SSFR_Movies.Views
                     Debug.WriteLine("Error: " + e2.InnerException);
                     return false;
                 });
+
+                Device.BeginInvokeOnMainThread(()=>
+                {
+                    vm.IsEnabled = false;
+                    vm.IsRunning = false;
+                    vm.MsgVisible = true;
+                    vm.MsgText = "An unexpected error has ocurred, try again.";
+                });  
 
                 MoviesList.EndRefresh();
                 

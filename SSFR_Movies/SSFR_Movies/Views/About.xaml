@@ -22,7 +22,7 @@
                         FontSize="Large"
                         HorizontalOptions="CenterAndExpand"
                         HorizontalTextAlignment="Center"
-                        Text="SSFR Movies 1.0.3"
+                        Text="SSFR Movies 1.0.4"
                         TextColor="White" />
 
                     <StackLayout

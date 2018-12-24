@@ -16,6 +16,7 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(CloseBackPress))]
 namespace SSFR_Movies.Droid.Services
 {
+    [Android.Runtime.Preserve(AllMembers = true)]
     public class CloseBackPress : Xamarin.Forms.Platform.Android.FormsAppCompatActivity, ICloseBackPress
     {
 
