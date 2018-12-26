@@ -103,11 +103,26 @@ namespace SSFR_Movies.Views
             Scrollview.Orientation = ScrollOrientation.Horizontal;
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-
-            Task.Factory.StartNew(async () => { await SpeakNow("Initializing resources, please wait a sencond.");});
             
+            Task.Run(async ()=>
+            {
+                await InitializeMsg(async () =>
+                {
+                    await SpeakNow("Initializing resources, please wait a sencond.");
+                });
+            });
         }
-        
+
+        private async Task InitializeMsg(Func<Task> action)
+        {
+            await action();
+        }
+
+        public int Sumar()
+        {
+            return 0;
+        }
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();
