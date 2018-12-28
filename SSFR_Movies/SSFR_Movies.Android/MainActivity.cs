@@ -23,16 +23,9 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            Forms.SetFlags("FastRenderers_Experimental", "CollectionView_Exeperimental", "Visual_Experimental", "Shell_Experimental");
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-
-            //ImageService.Instance.Initialize(new FFImageLoading.Config.Configuration
-            //{
-            //    ClearMemoryCacheOnOutOfMemory = true,
-            //    InvalidateLayout = true,
-            //    DownsampleInterpolationMode = FFImageLoading.Work.InterpolationMode.Low
-            //});
             
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 

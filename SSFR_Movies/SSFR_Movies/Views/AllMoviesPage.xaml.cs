@@ -188,7 +188,7 @@ namespace SSFR_Movies.Views
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
-                    MoviesList.BeginRefresh();
+                    //MoviesList.BeginRefresh();
                 });
 
                 vm.GetStoreMoviesCommand.Execute(null);
@@ -197,7 +197,7 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
-                    MoviesList.EndRefresh();
+                    //MoviesList.EndRefresh();
                 });
             }
             else
@@ -248,7 +248,7 @@ namespace SSFR_Movies.Views
 
                     Device.BeginInvokeOnMainThread(()=>
                     {
-                        MoviesList.BeginRefresh();
+                        //MoviesList.BeginRefresh();
                     });
 
                     //Parallel.Invoke(async ()=>
@@ -307,7 +307,7 @@ namespace SSFR_Movies.Views
 
                         Device.BeginInvokeOnMainThread( () =>
                         {
-                            MoviesList.EndRefresh();
+                            //MoviesList.EndRefresh();
                         });
                     }
                 }
@@ -331,7 +331,7 @@ namespace SSFR_Movies.Views
             {
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
-                MoviesList.BeginRefresh();
+                //MoviesList.BeginRefresh();
             });
 
             MoviesList.ItemsSource = null;
@@ -371,7 +371,7 @@ namespace SSFR_Movies.Views
 
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
-                        MoviesList.EndRefresh();
+                        //MoviesList.EndRefresh();
 
                         vm.IsEnabled = false;
 
@@ -386,7 +386,7 @@ namespace SSFR_Movies.Views
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        MoviesList.EndRefresh();
+                        //MoviesList.EndRefresh();
                         vm.IsRunning = false;
                         vm.IsEnabled = false;
                     });
@@ -409,7 +409,7 @@ namespace SSFR_Movies.Views
                     vm.MsgText = "An unexpected error has ocurred, try again.";
                 });  
 
-                MoviesList.EndRefresh();
+                //MoviesList.EndRefresh();
                 
             }
         }

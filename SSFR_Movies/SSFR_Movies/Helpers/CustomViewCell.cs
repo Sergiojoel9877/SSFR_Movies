@@ -4,13 +4,11 @@ using FFImageLoading.Transformations;
 using Plugin.Connectivity;
 using SSFR_Movies.Data;
 using SSFR_Movies.Models;
-using SSFR_Movies.ResourceDictionaries;
 using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -19,7 +17,7 @@ using Xamarin.Forms.Internals;
 namespace SSFR_Movies.Helpers
 {
     [Preserve(AllMembers = true)]
-    public class CustomViewCell : ViewCell
+    public class CustomViewCell : FlexLayout
     {
         #region Controls
         private CachedImage blurCachedImage = null;
@@ -44,16 +42,17 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCell()
         {
-            
+
             BindingContext = BindingContext;
 
             FlexLayout = new FlexLayout()
             {
+                HeightRequest = 300,
                 Direction = FlexDirection.Column,
                 Margin = 16,
                 AlignContent = FlexAlignContent.Center
             };
-
+            
             Container = new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
@@ -220,14 +219,12 @@ namespace SSFR_Movies.Helpers
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
            
-            FlexLayout.Children.Add(Container);
-
+            Children.Add(Container);
+            
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
 
             AddToFavListCtxAct.Clicked += AddToFavList;
 
-            ContextActions.Add(AddToFavListCtxAct);
-            
             tap = new TapGestureRecognizer();
 
             imageTapped = new TapGestureRecognizer();
@@ -240,41 +237,39 @@ namespace SSFR_Movies.Helpers
 
             cachedImage.GestureRecognizers.Add(imageTapped);
 
-            View = FlexLayout;
+            //View = FlexLayout;
 
         }
 
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
+        //protected async override void OnAppearing()
+        //{
+        //    base.OnAppearing();
 
-            var result = BindingContext as Result;
+        //    var result = BindingContext as Result;
 
-            await result.IsPresentInFavList(pin2FavList, result.Id);
+        //    await result.IsPresentInFavList(pin2FavList, result.Id);
+        //}
 
-        }
-        
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread( () =>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
                 BindingContext = null;
             });
         }
-
         protected override void OnBindingContextChanged()
         {
-           
+
             pin2FavList.Source = "StarEmpty.png";
 
             blurCachedImage.Source = null;
 
             cachedImage.Source = null;
-            
-            var item = BindingContext as SSFR_Movies.Models.Result;
+
+            var item = BindingContext as Result;
 
             if (item == null)
             {
@@ -284,7 +279,7 @@ namespace SSFR_Movies.Helpers
             blurCachedImage.Source = item.PosterPath;
 
             cachedImage.Source = item.PosterPath;
-            
+
             base.OnBindingContextChanged();
         }
 
@@ -321,7 +316,7 @@ namespace SSFR_Movies.Helpers
 
                         await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
                     }
-                    
+
                     var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
                     if (addMovie)
@@ -337,7 +332,7 @@ namespace SSFR_Movies.Helpers
                         await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
 
                         await SpeakNow("Added Successfully");
-               
+
                     }
                 }
                 catch (Exception e15)
