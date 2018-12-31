@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -42,16 +43,18 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCell()
         {
+            HeightRequest = 300;
+            Direction = FlexDirection.Column;
+            Margin = 16;
+            AlignContent = FlexAlignContent.Center;
 
-            BindingContext = BindingContext;
-
-            FlexLayout = new FlexLayout()
-            {
-                HeightRequest = 300,
-                Direction = FlexDirection.Column,
-                Margin = 16,
-                AlignContent = FlexAlignContent.Center
-            };
+            //FlexLayout = new FlexLayout()
+            //{
+            //    HeightRequest = 300,
+            //    Direction = FlexDirection.Column,
+            //    Margin = 16,
+            //    AlignContent = FlexAlignContent.Center
+            //};
             
             Container = new StackLayout()
             {
@@ -81,13 +84,13 @@ namespace SSFR_Movies.Helpers
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
-                HeightRequest = 280,
+                HeightRequest = 350,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 2,
+                Scale = 3,
                 LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
-                WidthRequest = 280,
+                WidthRequest = 350,
                 Transformations = Blur
             };
 
@@ -114,6 +117,7 @@ namespace SSFR_Movies.Helpers
                 CornerRadius = 5,
                 HorizontalOptions = LayoutOptions.Center,
             };
+            FrameUnderImages.On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6f);
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
             {

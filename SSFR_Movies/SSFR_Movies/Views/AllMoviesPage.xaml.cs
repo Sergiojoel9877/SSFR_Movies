@@ -41,6 +41,8 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
+            MessageImg.IsVisible = false;
+
             //Message.IsVisible = false;
 
             //MessageImg.IsVisible = false;

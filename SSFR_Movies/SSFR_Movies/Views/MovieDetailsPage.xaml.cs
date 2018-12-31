@@ -30,19 +30,26 @@ namespace SSFR_Movies.Views
 
             IsPresentInFavList(movie);
 
+            AddToFav.Source = "StarEmpty.png";
+
             BindingContext = movie;
 
-            tap = new TapGestureRecognizer();
+            Scroll.TranslationX = -500;
 
-            tap.Tapped += Tap_Tapped;
+            //tap = new TapGestureRecognizer();
 
-            quitTap = new TapGestureRecognizer();
+            //tap.Tapped += Tap_Tapped;
 
-            quitTap.Tapped += QuitFromFavorites;
+            //quitTap = new TapGestureRecognizer();
 
-            QuitFromFavLayout.GestureRecognizers.Add(quitTap);
+            //quitTap.Tapped += QuitFromFavorites;
 
-            AddToFavLayout.GestureRecognizers.Add(tap);
+            //QuitFromFavLayout.GestureRecognizers.Add(quitTap);
+
+            QuitFromFavLayout.Clicked += QuitFromFavorites;
+
+            //AddToFavLayout.GestureRecognizers.Add(tap);
+            AddToFavLayout.Clicked += Tap_Tapped;
 
             Task.Run(async () =>
             {
@@ -211,8 +218,10 @@ namespace SSFR_Movies.Views
             IsPresentInFavList(item);
 
             var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);
+
+            var t4 = Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
             
-            await Task.WhenAll(t3);
+            await Task.WhenAll(t3, t4);
 
             var movie = (Result)BindingContext;
 
