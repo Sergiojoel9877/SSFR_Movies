@@ -5,10 +5,8 @@ using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -21,12 +19,17 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
-        TapGestureRecognizer tap = null;
-        TapGestureRecognizer quitTap = null;
-
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
+
+            PosterPath.FadeAnimationEnabled = true;
+
+            var tap = new TapGestureRecognizer();
+
+            tap.Tapped += TitleTapped;
+
+            PosterPath.GestureRecognizers.Add(tap);
 
             IsPresentInFavList(movie);
 
@@ -36,19 +39,8 @@ namespace SSFR_Movies.Views
 
             Scroll.TranslationX = -500;
 
-            //tap = new TapGestureRecognizer();
-
-            //tap.Tapped += Tap_Tapped;
-
-            //quitTap = new TapGestureRecognizer();
-
-            //quitTap.Tapped += QuitFromFavorites;
-
-            //QuitFromFavLayout.GestureRecognizers.Add(quitTap);
-
             QuitFromFavLayout.Clicked += QuitFromFavorites;
-
-            //AddToFavLayout.GestureRecognizers.Add(tap);
+            
             AddToFavLayout.Clicked += Tap_Tapped;
 
             Task.Run(async () =>
@@ -267,16 +259,9 @@ namespace SSFR_Movies.Views
 
         private async void TitleTapped(object sender, EventArgs e)
         {
-            var tilte = ((Label)sender).Text;
+           await PosterPath.ScaleTo(1.3, 500, Easing.Linear);
 
-            if (tilte.Length > 25)
-            {
-                var t = PosterPath.FadeTo(0, 500, Easing.Linear);
-
-                var t3 = PosterPath.FadeTo(1, 1000, Easing.Linear);
-
-                await Task.WhenAll(t, t3);
-            }
+           await PosterPath.ScaleTo(1, 500, Easing.Linear);
         }
     }
 }
