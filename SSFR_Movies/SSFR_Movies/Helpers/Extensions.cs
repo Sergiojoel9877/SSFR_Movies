@@ -12,10 +12,8 @@ namespace SSFR_Movies.Helpers
     {
         //Verify the length of the incoming string
         //to assign its value to the initial range of the animation.........
-        public async static Task SetAnimation(this Label lbl)
+        public static void SetAnimation(this Label lbl)
         {
-            await Task.Yield();
-
             Device.BeginInvokeOnMainThread(() =>
             {
                 var right = new Animation(d => lbl.TranslationX = d, 350, -500);

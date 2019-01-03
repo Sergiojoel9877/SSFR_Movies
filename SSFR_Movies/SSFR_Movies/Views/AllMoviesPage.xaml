@@ -299,7 +299,7 @@
             <CollectionView x:Name="MoviesList" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout>
+                        <StackLayout CompressedLayout.IsHeadless="True">
                             <helpers:CustomViewCell HeightRequest="350"/>
                         </StackLayout>
                     </DataTemplate>

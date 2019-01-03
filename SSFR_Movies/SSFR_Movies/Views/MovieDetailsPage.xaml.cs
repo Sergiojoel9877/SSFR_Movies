@@ -42,12 +42,8 @@ namespace SSFR_Movies.Views
             QuitFromFavLayout.Clicked += QuitFromFavorites;
             
             AddToFavLayout.Clicked += Tap_Tapped;
-
-            Task.Run(async () =>
-            {
-                await MovieTitle.SetAnimation();
-            });
             
+            MovieTitle.SetAnimation();
         }
 
         private async void IsPresentInFavList(Result m)

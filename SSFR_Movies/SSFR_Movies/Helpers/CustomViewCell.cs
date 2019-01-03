@@ -152,15 +152,10 @@ namespace SSFR_Movies.Helpers
                 LineBreakMode = LineBreakMode.TailTruncation,
                 Margin = new Thickness(16, 0, 0, 0),
                 FontFamily = "Arial",
-                FontAttributes = FontAttributes.Bold,
-               
+                FontAttributes = FontAttributes.Bold
             };
-            title.SetBinding(Label.TextProperty, "Title");
 
-            Task.Run(async () =>
-            {
-                await title.SetAnimation();
-            });
+            title.SetBinding(Label.TextProperty, "Title");
             
             scrollTitle.Content = title;
 
@@ -266,7 +261,7 @@ namespace SSFR_Movies.Helpers
         }
         protected override void OnBindingContextChanged()
         {
-
+         
             pin2FavList.Source = "StarEmpty.png";
 
             blurCachedImage.Source = null;

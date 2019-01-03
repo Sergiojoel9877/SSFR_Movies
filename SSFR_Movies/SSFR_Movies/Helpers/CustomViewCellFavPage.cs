@@ -155,10 +155,7 @@ namespace SSFR_Movies.Helpers
             };
             title.SetBinding(Label.TextProperty, "Title");
 
-            Task.Run(async () =>
-            {
-                await title.SetAnimation();
-            });
+            title.SetAnimation();
 
             scrollTitle.Content = title;
 

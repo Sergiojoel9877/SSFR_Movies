@@ -97,19 +97,20 @@ namespace SSFR_Movies.Views
             };
 
             ToolbarItems.Add(searchToolbarItem);
+
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
             
-            Task.Run(async ()=>
-            {
-                await InitializeMsg(async () =>
-                {
-                    await SpeakNow("Initializing resources, please wait a sencond.");
-                });
-            });
+            //Task.Run(async ()=>
+            //{
+            //    await InitializeMsg(async () =>
+            //    {
+            //        await SpeakNow("Initializing resources, please wait a sencond.");
+            //    });
+            //});
         }
 
         private async Task InitializeMsg(Func<Task> action)
