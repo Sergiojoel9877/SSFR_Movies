@@ -8,9 +8,10 @@
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513"
     NavigationPage.HasNavigationBar="False">
+
     <ContentPage.Content>
 
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True" BackgroundColor="#161513">
 
             <StackLayout
                 x:Name="Bar"
@@ -50,10 +51,10 @@
             <ActivityIndicator
                 x:Name="activityIndicator"
                 BackgroundColor="Transparent"
-                HeightRequest="50"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="FillAndExpand"
-                WidthRequest="50"
+                HeightRequest="40"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                WidthRequest="40"
                 Color="#0088FF" />
 
             <ListView

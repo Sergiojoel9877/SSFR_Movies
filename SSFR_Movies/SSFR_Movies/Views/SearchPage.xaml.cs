@@ -63,6 +63,8 @@ namespace SSFR_Movies.Views
 
             activityIndicator.IsRunning = true;
 
+            MoviesList.IsVisible = false;
+
             var key = ((SearchBar)sender).Text;
 
             if (key == "")
@@ -127,7 +129,9 @@ namespace SSFR_Movies.Views
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
-                            
+
+                            MoviesList.IsVisible = true;
+
                             await SpeakNow("Search completed");
 
                         }
@@ -141,6 +145,8 @@ namespace SSFR_Movies.Views
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
+
+                            MoviesList.IsVisible = true;
 
                             DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
@@ -202,6 +208,8 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
+            Bar.IsVisible = false;
+
             await Navigation.PopAsync(false);
         }
     }

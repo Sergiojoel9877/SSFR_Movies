@@ -25,7 +25,7 @@ namespace SSFR_Movies.ViewModels
     {
         public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
 
-        private bool listVisible = false;
+        private bool listVisible = true;
         public bool ListVisible
         {
             get => listVisible;
@@ -58,6 +58,13 @@ namespace SSFR_Movies.ViewModels
         {
             get => isEnabled;
             set => SetProperty(ref isEnabled, value);
+        }
+        
+        private bool isMLEnabled = true;
+        public bool IsMLEnabled
+        {
+            get => isMLEnabled;
+            set => SetProperty(ref isMLEnabled, value);
         }
 
         private bool isRunning;
@@ -98,6 +105,7 @@ namespace SSFR_Movies.ViewModels
 
             Device.BeginInvokeOnMainThread(() =>
             {
+                ListVisible = false;
                 IsEnabled = true;
                 IsRunning = true;
             });
@@ -150,6 +158,7 @@ namespace SSFR_Movies.ViewModels
 
             Device.BeginInvokeOnMainThread(()=>
             {
+                ListVisible = true;
                 IsRunning = false;
                 IsEnabled = false;
             });
@@ -210,6 +219,7 @@ namespace SSFR_Movies.ViewModels
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    ListVisible = false;
                     IsRunning = true;
                     IsEnabled = true;
                 });
@@ -334,6 +344,7 @@ namespace SSFR_Movies.ViewModels
         {
             Device.BeginInvokeOnMainThread(()=>
             {
+                ListVisible = false;
                 MsgVisible = false;
                 IsRunning = true;
                 IsEnabled = true;
@@ -361,16 +372,6 @@ namespace SSFR_Movies.ViewModels
             //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
             if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
-                //Parallel.Invoke(()=>
-                //{
-                //    GetStoreMoviesCommand.Execute(null);
-                //});
-
-                //Parallel.Invoke(() =>
-                //{
-                //    GetMoviesGenresCommand.Execute(null);
-                //});
-
                 GetStoreMoviesCommand.Execute(null);
 
                 GetMoviesGenresCommand.Execute(null);
@@ -389,24 +390,5 @@ namespace SSFR_Movies.ViewModels
                 Task.Factory.StartNew(async () => { await FillMoviesList(); });
             }
         }
-
-        //private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
-        //{
-        //    Device.BeginInvokeOnMainThread(() =>
-        //    {
-        //        if (e.IsConnected)
-        //        {
-        //            MsgVisible = false;
-        //        }
-        //        else
-        //        {
-        //            MsgVisible = true;
-        //        }
-        //    });
-
-        //    GetStoreMoviesCommand.Execute(null);
-
-        //    GetMoviesGenresCommand.Execute(null);
-        //}
     }
 }
