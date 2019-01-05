@@ -68,7 +68,15 @@
                 RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <helpers:CustomViewCell />
+
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCell>
+                                
+                                <!---->
+                                
+                            </helpers:CustomViewCell>
+                        </StackLayout>
+                       
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
