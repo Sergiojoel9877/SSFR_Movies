@@ -332,6 +332,8 @@ namespace SSFR_Movies.Views
 
             Device.BeginInvokeOnMainThread(() =>
             {
+
+                vm.ListVisible = false;
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
                 //MoviesList.BeginRefresh();
@@ -376,6 +378,8 @@ namespace SSFR_Movies.Views
 
                         //MoviesList.EndRefresh();
 
+                        vm.ListVisible = true;
+
                         vm.IsEnabled = false;
 
                         vm.IsRunning = false;
@@ -390,6 +394,8 @@ namespace SSFR_Movies.Views
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         //MoviesList.EndRefresh();
+
+                        vm.ListVisible = true;
                         vm.IsRunning = false;
                         vm.IsEnabled = false;
                     });
@@ -406,6 +412,8 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
+
+                    vm.ListVisible = false;
                     vm.IsEnabled = false;
                     vm.IsRunning = false;
                     vm.MsgVisible = true;

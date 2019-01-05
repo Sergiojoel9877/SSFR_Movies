@@ -181,24 +181,12 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 40
             };
 
-            //add2FavList = new Label()
-            //{
-            //    FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
-            //    TextColor = Color.White,
-            //    HorizontalTextAlignment = TextAlignment.Center,
-            //    VerticalTextAlignment = TextAlignment.End,
-            //    Text = "Add To Fav. List",
-            //    FontAttributes = FontAttributes.Bold
-            //};
-
             compat.Children.Add(pin2FavList);
-            //compat.Children.Add(add2FavList);
 
             gridInsideFrame.Children.Add(scrollTitle, 0, 0);
             Grid.SetColumnSpan(scrollTitle, 3);
             gridInsideFrame.Children.Add(releaseDate, 0, 1);
             gridInsideFrame.Children.Add(compat, 2, 1);
-            //Grid.SetRowSpan(compat, 2);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage, AbsoluteLayoutFlags.All);
@@ -269,7 +257,9 @@ namespace SSFR_Movies.Helpers
             cachedImage.Source = null;
 
             var item = BindingContext as Result;
-
+            
+            ExecuteAction(async ()=> { await item.IsPresentInFavList(pin2FavList, item.Id); });
+                                                    
             if (item == null)
             {
                 return;
@@ -280,6 +270,11 @@ namespace SSFR_Movies.Helpers
             cachedImage.Source = item.PosterPath;
 
             base.OnBindingContextChanged();
+        }
+        
+        void ExecuteAction(Func<Task> exe)
+        {
+            Task.Run(() => { exe(); });
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)

@@ -288,15 +288,15 @@
 
             <ActivityIndicator
                 x:Name="activityIndicator"
-                HeightRequest="50"
-                HorizontalOptions="FillAndExpand"
+                HeightRequest="40"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
                 IsRunning="{Binding IsRunning}"
                 IsVisible="{Binding IsEnabled}"
-                VerticalOptions="FillAndExpand"
-                WidthRequest="50"
+                WidthRequest="40"
                 Color="#FFF" />
 
-            <CollectionView x:Name="MoviesList" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">

@@ -63,6 +63,8 @@ namespace SSFR_Movies.Views
 
             activityIndicator.IsRunning = true;
 
+            //MoviesList.IsVisible = false;
+
             var key = ((SearchBar)sender).Text;
 
             if (key == "")
@@ -98,7 +100,7 @@ namespace SSFR_Movies.Views
 
                         var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
 
-                        if (movie_results.Results.Capacity != 0)
+                        if (movie_results.Results.Count != 0)
                         {
 
                             vm.AllMoviesList.Clear();
@@ -118,6 +120,8 @@ namespace SSFR_Movies.Views
 
                             BindingContext = vm;
 
+                            //MoviesList.IsVisible = true;
+
                             MoviesList.ItemsSource = vm.AllMoviesList;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
@@ -127,7 +131,7 @@ namespace SSFR_Movies.Views
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
-                            
+
                             await SpeakNow("Search completed");
 
                         }
@@ -141,6 +145,8 @@ namespace SSFR_Movies.Views
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
+
+                            MoviesList.IsVisible = true;
 
                             DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
@@ -202,6 +208,8 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
+            Bar.IsVisible = false;
+
             await Navigation.PopAsync(false);
         }
     }

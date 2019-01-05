@@ -33,8 +33,15 @@ namespace SSFR_Movies
            
             InitializeComponent();
 
+            //InitializeAsync(async ()=>
+            //{
+            //    await Task.Yield();
+
+              
+            //});
+
             ContainerInitializer.Initialize();
-            
+
             var mainPage = new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")
@@ -44,6 +51,11 @@ namespace SSFR_Movies
     
             SetHttpClient();
 
+        }
+
+        async void InitializeAsync(Func<Task> action)
+        {
+            await action();
         }
 
         protected override void OnStart ()
