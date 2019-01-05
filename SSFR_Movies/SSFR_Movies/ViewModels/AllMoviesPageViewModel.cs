@@ -60,6 +60,13 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref isEnabled, value);
         }
 
+        private bool animationEnabled = false;
+        public bool AnimationEnabled
+        {
+            get => animationEnabled;
+            set => SetProperty(ref animationEnabled, value);
+        }
+
         private bool isRunning;
         public bool IsRunning
         {
