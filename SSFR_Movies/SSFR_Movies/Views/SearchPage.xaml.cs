@@ -50,7 +50,7 @@ namespace SSFR_Movies.Views
 
             BindingContext = null;
 
-            GC.Collect(0, GCCollectionMode.Optimized, false);
+            //GC.Collect(0, GCCollectionMode.Optimized, false);
 
         }
         
@@ -63,7 +63,7 @@ namespace SSFR_Movies.Views
 
             activityIndicator.IsRunning = true;
 
-            //MoviesList.IsVisible = false;
+            MoviesList.IsVisible = false;
 
             var key = ((SearchBar)sender).Text;
 
@@ -76,7 +76,7 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            MoviesList.BeginRefresh();
+            //MoviesList.BeginRefresh();
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -120,13 +120,13 @@ namespace SSFR_Movies.Views
 
                             BindingContext = vm;
 
-                            //MoviesList.IsVisible = true;
+                            MoviesList.IsVisible = true;
 
                             MoviesList.ItemsSource = vm.AllMoviesList;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
-                            MoviesList.EndRefresh();
+                            //MoviesList.EndRefresh();
                             
                             activityIndicator.IsVisible = false;
 
@@ -138,7 +138,7 @@ namespace SSFR_Movies.Views
                         else
                         {
                             
-                            MoviesList.EndRefresh();
+                            //MoviesList.EndRefresh();
 
                             MoviesList.ItemsSource = null;
 
@@ -160,7 +160,7 @@ namespace SSFR_Movies.Views
                 catch (Exception e3)
                 {
                     Debug.WriteLine("Error: " + e3.InnerException);
-                    MoviesList.EndRefresh();
+                    //MoviesList.EndRefresh();
                 }
             });
         }

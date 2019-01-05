@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    x:Name="Content"
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -57,7 +58,17 @@
                 WidthRequest="40"
                 Color="#0088FF" />
 
-            <ListView
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCell HeightRequest="350"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--<ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
@@ -72,14 +83,14 @@
                         <StackLayout CompressedLayout.IsHeadless="True">
                             <helpers:CustomViewCell>
                                 
-                                <!---->
+                                --><!----><!--
                                 
                             </helpers:CustomViewCell>
                         </StackLayout>
                        
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
