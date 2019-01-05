@@ -233,10 +233,10 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                Parallel.Invoke(async ()=>
-                {
+                //Parallel.Invoke(async ()=>
+                //{
                     await GetMoviesGenres();
-                });
+                //});
                 
             }));
         }
