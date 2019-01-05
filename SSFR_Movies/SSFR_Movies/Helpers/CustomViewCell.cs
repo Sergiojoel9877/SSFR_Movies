@@ -4,19 +4,21 @@ using FFImageLoading.Transformations;
 using Plugin.Connectivity;
 using SSFR_Movies.Data;
 using SSFR_Movies.Models;
-using SSFR_Movies.ResourceDictionaries;
 using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Helpers
 {
-    public class CustomViewCell : ViewCell
+    [Preserve(AllMembers = true)]
+    public class CustomViewCell : FlexLayout
     {
         #region Controls
         private CachedImage blurCachedImage = null;
@@ -32,7 +34,6 @@ namespace SSFR_Movies.Helpers
         private Label releaseDate = null;
         public Label title = null;
         private Image pin2FavList = null;
-        private Label add2FavList = null;
         private StackLayout compat = null;
         private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
@@ -42,16 +43,19 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCell()
         {
+            HeightRequest = 300;
+            Direction = FlexDirection.Column;
+            Margin = 16;
+            AlignContent = FlexAlignContent.Center;
+
+            //FlexLayout = new FlexLayout()
+            //{
+            //    HeightRequest = 300,
+            //    Direction = FlexDirection.Column,
+            //    Margin = 16,
+            //    AlignContent = FlexAlignContent.Center
+            //};
             
-            BindingContext = BindingContext;
-
-            FlexLayout = new FlexLayout()
-            {
-                Direction = FlexDirection.Column,
-                Margin = 16,
-                AlignContent = FlexAlignContent.Center
-            };
-
             Container = new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
@@ -80,13 +84,13 @@ namespace SSFR_Movies.Helpers
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
-                HeightRequest = 280,
+                HeightRequest = 350,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 2,
+                Scale = 3,
                 LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
-                WidthRequest = 280,
+                WidthRequest = 350,
                 Transformations = Blur
             };
 
@@ -113,6 +117,7 @@ namespace SSFR_Movies.Helpers
                 CornerRadius = 5,
                 HorizontalOptions = LayoutOptions.Center,
             };
+            FrameUnderImages.On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6f);
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
             {
@@ -147,15 +152,10 @@ namespace SSFR_Movies.Helpers
                 LineBreakMode = LineBreakMode.TailTruncation,
                 Margin = new Thickness(16, 0, 0, 0),
                 FontFamily = "Arial",
-                FontAttributes = FontAttributes.Bold,
-               
+                FontAttributes = FontAttributes.Bold
             };
-            title.SetBinding(Label.TextProperty, "Title");
 
-            Task.Run(async () =>
-            {
-                await title.SetAnimation();
-            });
+            title.SetBinding(Label.TextProperty, "Title");
             
             scrollTitle.Content = title;
 
@@ -218,14 +218,12 @@ namespace SSFR_Movies.Helpers
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
            
-            FlexLayout.Children.Add(Container);
-
+            Children.Add(Container);
+            
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
 
             AddToFavListCtxAct.Clicked += AddToFavList;
 
-            ContextActions.Add(AddToFavListCtxAct);
-            
             tap = new TapGestureRecognizer();
 
             imageTapped = new TapGestureRecognizer();
@@ -238,41 +236,39 @@ namespace SSFR_Movies.Helpers
 
             cachedImage.GestureRecognizers.Add(imageTapped);
 
-            View = FlexLayout;
+            //View = FlexLayout;
 
         }
 
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
+        //protected async override void OnAppearing()
+        //{
+        //    base.OnAppearing();
 
-            var result = BindingContext as Result;
+        //    var result = BindingContext as Result;
 
-            await result.IsPresentInFavList(pin2FavList, result.Id);
+        //    await result.IsPresentInFavList(pin2FavList, result.Id);
+        //}
 
-        }
-        
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread( () =>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
                 BindingContext = null;
             });
         }
-
         protected override void OnBindingContextChanged()
         {
-           
+         
             pin2FavList.Source = "StarEmpty.png";
 
             blurCachedImage.Source = null;
 
             cachedImage.Source = null;
-            
-            var item = BindingContext as SSFR_Movies.Models.Result;
+
+            var item = BindingContext as Result;
 
             if (item == null)
             {
@@ -282,7 +278,7 @@ namespace SSFR_Movies.Helpers
             blurCachedImage.Source = item.PosterPath;
 
             cachedImage.Source = item.PosterPath;
-            
+
             base.OnBindingContextChanged();
         }
 
@@ -319,7 +315,7 @@ namespace SSFR_Movies.Helpers
 
                         await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
                     }
-                    
+
                     var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
                     if (addMovie)
@@ -335,12 +331,12 @@ namespace SSFR_Movies.Helpers
                         await pin2FavList.ScaleTo(1, 500, Easing.BounceIn);
 
                         await SpeakNow("Added Successfully");
-               
+
                     }
                 }
                 catch (Exception e15)
                 {
-
+                    Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
         }
@@ -393,50 +389,13 @@ namespace SSFR_Movies.Helpers
         }
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions
             {
                 Volume = 1f,
                 Pitch = 1.0f
             };
 
             await TextToSpeech.SpeakAsync(msg, settings);
-        }
-
-        
-    }
-
-    public static class Extensions
-    {
-        //Verify the length of the incoming string
-        //to assign its value to the initial range of the animation.........
-        public async static Task SetAnimation(this Label lbl)
-        {
-            await Task.Yield();
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                var right = new Animation(d => lbl.TranslationX = d, 350, -500);
-
-                right.Commit(lbl, "Animation", 300, 7500, Easing.Linear, (d, b) =>
-                {
-                    lbl.TranslationX = 350;
-                }, () => true);
-            });
-        }
-
-        public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
-        {
-            await Task.Yield();
-
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id);
-
-            if (movieExists)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    pin2FavList.Source = "Star.png";
-                });
-            }
         }
     }
 }

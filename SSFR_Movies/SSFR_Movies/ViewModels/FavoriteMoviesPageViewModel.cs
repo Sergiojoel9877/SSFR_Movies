@@ -16,7 +16,7 @@ namespace SSFR_Movies.ViewModels
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
@@ -72,7 +72,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new Command(async () =>
             {
-                    await FillMoviesList();
+                await FillMoviesList();
             }));
         }
 

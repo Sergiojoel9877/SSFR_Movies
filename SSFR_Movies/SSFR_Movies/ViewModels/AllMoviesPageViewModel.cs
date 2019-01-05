@@ -12,13 +12,15 @@ using CommonServiceLocator;
 using SSFR_Movies.Services;
 using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
+using System.Threading;
+using Xamarin.Essentials;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
@@ -35,6 +37,13 @@ namespace SSFR_Movies.ViewModels
         {
             get => msgVisible;
             set => SetProperty(ref msgVisible, value);
+        }
+
+        private string msgText;
+        public string MsgText
+        {
+            get => msgText;
+            set => SetProperty(ref msgText, value);
         }
 
         private bool isRefreshing;
@@ -76,9 +85,6 @@ namespace SSFR_Movies.ViewModels
         {
             await Task.Yield();
 
-            IsEnabled = true;
-            IsRunning = true;
-
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -90,32 +96,38 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                IsEnabled = true;
+                IsRunning = true;
+            });
+
             var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
-            //movies.Results.ForEach(r => AllMoviesList.Add(r));
+            if (movies == null)
+            {
+                return;
+            }
 
             movies.Results.ForEach((r)=>
             {
                 AllMoviesList.Add(r);
             });
 
-            ListVisible = true;
-
-            MsgVisible = false;
-
-            ActivityIndicatorRunning = false;
-
-            IsRefreshing = false;
-            
-            IsEnabled = false;
-            IsRunning = false;
-
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                ListVisible = true;
+                MsgVisible = false;
+                IsRefreshing = false;
+                IsEnabled = false;
+                IsRunning = false;
+            });
         }
 
         public async Task FillMoviesByGenreList()
         {
             await Task.Yield();
-
+    
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -131,14 +143,17 @@ namespace SSFR_Movies.ViewModels
 
             AllMoviesList.Clear();
 
-            //movies.Results.ForEach(r => AllMoviesList.Add(r));
-
             movies.Results.ForEach((r)=>
             {
                 AllMoviesList.Add(r);
             });
 
-            ActivityIndicatorRunning = false;
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                IsRunning = false;
+                IsEnabled = false;
+            });
+ 
         }
 
         /// <summary>
@@ -147,6 +162,7 @@ namespace SSFR_Movies.ViewModels
         /// <returns>Bool if they are succesfully saved..</returns>
         private static async Task<bool> GetAndStoreMoviesAsync()
         {
+            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -158,8 +174,20 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            //return await ServiceLocator.Current.GetInstance<await ServiceLocator.Current.GetInstance<ApiClient>()>().GetAndStoreMoviesAsync(false);
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
+            var token = new CancellationTokenSource();
+
+            token.CancelAfter(4000);
+
+            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, token);
+
+            if (done)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private Command getStoreMoviesCommand;
@@ -180,17 +208,30 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    IsRunning = true;
+                    IsEnabled = true;
+                });
+
                 var stored = await GetAndStoreMoviesAsync();
+
+                if (!stored) 
+                {
+                    Device.BeginInvokeOnMainThread(()=>
+                    {
+                        MsgVisible = true;
+                        MsgText = "Low storage left!";
+                        IsRunning = false;
+                        IsEnabled = false;
+                    });
+                }
 
                 MoviesStored = stored;
 
                 if (MoviesStored)
                 {
-                    //await FillMoviesList();
-                    Parallel.Invoke(async ()=>
-                    {
-                        await FillMoviesList();
-                    });
+                    await FillMoviesList();
                 }
 
             }));
@@ -222,6 +263,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Command(async () =>
             {
+                await Task.Yield();
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -233,16 +275,23 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                //Parallel.Invoke(async ()=>
-                //{
-                    await GetMoviesGenres();
-                //});
-                
+                var done = await GetMoviesGenres();
+
+                if (!done)
+                {
+                    Device.BeginInvokeOnMainThread(()=>
+                    {
+                        MsgVisible = true;
+                        MsgText = "No storage space left!";
+                    });
+                }
             }));
         }
 
         private async Task<bool> GetMoviesGenres()
         {
+            await Task.Yield();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -253,9 +302,7 @@ namespace SSFR_Movies.ViewModels
                 });
                 return false;
             }
-
-            await Task.Yield();
-
+            
             //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
             return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
 
@@ -266,6 +313,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command( async () =>
             {
+
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -284,58 +332,81 @@ namespace SSFR_Movies.ViewModels
 
         public AllMoviesPageViewModel()
         {
-            
-            MsgVisible = false;
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                MsgVisible = false;
+                IsRunning = true;
+                IsEnabled = true;
+            });
 
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            //CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
             
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has  an Internet connection");
                     return false;
                 });
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    MsgVisible = true;
+                });
+
                 return;
             }
 
             //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
             if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
+                //Parallel.Invoke(()=>
+                //{
+                //    GetStoreMoviesCommand.Execute(null);
+                //});
+
+                //Parallel.Invoke(() =>
+                //{
+                //    GetMoviesGenresCommand.Execute(null);
+                //});
+
                 GetStoreMoviesCommand.Execute(null);
-                 
+
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
-                ListVisible = false;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ListVisible = false;
 
-                MsgVisible = false;
+                    MsgVisible = false;
 
-                ActivityIndicatorRunning = true;
-
-                Task.Run(async () => { await FillMoviesList(); });
+                    ActivityIndicatorRunning = true;
+                });
+               
+                Task.Factory.StartNew(async () => { await FillMoviesList(); });
             }
         }
 
-        private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (e.IsConnected)
-                {
-                    MsgVisible = false;
-                }
-                else
-                {
-                    MsgVisible = true;
-                }
-            });
+        //private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
+        //{
+        //    Device.BeginInvokeOnMainThread(() =>
+        //    {
+        //        if (e.IsConnected)
+        //        {
+        //            MsgVisible = false;
+        //        }
+        //        else
+        //        {
+        //            MsgVisible = true;
+        //        }
+        //    });
 
-            GetStoreMoviesCommand.Execute(null);
+        //    GetStoreMoviesCommand.Execute(null);
 
-            GetMoviesGenresCommand.Execute(null);
-        }
+        //    GetMoviesGenresCommand.Execute(null);
+        //}
     }
 }

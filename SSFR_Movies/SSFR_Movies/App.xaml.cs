@@ -23,7 +23,7 @@ namespace SSFR_Movies
     /// <summary>
     /// The main class of a Xamarin Fomrs App.
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public partial class App : Application
 	{
         public static HttpClient httpClient { get; set; }

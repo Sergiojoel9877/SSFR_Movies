@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Android.App;
@@ -19,8 +20,10 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(AdMobView), typeof(AdViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
+    [Preserve(AllMembers = true)]
     public class AdViewRenderer : ViewRenderer<AdMobView, AdView>
     {
+        [SecurityCritical]
         public AdViewRenderer(Context context) : base(context)
         {
 
@@ -38,7 +41,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 }
                 catch (DeadObjectException e1)
                 {
-                    
+                    System.Diagnostics.Debug.WriteLine("Error: " + e1.InnerException);
                 }
             }
         }

@@ -14,8 +14,8 @@ using SSFR_Movies.Services;
 
 namespace SSFR_Movies.Droid
 {
-   
-    [Activity(Theme="@style/Theme.Splash", NoHistory= true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Android.Runtime.Preserve(AllMembers = true)]
+    [Activity(Theme="@style/Theme.Splash", NoHistory = true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashScreen : Activity
     {
        

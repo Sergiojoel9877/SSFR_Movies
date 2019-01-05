@@ -14,18 +14,18 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SSFR_Movies.Helpers;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Views
 {
     /// <summary>
     /// FavoriteMoviesPage Code Behind
     /// </summary>
+    [Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class FavoritesMoviesPage : ContentPage
 	{
         FavoriteMoviesPageViewModel vm;
-
-        Label _title;
 
         public FavoritesMoviesPage ()
 		{

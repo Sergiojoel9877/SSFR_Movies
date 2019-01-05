@@ -10,7 +10,7 @@ namespace SSFR_Movies.ViewModels
     /// <summary>
     /// ViewModelBae: to make ease the implementation of INotifyPorpertyChanged in the properties of the ViewModels
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

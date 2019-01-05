@@ -10,7 +10,7 @@ using Android.Content;
 
 namespace SSFR_Movies.Droid
 {
-
+    [Android.Runtime.Preserve(AllMembers = true)]
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -23,16 +23,9 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            Forms.SetFlags("FastRenderers_Experimental");
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-
-            //ImageService.Instance.Initialize(new FFImageLoading.Config.Configuration
-            //{
-            //    ClearMemoryCacheOnOutOfMemory = true,
-            //    InvalidateLayout = true,
-            //    DownsampleInterpolationMode = FFImageLoading.Work.InterpolationMode.Low
-            //});
             
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 

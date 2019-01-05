@@ -20,7 +20,7 @@ namespace SSFR_Movies.Services
     /// <summary>
     /// Constainer to implement IoC
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class ContainerInitializer
     {
       

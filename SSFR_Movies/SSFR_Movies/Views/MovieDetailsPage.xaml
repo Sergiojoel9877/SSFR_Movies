@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
     Title="Details"
     BackgroundColor="#006FDE">
 
@@ -17,19 +18,26 @@
             CompressedLayout.IsHeadless="True"
             Direction="Column"
             Wrap="NoWrap">
-            <ScrollView VerticalOptions="FillAndExpand">
+           
+            <ScrollView x:Name="Scroll" VerticalOptions="FillAndExpand">
                 <StackLayout
                     CompressedLayout.IsHeadless="True"
+                    WidthRequest="{Binding Source={x:Reference Scroll}, Path=WidthRequest}"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <StackLayout
+                    <Frame 
+                        x:Name="frame"
+                        Visual="Material"
                         BackgroundColor="#00103B"
                         HeightRequest="300"
+                        CornerRadius="5"
+                        WidthRequest="{Binding Source={x:Reference Scroll}, Path=WidthRequest}"
+                        HasShadow="True"
                         VerticalOptions="Center">
                         <AbsoluteLayout
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                             AbsoluteLayout.LayoutFlags="All"
-                            CompressedLayout.IsHeadless="True"
+                            HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
@@ -37,39 +45,40 @@
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
-                                HeightRequest="320"
+                                Scale="3"
+                                HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
                                 Source="{Binding BackdropPath}"
-                                WidthRequest="533" />
+                                WidthRequest="500" />
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
                                 AbsoluteLayout.LayoutFlags="All"
-                                BackgroundColor="#00103B"
+                                BackgroundColor="#44312D2D"
+                                HeightRequest="200"
                                 HorizontalOptions="FillAndExpand"
-                                WidthRequest="295">
-                                <Grid CompressedLayout.IsHeadless="True">
+                                WidthRequest="{Binding Source={x:Reference frame}, Path=WidthRequest}">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="*"/>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
                                     <StackLayout
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Margin="16,8,16,0"
                                         HorizontalOptions="End"
                                         Orientation="Vertical"
+                                        Margin="0,0,8,0"
                                         VerticalOptions="Start">
+                                        <Image
+                                            x:Name="AddToFav"
+                                            HeightRequest="30"
+                                            Source="StarEmpty.png"
+                                            WidthRequest="30" />
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
-                                            <Image
-                                                x:Name="AddToFav"
-                                                HeightRequest="40"
-                                                Source="StarEmpty.png"
-                                                WidthRequest="40" />
                                             <Label
                                                 FontAttributes="Bold"
                                                 FontSize="Medium"
@@ -84,10 +93,9 @@
                                     </StackLayout>
 
                                     <StackLayout
-                                        Grid.Row="1"
+                                        Grid.Row="2"
                                         Grid.Column="0"
-                                        Margin="16,5,16,8"
-                                        CompressedLayout.IsHeadless="True"
+                                        Margin="0,5,0,8"
                                         HorizontalOptions="FillAndExpand"
                                         Orientation="Vertical"
                                         VerticalOptions="End">
@@ -116,10 +124,10 @@
                             </StackLayout>
 
                             <ffimage:CachedImage
-                                x:Name="PosterPath"
-                                Margin="8,0,8,0"
                                 AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
+                                x:Name="PosterPath"
+                                Margin="8,0,8,0"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
                                 HeightRequest="200"
@@ -129,7 +137,7 @@
                                 WidthRequest="200" />
 
                         </AbsoluteLayout>
-                    </StackLayout>
+                    </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
                         <StackLayout CompressedLayout.IsHeadless="True" Orientation="Horizontal">
                             <Label
@@ -178,7 +186,21 @@
                             Style="{StaticResource LabelsStyle}"
                             Text="{Binding Overview}" />
 
-                        <StackLayout
+                        <Button
+                            x:Name="AddToFavLayout"
+                            Margin="16"
+                            BackgroundColor="#44FFFFFF"
+                            HorizontalOptions="FillAndExpand"
+                            CornerRadius="30"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Add To Favorites List"
+                            TextColor="White"/>
+
+
+
+
+                        <!--<StackLayout
                             x:Name="AddToFavLayout"
                             Margin="16"
                             BackgroundColor="#44FFFFFF"
@@ -190,13 +212,26 @@
                                 HorizontalTextAlignment="Center"
                                 Text="Add To Favorites List"
                                 TextColor="White" />
-                        </StackLayout>
+                        </StackLayout>-->
 
-                        <StackLayout
+                        <Button 
                             x:Name="QuitFromFavLayout"
                             Margin="16"
                             BackgroundColor="#FF0000"
-                            HorizontalOptions="FillAndExpand">
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            CornerRadius="30"
+                            Text="Quit from the favorites list"
+                            TextColor="White" 
+                            HorizontalOptions="FillAndExpand" />
+
+                        <!--<StackLayout-->
+                            <!--x:Name="QuitFromFavLayout"
+                            Margin="16"
+                            BackgroundColor="#FF0000"
+                            
+                            HorizontalOptions="FillAndExpand"
+                            >
                             <Label
                                 Margin="16"
                                 FontAttributes="Bold"
@@ -204,7 +239,7 @@
                                 HorizontalTextAlignment="Center"
                                 Text="Quit from the favorites list"
                                 TextColor="White" />
-                        </StackLayout>
+                        </StackLayout>-->
                     </StackLayout>
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />

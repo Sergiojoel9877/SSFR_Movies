@@ -17,6 +17,7 @@ using SSFR_Movies;
 [assembly: ExportRenderer(typeof(TransparentEntry), typeof(TransparentEntryRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
+    [Preserve(AllMembers = true)]
     public class TransparentEntryRenderer : EntryRenderer
     {
         public TransparentEntryRenderer(Context context) : base(context)

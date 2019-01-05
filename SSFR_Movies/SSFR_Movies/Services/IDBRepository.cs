@@ -11,8 +11,8 @@ namespace SSFR_Movies.Services
     /// DBRepository interface, it contains the CRUD Methods for the database. 
     /// </summary>
     /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-  
-    public interface IDBRepository<T> where T : class
+    [Preserve(AllMembers = true)]
+    public interface IDBRepository<T> : IDisposable where T : class
     {
         Task<T> GetEntity(int id);
         Task<IEnumerable<T>> GetEntities();

@@ -40,6 +40,7 @@
             <ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
+                RefreshControlColor="Blue"
                 HasUnevenRows="True"
                 HorizontalOptions="CenterAndExpand"
                 ItemTapped="ItemSelected"

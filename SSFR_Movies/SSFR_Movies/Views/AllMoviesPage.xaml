@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ContentPage
     x:Class="SSFR_Movies.Views.AllMoviesPage"
+    x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="SSFR Movies Home"
-    BackgroundColor="#161513">
+    BackgroundColor="#161513"
+    >
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -264,18 +266,16 @@
                 </Grid>
             </FlexLayout>
 
-            <ffimage:CachedImage
+            <Image
                 x:Name="MessageImg"
                 Grid.ColumnSpan="2"
-                BitmapOptimizations="True"
-                DownsampleToViewSize="True"
                 HeightRequest="300"
                 HorizontalOptions="Center"
-                IsVisible="{Binding MsgVisible}"
+                IsVisible="{Binding MsgVisible, Mode=TwoWay}"
                 Source="NoInternet.png"
                 WidthRequest="300" />
 
-            <Label
+             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"
                 FontAttributes="Bold"
@@ -283,7 +283,7 @@
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
                 IsVisible="{Binding MsgVisible}"
-                Text="It seems like you don't have an internet connection!"
+                Text="{Binding MsgText}"
                 TextColor="White" />
 
             <ActivityIndicator
@@ -296,10 +296,21 @@
                 WidthRequest="50"
                 Color="#FFF" />
 
-            <ListView
+            <CollectionView x:Name="MoviesList" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCell HeightRequest="350"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>    
+
+            <!--<ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 HasUnevenRows="True"
+                RefreshControlColor="Blue"
                 IsPullToRefreshEnabled="True"
                 IsRefreshing="{Binding IsRefreshing}"
                 IsVisible="{Binding ListVisible}"
@@ -311,12 +322,12 @@
                     <DataTemplate>
                         <helpers:CustomViewCell>
 
-                            <!--    -->
+                            --><!--    --><!--
 
                         </helpers:CustomViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
