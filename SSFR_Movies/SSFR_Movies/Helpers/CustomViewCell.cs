@@ -258,7 +258,15 @@ namespace SSFR_Movies.Helpers
 
             var item = BindingContext as Result;
             
-            ExecuteAction(async ()=> { await item.IsPresentInFavList(pin2FavList, item.Id); });
+            ExecuteAction(async ()=>
+            {
+                await item.IsPresentInFavList(pin2FavList, item.Id);
+
+                if (title.Text.Length >= 20)
+                {
+                    title.SetAnimation();
+                }
+            });
                                                     
             if (item == null)
             {
