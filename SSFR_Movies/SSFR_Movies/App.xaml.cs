@@ -33,14 +33,9 @@ namespace SSFR_Movies
            
             InitializeComponent();
 
-            //InitializeAsync(async ()=>
-            //{
-            //    await Task.Yield();
-
-              
-            //});
-
             ContainerInitializer.Initialize();
+
+            SetHttpClient();
 
             var mainPage = new NavigationPage(new MainPage())
             {
@@ -48,9 +43,6 @@ namespace SSFR_Movies
             };
 
             MainPage = mainPage;
-    
-            SetHttpClient();
-
         }
 
         async void InitializeAsync(Func<Task> action)

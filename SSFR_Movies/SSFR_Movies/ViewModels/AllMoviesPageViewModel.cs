@@ -194,7 +194,7 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, token);
+            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
 
             if (done)
             {

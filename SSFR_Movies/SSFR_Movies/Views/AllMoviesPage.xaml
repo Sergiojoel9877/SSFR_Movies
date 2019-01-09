@@ -271,7 +271,7 @@
                 Grid.ColumnSpan="2"
                 HeightRequest="300"
                 HorizontalOptions="Center"
-                IsVisible="{Binding MsgVisible, Mode=TwoWay}"
+                IsVisible="{Binding MsgVisible}"
                 Source="NoInternet.png"
                 WidthRequest="300" />
 

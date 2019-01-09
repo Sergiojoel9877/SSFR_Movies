@@ -41,8 +41,8 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
-            MessageImg.IsVisible = false;
-
+            SuscribeToMessages();
+            
             //Message.IsVisible = false;
 
             //MessageImg.IsVisible = false;
@@ -113,14 +113,23 @@ namespace SSFR_Movies.Views
             //});
         }
 
-        private async Task InitializeMsg(Func<Task> action)
+        private void SuscribeToMessages()
         {
-            await action();
+            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", (s, e) =>
+            {
+                if (e == true)
+                {
+                    vm.MsgVisible = false;
+                    MessageImg.Source = null;
+                    MessageImg.TranslateTo(500, 0, 2);
+                    //Message.IsVisible = false;
+                }
+            });
         }
 
-        public int Sumar()
+        private async void InitializeMsg(Func<Task> action)
         {
-            return 0;
+            await action();
         }
 
         protected async override void OnAppearing()
@@ -191,6 +200,8 @@ namespace SSFR_Movies.Views
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
+                    MessageImg.Source = ImageSource.FromFile("NoInternet.png");
+                    MessageImg.TranslateTo(0, 0, 2);
                     //MoviesList.BeginRefresh();
                 });
 
@@ -201,6 +212,8 @@ namespace SSFR_Movies.Views
                 Device.BeginInvokeOnMainThread(()=>
                 {
                     //MoviesList.EndRefresh();
+                    MoviesList.ItemsSource = null;
+                    MoviesList.ItemsSource = vm.AllMoviesList;
                 });
             }
             else

@@ -241,11 +241,12 @@ namespace SSFR_Movies.Helpers
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread(() =>
-            {
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+                MessagingCenter.Send(this, "Hide", true);
                 App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
-                BindingContext = null;
-            });
+                //BindingContext = null;
+            //});
         }
         protected override void OnBindingContextChanged()
         {

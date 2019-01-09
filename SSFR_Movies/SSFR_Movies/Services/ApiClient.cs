@@ -23,7 +23,7 @@ namespace SSFR_Movies.Services
 
         private const string LANG = "en-US";
         
-        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
+        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
             await Task.Yield();
 
