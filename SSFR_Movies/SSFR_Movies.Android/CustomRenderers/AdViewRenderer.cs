@@ -38,6 +38,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 try
                 {
                     SetNativeControl(CreateView());
+
                 }
                 catch (DeadObjectException e1)
                 {
