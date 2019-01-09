@@ -22,9 +22,7 @@ namespace SSFR_Movies.Views
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
-
-            PosterPath.FadeAnimationEnabled = true;
-
+            
             var tap = new TapGestureRecognizer();
 
             tap.Tapped += TitleTapped;

@@ -16,7 +16,7 @@
     <ContentPage.Content>
         <StackLayout CompressedLayout.IsHeadless="True">
 
-            <ffimage:CachedImage
+            <!--<ffimage:CachedImage
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
                 BitmapOptimizations="True"
@@ -24,8 +24,16 @@
                 HeightRequest="300"
                 HorizontalOptions="Center"
                 Source="Unpin.png"
+                WidthRequest="300" />-->
+            <Image
+                x:Name="UnPin"
+                Grid.ColumnSpan="2"
+               
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Source="Unpin.png"
                 WidthRequest="300" />
-
+            
             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"

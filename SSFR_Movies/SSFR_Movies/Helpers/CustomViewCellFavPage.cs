@@ -22,8 +22,10 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : ViewCell
     {
         #region Controls
-        private CachedImage blurCachedImage = null;
-        private CachedImage cachedImage = null;
+        //private CachedImage blurCachedImage = null;
+        private Image blurCachedImage = null;
+        //private CachedImage cachedImage = null;
+        private Image cachedImage = null;
         private FlexLayout FlexLayout = null;
         private StackLayout Container = null;
         private StackLayout SubContainer = null;
@@ -75,33 +77,54 @@ namespace SSFR_Movies.Helpers
             };
 
             List<FFImageLoading.Work.ITransformation> Blur = new List<FFImageLoading.Work.ITransformation>
-                {
-                    new BlurredTransformation(60)
-                };
-
-            blurCachedImage = new CachedImage()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                HeightRequest = 280,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 2,
-                LoadingPlaceholder = "Loading.png",
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
-                WidthRequest = 280,
-                Transformations = Blur
+                new BlurredTransformation(60)
             };
 
-            cachedImage = new CachedImage()
+            //blurCachedImage = new CachedImage()
+            //{
+            //    BitmapOptimizations = true,
+            //    DownsampleToViewSize = true,
+            //    HeightRequest = 350,
+            //    HorizontalOptions = LayoutOptions.FillAndExpand,
+            //    Scale = 3,
+            //    LoadingPlaceholder = "Loading.png",
+            //    VerticalOptions = LayoutOptions.FillAndExpand,
+            //    LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
+            //    WidthRequest = 350,
+            //    Transformations = Blur
+            //};
+            blurCachedImage = new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
+
+                HeightRequest = 350,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Scale = 3,
+
+                VerticalOptions = LayoutOptions.FillAndExpand,
+
+                WidthRequest = 350
+
+            };
+
+            //cachedImage = new CachedImage()
+            //{
+            //    BitmapOptimizations = true,
+            //    DownsampleToViewSize = true,
+            //    HeightRequest = 280,
+            //    HorizontalOptions = LayoutOptions.FillAndExpand,
+            //    VerticalOptions = LayoutOptions.FillAndExpand,
+            //    WidthRequest = 280,
+            //    LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+            //};
+            cachedImage = new Image()
+            {
+
                 HeightRequest = 280,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                WidthRequest = 280
+
             };
 
             panelContainer = new StackLayout()
@@ -154,8 +177,6 @@ namespace SSFR_Movies.Helpers
 
             };
             title.SetBinding(Label.TextProperty, "Title");
-
-            title.SetAnimation();
 
             scrollTitle.Content = title;
 
@@ -272,6 +293,16 @@ namespace SSFR_Movies.Helpers
 
             var item = BindingContext as SSFR_Movies.Models.Result;
 
+            ExecuteAction(async () =>
+            {
+                await item.IsPresentInFavList(unPinFromFavList, item.Id);
+
+                if (title.Text.Length >= 20)
+                {
+                    title.SetAnimation();
+                }
+            });
+
             if (item == null)
             {
                 return;
@@ -283,7 +314,12 @@ namespace SSFR_Movies.Helpers
 
             base.OnBindingContextChanged();
         }
-
+        
+        void ExecuteAction(Func<Task> exe)
+        {
+            Task.Run(() => { exe(); });
+        }
+        
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();

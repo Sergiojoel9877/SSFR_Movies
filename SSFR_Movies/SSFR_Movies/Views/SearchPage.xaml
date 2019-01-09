@@ -22,7 +22,7 @@
                 Orientation="Horizontal"
                 VerticalOptions="Start">
 
-                <ffimage:CachedImage
+                <!--<ffimage:CachedImage
                     x:Name="back"
                     Margin="16,16,0,16"
                     BitmapOptimizations="True"
@@ -33,8 +33,19 @@
                     <ffimage:CachedImage.GestureRecognizers>
                         <TapGestureRecognizer Tapped="Back_Tapped" />
                     </ffimage:CachedImage.GestureRecognizers>
-                </ffimage:CachedImage>
-
+                </ffimage:CachedImage>-->
+                <Image
+                    x:Name="back"
+                    Margin="16,16,0,16"
+                    HeightRequest="30"
+                    HorizontalOptions="Start"
+                    Source="Back.png"
+                    WidthRequest="30">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Back_Tapped" />
+                    </Image.GestureRecognizers>
+                </Image>
+                
                 <SearchBar
                     x:Name="searchBar"
                     Margin="0,0,26,0"
