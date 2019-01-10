@@ -22,10 +22,10 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : ViewCell
     {
         #region Controls
-        //private CachedImage blurCachedImage = null;
-        private Image blurCachedImage = null;
-        //private CachedImage cachedImage = null;
-        private Image cachedImage = null;
+        private CachedImage blurCachedImage = null;
+        //private Image blurCachedImage = null;
+        private CachedImage cachedImage = null;
+        //private Image cachedImage = null;
         private FlexLayout FlexLayout = null;
         private StackLayout Container = null;
         private StackLayout SubContainer = null;
@@ -60,6 +60,7 @@ namespace SSFR_Movies.Helpers
             Container = new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
+
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
@@ -67,6 +68,7 @@ namespace SSFR_Movies.Helpers
             {
                 Margin = new Thickness(16, 0, 16, 0),
                 HeightRequest = 280,
+                BackgroundColor = Color.FromHex("#44312D2D"),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
@@ -78,54 +80,53 @@ namespace SSFR_Movies.Helpers
 
             List<FFImageLoading.Work.ITransformation> Blur = new List<FFImageLoading.Work.ITransformation>
             {
-                new BlurredTransformation(60)
+                new BlurredTransformation(15)
             };
 
-            //blurCachedImage = new CachedImage()
+            blurCachedImage = new CachedImage()
+            {
+                BitmapOptimizations = true,
+                DownsampleToViewSize = true,
+                HeightRequest = 350,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Scale = 3,
+                LoadingPlaceholder = "Loading.png",
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                WidthRequest = 350,
+                Transformations = Blur
+            };
+            //blurCachedImage = new Image()
             //{
-            //    BitmapOptimizations = true,
-            //    DownsampleToViewSize = true,
+
             //    HeightRequest = 350,
             //    HorizontalOptions = LayoutOptions.FillAndExpand,
             //    Scale = 3,
-            //    LoadingPlaceholder = "Loading.png",
+
             //    VerticalOptions = LayoutOptions.FillAndExpand,
-            //    LoadingPriority = FFImageLoading.Work.LoadingPriority.High,
-            //    WidthRequest = 350,
-            //    Transformations = Blur
+
+            //    WidthRequest = 350
+
             //};
-            blurCachedImage = new Image()
+
+            cachedImage = new CachedImage()
             {
-
-                HeightRequest = 350,
+                BitmapOptimizations = true,
+                DownsampleToViewSize = true,
+                HeightRequest = 280,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 3,
-
                 VerticalOptions = LayoutOptions.FillAndExpand,
-
-                WidthRequest = 350
-
+                WidthRequest = 280,
+                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             };
-
-            //cachedImage = new CachedImage()
+            //cachedImage = new Image()
             //{
-            //    BitmapOptimizations = true,
-            //    DownsampleToViewSize = true,
             //    HeightRequest = 280,
             //    HorizontalOptions = LayoutOptions.FillAndExpand,
             //    VerticalOptions = LayoutOptions.FillAndExpand,
-            //    WidthRequest = 280,
-            //    LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+            //    WidthRequest = 280
             //};
-            cachedImage = new Image()
-            {
-
-                HeightRequest = 280,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280
-
-            };
 
             panelContainer = new StackLayout()
             {

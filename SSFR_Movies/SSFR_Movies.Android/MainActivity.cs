@@ -25,33 +25,33 @@ namespace SSFR_Movies.Droid
 
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-            
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            Android.Glide.Forms.Init();
+            //Android.Glide.Forms.Init();
 
             LoadApplication(new App());
         }
 
-        //public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
-        //{
-        //    FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-        //    GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        {
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
 
-        //    base.OnTrimMemory(level);
-        //}
+            base.OnTrimMemory(level);
+        }
 
-        //public override void OnLowMemory()
-        //{
-        //    FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-        //    GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
+        public override void OnLowMemory()
+        {
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
-        //    base.OnLowMemory();
-        //}
-        
+            base.OnLowMemory();
+        }
+
     }
 }
 

@@ -9,19 +9,18 @@
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
-                    <!--<ffimage:CachedImage
+                    <ffimage:CachedImage
                         BitmapOptimizations="True"
                         DownsampleToViewSize="True"
                         HeightRequest="250"
                         HorizontalOptions="Center"
                         Source="icon.png"
-                        WidthRequest="250" />-->
-                    <Image
-                     
+                        WidthRequest="250" />
+                    <!--<Image
                         HeightRequest="250"
                         HorizontalOptions="Center"
                         Source="icon.png"
-                        WidthRequest="250" />
+                        WidthRequest="250" />-->
                     <Label
                         FontAttributes="Bold"
                         FontSize="Large"

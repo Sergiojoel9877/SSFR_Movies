@@ -40,7 +40,7 @@
                             HorizontalOptions="FillAndExpand"
                             VerticalOptions="FillAndExpand">
 
-                            <!--<ffimage:CachedImage
+                            <ffimage:CachedImage
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
@@ -49,15 +49,15 @@
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
                                 Source="{Binding BackdropPath}"
-                                WidthRequest="500" />-->
-                            <Image
+                                WidthRequest="500" />
+                            <!--<Image
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
                                 Source="{Binding BackdropPath}"
-                                WidthRequest="500" />
+                                WidthRequest="500" />-->
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
@@ -131,10 +131,11 @@
                                 </Grid>
                             </StackLayout>
 
-                            <!--<ffimage:CachedImage
+                            <ffimage:CachedImage
                                 AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
                                 x:Name="PosterPath"
+                                CacheType="All"
                                 Margin="8,0,8,0"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
@@ -142,9 +143,9 @@
                                 HorizontalOptions="Start"
                                 Source="{Binding PosterPath}"
                                 Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="200" />-->
+                                WidthRequest="200" />
                             
-                            <Image
+                            <!--<Image
                                 AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
                                 x:Name="PosterPath"
@@ -153,7 +154,7 @@
                                 HorizontalOptions="Start"
                                 Source="{Binding PosterPath}"
                                 Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="200" />
+                                WidthRequest="200" />-->
 
                         </AbsoluteLayout>
                     </Frame>
@@ -182,14 +183,14 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <!--<ffimage:CachedImage
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />-->
-                                    <Image
+                                    <ffimage:CachedImage
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
                                         WidthRequest="35" />
+                                    <!--<Image
+                                        HeightRequest="35"
+                                        Source="YoutubeBtn.png"
+                                        WidthRequest="35" />-->
                                     <Label
                                         Margin="5,0,0,0"
                                         FontAttributes="Bold"
