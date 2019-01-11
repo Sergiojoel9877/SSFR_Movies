@@ -90,6 +90,7 @@ namespace SSFR_Movies.Helpers
                 DownsampleToViewSize = true,
                 HeightRequest = 350,
                 CacheType = FFImageLoading.Cache.CacheType.Disk,
+                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 LoadingPlaceholder = "Loading.png",

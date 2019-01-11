@@ -32,13 +32,6 @@ namespace SSFR_Movies.Views
 
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            GC.Collect(0, GCCollectionMode.Optimized, false);
-        }
-
         protected override bool OnBackButtonPressed()
         {
             var c = DependencyService.Get<ICloseBackPress>();

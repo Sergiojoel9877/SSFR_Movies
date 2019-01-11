@@ -182,8 +182,6 @@ namespace SSFR_Movies.Views
 
             await Navigation.PushAsync(new MovieDetailsPage(movie));
 
-            GC.Collect(0, GCCollectionMode.Optimized, false);
-
         }
 
         protected override async void OnAppearing()
@@ -199,14 +197,12 @@ namespace SSFR_Movies.Views
             MoviesList.IsVisible = Message.IsVisible == true ? false : true;
     
             vm.GetStoreMoviesCommand.Execute(null);
+            
+            //MoviesList.BeginRefresh();
 
-            BindingContext = vm;
+            //await Task.Delay(200);
 
-            MoviesList.BeginRefresh();
-
-            await Task.Delay(200);
-
-            MoviesList.EndRefresh();
+            //MoviesList.EndRefresh();
 
         }
 

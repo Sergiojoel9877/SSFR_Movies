@@ -135,21 +135,7 @@ namespace SSFR_Movies.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-
-            BindingContext = vm;
-
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                vm.MsgVisible = true;
-                vm.MsgText = "It seems like you don't have an internet connection!";
-                vm.IsEnabled = false;
-                vm.IsRunning = false;
-            }
-            else
-            {
-                vm.MsgVisible = false;
-            }
-
+      
             var t5 = Scrollview.ScrollToAsync(100, 0, true);
 
             var t6 = Scrollview.ScrollToAsync(0, 0, true);
@@ -161,12 +147,21 @@ namespace SSFR_Movies.Views
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
+                vm.MsgVisible = true;
+                vm.MsgText = "It seems like you don't have an internet connection!";
+                vm.IsEnabled = false;
+                vm.IsRunning = false;
+
                 Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                     return false;
                 });
                 return;
+            }
+            else
+            {
+                vm.MsgVisible = false;
             }
         }
 
@@ -188,8 +183,6 @@ namespace SSFR_Movies.Views
             vm.MsgVisible = false;
 
             CrossConnectivity.Current.ConnectivityChanged -= Current_ConnectivityChanged;
-
-            BindingContext = null;
         }
 
         private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
