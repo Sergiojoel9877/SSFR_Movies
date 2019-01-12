@@ -43,10 +43,6 @@ namespace SSFR_Movies.Views
 
             SuscribeToMessages();
             
-            //Message.IsVisible = false;
-
-            //MessageImg.IsVisible = false;
-
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
             genresContainer.IsVisible = false;
@@ -101,9 +97,7 @@ namespace SSFR_Movies.Views
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
-
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-            
+           
             //Task.Run(async ()=>
             //{
             //    await InitializeMsg(async () =>
@@ -127,7 +121,7 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private async void InitializeMsg(Func<Task> action)
+        private async void InitializeAsync(Func<Task> action)
         {
             await action();
         }
@@ -431,9 +425,13 @@ namespace SSFR_Movies.Views
             }
         }
 
-        private async void SearchClicked(object sender, EventArgs e)
+        private void SearchClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SearchPage(), false);
+            InitializeAsync( async () =>
+            {
+                await Navigation.PushAsync(new SearchPage(), false);
+            });
+           
         }
 
         protected override void OnParentSet()

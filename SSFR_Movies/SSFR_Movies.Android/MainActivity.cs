@@ -25,11 +25,11 @@ namespace SSFR_Movies.Droid
 
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
-
-            global::Xamarin.Forms.Forms.Init(this, bundle);
 
             //Android.Glide.Forms.Init();
 

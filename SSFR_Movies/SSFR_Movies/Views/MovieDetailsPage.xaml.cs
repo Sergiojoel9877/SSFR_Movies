@@ -40,8 +40,11 @@ namespace SSFR_Movies.Views
             QuitFromFavLayout.Clicked += QuitFromFavorites;
             
             AddToFavLayout.Clicked += Tap_Tapped;
-            
-            MovieTitle.SetAnimation();
+
+            if (movie.Title.Length >= 25)
+            {
+                MovieTitle.SetAnimation();
+            }
         }
 
         private async void IsPresentInFavList(Result m)
@@ -139,10 +142,6 @@ namespace SSFR_Movies.Views
                     Debug.WriteLine("Error: " + e.InnerException);
                 }
             }
-            else
-            {
-
-            }
         }
 
         private async void QuitFromFavorites(object sender, EventArgs e)
@@ -188,17 +187,13 @@ namespace SSFR_Movies.Views
                     });
                 }
             }
-            else
-            {
-
-            }
         }
         
         protected async override void OnAppearing()
         {
 
             base.OnAppearing();
-
+            
             var item = BindingContext as Result;
 
             IsPresentInFavList(item);
@@ -208,6 +203,12 @@ namespace SSFR_Movies.Views
             var t4 = Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
             
             await Task.WhenAll(t3, t4);
+
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
+                return;
+            }
 
             var movie = (Result)BindingContext;
 
@@ -221,12 +222,6 @@ namespace SSFR_Movies.Views
             {
                 ScrollTrailer.IsVisible = true;
             }
-        }
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            
-            GC.Collect(1, GCCollectionMode.Optimized, false);
         }
 
         public async Task SpeakNow(string msg)

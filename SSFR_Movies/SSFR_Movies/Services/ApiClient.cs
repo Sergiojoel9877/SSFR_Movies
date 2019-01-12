@@ -25,7 +25,7 @@ namespace SSFR_Movies.Services
         
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
-            await Task.Yield();
+            //await Task.Yield();
 
             try
             {
@@ -66,7 +66,7 @@ namespace SSFR_Movies.Services
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
 
-            await Task.Yield();
+            //await Task.Yield();
 
             try
             {
@@ -104,7 +104,7 @@ namespace SSFR_Movies.Services
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
 
-            await Task.Yield();
+            //await Task.Yield();
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -262,7 +262,6 @@ namespace SSFR_Movies.Services
 
                 return false;
             }
-
         }
     }
 }

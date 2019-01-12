@@ -53,7 +53,6 @@ namespace SSFR_Movies.Helpers
             FlexLayout = new FlexLayout()
             {
                 Direction = FlexDirection.Column,
-                Margin = 16,
                 AlignContent = FlexAlignContent.Center
             };
 

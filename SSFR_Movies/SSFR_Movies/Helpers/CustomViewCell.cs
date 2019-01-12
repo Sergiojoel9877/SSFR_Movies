@@ -268,9 +268,11 @@ namespace SSFR_Movies.Helpers
 
             //Device.BeginInvokeOnMainThread(() =>
             //{
-                MessagingCenter.Send(this, "Hide", true);
-                App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
-                //BindingContext = null;
+            MessagingCenter.Send(this, "Hide", true);
+
+            App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+           
+               
             //});
         }
         protected override void OnBindingContextChanged()
@@ -299,16 +301,16 @@ namespace SSFR_Movies.Helpers
                 return;
             }
 
-            blurCachedImage.Source = item.PosterPath;
+            blurCachedImage.Source = new FFImageLoading.Forms.DataUrlImageSource(item.BackdropPath.ToString());
 
-            cachedImage.Source = item.PosterPath;
+            cachedImage.Source = new FFImageLoading.Forms.DataUrlImageSource(item.PosterPath.ToString());
 
             base.OnBindingContextChanged();
         }
         
-        void ExecuteAction(Func<Task> exe)
+        async void ExecuteAction(Func<Task> exe)
         {
-            Task.Run(() => { exe(); });
+            await exe();
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)

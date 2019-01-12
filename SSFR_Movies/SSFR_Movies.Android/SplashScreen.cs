@@ -15,16 +15,16 @@ using SSFR_Movies.Services;
 namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
-    [Activity(Theme="@style/Theme.Splash", NoHistory = true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Theme = "@style/Theme.Splash", NoHistory = true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class SplashScreen : Activity
     {
-       
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            Toast.MakeText(this, "Initializing Resources, please wait :)", ToastLength.Long).Show();
-
+            
+            ContainerInitializer.Initialize();
+            
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))
@@ -32,9 +32,9 @@ namespace SSFR_Movies.Droid
                 Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
             }
 
-            this.StartActivity(typeof(MainActivity));
+            var MAintent = new Intent(this, typeof(MainActivity));
 
+            StartActivity(MAintent);
         }
-
     }
 }

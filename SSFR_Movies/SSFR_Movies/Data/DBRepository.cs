@@ -18,7 +18,6 @@ namespace SSFR_Movies.Data
     {
         private readonly DatabaseContext<T> dbContext;
         
-      
         public DBRepository(DatabaseContext<T> databaseContext)
         {
             dbContext = databaseContext;    

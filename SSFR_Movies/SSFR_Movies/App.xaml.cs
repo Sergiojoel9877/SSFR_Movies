@@ -33,16 +33,14 @@ namespace SSFR_Movies
            
             InitializeComponent();
 
-            ContainerInitializer.Initialize();
-
-            SetHttpClient();
-
             var mainPage = new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")
             };
 
             MainPage = mainPage;
+
+            SetHttpClient();
         }
 
         async void InitializeAsync(Func<Task> action)

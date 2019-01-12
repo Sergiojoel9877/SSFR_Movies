@@ -28,7 +28,6 @@
             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
-               
                 HeightRequest="300"
                 HorizontalOptions="Center"
                 Source="Unpin.png"
@@ -50,9 +49,10 @@
                 CachingStrategy="RecycleElementAndDataTemplate"
                 RefreshControlColor="Blue"
                 HasUnevenRows="True"
-                HorizontalOptions="CenterAndExpand"
+                
+                HorizontalOptions="FillAndExpand"
                 ItemTapped="ItemSelected"
-                ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
+                ItemsSource="{Binding FavMoviesList}"
                 RowHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate>
