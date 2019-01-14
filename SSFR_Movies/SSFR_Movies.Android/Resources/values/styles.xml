@@ -5,11 +5,11 @@
   </style>
 
   <!-- SplashScreen theme -->
-  <style name="Theme.Splash" parent="android:Theme">
-
-    <item name="android:windowBackground">@drawable/SplashScreen</item>
+  <style name="Theme.Splash" parent="Theme.AppCompat.Light.DarkActionBar"> 
+    <item name="android:windowBackground">@drawable/splash_screen</item>
     <item name="android:windowNoTitle">true</item>
-
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowActionBar">true</item>
   </style>
 
   <!-- Base theme applied no matter what API -->

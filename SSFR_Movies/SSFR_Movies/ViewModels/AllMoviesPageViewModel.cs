@@ -352,7 +352,7 @@ namespace SSFR_Movies.ViewModels
             Device.BeginInvokeOnMainThread(()=>
             {
                 ListVisible = false;
-                MsgVisible = false;
+                MsgVisible = false;  
                 IsRunning = true;
                 IsEnabled = true;
             });
