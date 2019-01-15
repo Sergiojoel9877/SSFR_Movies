@@ -51,7 +51,7 @@ namespace SSFR_Movies.Views
             {
                 Content = scroll,
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
-                RefreshColor = Color.Blue
+                RefreshColor = Color.FromHex("#006FDE")
             };
             pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
             pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
