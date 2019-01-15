@@ -4,10 +4,9 @@
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:controls="clr-namespace:Refractored.XamForms.PullToRefresh;assembly=Refractored.XamForms.PullToRefresh"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
-    x:DataType="vm:AllMoviesPageViewModel"
     Title="SSFR Movies Home"
     BackgroundColor="#161513">
 
@@ -18,14 +17,16 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout CompressedLayout.IsHeadless="True">
-
-            <FlexLayout
-                x:Name="GenresContainer"
-                AlignContent="Center"
-                BackgroundColor="#272B2E"
-                Direction="Column"
-                CompressedLayout.IsHeadless="True">
+        <StackLayout x:Name="stack">
+            
+            <ScrollView x:Name="scroll">
+                <StackLayout CompressedLayout.IsHeadless="True">
+                    <FlexLayout
+                    x:Name="GenresContainer"
+                    AlignContent="Center"
+                    BackgroundColor="#272B2E"
+                    Direction="Column"
+                    CompressedLayout.IsHeadless="True">
 
                 <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
                     <Grid.ColumnDefinitions>
@@ -268,15 +269,15 @@
                 </Grid>
             </FlexLayout>
 
-            <Image
-                x:Name="MessageImg"
-                x:DataType="vm:AllMoviesPageViewModel"
-                Grid.ColumnSpan="2"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                IsVisible="{Binding MsgVisible}"
-                Source="NoInternet.png"
-                WidthRequest="300" />
+                <Image
+                    x:Name="MessageImg"
+                    x:DataType="vm:AllMoviesPageViewModel"
+                    Grid.ColumnSpan="2"
+                    HeightRequest="300"
+                    HorizontalOptions="Center"
+                    IsVisible="{Binding MsgVisible}"
+                    Source="NoInternet.png"
+                    WidthRequest="300" />
 
              <Label
                 x:DataType="vm:AllMoviesPageViewModel"
@@ -303,7 +304,7 @@
 
             <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate  x:DataType="vm:AllMoviesPageViewModel">
+                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
                         <StackLayout CompressedLayout.IsHeadless="True">
                             <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                         </StackLayout>
@@ -333,6 +334,10 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>-->
+
+                    <Button BackgroundColor="Blue" Text="Refresh"/>
+                </StackLayout>
+            </ScrollView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

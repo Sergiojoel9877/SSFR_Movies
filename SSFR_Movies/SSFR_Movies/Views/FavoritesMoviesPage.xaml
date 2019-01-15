@@ -6,6 +6,8 @@
     xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
+    x:DataType="vm:FavoriteMoviesPageViewModel"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
 
@@ -15,16 +17,6 @@
 
     <ContentPage.Content>
         <StackLayout CompressedLayout.IsHeadless="True">
-
-            <!--<ffimage:CachedImage
-                x:Name="UnPin"
-                Grid.ColumnSpan="2"
-                BitmapOptimizations="True"
-                DownsampleToViewSize="True"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Source="Unpin.png"
-                WidthRequest="300" />-->
             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
@@ -39,6 +31,7 @@
                 FontAttributes="Bold"
                 FontSize="Medium"
                 HorizontalOptions="Center"
+                x:DataType="vm:FavoriteMoviesPageViewModel"
                 HorizontalTextAlignment="Center"
                 IsVisible="{Binding ListEmpty}"
                 Text="You have not picked any movie as a favorite one"
@@ -49,13 +42,13 @@
                 CachingStrategy="RecycleElementAndDataTemplate"
                 RefreshControlColor="Blue"
                 HasUnevenRows="True"
-                
+                x:DataType="vm:FavoriteMoviesPageViewModel"
                 HorizontalOptions="FillAndExpand"
                 ItemTapped="ItemSelected"
                 ItemsSource="{Binding FavMoviesList}"
                 RowHeight="350">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:FavoriteMoviesPageViewModel">
                         <helpers:CustomViewCellFavPage>
                             <!--    -->
                         </helpers:CustomViewCellFavPage>

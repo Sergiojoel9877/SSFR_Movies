@@ -9,11 +9,12 @@ using Android.Gms.Ads;
 using Android.Content;
 using SSFR_Movies.Services;
 using FFImageLoading;
+using Refractored.XamForms.PullToRefresh.Droid;
 
 namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
-    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", /*Theme = "@style/MainTheme",*/ Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
 
@@ -23,10 +24,16 @@ namespace SSFR_Movies.Droid
 
             ToolbarResource = Resource.Layout.Toolbar;
 
+            base.Window.RequestFeature(Android.Views.WindowFeatures.ActionBar);
+
+            base.SetTheme(Resource.Style.MainTheme);
+
             base.OnCreate(bundle);
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
-            
+
+            PullToRefreshLayoutRenderer.Init();
+
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
@@ -41,19 +48,24 @@ namespace SSFR_Movies.Droid
         public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+
             await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+
             base.OnTrimMemory(level);
         }
 
-        public override void OnLowMemory()
+        public override async void OnLowMemory()
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
             base.OnLowMemory();
         }
-
     }
 }
 

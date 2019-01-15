@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="MonkeyCache" Version="1.1.0-beta" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.1.0-beta" />
+    <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.3" />
     <PackageReference Include="System.Memory" Version="4.5.2" />
     <PackageReference Include="Unity" Version="5.8.13" />
     <PackageReference Include="Xam.Plugin.Connectivity" Version="4.0.0.190-beta" />

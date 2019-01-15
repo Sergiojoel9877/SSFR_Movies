@@ -110,12 +110,12 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(() =>
-            {
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
                 ListVisible = false;
                 IsEnabled = true;
                 IsRunning = true;
-            });
+            //});
 
             var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
@@ -129,14 +129,13 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Add(r);
             });
 
-            Device.BeginInvokeOnMainThread(()=>
-            {
+            //Device.BeginInvokeOnMainThread(()=>
+            //{
                 ListVisible = true;
                 MsgVisible = false;
-                IsRefreshing = false;
                 IsEnabled = false;
                 IsRunning = false;
-            });
+            //});
         }
 
         public async Task FillMoviesByGenreList()

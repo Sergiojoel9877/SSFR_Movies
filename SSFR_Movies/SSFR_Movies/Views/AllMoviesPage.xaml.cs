@@ -14,6 +14,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms.Internals;
 using System.Threading;
 using System.Diagnostics;
+using Unity;
+using Refractored.XamForms.PullToRefresh;
 
 namespace SSFR_Movies.Views
 {
@@ -32,6 +34,8 @@ namespace SSFR_Movies.Views
         ToolbarItem updownList = null;
 
         ToolbarItem searchToolbarItem = null;
+
+        PullToRefreshLayout pull2refreshlyt;
         
         public AllMoviesPage()
         {
@@ -43,6 +47,22 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
+            pull2refreshlyt = new PullToRefreshLayout()
+            {
+                Content = scroll,
+                RefreshBackgroundColor = Color.FromHex("#272B2E"),
+                RefreshColor = Color.Blue
+            };
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+
+            pull2refreshlyt.RefreshCommand = new Command(async () =>
+            {
+                await LoadMoreMovies();
+            });
+
+            stack.Children.Add(pull2refreshlyt);
+            
             SuscribeToMessages();
             
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
@@ -286,13 +306,17 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
+                Settings.NextPage++;
+
                 vm.AllMoviesList.Clear();
+
+                //MoviesList.ItemsSource = null;
                 
                 var token = new CancellationTokenSource();
 
                 token.CancelAfter(4000);
 
-                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, token, page: Settings.NextPage++);
+                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
                 if (MoviesDownloaded)
                 {
@@ -307,6 +331,8 @@ namespace SSFR_Movies.Views
                         Device.BeginInvokeOnMainThread( () =>
                         {
                             //MoviesList.EndRefresh();
+                            pull2refreshlyt.IsRefreshing = false;
+
                         });
                     }
                 }

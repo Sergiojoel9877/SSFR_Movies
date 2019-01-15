@@ -63,7 +63,7 @@
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AotAssemblies>true</AotAssemblies>
-    <EnableLLVM>true</EnableLLVM>
+    <EnableLLVM>false</EnableLLVM>
     <AndroidSupportedAbis>x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EnableProguard>false</EnableProguard>
@@ -100,6 +100,9 @@
     </PackageReference>
     <PackageReference Include="Plugin.CurrentActivity">
       <Version>2.1.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="Refractored.XamForms.PullToRefresh">
+      <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="System.Buffers">
       <Version>4.5.0</Version>
@@ -152,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\AdViewRenderer.cs" />
+    <Compile Include="CustomRenderers\PullToRefreshLayoutRenderer.cs" />
     <Compile Include="CustomRenderers\TransparentEntryRenderer.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />

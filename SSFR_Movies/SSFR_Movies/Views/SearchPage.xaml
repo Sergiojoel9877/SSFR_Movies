@@ -4,9 +4,9 @@
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    x:DataType="vm:AllMoviesPageViewModel"
     BackgroundColor="#161513"
     NavigationPage.HasNavigationBar="False">
 
@@ -67,11 +67,11 @@
                 VerticalOptions="CenterAndExpand"
                 HorizontalOptions="CenterAndExpand"
                 WidthRequest="40"
-                Color="#0088FF" />
+                Color="White" />
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" x:DataType="vm:AllMoviesPageViewModel" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
                         <StackLayout CompressedLayout.IsHeadless="True">
                             <helpers:CustomViewCell HeightRequest="350"/>
                         </StackLayout>

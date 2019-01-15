@@ -6,9 +6,9 @@
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     BackgroundColor="#161513">
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <ScrollView VerticalOptions="FillAndExpand">
-                <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
                     <ffimage:CachedImage
                         BitmapOptimizations="True"
                         DownsampleToViewSize="True"
@@ -16,37 +16,52 @@
                         HorizontalOptions="Center"
                         Source="icon.png"
                         WidthRequest="250" />
-                    <!--<Image
-                        HeightRequest="250"
-                        HorizontalOptions="Center"
-                        Source="icon.png"
-                        WidthRequest="250" />-->
+                    
                     <Label
-                        FontAttributes="Bold"
-                        FontSize="Large"
                         HorizontalOptions="CenterAndExpand"
-                        HorizontalTextAlignment="Center"
-                        Text="SSFR Movies 1.0.4"
-                        TextColor="White" />
+                        HorizontalTextAlignment="Center" >
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span 
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    Text="SSFR Movies 1.0.4"
+                                    TextColor="White"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
                     <StackLayout
                         Margin="16"
                         HorizontalOptions="FillAndExpand"
-                        VerticalOptions="End">
+                        VerticalOptions="End" 
+                        CompressedLayout.IsHeadless="True">
 
                         <Label
                             Margin="16"
-                            FontSize="Small"
-                            HorizontalTextAlignment="Center"
-                            Text="Concept and development: Sergio J. Ferreras"
-                            TextColor="White" />
+                            HorizontalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span  
+                                        Text="Concept and development: Sergio J. Ferreras"
+                                        FontSize="Small"
+                                        TextColor="White"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
 
                         <Label
                             Margin="16"
-                            FontSize="Small"
-                            HorizontalTextAlignment="Center"
-                            Text="Logo designer: Elaine M. Jiménez"
-                            TextColor="White" />
+                            HorizontalTextAlignment="Center" >
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        Text="Logo designer: Elaine M. Jiménez"
+                                        FontSize="Small"
+                                        TextColor="White" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
 
                         <Label
                             Margin="16"
@@ -54,14 +69,19 @@
                             HorizontalTextAlignment="Center"
                             LineBreakMode="WordWrap"
                             Text=" ® All Rights Reserved, Sergio J. Ferreras - SSFR Movies™"
-                            TextColor="White" />
-
+                            TextColor="White">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span
+                                        Text=" ® All Rights Reserved, Sergio J. Ferreras - SSFR Movies™"
+                                        FontSize="Micro"
+                                        TextColor="White" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </StackLayout>
-
-
                 </StackLayout>
             </ScrollView>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
