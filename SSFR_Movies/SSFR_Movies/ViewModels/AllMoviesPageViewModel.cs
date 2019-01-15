@@ -347,9 +347,18 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
+        private Command fillUpMovies;
+        private Command FillUpMovies
+        {
+            get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
+            {
+                await FillMoviesList();
+            }));    
+        }
+
         public AllMoviesPageViewModel()
         {
-            Device.BeginInvokeOnMainThread(()=>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = false;
                 MsgVisible = false;
@@ -357,8 +366,6 @@ namespace SSFR_Movies.ViewModels
                 IsEnabled = true;
             });
 
-            //CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -393,8 +400,8 @@ namespace SSFR_Movies.ViewModels
 
                     ActivityIndicatorRunning = true;
                 });
-               
-                Task.Factory.StartNew(async () => { await FillMoviesList(); });
+
+                FillUpMovies.Execute(null);
             }
         }
     }

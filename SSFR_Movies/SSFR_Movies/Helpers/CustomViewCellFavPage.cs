@@ -95,18 +95,6 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 350,
                 Transformations = Blur
             };
-            //blurCachedImage = new Image()
-            //{
-
-            //    HeightRequest = 350,
-            //    HorizontalOptions = LayoutOptions.FillAndExpand,
-            //    Scale = 3,
-
-            //    VerticalOptions = LayoutOptions.FillAndExpand,
-
-            //    WidthRequest = 350
-
-            //};
 
             cachedImage = new CachedImage()
             {
@@ -119,13 +107,6 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             };
-            //cachedImage = new Image()
-            //{
-            //    HeightRequest = 280,
-            //    HorizontalOptions = LayoutOptions.FillAndExpand,
-            //    VerticalOptions = LayoutOptions.FillAndExpand,
-            //    WidthRequest = 280
-            //};
 
             panelContainer = new StackLayout()
             {
@@ -137,6 +118,7 @@ namespace SSFR_Movies.Helpers
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
+                Margin = new Thickness(16, 0, 16, 0),
                 HorizontalOptions = LayoutOptions.Center,
             };
 

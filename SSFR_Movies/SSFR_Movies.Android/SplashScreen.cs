@@ -22,9 +22,11 @@ namespace SSFR_Movies.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            
-            ContainerInitializer.Initialize();
-            
+
+            var MAintent = new Intent(this, typeof(MainActivity));
+
+            StartActivity(MAintent);
+
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))
@@ -32,9 +34,8 @@ namespace SSFR_Movies.Droid
                 Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
             }
 
-            var MAintent = new Intent(this, typeof(MainActivity));
-
-            StartActivity(MAintent);
         }
+        public override void OnBackPressed() { }
+
     }
 }

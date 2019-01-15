@@ -208,9 +208,7 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
-            Bar.IsVisible = false;
-
-            await Navigation.PopAsync(false);
+            await Navigation.PopAsync(true);
         }
     }
 }

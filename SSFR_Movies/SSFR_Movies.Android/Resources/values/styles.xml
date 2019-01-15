@@ -7,7 +7,7 @@
   <!-- SplashScreen theme -->
   <style name="Theme.Splash" parent="android:Theme">
 
-    <item name="android:windowBackground">@drawable/SplashScreen</item>
+    <item name="android:windowBackground">@drawable/splash_screen</item>
     <item name="android:windowNoTitle">true</item>
 
   </style>

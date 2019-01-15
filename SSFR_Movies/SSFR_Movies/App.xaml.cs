@@ -21,7 +21,7 @@ using SSFR_Movies.Models;
 namespace SSFR_Movies
 {
     /// <summary>
-    /// The main class of a Xamarin Fomrs App.
+    /// The main class of a Xamarin Forms App.
     /// </summary>
     [Preserve(AllMembers = true)]
     public partial class App : Application

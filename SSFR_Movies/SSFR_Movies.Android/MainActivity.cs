@@ -7,6 +7,8 @@ using Android.OS;
 using Xamarin.Forms;
 using Android.Gms.Ads;
 using Android.Content;
+using SSFR_Movies.Services;
+using FFImageLoading;
 
 namespace SSFR_Movies.Droid
 {
@@ -23,24 +25,24 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            
+            MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
+            
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
-
-            MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
-
-            //Android.Glide.Forms.Init();
+            Android.Glide.Forms.Init();
 
             LoadApplication(new App());
         }
 
-        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
-
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             base.OnTrimMemory(level);
         }
 

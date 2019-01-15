@@ -98,18 +98,7 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 350,
                 Transformations = Blur
             };
-            //blurCachedImage = new Image()
-            //{
-
-            //    HeightRequest = 350,
-            //    HorizontalOptions = LayoutOptions.FillAndExpand,
-            //    Scale = 3,
-
-            //    VerticalOptions = LayoutOptions.FillAndExpand,
-
-            //    WidthRequest = 350
-
-            //};
+            blurCachedImage.SetBinding(CachedImage.SourceProperty, "BackdropPath");
 
             cachedImage = new CachedImage()
             {
@@ -122,13 +111,7 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             };
-            //cachedImage = new Image()
-            //{
-            //    HeightRequest = 280,
-            //    HorizontalOptions = LayoutOptions.FillAndExpand,
-            //    VerticalOptions = LayoutOptions.FillAndExpand,
-            //    WidthRequest = 280
-            //};
+            cachedImage.SetBinding(CachedImage.SourceProperty, "PosterPath");
 
             panelContainer = new StackLayout()
             {
@@ -248,62 +231,62 @@ namespace SSFR_Movies.Helpers
             compat.GestureRecognizers.Add(tap);
 
             cachedImage.GestureRecognizers.Add(imageTapped);
-
-            //View = FlexLayout;
-
+            
         }
-
-        //protected async override void OnAppearing()
-        //{
-        //    base.OnAppearing();
-
-        //    var result = BindingContext as Result;
-
-        //    await result.IsPresentInFavList(pin2FavList, result.Id);
-        //}
 
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
 
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
             MessagingCenter.Send(this, "Hide", true);
 
             App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
-           
-               
-            //});
         }
+
         protected override void OnBindingContextChanged()
         {
-         
-            pin2FavList.Source = "StarEmpty.png";
-
-            blurCachedImage.Source = null;
-
-            cachedImage.Source = null;
-
-            var item = BindingContext as Result;
-            
-            ExecuteAction(async ()=>
+            Device.BeginInvokeOnMainThread(async () =>
             {
+                pin2FavList.Source = "StarEmpty.png";
+
+                blurCachedImage.Source = null;
+
+                cachedImage.Source = null;
+
+                var item = BindingContext as Result;
+                
                 await item.IsPresentInFavList(pin2FavList, item.Id);
 
                 if (title.Text.Length >= 20)
                 {
                     title.SetAnimation();
                 }
+
+                if (item == null)
+                {
+                    return;
+                }
+
+                if (title.Text.Length >= 20)
+                {
+                    title.SetAnimation();
+                }
+                
+                Uri bimg, pimg;
+
+                Uri.TryCreate(item.BackdropPath, UriKind.Absolute, out bimg);
+
+                Uri.TryCreate(item.PosterPath, UriKind.Absolute, out pimg);
+
+                Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
+
+                Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
+
+                blurCachedImage.Source = await bimg_result;
+
+                cachedImage.Source = await pimg_result;
+
             });
-                                                    
-            if (item == null)
-            {
-                return;
-            }
-
-            blurCachedImage.Source = new FFImageLoading.Forms.DataUrlImageSource(item.BackdropPath.ToString());
-
-            cachedImage.Source = new FFImageLoading.Forms.DataUrlImageSource(item.PosterPath.ToString());
 
             base.OnBindingContextChanged();
         }

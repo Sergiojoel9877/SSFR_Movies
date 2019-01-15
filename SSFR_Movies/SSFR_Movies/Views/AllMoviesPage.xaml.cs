@@ -36,7 +36,9 @@ namespace SSFR_Movies.Views
         public AllMoviesPage()
         {
             InitializeComponent();
-            
+
+            ContainerInitializer.Initialize();
+
             vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
 
             BindingContext = vm;
@@ -45,9 +47,11 @@ namespace SSFR_Movies.Views
             
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
-            genresContainer.IsVisible = false;
-
-            Task.Factory.StartNew(async () => { await Scrollview.TranslateTo(0, -60, 500, Easing.Linear); });
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                genresContainer.IsVisible = false;
+                await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
+            });
 
             searchToolbarItem = new ToolbarItem()
             {
@@ -66,28 +70,27 @@ namespace SSFR_Movies.Views
                 Text = "Up",
                 Icon = "ListDown.png",
                 Priority = 1,
-
-                Command = new Command(async () =>
+                Command = new Command(() =>
                 {
                     updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
 
                     if (updownList.Icon == "ListDown.png")
                     {
-                        genresContainer.IsVisible = false;
+                        Device.BeginInvokeOnMainThread(async () => { 
 
-                        var t = Scrollview.TranslateTo(0, -60, 150, Easing.Linear);
+                            genresContainer.IsVisible = false;
 
-                        await Task.WhenAll(t);
+                            await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                        });
                     }
                     else
                     {
+                        Device.BeginInvokeOnMainThread(async ()=>
+                        {
+                            genresContainer.IsVisible = true;
 
-                        genresContainer.IsVisible = true;
-
-                        var t = Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-
-                        await Task.WhenAll(t);
-
+                            await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                        });
                     }
                 })
             };
@@ -97,14 +100,7 @@ namespace SSFR_Movies.Views
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
-           
-            //Task.Run(async ()=>
-            //{
-            //    await InitializeMsg(async () =>
-            //    {
-            //        await SpeakNow("Initializing resources, please wait a sencond.");
-            //    });
-            //});
+   
         }
 
         private void SuscribeToMessages()
