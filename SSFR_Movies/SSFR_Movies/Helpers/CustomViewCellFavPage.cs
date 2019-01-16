@@ -250,7 +250,7 @@ namespace SSFR_Movies.Helpers
 
             var result = BindingContext as Result;
 
-            await result.IsPresentInFavList(unPinFromFavList, result.Id);
+            await result.IsPresentInFavList(unPinFromFavList, result.Id).ConfigureAwait(false);
 
         }
 
@@ -258,13 +258,13 @@ namespace SSFR_Movies.Helpers
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+                await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
             });
         }
 
-        protected override void OnBindingContextChanged()
+        protected override async void OnBindingContextChanged()
         {
 
             unPinFromFavList.Source = "StarEmpty.png";
@@ -290,16 +290,26 @@ namespace SSFR_Movies.Helpers
                 return;
             }
 
-            blurCachedImage.Source = item.PosterPath;
+            Uri bimg, pimg;
 
-            cachedImage.Source = item.PosterPath;
+            Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
+
+            Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
+
+            Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
+
+            Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
+
+            blurCachedImage.Source = await bimg_result;
+
+            cachedImage.Source = await pimg_result;
 
             base.OnBindingContextChanged();
         }
         
-        void ExecuteAction(Func<Task> exe)
+        async void ExecuteAction(Func<Task> exe)
         {
-            Task.Run(() => { exe(); });
+            await Task.Run(() => { exe(); }).ConfigureAwait(false);
         }
         
         private async void QuitFromFavListTap(object sender, EventArgs e)
@@ -326,7 +336,7 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
 
                     if (deleteMovie)
                     {
@@ -366,7 +376,7 @@ namespace SSFR_Movies.Helpers
                 try
                 {
 
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
 
                     if (deleteMovie)
                     {

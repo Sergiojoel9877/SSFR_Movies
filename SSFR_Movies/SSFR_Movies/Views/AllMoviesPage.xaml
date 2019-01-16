@@ -311,6 +311,8 @@
 
                     <Button 
                         x:Name="RefreshBtn"
+                        x:DataType="vm:AllMoviesPageViewModel"
+                        IsVisible="{Binding ListVisible}"
                         BackgroundColor="#272B2E"
                         TextColor="#006FDE"
                         Text="Refresh"

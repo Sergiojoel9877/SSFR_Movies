@@ -110,12 +110,12 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
+            Device.BeginInvokeOnMainThread(() =>
+            {
                 ListVisible = false;
                 IsEnabled = true;
                 IsRunning = true;
-            //});
+            });
 
             var movies = Barrel.Current.Get<Movie>("Movies.Cached");
 
@@ -129,19 +129,18 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Add(r);
             });
 
-            //Device.BeginInvokeOnMainThread(()=>
-            //{
+            Device.BeginInvokeOnMainThread(() =>
+            {
                 ListVisible = true;
                 MsgVisible = false;
                 IsEnabled = false;
                 IsRunning = false;
-            //});
+            });
         }
 
-        public async Task FillMoviesByGenreList()
+        public void FillMoviesByGenreList()
         {
-            await Task.Yield();
-    
+                
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -193,7 +192,7 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
+            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false).ConfigureAwait(false);
 
             if (done)
             {
@@ -256,7 +255,7 @@ namespace SSFR_Movies.ViewModels
         private Command getStoreMoviesByGenresCommand;
         public Command GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command(async () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
             {
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -269,7 +268,7 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                await FillMoviesByGenreList();
+                FillMoviesByGenreList();
          
             }));
         }
@@ -320,7 +319,7 @@ namespace SSFR_Movies.ViewModels
             }
             
             //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync().ConfigureAwait(false);
 
         }
 

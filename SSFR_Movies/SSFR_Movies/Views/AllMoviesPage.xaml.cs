@@ -126,13 +126,13 @@ namespace SSFR_Movies.Views
 
         private void SuscribeToMessages()
         {
-            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", (s, e) =>
+            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", async (s, e) =>
             {
                 if (e == true)
                 {
                     vm.MsgVisible = false;
                     MessageImg.Source = null;
-                    MessageImg.TranslateTo(500, 0, 2);
+                    await MessageImg.TranslateTo(500, 0, 2);
                 }
             });
         }
@@ -225,53 +225,6 @@ namespace SSFR_Movies.Views
             }
         }
 
-        private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
-        {
-            await Task.Yield();
-
-            try
-            {
-                var list = (ListView)sender;
-
-                var Items = vm.AllMoviesList;
-
-                list.ItemsSource = Items;
-
-                if (Items.Count == 0)
-                {
-                    return;
-                }
-
-                if (e.Item == Items[Items.Count - 1])
-                {
-                    Settings.NextPage++;
-
-                    //Verify if internet connection is available
-                    if (!CrossConnectivity.Current.IsConnected)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                        {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                            return false;
-                        });
-                        return;
-                    }
-                                        
-                    await LoadMoreMovies();
-                }
-            }
-            catch (Exception e1)
-            {
-
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("An error has occurred!" + e1.InnerException);
-
-                    return false;
-                });
-            }
-        }
-
         private async Task LoadMoreMovies()
         {
             await Task.Yield();
@@ -288,6 +241,15 @@ namespace SSFR_Movies.Views
                     });
                     return;
                 }
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    activityIndicator.IsRunning = true;
+                    activityIndicator.IsVisible = true;
+                    MoviesList.IsVisible = false;
+                    RefreshBtn.IsEnabled = false;
+                    pull2refreshlyt.IsPullToRefreshEnabled = false;
+                });
 
                 Settings.NextPage++;
 
@@ -312,6 +274,11 @@ namespace SSFR_Movies.Views
                         Device.BeginInvokeOnMainThread( () =>
                         {
                             pull2refreshlyt.IsRefreshing = false;
+                            activityIndicator.IsRunning = false;
+                            MoviesList.IsVisible = true;
+                            activityIndicator.IsVisible = false;
+                            RefreshBtn.IsEnabled = true;
+                            pull2refreshlyt.IsPullToRefreshEnabled = true;
                         });
                     }
                 }
@@ -359,7 +326,7 @@ namespace SSFR_Movies.Views
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false).ConfigureAwait(false);
 
                 if (stored)
                 {
@@ -437,13 +404,6 @@ namespace SSFR_Movies.Views
 
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
-            Device.BeginInvokeOnMainThread(()=>
-            {
-                activityIndicator.IsRunning = true;
-                activityIndicator.IsVisible = true;
-                RefreshBtn.IsEnabled = false;
-                pull2refreshlyt.IsPullToRefreshEnabled = false;
-            });
 
             InitializeAsync(async () =>
             {
@@ -455,14 +415,7 @@ namespace SSFR_Movies.Views
 
                 await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
             });
-
-            Device.BeginInvokeOnMainThread(()=>
-            {
-                activityIndicator.IsRunning = false;
-                activityIndicator.IsVisible = false;
-                RefreshBtn.IsEnabled = true;
-                pull2refreshlyt.IsPullToRefreshEnabled = true;
-            });
+            
         }
     }
 }

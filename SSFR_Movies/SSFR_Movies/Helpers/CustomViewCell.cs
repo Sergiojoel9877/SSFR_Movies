@@ -247,7 +247,7 @@ namespace SSFR_Movies.Helpers
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                pin2FavList.Source = "StarEmpty.png";
+                //pin2FavList.Source = "StarEmpty.png";
 
                 blurCachedImage.Source = null;
 
@@ -255,9 +255,9 @@ namespace SSFR_Movies.Helpers
 
                 var item = BindingContext as Result;
                 
-                await item.IsPresentInFavList(pin2FavList, item.Id);
+                //await item.IsPresentInFavList(pin2FavList, item.Id);
 
-                if (title.Text.Length >= 20)
+                if (title.Text.Length >= 15)
                 {
                     title.SetAnimation();
                 }
@@ -271,20 +271,23 @@ namespace SSFR_Movies.Helpers
                 {
                     title.SetAnimation();
                 }
-                
+
                 Uri bimg, pimg;
 
-                Uri.TryCreate(item.BackdropPath, UriKind.Absolute, out bimg);
+                Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
 
-                Uri.TryCreate(item.PosterPath, UriKind.Absolute, out pimg);
+                Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
 
-                Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
+                Task <ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
 
                 Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
 
                 blurCachedImage.Source = await bimg_result;
 
                 cachedImage.Source = await pimg_result;
+                //blurCachedImage.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
+
+                //cachedImage.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
 
             });
 
