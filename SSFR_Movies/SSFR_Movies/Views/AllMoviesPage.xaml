@@ -18,324 +18,299 @@
 
     <ContentPage.Content>
         <StackLayout x:Name="stack">
-            
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout
-                    x:Name="GenresContainer"
-                    AlignContent="Center"
-                    BackgroundColor="#272B2E"
-                    Direction="Column"
-                    CompressedLayout.IsHeadless="True">
+                        x:Name="GenresContainer"
+                        AlignContent="Center"
+                        BackgroundColor="#272B2E"
+                        Direction="Column"
+                        CompressedLayout.IsHeadless="True">
 
-                <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                        <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
 
-                    <ScrollView
-                        x:Name="Scrollview"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,15,0,0"
-                        HeightRequest="40"
-                        HorizontalScrollBarVisibility="Never">
+                            <ScrollView
+                                x:Name="Scrollview"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,15,0,0"
+                                HeightRequest="40"
+                                HorizontalScrollBarVisibility="Never">
 
-                        <FlexLayout Direction="Row" CompressedLayout.IsHeadless="True">
-                            <Frame Style="{StaticResource FramesStyle}">
+                                <FlexLayout Direction="Row" CompressedLayout.IsHeadless="True">
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Action">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Action">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Adventure">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Adventure">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Animation">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Animation">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Comedy">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Comedy">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Crime">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Crime">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Documentary">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Documentary">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Drama">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Drama">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Family">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Family">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="History">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="History">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Horror">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Horror">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Music">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Music">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Mystery">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Mystery">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Romance">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Romance">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Science Fiction">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Science Fiction">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="TV Movie">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="TV Movie">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Thriller">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Thriller">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="War">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="War">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                    </Frame>
+                                    <Frame Style="{StaticResource FramesStyle}">
 
-                            </Frame>
-                            <Frame Style="{StaticResource FramesStyle}">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            Style="{StaticResource LabelsStyle}"
+                                            Text="Western">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                            </Label.GestureRecognizers>
+                                        </Label>
 
-                                <Label
-                                    FontAttributes="Bold"
-                                    Style="{StaticResource LabelsStyle}"
-                                    Text="Western">
-                                    <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                    </Label.GestureRecognizers>
-                                </Label>
+                                    </Frame>
 
-                            </Frame>
+                                </FlexLayout>
 
-                        </FlexLayout>
+                            </ScrollView>
+                        </Grid>
+                    </FlexLayout>
 
-                    </ScrollView>
-                </Grid>
-            </FlexLayout>
+                        <Image
+                            x:Name="MessageImg"
+                            x:DataType="vm:AllMoviesPageViewModel"
+                            Grid.ColumnSpan="2"
+                            HeightRequest="300"
+                            HorizontalOptions="Center"
+                            IsVisible="{Binding MsgVisible}"
+                            Source="NoInternet.png"
+                            WidthRequest="300" />
 
-                <Image
-                    x:Name="MessageImg"
-                    x:DataType="vm:AllMoviesPageViewModel"
-                    Grid.ColumnSpan="2"
-                    HeightRequest="300"
-                    HorizontalOptions="Center"
-                    IsVisible="{Binding MsgVisible}"
-                    Source="NoInternet.png"
-                    WidthRequest="300" />
+                     <Label
+                            x:DataType="vm:AllMoviesPageViewModel"
+                            x:Name="Message"
+                            Margin="0,5,0,0"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            IsVisible="{Binding MsgVisible}"
+                            Text="{Binding MsgText}"
+                            TextColor="White" />
 
-             <Label
-                x:DataType="vm:AllMoviesPageViewModel"
-                x:Name="Message"
-                Margin="0,5,0,0"
-                FontAttributes="Bold"
-                FontSize="Medium"
-                HorizontalOptions="Center"
-                HorizontalTextAlignment="Center"
-                IsVisible="{Binding MsgVisible}"
-                Text="{Binding MsgText}"
-                TextColor="White" />
+                    <ActivityIndicator
+                            x:Name="activityIndicator"
+                            HeightRequest="40"
+                            x:DataType="vm:AllMoviesPageViewModel"
+                            VerticalOptions="CenterAndExpand"
+                            HorizontalOptions="CenterAndExpand"
+                            IsRunning="{Binding IsRunning}"
+                            IsVisible="{Binding IsEnabled}"
+                            WidthRequest="40"
+                            Color="#FFF" />
 
-            <ActivityIndicator
-                x:Name="activityIndicator"
-                HeightRequest="40"
-                x:DataType="vm:AllMoviesPageViewModel"
-                VerticalOptions="CenterAndExpand"
-                HorizontalOptions="CenterAndExpand"
-                IsRunning="{Binding IsRunning}"
-                IsVisible="{Binding IsEnabled}"
-                WidthRequest="40"
-                Color="#FFF" />
+                        <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
+                                    <StackLayout CompressedLayout.IsHeadless="True">
+                                        <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>  
+                        </CollectionView>
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>    
-
-            <!--<ListView
-                x:Name="MoviesList"
-                CachingStrategy="RecycleElementAndDataTemplate"
-                HasUnevenRows="True"
-                RefreshControlColor="Blue"
-                IsPullToRefreshEnabled="True"
-                IsRefreshing="{Binding IsRefreshing}"
-                IsVisible="{Binding ListVisible}"
-                ItemAppearing="MoviesList_ItemAppearing"
-                ItemsSource="{Binding AllMoviesList}"
-                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}"
-                VerticalOptions="FillAndExpand">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <helpers:CustomViewCell>
-
-                            --><!--    --><!--
-
-                        </helpers:CustomViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
-
-                    <Button BackgroundColor="Blue" Text="Refresh"/>
+                    <Button x:Name="RefreshBtn" BackgroundColor="#272B2E" TextColor="#006FDE" Text="Refresh" Clicked="RefreshBtnClicked" FontSize="Medium"/>
                 </StackLayout>
             </ScrollView>
         </StackLayout>

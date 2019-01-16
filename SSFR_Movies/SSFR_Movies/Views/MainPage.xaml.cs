@@ -24,7 +24,7 @@ namespace SSFR_Movies.Views
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarItemColor(Color.FromHex("#0088FF"));
 
-            On<Xamarin.Forms.PlatformConfiguration.Android>().SetIsSwipePagingEnabled(false);
+            On<Xamarin.Forms.PlatformConfiguration.Android>().SetIsSwipePagingEnabled(true);
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarSelectedItemColor(Color.White);
 

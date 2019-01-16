@@ -8,6 +8,7 @@ using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using MonkeyCache.FileStore;
 using Plugin.Connectivity;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
@@ -142,15 +143,15 @@ namespace SSFR_Movies.Views
             await action();
         }
 
-        protected async override void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
       
-            var t5 = Scrollview.ScrollToAsync(100, 0, true);
+            //var t5 = Scrollview.ScrollToAsync(100, 0, true);
 
-            var t6 = Scrollview.ScrollToAsync(0, 0, true);
+            //var t6 = Scrollview.ScrollToAsync(0, 0, true);
 
-            await Task.WhenAll(t5, t6);
+            //await Task.WhenAll(t5, t6);
 
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
@@ -405,7 +406,7 @@ namespace SSFR_Movies.Views
                         vm.IsEnabled = false;
 
                         vm.IsRunning = false;
-
+                        
                     });
                 }
                 else
@@ -464,6 +465,21 @@ namespace SSFR_Movies.Views
             {
                 BindingContext = null;
             }
+        }
+
+        private void RefreshBtnClicked(object sender, EventArgs e)
+        {
+            InitializeAsync(async () =>
+            {
+                await LoadMoreMovies();
+
+                await scroll.ScrollToAsync(0, 500, true);
+
+                await RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear);
+
+                await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
+            });
+         
         }
     }
 }
