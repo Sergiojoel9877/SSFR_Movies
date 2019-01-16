@@ -36,7 +36,7 @@ namespace SSFR_Movies.Views
 
         ToolbarItem searchToolbarItem = null;
 
-        PullToRefreshLayout pull2refreshlyt;
+        PullToRefreshLayout pull2refreshlyt = null;
         
         public AllMoviesPage()
         {
@@ -133,7 +133,6 @@ namespace SSFR_Movies.Views
                     vm.MsgVisible = false;
                     MessageImg.Source = null;
                     MessageImg.TranslateTo(500, 0, 2);
-                    //Message.IsVisible = false;
                 }
             });
         }
@@ -147,12 +146,6 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
       
-            //var t5 = Scrollview.ScrollToAsync(100, 0, true);
-
-            //var t6 = Scrollview.ScrollToAsync(0, 0, true);
-
-            //await Task.WhenAll(t5, t6);
-
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
 
             //Verify if internet connection is available
@@ -206,7 +199,6 @@ namespace SSFR_Movies.Views
                     vm.ListVisible = true;
                     MessageImg.Source = ImageSource.FromFile("NoInternet.png");
                     MessageImg.TranslateTo(0, 0, 2);
-                    //MoviesList.BeginRefresh();
                 });
 
                 vm.GetStoreMoviesCommand.Execute(null);
@@ -215,7 +207,6 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
-                    //MoviesList.EndRefresh();
                     MoviesList.ItemsSource = null;
                     MoviesList.ItemsSource = vm.AllMoviesList;
                 });
@@ -265,16 +256,8 @@ namespace SSFR_Movies.Views
                         });
                         return;
                     }
-
-                    Device.BeginInvokeOnMainThread(()=>
-                    {
-                        //MoviesList.BeginRefresh();
-                    });
-
-                    //Parallel.Invoke(async ()=>
-                    //{
-                        await LoadMoreMovies();
-                    //});
+                                        
+                    await LoadMoreMovies();
                 }
             }
             catch (Exception e1)
@@ -295,7 +278,6 @@ namespace SSFR_Movies.Views
 
             try
             {
-
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -310,8 +292,6 @@ namespace SSFR_Movies.Views
                 Settings.NextPage++;
 
                 vm.AllMoviesList.Clear();
-
-                //MoviesList.ItemsSource = null;
                 
                 var token = new CancellationTokenSource();
 
@@ -331,9 +311,7 @@ namespace SSFR_Movies.Views
 
                         Device.BeginInvokeOnMainThread( () =>
                         {
-                            //MoviesList.EndRefresh();
                             pull2refreshlyt.IsRefreshing = false;
-
                         });
                     }
                 }
@@ -355,11 +333,9 @@ namespace SSFR_Movies.Views
 
             Device.BeginInvokeOnMainThread(() =>
             {
-
                 vm.ListVisible = false;
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
-                //MoviesList.BeginRefresh();
             });
 
             MoviesList.ItemsSource = null;
@@ -398,15 +374,12 @@ namespace SSFR_Movies.Views
                         MoviesList.ItemsSource = vm.AllMoviesList;
 
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                        //MoviesList.EndRefresh();
-
+                        
                         vm.ListVisible = true;
 
                         vm.IsEnabled = false;
 
                         vm.IsRunning = false;
-                        
                     });
                 }
                 else
@@ -416,8 +389,6 @@ namespace SSFR_Movies.Views
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        //MoviesList.EndRefresh();
-
                         vm.ListVisible = true;
                         vm.IsRunning = false;
                         vm.IsEnabled = false;
@@ -435,15 +406,12 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
-
                     vm.ListVisible = false;
                     vm.IsEnabled = false;
                     vm.IsRunning = false;
                     vm.MsgVisible = true;
                     vm.MsgText = "An unexpected error has ocurred, try again.";
                 });  
-
-                //MoviesList.EndRefresh();
                 
             }
         }
@@ -469,17 +437,32 @@ namespace SSFR_Movies.Views
 
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                activityIndicator.IsRunning = true;
+                activityIndicator.IsVisible = true;
+                RefreshBtn.IsEnabled = false;
+                pull2refreshlyt.IsPullToRefreshEnabled = false;
+            });
+
             InitializeAsync(async () =>
             {
                 await LoadMoreMovies();
-
+                
                 await scroll.ScrollToAsync(0, 500, true);
 
                 await RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear);
 
                 await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
             });
-         
+
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                activityIndicator.IsRunning = false;
+                activityIndicator.IsVisible = false;
+                RefreshBtn.IsEnabled = true;
+                pull2refreshlyt.IsPullToRefreshEnabled = true;
+            });
         }
     }
 }

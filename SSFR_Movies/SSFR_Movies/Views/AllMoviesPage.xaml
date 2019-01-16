@@ -5,7 +5,6 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:controls="clr-namespace:Refractored.XamForms.PullToRefresh;assembly=Refractored.XamForms.PullToRefresh"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies Home"
     BackgroundColor="#161513">
@@ -17,7 +16,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout x:Name="stack">
+        <StackLayout x:Name="stack" CompressedLayout.IsHeadless="True">
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout
@@ -267,50 +266,57 @@
                         </Grid>
                     </FlexLayout>
 
-                        <Image
-                            x:Name="MessageImg"
-                            x:DataType="vm:AllMoviesPageViewModel"
-                            Grid.ColumnSpan="2"
-                            HeightRequest="300"
-                            HorizontalOptions="Center"
-                            IsVisible="{Binding MsgVisible}"
-                            Source="NoInternet.png"
-                            WidthRequest="300" />
+                    <Image
+                        x:Name="MessageImg"
+                        x:DataType="vm:AllMoviesPageViewModel"
+                        Grid.ColumnSpan="2"
+                        HeightRequest="300"
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding MsgVisible}"
+                        Source="NoInternet.png"
+                        WidthRequest="300" />
 
                      <Label
-                            x:DataType="vm:AllMoviesPageViewModel"
-                            x:Name="Message"
-                            Margin="0,5,0,0"
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            HorizontalOptions="Center"
-                            HorizontalTextAlignment="Center"
-                            IsVisible="{Binding MsgVisible}"
-                            Text="{Binding MsgText}"
-                            TextColor="White" />
+                        x:DataType="vm:AllMoviesPageViewModel"
+                        x:Name="Message"
+                        Margin="0,5,0,0"
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        IsVisible="{Binding MsgVisible}"
+                        Text="{Binding MsgText}"
+                        TextColor="White" />
 
                     <ActivityIndicator
-                            x:Name="activityIndicator"
-                            HeightRequest="40"
-                            x:DataType="vm:AllMoviesPageViewModel"
-                            VerticalOptions="CenterAndExpand"
-                            HorizontalOptions="CenterAndExpand"
-                            IsRunning="{Binding IsRunning}"
-                            IsVisible="{Binding IsEnabled}"
-                            WidthRequest="40"
-                            Color="#FFF" />
+                        x:Name="activityIndicator"
+                        HeightRequest="40"
+                        x:DataType="vm:AllMoviesPageViewModel"
+                        VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="CenterAndExpand"
+                        IsRunning="{Binding IsRunning}"
+                        IsVisible="{Binding IsEnabled}"
+                        WidthRequest="40"
+                        Color="#FFF" />
 
-                        <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
-                                    <StackLayout CompressedLayout.IsHeadless="True">
-                                        <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                                    </StackLayout>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>  
-                        </CollectionView>
+                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
+                                <StackLayout CompressedLayout.IsHeadless="True">
+                                    <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>  
+                    </CollectionView>
 
-                    <Button x:Name="RefreshBtn" BackgroundColor="#272B2E" TextColor="#006FDE" Text="Refresh" Clicked="RefreshBtnClicked" FontSize="Medium"/>
+                    <Button 
+                        x:Name="RefreshBtn"
+                        BackgroundColor="#272B2E"
+                        TextColor="#006FDE"
+                        Text="Refresh"
+                        Clicked="RefreshBtnClicked"
+                        FontSize="Medium"/>
+               
                 </StackLayout>
             </ScrollView>
         </StackLayout>
