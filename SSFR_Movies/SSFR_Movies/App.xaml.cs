@@ -30,13 +30,8 @@ namespace SSFR_Movies
       
         public App ()
 		{
-           
             InitializeComponent();
 
-            //var mainPage = new NavigationPage(new MainPage())
-            //{
-            //    BarBackgroundColor = Color.FromHex("#272B2E")
-            //};
             var mainPage = new Lazy<NavigationPage>(() => new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")

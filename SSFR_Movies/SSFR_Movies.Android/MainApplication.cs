@@ -48,7 +48,7 @@ namespace SSFR_Movies.Droid
 
         private void AndroidEnvironment_UnhandledExceptionRaiser(object sender, RaiseThrowableEventArgs e)
         {
-            var intent = new Intent(activity, typeof(SplashScreen));
+            var intent = new Intent(activity, typeof(MainActivity));
             intent.PutExtra("crash", true);
             intent.AddFlags(ActivityFlags.ClearTop | ActivityFlags.ClearTask | ActivityFlags.NewTask);
 

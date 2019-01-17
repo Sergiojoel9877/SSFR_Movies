@@ -29,7 +29,7 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id);
+            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id).ConfigureAwait(false);
 
             if (movieExists)
             {

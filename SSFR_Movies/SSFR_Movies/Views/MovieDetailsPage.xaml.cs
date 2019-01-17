@@ -114,6 +114,7 @@ namespace SSFR_Movies.Views
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
+                        Settings.UpdateList = false;
                     }
                     else
                     {
@@ -121,6 +122,7 @@ namespace SSFR_Movies.Views
 
                         if (addMovie)
                         {
+                            Settings.UpdateList = true;
 
                             await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
 
@@ -134,13 +136,19 @@ namespace SSFR_Movies.Views
 
                                 QuitFromFavLayout.IsVisible = true;
                             });
+
                         }
                     } 
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine("Error: " + e.InnerException);
+                    Settings.UpdateList = false;
                 }
+            }
+            else
+            {
+                Settings.UpdateList = false;
             }
         }
 
@@ -175,6 +183,8 @@ namespace SSFR_Movies.Views
                         AddToFavLayout.IsVisible = true;
 
                         QuitFromFavLayout.IsVisible = false;
+
+                        Settings.UpdateList = true;
                     }
                 }
                 catch (Exception)
@@ -186,6 +196,10 @@ namespace SSFR_Movies.Views
                         return false;
                     });
                 }
+            }
+            else
+            {
+                Settings.UpdateList = false;
             }
         }
         
@@ -212,7 +226,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id).ConfigureAwait(false);
 
             if (video.Results.Count() == 0)
             {

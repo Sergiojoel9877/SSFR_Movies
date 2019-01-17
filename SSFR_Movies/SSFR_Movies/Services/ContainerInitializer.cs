@@ -38,7 +38,7 @@ namespace SSFR_Movies.Services
             
             container.RegisterInstance(typeof(Lazy<ApiClient>));
             container.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
-            container.RegisterInstance(typeof(FavoriteMoviesPageViewModel));
+            container.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
             container.RegisterInstance(typeof(DBRepository<>));
             container.RegisterInstance(typeof(DatabaseContext<>));
             container.RegisterType(typeof(DatabaseContext<>));

@@ -21,9 +21,9 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCell : FlexLayout
     {
         #region Controls
-        private CachedImage blurCachedImage = null;
+        private Lazy<CachedImage> blurCachedImage = null;
         //private Image blurCachedImage = null;
-        private CachedImage cachedImage = null;
+        private Lazy<CachedImage> cachedImage = null;
         //private Image cachedImage = null;
         private FlexLayout FlexLayout = null;
         private StackLayout Container = null;
@@ -50,14 +50,6 @@ namespace SSFR_Movies.Helpers
             Margin = 16;
             AlignContent = FlexAlignContent.Center;
 
-            //FlexLayout = new FlexLayout()
-            //{
-            //    HeightRequest = 300,
-            //    Direction = FlexDirection.Column,
-            //    Margin = 16,
-            //    AlignContent = FlexAlignContent.Center
-            //};
-            
             Container = new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
@@ -84,7 +76,7 @@ namespace SSFR_Movies.Helpers
                 new BlurredTransformation(15)
             };
 
-            blurCachedImage = new CachedImage()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
@@ -97,10 +89,10 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 350,
                 Transformations = Blur
-            };
-            blurCachedImage.SetBinding(CachedImage.SourceProperty, "BackdropPath");
+            });
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
 
-            cachedImage = new CachedImage()
+            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
@@ -110,8 +102,8 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
-            };
-            cachedImage.SetBinding(CachedImage.SourceProperty, "PosterPath");
+            });
+            cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
 
             panelContainer = new StackLayout()
             {
@@ -196,15 +188,15 @@ namespace SSFR_Movies.Helpers
             gridInsideFrame.Children.Add(releaseDate, 0, 1);
             gridInsideFrame.Children.Add(compat, 2, 1);
 
-            AbsoluteLayout.SetLayoutBounds(blurCachedImage, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(blurCachedImage, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(cachedImage, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(cachedImage, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
             
             FrameUnderImages.Content = gridInsideFrame;
 
-            absoluteLayout.Children.Add(blurCachedImage);
-            absoluteLayout.Children.Add(cachedImage);
+            absoluteLayout.Children.Add(blurCachedImage.Value);
+            absoluteLayout.Children.Add(cachedImage.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout, true);
 
             panelContainer.Children.Add(FrameUnderImages);
@@ -230,7 +222,7 @@ namespace SSFR_Movies.Helpers
 
             compat.GestureRecognizers.Add(tap);
 
-            cachedImage.GestureRecognizers.Add(imageTapped);
+            cachedImage.Value.GestureRecognizers.Add(imageTapped);
             
         }
 
@@ -240,23 +232,22 @@ namespace SSFR_Movies.Helpers
 
             MessagingCenter.Send(this, "Hide", true);
 
-            App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+            ExecuteAction(async ()=>
+            {
+                await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+            });
         }
 
         protected override void OnBindingContextChanged()
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                //pin2FavList.Source = "StarEmpty.png";
+                blurCachedImage.Value.Source = null;
 
-                blurCachedImage.Source = null;
-
-                cachedImage.Source = null;
+                cachedImage.Value.Source = null;
 
                 var item = BindingContext as Result;
                 
-                //await item.IsPresentInFavList(pin2FavList, item.Id);
-
                 if (title.Text.Length >= 15)
                 {
                     title.SetAnimation();
@@ -266,12 +257,7 @@ namespace SSFR_Movies.Helpers
                 {
                     return;
                 }
-
-                if (title.Text.Length >= 20)
-                {
-                    title.SetAnimation();
-                }
-
+                
                 Uri bimg, pimg;
 
                 Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
@@ -282,12 +268,9 @@ namespace SSFR_Movies.Helpers
 
                 Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
 
-                blurCachedImage.Source = await bimg_result;
+                blurCachedImage.Value.Source = await bimg_result.ConfigureAwait(false);
 
-                cachedImage.Source = await pimg_result;
-                //blurCachedImage.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
-
-                //cachedImage.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
+                cachedImage.Value.Source = await pimg_result.ConfigureAwait(false);
 
             });
 
@@ -298,7 +281,7 @@ namespace SSFR_Movies.Helpers
         {
             await exe();
         }
-
+        
         private async void AddToFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();

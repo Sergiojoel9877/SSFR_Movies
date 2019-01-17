@@ -17,16 +17,17 @@ namespace SSFR_Movies.Droid
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", /*Theme = "@style/MainTheme",*/ Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        Lazy<App> LazyApp = new Lazy<App>(() => new App());
 
         protected override void OnCreate(Bundle bundle)
         {
-            TabLayoutResource = Resource.Layout.Tabbar;
-
-            ToolbarResource = Resource.Layout.Toolbar;
-
             base.Window.RequestFeature(Android.Views.WindowFeatures.ActionBar);
 
             base.SetTheme(Resource.Style.MainTheme);
+
+            TabLayoutResource = Resource.Layout.Tabbar;
+
+            ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
 
@@ -42,7 +43,7 @@ namespace SSFR_Movies.Droid
 
             Android.Glide.Forms.Init();
 
-            LoadApplication(new App());
+            LoadApplication(LazyApp.Value);
         }
 
         public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)

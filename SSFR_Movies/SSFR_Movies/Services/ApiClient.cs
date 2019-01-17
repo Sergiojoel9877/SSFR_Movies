@@ -23,14 +23,13 @@ namespace SSFR_Movies.Services
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
 
         private const string LANG = "en-US";
-        
-        JsonSerializer serializer = new JsonSerializer();
+               
+        Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
             await Task.Yield();
-            //App.httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-
+  
             try
             {
                 //Verify if internet connection is available
@@ -101,7 +100,7 @@ namespace SSFR_Movies.Services
                 using (var reader = new StreamReader(stream))
                 using (var json = new JsonTextReader(reader))
                 {
-                    return serializer.Deserialize<Movie>(json);
+                    return serializer.Value.Deserialize<Movie>(json);
                 }
             }
             catch (Exception e)
@@ -163,7 +162,7 @@ namespace SSFR_Movies.Services
 
         private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
-            var movies = serializer.Deserialize<Movie>(results);
+            var movies = serializer.Value.Deserialize<Movie>(results);
 
             //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
 
@@ -189,7 +188,6 @@ namespace SSFR_Movies.Services
         {
             
             await Task.Yield();
-            //App.httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
 
@@ -218,13 +216,13 @@ namespace SSFR_Movies.Services
             using (var reader = new StreamReader(stream))
             using (var json = new JsonTextReader(reader))
             {
-                return serializer.Deserialize<MovieVideo>(json);
+                return serializer.Value.Deserialize<MovieVideo>(json);
             }
         }
 
         private bool StoreGenresInCache(JsonTextReader results)
         {
-            var movies = serializer.Deserialize<Genres>(results);
+            var movies = serializer.Value.Deserialize<Genres>(results);
 
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
             try
@@ -244,21 +242,7 @@ namespace SSFR_Movies.Services
         {
             try
             {
-                var movies = serializer.Deserialize<Movie>(results);
-
-                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
-
-                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
-
-                //movies.Results.ForEach(r =>
-                //{
-                //    r.PosterPath = PosterPath + r.PosterPath;
-                //});
-
-                //movies.Results.ForEach(e =>
-                //{
-                //     e.BackdropPath = Backdroppath + e.BackdropPath;
-                //});
+                var movies = serializer.Value.Deserialize<Movie>(results);
 
                 try
                 {

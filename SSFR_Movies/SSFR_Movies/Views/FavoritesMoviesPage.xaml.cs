@@ -31,18 +31,7 @@ namespace SSFR_Movies.Views
 		{
 			InitializeComponent ();
 
-            /* Here is how to deal with the items inside a ViewCell I must use reflection.. kinda expenpensive from a performance perspective 
-             * but it works..., or make use of a custom viewCell, it's a better option in terms of performance.
-             *  https://stackoverflow.com/questions/35849187/xamarin-forms-get-all-cells-items-of-a-listview
-             */
-            //_title = this.FindByName<Label>("title");
-
-            //Task.Run(async () =>
-            //{
-            //    await _title.SetAnimation();
-            //});
-
-            vm = ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>();
+            vm = ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value;
 
             BindingContext = vm;
 
@@ -109,7 +98,7 @@ namespace SSFR_Movies.Views
                         {
                             await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                            vm.FavMoviesList.Remove(movie);
+                            vm.FavMoviesList.Value.Remove(movie);
 
                             BindingContext = vm;
 
@@ -136,10 +125,6 @@ namespace SSFR_Movies.Views
                             return false;
                         });
                     }
-                }
-                else
-                {
-                
                 }
             }
         }
@@ -184,33 +169,36 @@ namespace SSFR_Movies.Views
 
         }
 
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            //Task.Run(async ()=>
+            //{
+            //    var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            //    bool Empty = true;
+            //    if (movies_db.Count() > 1)
+            //    {
+            //        Empty = false;
+            //        MessagingCenter.Send(this, "Render", Empty);
+            ////    }
+            ////});
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                /*vm.GetStoreMoviesCommand.Execute(null);*/
+                await vm.FillMoviesList();
+            });
 
-            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
-
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
-
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
-    
-            vm.GetStoreMoviesCommand.Execute(null);
-            
-            //MoviesList.BeginRefresh();
-
-            //await Task.Delay(200);
-
-            //MoviesList.EndRefresh();
-
+            //MessagingCenter.Subscribe<FavoritesMoviesPage, bool>(this, "Render", (p, e)=>
+            //{
+            //});
         }
 
-	    protected override void OnDisappearing()
-	    {
-	        base.OnDisappearing();
-	    }
-
+        async void InitializeAsync(Func<Task> action)
+        {
+            await action();
+        }
+        
         /// <summary>
         /// To animate the Quit from Favorite list icon..
         /// </summary>

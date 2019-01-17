@@ -45,7 +45,7 @@
                 x:DataType="vm:FavoriteMoviesPageViewModel"
                 HorizontalOptions="FillAndExpand"
                 ItemTapped="ItemSelected"
-                ItemsSource="{Binding FavMoviesList}"
+                ItemsSource="{Binding FavMoviesList.Value}"
                 RowHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="vm:FavoriteMoviesPageViewModel">

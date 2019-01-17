@@ -22,10 +22,9 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : ViewCell
     {
         #region Controls
-        private CachedImage blurCachedImage = null;
+        private Lazy<CachedImage> blurCachedImage = null;
         //private Image blurCachedImage = null;
-        private CachedImage cachedImage = null;
-        //private Image cachedImage = null;
+        private Lazy<CachedImage> cachedImage = null;
         private FlexLayout FlexLayout = null;
         private StackLayout Container = null;
         private StackLayout SubContainer = null;
@@ -82,21 +81,23 @@ namespace SSFR_Movies.Helpers
                 new BlurredTransformation(15)
             };
 
-            blurCachedImage = new CachedImage()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
                 HeightRequest = 350,
                 CacheType = FFImageLoading.Cache.CacheType.Disk,
+                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 350,
                 Transformations = Blur
-            };
+            });
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
 
-            cachedImage = new CachedImage()
+            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
@@ -106,7 +107,8 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
-            };
+            });
+            cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
 
             panelContainer = new StackLayout()
             {
@@ -203,15 +205,15 @@ namespace SSFR_Movies.Helpers
             gridInsideFrame.Children.Add(compat, 2, 0);
             Grid.SetRowSpan(compat, 2);
 
-            AbsoluteLayout.SetLayoutBounds(blurCachedImage, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(blurCachedImage, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(cachedImage, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(cachedImage, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
 
             FrameUnderImages.Content = gridInsideFrame;
 
-            absoluteLayout.Children.Add(blurCachedImage);
-            absoluteLayout.Children.Add(cachedImage);
+            absoluteLayout.Children.Add(blurCachedImage.Value);
+            absoluteLayout.Children.Add(cachedImage.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout, true);
 
             panelContainer.Children.Add(FrameUnderImages);
@@ -239,18 +241,9 @@ namespace SSFR_Movies.Helpers
 
             compat.GestureRecognizers.Add(tap);
 
-            cachedImage.GestureRecognizers.Add(imageTapped);
+            cachedImage.Value.GestureRecognizers.Add(imageTapped);
 
             View = FlexLayout;
-        }
-
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            var result = BindingContext as Result;
-
-            await result.IsPresentInFavList(unPinFromFavList, result.Id).ConfigureAwait(false);
 
         }
 
@@ -264,52 +257,55 @@ namespace SSFR_Movies.Helpers
             });
         }
 
-        protected override async void OnBindingContextChanged()
+        protected override void OnBindingContextChanged()
         {
-
-            unPinFromFavList.Source = "StarEmpty.png";
-
-            blurCachedImage.Source = null;
-
-            cachedImage.Source = null;
-
-            var item = BindingContext as SSFR_Movies.Models.Result;
-
-            ExecuteAction(async () =>
+            Device.BeginInvokeOnMainThread(async ()=>
             {
-                await item.IsPresentInFavList(unPinFromFavList, item.Id);
+                unPinFromFavList.Source = "StarEmpty.png";
 
-                if (title.Text.Length >= 20)
+                blurCachedImage.Value.Source = null;
+
+                cachedImage.Value.Source = null;
+
+                var item = BindingContext as SSFR_Movies.Models.Result;
+
+                ExecuteAction(async () =>
                 {
-                    title.SetAnimation();
+                    await item.IsPresentInFavList(unPinFromFavList, item.Id);
+
+                    if (title.Text.Length >= 20)
+                    {
+                        title.SetAnimation();
+                    }
+                });
+
+                if (item == null)
+                {
+                    return;
                 }
+
+                Uri bimg, pimg;
+
+                Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
+
+                Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
+
+                Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
+
+                Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
+
+                blurCachedImage.Value.Source = await bimg_result;
+
+                cachedImage.Value.Source = await pimg_result;
+
             });
-
-            if (item == null)
-            {
-                return;
-            }
-
-            Uri bimg, pimg;
-
-            Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
-
-            Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
-
-            Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
-
-            Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
-
-            blurCachedImage.Source = await bimg_result;
-
-            cachedImage.Source = await pimg_result;
-
+            
             base.OnBindingContextChanged();
         }
         
-        async void ExecuteAction(Func<Task> exe)
+        void ExecuteAction(Func<Task> exe)
         {
-            await Task.Run(() => { exe(); }).ConfigureAwait(false);
+            Task.Run(async () => { await exe(); });
         }
         
         private async void QuitFromFavListTap(object sender, EventArgs e)
@@ -340,7 +336,7 @@ namespace SSFR_Movies.Helpers
 
                     if (deleteMovie)
                     {
-                        ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>().FavMoviesList.Remove(movie);
+                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "RefreshList", true);
 
@@ -380,7 +376,7 @@ namespace SSFR_Movies.Helpers
 
                     if (deleteMovie)
                     {
-                        ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>().FavMoviesList.Remove(movie);
+                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
                         await unPinFromFavList.ScaleTo(1, 500, Easing.BounceIn);
 
