@@ -98,12 +98,12 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
+                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
 
                         if (movie_results.Results.Count != 0)
                         {
 
-                            vm.AllMoviesList.Clear();
+                            vm.AllMoviesList.Value.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
@@ -115,14 +115,14 @@ namespace SSFR_Movies.Views
 
                                 MovieResult.BackdropPath = Backdroppath;
 
-                                vm.AllMoviesList.Add(MovieResult);
+                                vm.AllMoviesList.Value.Add(MovieResult);
                             }
 
                             BindingContext = vm;
 
                             MoviesList.IsVisible = true;
 
-                            MoviesList.ItemsSource = vm.AllMoviesList;
+                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 

@@ -299,7 +299,7 @@
                         WidthRequest="40"
                         Color="#FFF" />
 
-                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
                                 <StackLayout CompressedLayout.IsHeadless="True">

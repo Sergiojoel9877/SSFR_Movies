@@ -26,19 +26,23 @@ namespace SSFR_Movies
     [Preserve(AllMembers = true)]
     public partial class App : Application
 	{
-        public static HttpClient httpClient { get; set; }
+        public static Lazy<HttpClient> httpClient { get; set; }
       
         public App ()
 		{
            
             InitializeComponent();
 
-            var mainPage = new NavigationPage(new MainPage())
+            //var mainPage = new NavigationPage(new MainPage())
+            //{
+            //    BarBackgroundColor = Color.FromHex("#272B2E")
+            //};
+            var mainPage = new Lazy<NavigationPage>(() => new NavigationPage(new MainPage())
             {
                 BarBackgroundColor = Color.FromHex("#272B2E")
-            };
-
-            MainPage = mainPage;
+            });
+            
+            MainPage = mainPage.Value;
 
             SetHttpClient();
         }
@@ -66,10 +70,11 @@ namespace SSFR_Movies
         /// <summary>
         /// Sets the httpClient Baseaddress
         /// </summary>
-        private void SetHttpClient() => httpClient = new HttpClient()
-                                        {
-                                            BaseAddress = new Uri("https://api.themoviedb.org")
-                                        };
-      
+        private void SetHttpClient() => httpClient = new Lazy<HttpClient>(() => new HttpClient()
+        {
+            BaseAddress = new Uri("https://api.themoviedb.org")
+        });
+
+
     }
 }

@@ -23,7 +23,7 @@ namespace SSFR_Movies.ViewModels
     [Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
 
         private bool listVisible = true;
         public bool ListVisible
@@ -126,7 +126,7 @@ namespace SSFR_Movies.ViewModels
 
             movies.Results.ForEach((r)=>
             {
-                AllMoviesList.Add(r);
+                AllMoviesList.Value.Add(r);
             });
 
             Device.BeginInvokeOnMainThread(() =>
@@ -154,11 +154,11 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
-            AllMoviesList.Clear();
+            AllMoviesList.Value.Clear();
 
             movies.Results.ForEach((r)=>
             {
-                AllMoviesList.Add(r);
+                AllMoviesList.Value.Add(r);
             });
 
             Device.BeginInvokeOnMainThread(()=>
@@ -192,7 +192,7 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false).ConfigureAwait(false);
+            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false).ConfigureAwait(false);
 
             if (done)
             {
@@ -319,7 +319,7 @@ namespace SSFR_Movies.ViewModels
             }
             
             //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync().ConfigureAwait(false);
+            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync().ConfigureAwait(false);
 
         }
 

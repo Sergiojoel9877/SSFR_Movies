@@ -36,8 +36,8 @@ namespace SSFR_Movies.Services
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);
             
-            container.RegisterInstance(typeof(ApiClient));
-            container.RegisterInstance(typeof(AllMoviesPageViewModel));
+            container.RegisterInstance(typeof(Lazy<ApiClient>));
+            container.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
             container.RegisterInstance(typeof(FavoriteMoviesPageViewModel));
             container.RegisterInstance(typeof(DBRepository<>));
             container.RegisterInstance(typeof(DatabaseContext<>));

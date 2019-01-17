@@ -8,7 +8,6 @@ using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using MonkeyCache.FileStore;
 using Plugin.Connectivity;
-using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
@@ -44,7 +43,7 @@ namespace SSFR_Movies.Views
 
             ContainerInitializer.Initialize();
 
-            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
+            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
 
             BindingContext = vm;
 
@@ -208,7 +207,7 @@ namespace SSFR_Movies.Views
                 Device.BeginInvokeOnMainThread(()=>
                 {
                     MoviesList.ItemsSource = null;
-                    MoviesList.ItemsSource = vm.AllMoviesList;
+                    MoviesList.ItemsSource = vm.AllMoviesList.Value;
                 });
             }
             else
@@ -253,13 +252,13 @@ namespace SSFR_Movies.Views
 
                 Settings.NextPage++;
 
-                vm.AllMoviesList.Clear();
+                vm.AllMoviesList.Value.Clear();
                 
                 var token = new CancellationTokenSource();
 
                 token.CancelAfter(4000);
 
-                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
                 if (MoviesDownloaded)
                 {
@@ -326,7 +325,7 @@ namespace SSFR_Movies.Views
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false).ConfigureAwait(false);
+                var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false).ConfigureAwait(false);
 
                 if (stored)
                 {
@@ -338,7 +337,7 @@ namespace SSFR_Movies.Views
 
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        MoviesList.ItemsSource = vm.AllMoviesList;
+                        MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
                         
@@ -352,7 +351,7 @@ namespace SSFR_Movies.Views
                 else
                 {
                  
-                    MoviesList.ItemsSource = vm.AllMoviesList;
+                    MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
