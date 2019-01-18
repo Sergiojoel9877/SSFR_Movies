@@ -49,6 +49,7 @@ namespace SSFR_Movies.ViewModels
 
             if (Settings.UpdateList)
             {
+                
                 var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
                 FavMoviesList.Value.Clear();

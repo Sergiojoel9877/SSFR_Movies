@@ -114,7 +114,6 @@ namespace SSFR_Movies.Views
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
-                        Settings.UpdateList = false;
                     }
                     else
                     {
@@ -143,7 +142,6 @@ namespace SSFR_Movies.Views
                 catch (Exception e)
                 {
                     Debug.WriteLine("Error: " + e.InnerException);
-                    Settings.UpdateList = false;
                 }
             }
             else

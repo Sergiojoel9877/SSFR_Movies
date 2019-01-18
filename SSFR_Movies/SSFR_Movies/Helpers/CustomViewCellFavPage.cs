@@ -268,17 +268,12 @@ namespace SSFR_Movies.Helpers
                 cachedImage.Value.Source = null;
 
                 var item = BindingContext as SSFR_Movies.Models.Result;
-
-                ExecuteAction(async () =>
+ 
+                if (title.Text.Length >= 20)
                 {
-                    await item.IsPresentInFavList(unPinFromFavList, item.Id);
-
-                    if (title.Text.Length >= 20)
-                    {
-                        title.SetAnimation();
-                    }
-                });
-
+                    title.SetAnimation();
+                }
+            
                 if (item == null)
                 {
                     return;

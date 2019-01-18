@@ -171,8 +171,7 @@ namespace SSFR_Movies.Views
 
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-
+          
             //Task.Run(async ()=>
             //{
             //    var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
@@ -192,6 +191,8 @@ namespace SSFR_Movies.Views
             //MessagingCenter.Subscribe<FavoritesMoviesPage, bool>(this, "Render", (p, e)=>
             //{
             //});
+            base.OnAppearing();
+
         }
 
         async void InitializeAsync(Func<Task> action)
