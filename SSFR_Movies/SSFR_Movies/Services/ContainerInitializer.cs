@@ -30,19 +30,19 @@ namespace SSFR_Movies.Services
             //Sets the barrel cache ID.. with out it, the Barrel cannot work
             Barrel.ApplicationId = "SSFR_Movies";
 
-            var container = new UnityContainer();
+            var container = new Lazy<UnityContainer>(() => new UnityContainer());
 
-            var serviceLocator = new UnityServiceLocator(container);
+            var serviceLocator = new UnityServiceLocator(container.Value);
 
             ServiceLocator.SetLocatorProvider(() => serviceLocator);
             
-            container.RegisterInstance(typeof(Lazy<ApiClient>));
-            container.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
-            container.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
-            container.RegisterInstance(typeof(DBRepository<>));
-            container.RegisterInstance(typeof(DatabaseContext<>));
-            container.RegisterType(typeof(DatabaseContext<>));
-            container.RegisterType(typeof(DbContextOptionsBuilder));
+            container.Value.RegisterInstance(typeof(Lazy<ApiClient>));
+            container.Value.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
+            container.Value.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
+            container.Value.RegisterInstance(typeof(DBRepository<>));
+            container.Value.RegisterInstance(typeof(DatabaseContext<>));
+            container.Value.RegisterType(typeof(DatabaseContext<>));
+            container.Value.RegisterType(typeof(DbContextOptionsBuilder));
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)

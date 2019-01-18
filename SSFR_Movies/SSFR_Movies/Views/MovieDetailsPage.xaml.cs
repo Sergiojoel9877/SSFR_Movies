@@ -78,13 +78,11 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
-            var t = AddToFav.ScaleTo(1.50, 250, Easing.SpringOut);
+            await AddToFav.ScaleTo(1.50, 500, Easing.SpringOut);
 
-            var t2 = AddToFav.ScaleTo(1, 500, Easing.SpringIn);
+            await AddToFav.ScaleTo(1, 500, Easing.SpringIn);
 
-            var t3 = AddToFavList();
-
-            await Task.WhenAll(t, t2, t3);
+            await AddToFavList();
         }
 
         private async Task AddToFavList()
@@ -121,11 +119,14 @@ namespace SSFR_Movies.Views
 
                         if (addMovie)
                         {
-                            Settings.UpdateList = true;
+                            
+                            //Settings.UpdateList = true;
 
                             await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
 
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                            MessagingCenter.Send(this, "Refresh", true);
 
                             Device.BeginInvokeOnMainThread(()=>
                             {
@@ -182,7 +183,9 @@ namespace SSFR_Movies.Views
 
                         QuitFromFavLayout.IsVisible = false;
 
-                        Settings.UpdateList = true;
+                        MessagingCenter.Send(this, "Refresh", true);
+
+                        //Settings.UpdateList = true;
                     }
                 }
                 catch (Exception)

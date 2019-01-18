@@ -31,9 +31,7 @@
                 FontAttributes="Bold"
                 FontSize="Medium"
                 HorizontalOptions="Center"
-                x:DataType="vm:FavoriteMoviesPageViewModel"
                 HorizontalTextAlignment="Center"
-                IsVisible="{Binding ListEmpty}"
                 Text="You have not picked any movie as a favorite one"
                 TextColor="White" />
 

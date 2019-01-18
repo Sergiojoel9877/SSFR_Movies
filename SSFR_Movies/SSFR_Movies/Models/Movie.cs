@@ -1,15 +1,10 @@
-﻿
-    using System;
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-using Xamarin.Forms.Internals;
+using Newtonsoft.Json;
 
 namespace SSFR_Movies.Models
 {
-  
+
     public class Movie : BaseEntity
     {
         [JsonProperty("page")]

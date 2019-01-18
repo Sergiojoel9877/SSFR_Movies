@@ -42,25 +42,43 @@ namespace SSFR_Movies.Views
 
         private void SubscribeToMessage()
         {
-            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "RefreshList", (s, e) =>
+            MessagingCenter.Subscribe<MovieDetailsPage, bool>(this, "Refresh", (s, e) =>
             {
                 if (e)
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        vm.GetStoreMoviesCommand.Execute(null);
-                       
-                        MoviesList.BeginRefresh();
-
-                        MoviesList.EndRefresh();
-
-                        var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-                        if (moviesRemaining.Count() == 0)
+                        var estado = await vm.FillMoviesList();
+                        if (estado == 'v')
                         {
-                            QuitVisibility();
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
                         }
-                        
+                        else if(estado == 'r')
+                        {
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                        }
+                    });
+                }
+            });
+
+            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
+            {
+                if (e)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var estado = await vm.FillMoviesList();
+                        if (estado == 'v')
+                        {
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                        }
+                        else if (estado == 'r')
+                        {
+                            Message.IsVisible = false;
+                        }
                     });
                 }
             });
@@ -168,33 +186,7 @@ namespace SSFR_Movies.Views
             await Navigation.PushAsync(new MovieDetailsPage(movie));
 
         }
-
-        protected override void OnAppearing()
-        {
-          
-            //Task.Run(async ()=>
-            //{
-            //    var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-            //    bool Empty = true;
-            //    if (movies_db.Count() > 1)
-            //    {
-            //        Empty = false;
-            //        MessagingCenter.Send(this, "Render", Empty);
-            ////    }
-            ////});
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                /*vm.GetStoreMoviesCommand.Execute(null);*/
-                await vm.FillMoviesList();
-            });
-
-            //MessagingCenter.Subscribe<FavoritesMoviesPage, bool>(this, "Render", (p, e)=>
-            //{
-            //});
-            base.OnAppearing();
-
-        }
-
+        
         async void InitializeAsync(Func<Task> action)
         {
             await action();

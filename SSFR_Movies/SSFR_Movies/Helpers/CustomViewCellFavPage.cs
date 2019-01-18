@@ -58,7 +58,6 @@ namespace SSFR_Movies.Helpers
             Container = new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
-
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
@@ -125,17 +124,17 @@ namespace SSFR_Movies.Helpers
             };
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
-                {
-                    new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
-                    new ColumnDefinition() { Width = GridLength.Star},
-                    new ColumnDefinition() { Width = GridLength.Star}
-                };
+            {
+                new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
+                new ColumnDefinition() { Width = GridLength.Star},
+                new ColumnDefinition() { Width = GridLength.Star}
+            };
 
             RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
-                {
-                    new RowDefinition() { Height = GridLength.Star},
-                    new RowDefinition() { Height = GridLength.Star}
-                };
+            {
+                new RowDefinition() { Height = GridLength.Star},
+                new RowDefinition() { Height = GridLength.Star}
+            };
 
             gridInsideFrame = new Grid()
             {
@@ -333,7 +332,7 @@ namespace SSFR_Movies.Helpers
                     {
                         ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
-                        MessagingCenter.Send(this, "RefreshList", true);
+                        MessagingCenter.Send(this, "Refresh", true);
 
                         await unPinFromFavList.ScaleTo(1, 500, Easing.BounceIn);
                     }

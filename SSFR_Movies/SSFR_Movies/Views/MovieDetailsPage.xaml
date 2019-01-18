@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
     Title="Details"
     BackgroundColor="#006FDE">
 
@@ -45,19 +44,12 @@
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
+                                LoadingPlaceholder="Loading.png"
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
                                 Source="{Binding BackdropPath}"
                                 WidthRequest="500" />
-                            <!--<Image
-                                AbsoluteLayout.LayoutBounds="0,0,1,0.7"
-                                AbsoluteLayout.LayoutFlags="All"
-                                Scale="3"
-                                HeightRequest="350"
-                                HorizontalOptions="FillAndExpand"
-                                Source="{Binding BackdropPath}"
-                                WidthRequest="500" />-->
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
@@ -81,12 +73,15 @@
                                         Orientation="Vertical"
                                         Margin="0,0,8,0"
                                         VerticalOptions="Start">
-                                        <Image
-                                            x:Name="AddToFav"
-                                            HeightRequest="30"
-                                            Source="StarEmpty.png"
-                                            WidthRequest="30" />
+                                       
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
+                                            <ffimage:CachedImage
+                                                x:Name="AddToFav"
+                                                BitmapOptimizations="True"
+                                                DownsampleToViewSize="True"
+                                                HeightRequest="40"
+                                                Source="StarEmpty.png"
+                                                WidthRequest="40" />
                                             <Label
                                                 FontAttributes="Bold"
                                                 FontSize="Medium"
@@ -137,6 +132,7 @@
                                 x:Name="PosterPath"
                                 CacheType="All"
                                 Margin="8,0,8,0"
+                                LoadingPlaceholder="Loading.png"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
                                 HeightRequest="200"
@@ -144,18 +140,6 @@
                                 Source="{Binding PosterPath}"
                                 Style="{StaticResource ImageInsideCardStyle}"
                                 WidthRequest="200" />
-                            
-                            <!--<Image
-                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
-                                AbsoluteLayout.LayoutFlags="All"
-                                x:Name="PosterPath"
-                                Margin="8,0,8,0"
-                                HeightRequest="200"
-                                HorizontalOptions="Start"
-                                Source="{Binding PosterPath}"
-                                Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="200" />-->
-
                         </AbsoluteLayout>
                     </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
@@ -187,10 +171,6 @@
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
                                         WidthRequest="35" />
-                                    <!--<Image
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />-->
                                     <Label
                                         Margin="5,0,0,0"
                                         FontAttributes="Bold"

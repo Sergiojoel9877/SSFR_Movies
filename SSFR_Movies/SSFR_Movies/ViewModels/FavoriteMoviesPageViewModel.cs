@@ -23,7 +23,7 @@ namespace SSFR_Movies.ViewModels
        
         public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>());
 
-        private bool listVisible = false;
+        private bool listVisible = true;
         public bool ListVisible
         {
             get => listVisible;
@@ -44,34 +44,31 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref listEmpty, value);
         }
 
-        public async Task<bool> FillMoviesList()
+        public async Task<char> FillMoviesList()
         {
+            await Task.Yield();
 
-            if (Settings.UpdateList)
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            FavMoviesList.Value.Clear();
+
+            foreach (var MovieResult in movies)
             {
-                
-                var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
-
-                FavMoviesList.Value.Clear();
-
-                foreach (var MovieResult in movies)
+                if (FavMoviesList.Value.Contains(MovieResult))
                 {
-                    if (FavMoviesList.Value.Contains(MovieResult))
-                    {
-                        return false;
-                    }
-
-                    FavMoviesList.Value.Add(MovieResult);
+                    return 'e'; //Resultado Existe
                 }
 
-                ListEmpty = false;
-
-                Settings.UpdateList = false;
-
-                return true;
+                FavMoviesList.Value.Add(MovieResult);
             }
-            Settings.UpdateList = false;
-            return false;
+
+            if (FavMoviesList.Value.Count == 0)
+            {
+                return 'v'; //Indica que la lista esta vacia
+            }
+
+            return 'r'; //Indica que la lista contiene elementos
+            
         }
 
         private Command getStoredMoviesCommand;
