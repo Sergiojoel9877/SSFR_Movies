@@ -107,9 +107,9 @@ namespace SSFR_Movies.Views
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath.ToString();
+                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
 
-                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath.ToString();
+                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
 
                                 MovieResult.PosterPath = PosterPath;
 
@@ -125,8 +125,6 @@ namespace SSFR_Movies.Views
                             MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                            //MoviesList.EndRefresh();
                             
                             activityIndicator.IsVisible = false;
 
@@ -137,9 +135,7 @@ namespace SSFR_Movies.Views
                         }
                         else
                         {
-                            
-                            //MoviesList.EndRefresh();
-
+                           
                             MoviesList.ItemsSource = null;
 
                             activityIndicator.IsVisible = false;

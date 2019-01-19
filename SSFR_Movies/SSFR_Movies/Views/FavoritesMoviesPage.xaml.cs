@@ -77,6 +77,7 @@ namespace SSFR_Movies.Views
                         }
                         else if (estado == 'r')
                         {
+                            UnPin.IsVisible = false;
                             Message.IsVisible = false;
                         }
                     });

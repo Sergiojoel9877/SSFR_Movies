@@ -174,7 +174,7 @@ namespace SSFR_Movies.ViewModels
         ///  Get movies from server and store them in cache.. with a TimeSpan limit.
         /// </summary>
         /// <returns>Bool if they are succesfully saved..</returns>
-        private static async Task<bool> GetAndStoreMoviesAsync()
+        public static async Task<bool> GetAndStoreMoviesAsync()
         {
             
             //Verify if internet connection is available
@@ -192,7 +192,7 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false).ConfigureAwait(false);
+            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
 
             if (done)
             {
@@ -319,7 +319,7 @@ namespace SSFR_Movies.ViewModels
             }
             
             //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync().ConfigureAwait(false);
+            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
 
         }
 
@@ -346,7 +346,7 @@ namespace SSFR_Movies.ViewModels
         }
 
         private Command fillUpMovies;
-        private Command FillUpMovies
+        public Command FillUpMovies
         {
             get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
             {
@@ -382,24 +382,22 @@ namespace SSFR_Movies.ViewModels
             }
 
             //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
-            if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            if (Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
-                GetStoreMoviesCommand.Execute(null);
+               
+                //Device.BeginInvokeOnMainThread(() =>
+                //{
+                //    ListVisible = false;
 
-                GetMoviesGenresCommand.Execute(null);
+                //    MsgVisible = false;
+
+                //    ActivityIndicatorRunning = true;
+                //});
+
+                FillUpMovies.Execute(null);
             }
             else
             {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    ListVisible = false;
-
-                    MsgVisible = false;
-
-                    ActivityIndicatorRunning = true;
-                });
-
-                FillUpMovies.Execute(null);
             }
         }
     }

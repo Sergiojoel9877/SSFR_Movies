@@ -76,7 +76,6 @@ namespace SSFR_Movies.Services
         {
 
             await Task.Yield();
-            //App.httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
 
             try
             {
@@ -115,7 +114,6 @@ namespace SSFR_Movies.Services
         {
 
             await Task.Yield();
-           //App.httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -163,21 +161,7 @@ namespace SSFR_Movies.Services
         private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
             var movies = serializer.Value.Deserialize<Movie>(results);
-
-            //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
-
-            //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
-
-            //movies.Results.ForEach(r =>
-            //{
-            //    r.PosterPath = PosterPath + r.PosterPath;
-            //});
-
-            //movies.Results.ForEach(e =>
-            //{
-            //    e.BackdropPath = Backdroppath + e.BackdropPath;
-            //});
-
+            
             //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
             Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
@@ -208,7 +192,7 @@ namespace SSFR_Movies.Services
             await Task.Yield();
            
             var requestUri = $"/3/movie/{id}/videos?api_key={API_KEY}&language={LANG}";
-            
+
             var m = await App.httpClient.Value.GetAsync(requestUri);
             m.EnsureSuccessStatusCode();
 

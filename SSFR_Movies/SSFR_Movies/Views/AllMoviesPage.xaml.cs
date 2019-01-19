@@ -41,8 +41,6 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            ContainerInitializer.Initialize();
-
             vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
 
             BindingContext = vm;
@@ -146,26 +144,6 @@ namespace SSFR_Movies.Views
             base.OnAppearing();
       
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-
-            ////Verify if internet connection is available
-            //if (!CrossConnectivity.Current.IsConnected)
-            //{
-            //    vm.MsgVisible = true;
-            //    vm.MsgText = "It seems like you don't have an internet connection!";
-            //    vm.IsEnabled = false;
-            //    vm.IsRunning = false;
-
-            //    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-            //    {
-            //        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-            //        return false;
-            //    });
-            //    return;
-            //}
-            //else
-            //{
-            //    vm.MsgVisible = false;
-            //}
         }
 
         private async Task SpeakNow(string msg)
@@ -324,7 +302,7 @@ namespace SSFR_Movies.Views
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false).ConfigureAwait(false);
+                var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
 
                 if (stored)
                 {

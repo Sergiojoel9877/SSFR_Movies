@@ -26,7 +26,7 @@ namespace SSFR_Movies.Services
       
         public static void Initialize()
         {
-
+            
             //Sets the barrel cache ID.. with out it, the Barrel cannot work
             Barrel.ApplicationId = "SSFR_Movies";
 

@@ -40,6 +40,7 @@
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
+                                x:Name="BackDropImage"
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
@@ -48,7 +49,6 @@
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
-                                Source="{Binding BackdropPath}"
                                 WidthRequest="500" />
 
                             <StackLayout
@@ -127,19 +127,18 @@
                             </StackLayout>
 
                             <ffimage:CachedImage
-                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
+                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.5, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
-                                x:Name="PosterPath"
+                                x:Name="PosterPathImage"
                                 CacheType="All"
                                 Margin="8,0,8,0"
                                 LoadingPlaceholder="Loading.png"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
-                                HeightRequest="200"
+                                HeightRequest="300"
                                 HorizontalOptions="Start"
-                                Source="{Binding PosterPath}"
                                 Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="200" />
+                                WidthRequest="300" />
                         </AbsoluteLayout>
                     </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">

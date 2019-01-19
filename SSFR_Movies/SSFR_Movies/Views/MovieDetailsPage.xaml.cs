@@ -27,7 +27,7 @@ namespace SSFR_Movies.Views
 
             tap.Tapped += TitleTapped;
 
-            PosterPath.GestureRecognizers.Add(tap);
+            PosterPathImage.GestureRecognizers.Add(tap);
 
             IsPresentInFavList(movie);
 
@@ -41,10 +41,35 @@ namespace SSFR_Movies.Views
             
             AddToFavLayout.Clicked += Tap_Tapped;
 
+            SetImagesContent();
+
             if (movie.Title.Length >= 25)
             {
                 MovieTitle.SetAnimation();
             }
+        }
+
+        public void SetImagesContent()
+        {
+            Device.BeginInvokeOnMainThread(async ()=>
+            {
+                var item = BindingContext as Result;
+
+                Uri bimg, pimg;
+
+                Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
+
+                Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
+
+                Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
+
+                Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
+
+                PosterPathImage.Source = await pimg_result.ConfigureAwait(false);
+
+                BackDropImage.Source = await bimg_result.ConfigureAwait(false);
+
+            });
         }
 
         private async void IsPresentInFavList(Result m)
@@ -120,8 +145,6 @@ namespace SSFR_Movies.Views
                         if (addMovie)
                         {
                             
-                            //Settings.UpdateList = true;
-
                             await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
 
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
@@ -227,7 +250,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id).ConfigureAwait(false);
+            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -263,9 +286,9 @@ namespace SSFR_Movies.Views
 
         private async void TitleTapped(object sender, EventArgs e)
         {
-           await PosterPath.ScaleTo(1.3, 500, Easing.Linear);
+           await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
 
-           await PosterPath.ScaleTo(1, 500, Easing.Linear);
+           await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
         }
     }
 }

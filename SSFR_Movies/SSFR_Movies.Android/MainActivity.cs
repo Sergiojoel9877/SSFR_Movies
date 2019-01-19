@@ -10,6 +10,7 @@ using Android.Content;
 using SSFR_Movies.Services;
 using FFImageLoading;
 using Refractored.XamForms.PullToRefresh.Droid;
+using Android.Widget;
 
 namespace SSFR_Movies.Droid
 {
@@ -21,6 +22,14 @@ namespace SSFR_Movies.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
+
+            MainApplication.activity = this;
+
+            if (Intent.GetBooleanExtra("crash", false))
+            {
+                Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
+            }
+
             base.Window.RequestFeature(Android.Views.WindowFeatures.ActionBar);
 
             base.SetTheme(Resource.Style.MainTheme);
