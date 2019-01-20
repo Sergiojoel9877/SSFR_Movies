@@ -54,12 +54,10 @@ namespace SSFR_Movies.ViewModels
 
             foreach (var MovieResult in movies)
             {
-                if (FavMoviesList.Value.Contains(MovieResult))
+                if (!FavMoviesList.Value.Contains(MovieResult))
                 {
-                    return 'e'; //Resultado Existe
+                    FavMoviesList.Value.Add(MovieResult);
                 }
-
-                FavMoviesList.Value.Add(MovieResult);
             }
 
             if (FavMoviesList.Value.Count == 0)

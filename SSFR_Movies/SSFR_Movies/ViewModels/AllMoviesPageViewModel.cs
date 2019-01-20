@@ -117,7 +117,7 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached");
+            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); //VERIFY...
 
             if (movies == null)
             {
@@ -242,6 +242,13 @@ namespace SSFR_Movies.ViewModels
                     });
                 }
 
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ListVisible = true;
+                    IsEnabled = false;
+                    IsRunning = false;
+                });
+
                 MoviesStored = stored;
 
                 if (MoviesStored)
@@ -356,14 +363,7 @@ namespace SSFR_Movies.ViewModels
 
         public AllMoviesPageViewModel()
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                ListVisible = false;
-                MsgVisible = false;
-                IsRunning = true;
-                IsEnabled = true;
-            });
-
+            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -384,20 +384,7 @@ namespace SSFR_Movies.ViewModels
             //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
             if (Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
-               
-                //Device.BeginInvokeOnMainThread(() =>
-                //{
-                //    ListVisible = false;
-
-                //    MsgVisible = false;
-
-                //    ActivityIndicatorRunning = true;
-                //});
-
                 FillUpMovies.Execute(null);
-            }
-            else
-            {
             }
         }
     }

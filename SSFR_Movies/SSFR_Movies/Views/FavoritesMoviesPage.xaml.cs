@@ -53,11 +53,16 @@ namespace SSFR_Movies.Views
                         {
                             UnPin.IsVisible = true;
                             Message.IsVisible = true;
+                            MoviesList.BeginRefresh();
+                            MoviesList.EndRefresh();
                         }
                         else if(estado == 'r')
                         {
+                            MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
+                            MoviesList.BeginRefresh();
+                            MoviesList.EndRefresh();
                         }
                     });
                 }
@@ -72,13 +77,18 @@ namespace SSFR_Movies.Views
                         var estado = await vm.FillMoviesList();
                         if (estado == 'v')
                         {
+                            MoviesList.BeginRefresh();
+                            MoviesList.EndRefresh();
                             UnPin.IsVisible = true;
                             Message.IsVisible = true;
                         }
                         else if (estado == 'r')
                         {
+                            MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
+                            MoviesList.BeginRefresh();
+                            MoviesList.EndRefresh();
                         }
                     });
                 }
