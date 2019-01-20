@@ -42,11 +42,7 @@ namespace SSFR_Movies.Views
                 {
                     ContainerInitializer.Initialize();
 
-                    if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
-                    {
-                        ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>().GetStoreMoviesCommand.Execute(null);
-                        ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>().GetMoviesGenresCommand.Execute(null);
-                    }
+                   
                    
                 },TaskCreationOptions.RunContinuationsAsynchronously);
                 

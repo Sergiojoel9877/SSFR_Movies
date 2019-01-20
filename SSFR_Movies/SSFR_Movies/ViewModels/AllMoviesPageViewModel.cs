@@ -363,7 +363,13 @@ namespace SSFR_Movies.ViewModels
 
         public AllMoviesPageViewModel()
         {
-            
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = false;
+                IsEnabled = true;
+                IsRunning = true;
+            });
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -381,11 +387,22 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
-            if (Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
-                FillUpMovies.Execute(null);
+                GetStoreMoviesCommand.Execute(null);
+                GetMoviesGenresCommand.Execute(null);
             }
+            else
+            {
+               FillUpMovies.Execute(null);
+            }
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = true;
+                IsEnabled = false;
+                IsRunning = false;
+            });
         }
     }
 }

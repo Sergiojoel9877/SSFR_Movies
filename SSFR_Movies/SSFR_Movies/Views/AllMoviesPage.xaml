@@ -268,7 +268,6 @@
 
                     <Image
                         x:Name="MessageImg"
-                        x:DataType="vm:AllMoviesPageViewModel"
                         Grid.ColumnSpan="2"
                         HeightRequest="300"
                         HorizontalOptions="Center"
@@ -277,7 +276,6 @@
                         WidthRequest="300" />
 
                      <Label
-                        x:DataType="vm:AllMoviesPageViewModel"
                         x:Name="Message"
                         Margin="0,5,0,0"
                         FontAttributes="Bold"
@@ -291,7 +289,6 @@
                     <ActivityIndicator
                         x:Name="activityIndicator"
                         HeightRequest="40"
-                        x:DataType="vm:AllMoviesPageViewModel"
                         VerticalOptions="CenterAndExpand"
                         HorizontalOptions="CenterAndExpand"
                         IsRunning="{Binding IsRunning}"
@@ -301,7 +298,7 @@
 
                     <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                         <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
+                            <DataTemplate>
                                 <StackLayout CompressedLayout.IsHeadless="True">
                                     <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                                 </StackLayout>
