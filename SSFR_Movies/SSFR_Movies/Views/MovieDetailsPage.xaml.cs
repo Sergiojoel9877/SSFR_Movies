@@ -284,6 +284,11 @@ namespace SSFR_Movies.Views
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
+        private void StreamMovie_Tapped(object sender, EventArgs e)
+        {
+
+        }
+
         private async void TitleTapped(object sender, EventArgs e)
         {
            await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
