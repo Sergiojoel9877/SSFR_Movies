@@ -107,13 +107,13 @@ namespace SSFR_Movies.Views
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+                                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
 
-                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+                                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
 
-                                MovieResult.PosterPath = PosterPath;
+                                //MovieResult.PosterPath = PosterPath;
 
-                                MovieResult.BackdropPath = Backdroppath;
+                                //MovieResult.BackdropPath = Backdroppath;
 
                                 vm.AllMoviesList.Value.Add(MovieResult);
                             }

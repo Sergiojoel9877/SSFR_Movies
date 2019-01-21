@@ -21,19 +21,7 @@
                 HorizontalOptions="FillAndExpand"
                 Orientation="Horizontal"
                 VerticalOptions="Start">
-
-                <!--<ffimage:CachedImage
-                    x:Name="back"
-                    Margin="16,16,0,16"
-                    BitmapOptimizations="True"
-                    HeightRequest="30"
-                    HorizontalOptions="Start"
-                    Source="Back.png"
-                    WidthRequest="30">
-                    <ffimage:CachedImage.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="Back_Tapped" />
-                    </ffimage:CachedImage.GestureRecognizers>
-                </ffimage:CachedImage>-->
+                
                 <Image
                     x:Name="back"
                     Margin="16,16,0,16"
@@ -69,11 +57,11 @@
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" x:DataType="vm:AllMoviesPageViewModel" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
+                    <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350"/>
+                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
