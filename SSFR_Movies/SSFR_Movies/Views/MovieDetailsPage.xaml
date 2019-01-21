@@ -73,7 +73,28 @@
                                         Orientation="Vertical"
                                         Margin="0,0,8,0"
                                         VerticalOptions="Start">
-                                       
+                                        <StackLayout
+                                            Margin="0"
+                                            HorizontalOptions="End"
+                                            Orientation="Horizontal">
+                                            <StackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="StreamMovie_Tapped" />
+                                            </StackLayout.GestureRecognizers>
+                                            <ffimage:CachedImage
+                                                DownsampleToViewSize="True"
+                                                HeightRequest="35"
+                                                Source="Play.png"
+                                                WidthRequest="35" />
+                                            <Label
+                                                Margin="5,0,0,0"
+                                                FontAttributes="Bold"
+                                                FontSize="Small"
+                                                HorizontalTextAlignment="End"
+                                                LineBreakMode="NoWrap"
+                                                Text="Play Movie"
+                                                TextColor="White"
+                                                VerticalTextAlignment="Center" />   
+                                        </StackLayout>
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
                                             <ffimage:CachedImage
                                                 x:Name="AddToFav"
@@ -214,6 +235,9 @@
                     </StackLayout>
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+                    <StackLayout>
+                        <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
                 </StackLayout>
             </ScrollView>
         </FlexLayout>

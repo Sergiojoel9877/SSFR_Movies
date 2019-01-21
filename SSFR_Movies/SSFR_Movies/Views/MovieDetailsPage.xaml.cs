@@ -284,11 +284,45 @@ namespace SSFR_Movies.Views
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
+        private void StreamMovie_Tapped(object sender, EventArgs e)
+        {
+
+            var item = BindingContext as Result;
+
+            //streamWV.IsVisible = true;
+
+            //streamWV.Source = ServiceLocator.Current
+            //    .GetInstance<Lazy<ApiClient>>().Value
+            //    .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+            //    item.ReleaseDate.Substring(0, 4));
+
+            Device.OpenUri(new Uri(ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value
+                                                                                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+                                                                                        item.ReleaseDate.Substring(0, 4))));
+            streamWV.GoBack();
+        }
+
         private async void TitleTapped(object sender, EventArgs e)
         {
            await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
 
            await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
+        }
+
+        private void BackButton_Clicked(object sender, EventArgs e)
+        {
+            if (streamWV.CanGoBack)
+            {
+                streamWV.GoBack();
+            }
+        }
+
+        private void FWButton_Clicked(object sender, EventArgs e)
+        {
+            if (streamWV.CanGoForward)
+            {
+                streamWV.GoForward();
+            }
         }
     }
 }
