@@ -22,9 +22,13 @@ namespace SSFR_Movies.Services
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
 
+        private const string API_KEY_Streaming = "jw9HuWd8ChouvpUk";
+
         private const string LANG = "en-US";
                
         Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
+
+        #region MoviesCacheFunctionsEtcRegion
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
@@ -252,5 +256,15 @@ namespace SSFR_Movies.Services
                 return false;
             }
         }
+        #endregion
+
+        #region MovieStreammingFunctionsRegion
+        public string PlayMovieByNameAndYear(string Title, string Year)
+        {
+            string url = $"https://videospider.in/getvideo?key={API_KEY_Streaming}&title=+{Title.ToLower()}&year={Year}";
+            return url;
+        }
+        
+        #endregion
     }
 }
