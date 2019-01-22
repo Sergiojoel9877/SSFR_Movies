@@ -28,7 +28,7 @@ namespace SSFR_Movies.Views
         {
             get => fireContainerCommand ?? (new Command(async ()=>
             {
-                await Task.Delay(3000);
+                await Task.Delay(2200);
 
                 ActIndicator.IsVisible = false;
 
@@ -41,9 +41,6 @@ namespace SSFR_Movies.Views
                 await Task.Factory.StartNew(()=>
                 {
                     ContainerInitializer.Initialize();
-
-                   
-                   
                 },TaskCreationOptions.RunContinuationsAsynchronously);
                 
                 var mainPage = new Lazy<MainPage>(()=> new MainPage

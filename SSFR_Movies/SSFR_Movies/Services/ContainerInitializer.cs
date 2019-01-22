@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Unity;
-using SSFR_Movies.ViewModels;
-using SSFR_Movies.Data;
-using SSFR_Movies.Services;
-using CommonServiceLocator;
-using Unity.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http;
 using MonkeyCache.FileStore;
-using System.Threading.Tasks;
 using Plugin.Connectivity;
+using SSFR_Movies.Data;
+using SSFR_Movies.ViewModels;
+using System;
+using Unity;
+using Unity.ServiceLocation;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
