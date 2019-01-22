@@ -94,7 +94,6 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 350,
                 Transformations = Blur
             });
-            blurCachedImage.Value.FadeTo(0, 300, Easing.Linear);
             blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
 
             cachedImage = new Lazy<CachedImage>(() => new CachedImage()
@@ -112,7 +111,6 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 280,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            cachedImage.Value.FadeTo(0, 300, Easing.Linear);
             cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
 
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
@@ -236,62 +234,48 @@ namespace SSFR_Movies.Helpers
             
         }
 
-        private void PosterTapped(object sender, EventArgs e)
+        private async void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
 
             MessagingCenter.Send(this, "Hide", true);
 
-            ExecuteAction(async ()=>
+            await ExecuteAction(async ()=>
             {
                 await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
             });
         }
-
+        
         protected override void OnBindingContextChanged()
         {
-            Device.BeginInvokeOnMainThread(async () =>
+            
+            blurCachedImage.Value.Source = null;
+
+            cachedImage.Value.Source = null;
+            
+            var item = BindingContext as Result;
+
+            Device.BeginInvokeOnMainThread(()=>
             {
-                blurCachedImage.Value.Source = null;
-
-                cachedImage.Value.Source = null;
-
-                var item = BindingContext as Result;
-                
                 if (title.Value.Text.Length >= 15)
                 {
                     title.Value.SetAnimation();
                 }
-
-                if (item == null)
-                {
-                    return;
-                }
-                
-                Uri bimg, pimg;
-
-                Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
-
-                Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
-
-                Task <ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
-
-                Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
-
-                blurCachedImage.Value.Source = await bimg_result.ConfigureAwait(false);
-
-                await blurCachedImage.Value.FadeTo(1, 300, Easing.Linear);
-
-                cachedImage.Value.Source = await pimg_result.ConfigureAwait(false);
-
-                await cachedImage.Value.FadeTo(1, 300, Easing.Linear);
-
             });
+               
+            if (item == null)
+            {
+                return;
+            }
+            
+            blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
+
+            cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
 
             base.OnBindingContextChanged();
         }
         
-        async void ExecuteAction(Func<Task> exe)
+        async Task ExecuteAction(Func<Task> exe)
         {
             await exe();
         }

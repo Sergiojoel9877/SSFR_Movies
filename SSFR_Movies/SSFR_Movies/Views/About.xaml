@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <ScrollView VerticalOptions="FillAndExpand">
-                <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
                     <ffimage:CachedImage
                         BitmapOptimizations="True"
                         DownsampleToViewSize="True"

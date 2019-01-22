@@ -51,31 +51,24 @@ namespace SSFR_Movies.Views
 
         public void SetImagesContent()
         {
-            Device.BeginInvokeOnMainThread(async ()=>
-            {
-                var item = BindingContext as Result;
+       
+            var item = BindingContext as Result;
 
-                Uri bimg, pimg;
+            PosterPathImage.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath; 
 
-                Uri.TryCreate("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath, UriKind.Absolute, out bimg);
+            BackDropImage.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
 
-                Uri.TryCreate("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath, UriKind.Absolute, out pimg);
+        }
 
-                Task<ImageSource> bimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(bimg));
-
-                Task<ImageSource> pimg_result = Task<ImageSource>.Factory.StartNew(() => ImageSource.FromUri(pimg));
-
-                PosterPathImage.Source = await pimg_result.ConfigureAwait(false);
-
-                BackDropImage.Source = await bimg_result.ConfigureAwait(false);
-
-            });
+        async void RunAsync(Func<Task> func)
+        {
+            await Task.Run(async ()=> { await func(); });
         }
 
         private async void IsPresentInFavList(Result m)
         {
 
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id).ConfigureAwait(false);
 
             if (movieExists)
             {
@@ -104,10 +97,10 @@ namespace SSFR_Movies.Views
             await Task.Yield();
 
             await AddToFav.ScaleTo(1.50, 500, Easing.SpringOut);
-
-            await AddToFav.ScaleTo(1, 500, Easing.SpringIn);
-
+            
             await AddToFavList();
+            
+            await AddToFav.ScaleTo(1, 500, Easing.SpringIn);
         }
 
         private async Task AddToFavList()
@@ -207,8 +200,6 @@ namespace SSFR_Movies.Views
                         QuitFromFavLayout.IsVisible = false;
 
                         MessagingCenter.Send(this, "Refresh", true);
-
-                        //Settings.UpdateList = true;
                     }
                 }
                 catch (Exception)
@@ -236,12 +227,10 @@ namespace SSFR_Movies.Views
 
             IsPresentInFavList(item);
 
-            var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);
+            await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
-            var t4 = Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
+            await Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
             
-            await Task.WhenAll(t3, t4);
-
             if (!CrossConnectivity.Current.IsConnected)
             {
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
