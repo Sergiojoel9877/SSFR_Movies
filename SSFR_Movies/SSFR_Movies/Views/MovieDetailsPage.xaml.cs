@@ -278,17 +278,56 @@ namespace SSFR_Movies.Views
 
             var item = BindingContext as Result;
 
-            //streamWV.IsVisible = true;
+            streamWV.IsVisible = true;
+            
+            streamWV.Source = ServiceLocator.Current
+                                .GetInstance<Lazy<ApiClient>>()
+                                    .Value
+                                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+                                            item.ReleaseDate.Substring(0, 4));
+            
+            streamWV.Navigated += StreamWV_Navigated;
 
-            //streamWV.Source = ServiceLocator.Current
-            //    .GetInstance<Lazy<ApiClient>>().Value
-            //    .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
-            //    item.ReleaseDate.Substring(0, 4));
+            streamWVswap.Navigated += StreamWVswap_Navigated;
+        }
 
-            Device.OpenUri(new Uri(ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value
-                                                                                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
-                                                                                        item.ReleaseDate.Substring(0, 4))));
-            streamWV.GoBack();
+        private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            try
+            {
+                var nav = (WebView)sender;
+
+                if (!e.Url.StartsWith("https://openload.co"))
+                {
+                    nav.GoBack();
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void StreamWV_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            try
+            {
+                var nav = (WebView)sender;
+
+                if (!e.Url.StartsWith("https://videospider.in"))
+                {
+                    if (e.Url.StartsWith("https://openload.co"))
+                    {
+                        streamWV.IsVisible = false;
+                        streamWVswap.IsVisible = true;
+                        streamWVswap.Source = e.Url;
+                    }
+                }
+            }
+            catch (Exception er)
+            {
+                Debug.WriteLine(er.Message);
+            }
         }
 
         private async void TitleTapped(object sender, EventArgs e)
