@@ -299,9 +299,12 @@ namespace SSFR_Movies.Views
 
                 if (!e.Url.StartsWith("https://openload.co"))
                 {
-                   
                     nav.GoBack();
-
+                }
+                else
+                {
+                    var urlStream = ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetStreamURL(e.Url.ToString());
+                    
                 }
             }
             catch (Exception err)

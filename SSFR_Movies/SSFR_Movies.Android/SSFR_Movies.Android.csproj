@@ -45,7 +45,7 @@
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-    <AndroidHttpClientHandlerType>Android</AndroidHttpClientHandlerType>
+    <AndroidHttpClientHandlerType>Managed</AndroidHttpClientHandlerType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>

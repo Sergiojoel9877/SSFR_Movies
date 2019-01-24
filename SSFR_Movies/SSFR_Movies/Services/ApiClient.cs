@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Drawing;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using System.Net.Http;
 
 namespace SSFR_Movies.Services
 {
@@ -264,7 +266,7 @@ namespace SSFR_Movies.Services
 
         #region MovieStreammingFunctionsRegion
 
-        const string UserAgent = "Mozilla / 5.0(Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1";
+        const string UserAgent = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
         const string NumbersJs = "https://openload.co/assets/js/obfuscator/n.js";
 
         public string PlayMovieByNameAndYear(string Title, string Year)
@@ -273,99 +275,53 @@ namespace SSFR_Movies.Services
             return url;
         }
 
-        private static string GetStreamURL(string URL)
+        public ResultDW GetStreamURL(string URL)
         {
-            string HTML = HttpGet(URL);
-            string NJs = HttpGet(NumbersJs);
+            var obj = default(string);
+            var obj1 = default(ResultOP);
+            var fileID = URL.Substring(URL.Length - 11);
 
-            string LinkImg = Regex.Match(HTML, "src=\"data:image/png;base64,([A-Za-z0-9+/=]+?)\"").Groups[1].Value;
-            string SigNums = Regex.Match(NJs, "window\\.signatureNumbers='([a-z]+?)'").Groups[1].Value;
-
-            byte[] ImgData = Convert.FromBase64String(LinkImg);
-
-            string ImgNums = string.Empty;
-
-            using (MemoryStream MS = new MemoryStream(ImgData))
+            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient
             {
-                using (Bitmap Img = new Bitmap(MS))
-                {
-                    for (int Y = 0; Y < Img.Height; Y++)
-                    {
-                        for (int X = 0; X < Img.Width; X++)
-                        {
-                            Color Col = Img.GetPixel(X, Y);
+                BaseAddress = new Uri("https://api.openload.co/1")
+            };
+            client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
-                            if (Col == Color.FromRgb(0, 0, 0))
-                            {
-                                //Black color = end of data
-                                Y = Img.Height;
-                                break;
-                            }
-
-                            ImgNums += (char)Col.R;
-                            ImgNums += (char)Col.G;
-                            ImgNums += (char)Col.B;
-                        }
-                    }
-                }
-            }
-
-            string[,] ImgStr = new string[10, ImgNums.Length / 200];
-            string[,] SigStr = new string[10, SigNums.Length / 260];
-
-            for (int i = 0; i < 10; i++)
+            try
             {
-                //Fill Array of Image String
-                for (int j = 0; j < ImgStr.GetLength(1); j++)
-                {
-                    ImgStr[i, j] = ImgNums.Substring(i * ImgStr.GetLength(1) * 20 + j * 20, 20);
-                }
+                string request = $"/file/dlticket?file={fileID}";
 
-                //Fill Array of Signature Numbers
-                for (int j = 0; j < SigStr.GetLength(1); j++)
-                {
-                    SigStr[i, j] = SigNums.Substring(i * SigStr.GetLength(1) * 26 + j * 26, 26);
-                }
+                obj = HttpGet(client.BaseAddress + request);
+                obj1 = JsonConvert.DeserializeObject<ResultOP>(obj);
             }
-            
-            List<string> Parts = new List<string>();
-
-            int[] Primes = { 2, 3, 5, 7 };
-
-            foreach (int i in Primes)
+            catch (Exception E)
             {
-                string Str = string.Empty;
-                float Sum = 99f; //c
-
-                for (int j = 0; j < SigStr.GetLength(1); j++)
-                {
-                    for (int ChrIdx = 0; ChrIdx < ImgStr[i, j].Length; ChrIdx++)
-                    {
-                        if (Sum > 122f) Sum = 98f; //b
-
-                        char Chr = (char)((int)Math.Floor(Sum));
-
-                        if (SigStr[i, j][ChrIdx] == Chr && j >= Str.Length)
-                        {
-                            Str += ImgStr[i, j][ChrIdx];
-                            Sum += 2.5f;
-                        }
-                    }
-                }
-
-                Parts.Add(Str.Replace(",", string.Empty));
+                Debug.WriteLine($"ERROR: {E.InnerException}");
             }
+            var downloadLink = GetDownloadLink(fileID, obj1);
 
-            string StreamURL = "https://openload.co/stream/";
-
-            StreamURL += Parts[3] + "~";
-            StreamURL += Parts[1] + "~";
-            StreamURL += Parts[2] + "~";
-            StreamURL += Parts[0];
-
-            return StreamURL;
+            return downloadLink;
         }
 
+        public ResultDW GetDownloadLink(string fileID, ResultOP result)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://api.openload.co/1");
+            
+            string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
+
+            try
+            {
+                var obj = HttpGet(client.BaseAddress + request);
+                var obj1 = JsonConvert.DeserializeObject<ResultDW>(obj);
+            }
+            catch (Exception ER)
+            {
+                Debug.WriteLine($"ERROR: {ER.InnerException}");
+            }
+            return null;
+        }
+        
         private static string HttpGet(string URL)
         {
             WebRequest Request = WebRequest.Create(URL);
