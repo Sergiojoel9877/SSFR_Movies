@@ -11,6 +11,9 @@ using SSFR_Movies.Services;
 using FFImageLoading;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Android.Widget;
+using Plugin.MediaManager.Forms.Android;
+using Plugin.MediaManager;
+using Plugin.MediaManager.MediaSession;
 
 namespace SSFR_Movies.Droid
 {
@@ -22,6 +25,9 @@ namespace SSFR_Movies.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
+            ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(Application.Context, typeof(ExoPlayerAudioService));
+            var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
+            CrossMediaManager.Current.AudioPlayer = exoPlayer;
 
             MainApplication.activity = this;
 
@@ -43,6 +49,8 @@ namespace SSFR_Movies.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             PullToRefreshLayoutRenderer.Init();
+
+            VideoViewRenderer.Init();
 
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             

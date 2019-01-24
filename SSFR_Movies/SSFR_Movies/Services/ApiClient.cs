@@ -275,45 +275,51 @@ namespace SSFR_Movies.Services
             return url;
         }
 
-        public ResultDW GetStreamURL(string URL)
+        public async Task<ResultDW> GetStreamURL(string URL)
         {
             var obj = default(string);
             var obj1 = default(ResultOP);
             var fileID = URL.Substring(URL.Length - 11);
 
-            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient
+            System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
             {
                 BaseAddress = new Uri("https://api.openload.co/1")
             };
-            client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+            httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
             try
             {
                 string request = $"/file/dlticket?file={fileID}";
 
-                obj = HttpGet(client.BaseAddress + request);
-                obj1 = JsonConvert.DeserializeObject<ResultOP>(obj);
+                var m = await httpClient.GetAsync(request);
+
+                var results = await m.Content.ReadAsStringAsync();
+
+                obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
             }
             catch (Exception E)
             {
                 Debug.WriteLine($"ERROR: {E.InnerException}");
             }
-            var downloadLink = GetDownloadLink(fileID, obj1);
+            var downloadLink = await GetDownloadLink(fileID, obj1);
 
             return downloadLink;
         }
 
-        public ResultDW GetDownloadLink(string fileID, ResultOP result)
+        public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://api.openload.co/1");
+            HttpClient httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri("https://api.openload.co/1");
             
             string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
 
             try
             {
-                var obj = HttpGet(client.BaseAddress + request);
-                var obj1 = JsonConvert.DeserializeObject<ResultDW>(obj);
+                var m = await httpClient.GetAsync(request);
+
+                var results = await m.Content.ReadAsStringAsync();
+
+                var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
             }
             catch (Exception ER)
             {

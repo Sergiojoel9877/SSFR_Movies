@@ -280,12 +280,20 @@ namespace SSFR_Movies.Views
 
             streamWV.IsVisible = true;
             
-            streamWV.Source = ServiceLocator.Current
+            //streamWV.Source = ServiceLocator.Current
+            //                    .GetInstance<Lazy<ApiClient>>()
+            //                        .Value
+            //                            .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+            //                                item.ReleaseDate.Substring(0, 4));
+
+            var URI = ServiceLocator.Current
                                 .GetInstance<Lazy<ApiClient>>()
                                     .Value
                                         .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
                                             item.ReleaseDate.Substring(0, 4));
-            
+
+            Device.OpenUri(new Uri(URI));
+
             streamWV.Navigated += StreamWV_Navigated;
 
             streamWVswap.Navigated += StreamWVswap_Navigated;
