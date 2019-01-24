@@ -9,6 +9,7 @@
             <ActivityIndicator
                 x:Name="ActIndicator"
                 Color="#006FDE"
+                Visual="Material"
                 IsVisible="True"
                 IsRunning="True"
                 VerticalOptions="CenterAndExpand"

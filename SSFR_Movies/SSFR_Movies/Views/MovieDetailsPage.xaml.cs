@@ -299,7 +299,9 @@ namespace SSFR_Movies.Views
 
                 if (!e.Url.StartsWith("https://openload.co"))
                 {
+                   
                     nav.GoBack();
+
                 }
             }
             catch (Exception err)
