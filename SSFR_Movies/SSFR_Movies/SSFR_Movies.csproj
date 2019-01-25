@@ -7,19 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.12.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.12.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="MonkeyCache" Version="1.1.0-beta" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.1.0-beta" />
+    <PackageReference Include="Plugin.MediaManager.Forms" Version="0.4.5" />
+    <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.3" />
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0-preview.18571.3" />
     <PackageReference Include="System.Memory" Version="4.5.2" />
-    <PackageReference Include="Unity" Version="5.8.13" />
+    <PackageReference Include="Unity" Version="5.9.1" />
+    <PackageReference Include="Unity.Abstractions" Version="4.0.0" />
+    <PackageReference Include="Unity.ServiceLocation" Version="5.9.1" />
     <PackageReference Include="Xam.Plugin.Connectivity" Version="4.0.0.190-beta" />
     <PackageReference Include="Xam.Plugins.Settings" Version="4.0.0.10-beta" />
     <PackageReference Include="Xamarin.Essentials" Version="1.0.1" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.5.860-pre" />
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.5.860-pre" />
-    <PackageReference Include="Xamarin.Forms" Version="4.0.0.8055-pre1" />
+    <PackageReference Include="Xamarin.Forms" Version="4.0.0.62955-pre2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +51,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\SearchPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\StartPagexaml.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

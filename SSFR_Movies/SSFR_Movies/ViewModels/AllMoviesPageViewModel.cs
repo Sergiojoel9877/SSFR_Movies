@@ -23,7 +23,7 @@ namespace SSFR_Movies.ViewModels
     [Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
 
         private bool listVisible = true;
         public bool ListVisible
@@ -117,7 +117,7 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached");
+            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); //VERIFY...
 
             if (movies == null)
             {
@@ -126,23 +126,21 @@ namespace SSFR_Movies.ViewModels
 
             movies.Results.ForEach((r)=>
             {
-                AllMoviesList.Add(r);
+                AllMoviesList.Value.Add(r);
             });
 
-            Device.BeginInvokeOnMainThread(()=>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = true;
                 MsgVisible = false;
-                IsRefreshing = false;
                 IsEnabled = false;
                 IsRunning = false;
             });
         }
 
-        public async Task FillMoviesByGenreList()
+        public void FillMoviesByGenreList()
         {
-            await Task.Yield();
-    
+                
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -156,11 +154,11 @@ namespace SSFR_Movies.ViewModels
 
             var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
-            AllMoviesList.Clear();
+            AllMoviesList.Value.Clear();
 
             movies.Results.ForEach((r)=>
             {
-                AllMoviesList.Add(r);
+                AllMoviesList.Value.Add(r);
             });
 
             Device.BeginInvokeOnMainThread(()=>
@@ -176,7 +174,7 @@ namespace SSFR_Movies.ViewModels
         ///  Get movies from server and store them in cache.. with a TimeSpan limit.
         /// </summary>
         /// <returns>Bool if they are succesfully saved..</returns>
-        private static async Task<bool> GetAndStoreMoviesAsync()
+        public static async Task<bool> GetAndStoreMoviesAsync()
         {
             
             //Verify if internet connection is available
@@ -194,7 +192,7 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
+            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
 
             if (done)
             {
@@ -244,6 +242,13 @@ namespace SSFR_Movies.ViewModels
                     });
                 }
 
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ListVisible = true;
+                    IsEnabled = false;
+                    IsRunning = false;
+                });
+
                 MoviesStored = stored;
 
                 if (MoviesStored)
@@ -257,7 +262,7 @@ namespace SSFR_Movies.ViewModels
         private Command getStoreMoviesByGenresCommand;
         public Command GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command(async () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
             {
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -270,7 +275,7 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                await FillMoviesByGenreList();
+                FillMoviesByGenreList();
          
             }));
         }
@@ -321,7 +326,7 @@ namespace SSFR_Movies.ViewModels
             }
             
             //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
 
         }
 
@@ -347,18 +352,24 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
+        private Command fillUpMovies;
+        public Command FillUpMovies
+        {
+            get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
+            {
+                await FillMoviesList();
+            }));    
+        }
+
         public AllMoviesPageViewModel()
         {
-            Device.BeginInvokeOnMainThread(()=>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = false;
-                MsgVisible = false;  
-                IsRunning = true;
                 IsEnabled = true;
+                IsRunning = true;
             });
 
-            //CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -376,26 +387,22 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
             if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
             {
                 GetStoreMoviesCommand.Execute(null);
-
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    ListVisible = false;
-
-                    MsgVisible = false;
-
-                    ActivityIndicatorRunning = true;
-                });
-               
-                Task.Factory.StartNew(async () => { await FillMoviesList(); });
+               FillUpMovies.Execute(null);
             }
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = true;
+                IsEnabled = false;
+                IsRunning = false;
+            });
         }
     }
 }

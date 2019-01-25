@@ -4,9 +4,9 @@
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    x:DataType="vm:AllMoviesPageViewModel"
     BackgroundColor="#161513"
     NavigationPage.HasNavigationBar="False">
 
@@ -21,19 +21,7 @@
                 HorizontalOptions="FillAndExpand"
                 Orientation="Horizontal"
                 VerticalOptions="Start">
-
-                <!--<ffimage:CachedImage
-                    x:Name="back"
-                    Margin="16,16,0,16"
-                    BitmapOptimizations="True"
-                    HeightRequest="30"
-                    HorizontalOptions="Start"
-                    Source="Back.png"
-                    WidthRequest="30">
-                    <ffimage:CachedImage.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="Back_Tapped" />
-                    </ffimage:CachedImage.GestureRecognizers>
-                </ffimage:CachedImage>-->
+                
                 <Image
                     x:Name="back"
                     Margin="16,16,0,16"
@@ -67,13 +55,13 @@
                 VerticalOptions="CenterAndExpand"
                 HorizontalOptions="CenterAndExpand"
                 WidthRequest="40"
-                Color="#0088FF" />
+                Color="White" />
 
             <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350"/>
+                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

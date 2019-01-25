@@ -98,35 +98,33 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
+                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
 
                         if (movie_results.Results.Count != 0)
                         {
 
-                            vm.AllMoviesList.Clear();
+                            vm.AllMoviesList.Value.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+                                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
 
-                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+                                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
 
-                                MovieResult.PosterPath = PosterPath;
+                                //MovieResult.PosterPath = PosterPath;
 
-                                MovieResult.BackdropPath = Backdroppath;
+                                //MovieResult.BackdropPath = Backdroppath;
 
-                                vm.AllMoviesList.Add(MovieResult);
+                                vm.AllMoviesList.Value.Add(MovieResult);
                             }
 
                             BindingContext = vm;
 
                             MoviesList.IsVisible = true;
 
-                            MoviesList.ItemsSource = vm.AllMoviesList;
+                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                            //MoviesList.EndRefresh();
                             
                             activityIndicator.IsVisible = false;
 
@@ -137,9 +135,7 @@ namespace SSFR_Movies.Views
                         }
                         else
                         {
-                            
-                            //MoviesList.EndRefresh();
-
+                           
                             MoviesList.ItemsSource = null;
 
                             activityIndicator.IsVisible = false;
@@ -208,9 +204,7 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
-            Bar.IsVisible = false;
-
-            await Navigation.PopAsync(false);
+            await Navigation.PopAsync(true);
         }
     }
 }

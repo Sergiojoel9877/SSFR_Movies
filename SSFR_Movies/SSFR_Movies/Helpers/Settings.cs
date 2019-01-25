@@ -57,6 +57,12 @@ namespace SSFR_Movies.Helpers
             }
         }
 
+        public static bool UpdateList
+        {
+            get => AppSettings.GetValueOrDefault("UpdateList", false);
+            set => AppSettings.AddOrUpdateValue("UpdateList", value);
+        }
+
         public static int NextPageForGenre
         {
             get

@@ -16,23 +16,27 @@ using SSFR_Movies.Services;
 namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
-    [Activity(Theme="@style/Theme.Splash", NoHistory = true, MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
-    public class SplashScreen : AppCompatActivity
+    [Activity(Theme = "@style/Theme.Splash", NoHistory = false, MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    public class SplashScreen : Activity
     {
-       
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))
             {
                 Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
             }
+            
+            var MAintent = new Intent(this, typeof(MainActivity));
 
-            this.StartActivity(typeof(MainActivity));
+            StartActivity(MAintent);
+
         }
+        public override void OnBackPressed() { }
 
     }
 }

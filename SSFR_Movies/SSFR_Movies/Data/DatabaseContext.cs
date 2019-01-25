@@ -18,9 +18,8 @@ namespace SSFR_Movies.Data
     {
         public DbSet<T> Entity { get; set; }
 
-        string DbName = "GBH_Movies.db3";
+        string DbName = "SSFR_Movies.db3";
         
-      
         public DatabaseContext()
         {
             Database.EnsureCreated();

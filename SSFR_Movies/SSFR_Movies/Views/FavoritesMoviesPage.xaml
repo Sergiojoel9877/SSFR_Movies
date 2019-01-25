@@ -6,6 +6,8 @@
     xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
+    x:DataType="vm:FavoriteMoviesPageViewModel"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
 
@@ -15,20 +17,9 @@
 
     <ContentPage.Content>
         <StackLayout CompressedLayout.IsHeadless="True">
-
-            <!--<ffimage:CachedImage
-                x:Name="UnPin"
-                Grid.ColumnSpan="2"
-                BitmapOptimizations="True"
-                DownsampleToViewSize="True"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Source="Unpin.png"
-                WidthRequest="300" />-->
             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
-               
                 HeightRequest="300"
                 HorizontalOptions="Center"
                 Source="Unpin.png"
@@ -41,7 +32,6 @@
                 FontSize="Medium"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
-                IsVisible="{Binding ListEmpty}"
                 Text="You have not picked any movie as a favorite one"
                 TextColor="White" />
 
@@ -50,9 +40,9 @@
                 CachingStrategy="RecycleElementAndDataTemplate"
                 RefreshControlColor="Blue"
                 HasUnevenRows="True"
-                HorizontalOptions="CenterAndExpand"
+                HorizontalOptions="FillAndExpand"
                 ItemTapped="ItemSelected"
-                ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
+                ItemsSource="{Binding FavMoviesList.Value}"
                 RowHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate>

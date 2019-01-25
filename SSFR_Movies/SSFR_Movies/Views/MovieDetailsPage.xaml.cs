@@ -27,7 +27,7 @@ namespace SSFR_Movies.Views
 
             tap.Tapped += TitleTapped;
 
-            PosterPath.GestureRecognizers.Add(tap);
+            PosterPathImage.GestureRecognizers.Add(tap);
 
             IsPresentInFavList(movie);
 
@@ -40,14 +40,35 @@ namespace SSFR_Movies.Views
             QuitFromFavLayout.Clicked += QuitFromFavorites;
             
             AddToFavLayout.Clicked += Tap_Tapped;
-            
-            MovieTitle.SetAnimation();
+
+            SetImagesContent();
+
+            if (movie.Title.Length >= 25)
+            {
+                MovieTitle.SetAnimation();
+            }
+        }
+
+        public void SetImagesContent()
+        {
+       
+            var item = BindingContext as Result;
+
+            PosterPathImage.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath; 
+
+            BackDropImage.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
+
+        }
+
+        async void RunAsync(Func<Task> func)
+        {
+            await Task.Run(async ()=> { await func(); });
         }
 
         private async void IsPresentInFavList(Result m)
         {
 
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id).ConfigureAwait(false);
 
             if (movieExists)
             {
@@ -75,13 +96,11 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
-            var t = AddToFav.ScaleTo(1.50, 250, Easing.SpringOut);
-
-            var t2 = AddToFav.ScaleTo(1, 500, Easing.SpringIn);
-
-            var t3 = AddToFavList();
-
-            await Task.WhenAll(t, t2, t3);
+            await AddToFav.ScaleTo(1.50, 500, Easing.SpringOut);
+            
+            await AddToFavList();
+            
+            await AddToFav.ScaleTo(1, 500, Easing.SpringIn);
         }
 
         private async Task AddToFavList()
@@ -118,10 +137,12 @@ namespace SSFR_Movies.Views
 
                         if (addMovie)
                         {
-
-                            await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
+                            
+                            await SpeakNow("Added Successfully");
 
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                            MessagingCenter.Send(this, "Refresh", true);
 
                             Device.BeginInvokeOnMainThread(()=>
                             {
@@ -141,7 +162,7 @@ namespace SSFR_Movies.Views
             }
             else
             {
-
+                Settings.UpdateList = false;
             }
         }
 
@@ -176,6 +197,8 @@ namespace SSFR_Movies.Views
                         AddToFavLayout.IsVisible = true;
 
                         QuitFromFavLayout.IsVisible = false;
+
+                        MessagingCenter.Send(this, "Refresh", true);
                     }
                 }
                 catch (Exception)
@@ -190,7 +213,7 @@ namespace SSFR_Movies.Views
             }
             else
             {
-
+                Settings.UpdateList = false;
             }
         }
         
@@ -198,20 +221,24 @@ namespace SSFR_Movies.Views
         {
 
             base.OnAppearing();
-
+            
             var item = BindingContext as Result;
 
             IsPresentInFavList(item);
 
-            var t3 = ScrollTrailer.ScrollToAsync(-200, 0, true);
+            await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
-            var t4 = Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
+            await Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
             
-            await Task.WhenAll(t3, t4);
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
+                return;
+            }
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -221,12 +248,6 @@ namespace SSFR_Movies.Views
             {
                 ScrollTrailer.IsVisible = true;
             }
-        }
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            
-            GC.Collect(1, GCCollectionMode.Optimized, false);
         }
 
         public async Task SpeakNow(string msg)
@@ -246,16 +267,95 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
 
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
+        private async void StreamMovie_Tapped(object sender, EventArgs e)
+        {
+
+            var item = BindingContext as Result;
+
+            streamWV.IsVisible = true;
+
+            await Scroll.ScrollToAsync(0, 500, true);
+            
+            var URI = ServiceLocator.Current
+                                .GetInstance<Lazy<ApiClient>>()
+                                    .Value
+                                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+                                            item.ReleaseDate.Substring(0, 4));
+            streamWV.Source = URI;
+
+            streamWV.Navigated += StreamWV_Navigated;
+
+            streamWVswap.Navigated += StreamWVswap_Navigated;
+        }
+
+        private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            try
+            {
+                var nav = (WebView)sender;
+
+                if (!e.Url.StartsWith("https://openload.co"))
+                {
+                    nav.GoBack();
+                }
+                else
+                {
+                    var urlStream = ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetStreamURL(e.Url.ToString());
+                }
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine(err.Message);
+            }
+        }
+
+        private void StreamWV_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            try
+            {
+                var nav = (WebView)sender;
+
+                if (!e.Url.StartsWith("https://videospider.in"))
+                {
+                    if (e.Url.StartsWith("https://openload.co"))
+                    {
+                        streamWV.IsVisible = false;
+                        Device.OpenUri(new Uri(e.Url));
+                    }
+                }
+            }
+            catch (Exception er)
+            {
+                Debug.WriteLine(er.Message);
+            }
+        }
+
         private async void TitleTapped(object sender, EventArgs e)
         {
-           await PosterPath.ScaleTo(1.3, 500, Easing.Linear);
+           await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
 
-           await PosterPath.ScaleTo(1, 500, Easing.Linear);
+           await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
+        }
+
+        private void BackButton_Clicked(object sender, EventArgs e)
+        {
+            if (streamWV.CanGoBack)
+            {
+                streamWV.GoBack();
+            }
+        }
+
+        private void FWButton_Clicked(object sender, EventArgs e)
+        {
+            if (streamWV.CanGoForward)
+            {
+                streamWV.GoForward();
+            }
         }
     }
 }

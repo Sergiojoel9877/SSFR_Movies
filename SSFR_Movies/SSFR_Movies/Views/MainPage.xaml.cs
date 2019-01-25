@@ -28,7 +28,7 @@ namespace SSFR_Movies.Views
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarSelectedItemColor(Color.White);
 
-            On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(60);
+            On<Xamarin.Forms.PlatformConfiguration.Android>().EnableSmoothScroll();
 
         }
 

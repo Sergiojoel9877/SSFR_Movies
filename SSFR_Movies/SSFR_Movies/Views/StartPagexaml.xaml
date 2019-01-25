@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="Black"
+             x:Class="SSFR_Movies.Views.StartPagexaml">
+    <ContentPage.Content>
+        <StackLayout CompressedLayout.IsHeadless="True">
+            <ActivityIndicator
+                x:Name="ActIndicator"
+                Color="#006FDE"
+                Visual="Material"
+                IsVisible="True"
+                IsRunning="True"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                HeightRequest="40"
+                WidthRequest="40"/>
+
+            <StackLayout
+                x:Name="Stack"
+                CompressedLayout.IsHeadless="True" 
+                IsVisible="False"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand">
+                <Label
+                    x:Name="Message" 
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Loading resources, please wait." TextColor="White" FontSize="Medium"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                <ProgressBar x:Name="ProBar" Margin="5, 16, 5, 0" ProgressColor="#006FDE" Progress=".2"/>
+            </StackLayout>
+           
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

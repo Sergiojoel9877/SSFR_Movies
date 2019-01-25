@@ -14,6 +14,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms.Internals;
 using System.Threading;
 using System.Diagnostics;
+using Unity;
+using Refractored.XamForms.PullToRefresh;
 
 namespace SSFR_Movies.Views
 {
@@ -32,26 +34,42 @@ namespace SSFR_Movies.Views
         ToolbarItem updownList = null;
 
         ToolbarItem searchToolbarItem = null;
+
+        PullToRefreshLayout pull2refreshlyt = null;
         
         public AllMoviesPage()
         {
             InitializeComponent();
-            
-            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
+
+            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
 
             BindingContext = vm;
 
+            pull2refreshlyt = new PullToRefreshLayout()
+            {
+                Content = scroll,
+                RefreshBackgroundColor = Color.FromHex("#272B2E"),
+                RefreshColor = Color.FromHex("#006FDE")
+            };
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+
+            pull2refreshlyt.RefreshCommand = new Command(async () =>
+            {
+                await LoadMoreMovies();
+            });
+
+            stack.Children.Add(pull2refreshlyt);
+            
             SuscribeToMessages();
             
-            //Message.IsVisible = false;
-
-            //MessageImg.IsVisible = false;
-
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
-            genresContainer.IsVisible = false;
-
-            Task.Factory.StartNew(async () => { await Scrollview.TranslateTo(0, -60, 500, Easing.Linear); });
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                genresContainer.IsVisible = false;
+                await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
+            });
 
             searchToolbarItem = new ToolbarItem()
             {
@@ -70,28 +88,27 @@ namespace SSFR_Movies.Views
                 Text = "Up",
                 Icon = "ListDown.png",
                 Priority = 1,
-
-                Command = new Command(async () =>
+                Command = new Command(() =>
                 {
                     updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
 
                     if (updownList.Icon == "ListDown.png")
                     {
-                        genresContainer.IsVisible = false;
+                        Device.BeginInvokeOnMainThread(async () => { 
 
-                        var t = Scrollview.TranslateTo(0, -60, 150, Easing.Linear);
+                            genresContainer.IsVisible = false;
 
-                        await Task.WhenAll(t);
+                            await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                        });
                     }
                     else
                     {
+                        Device.BeginInvokeOnMainThread(async ()=>
+                        {
+                            genresContainer.IsVisible = true;
 
-                        genresContainer.IsVisible = true;
-
-                        var t = Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-
-                        await Task.WhenAll(t);
-
+                            await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                        });
                     }
                 })
             };
@@ -101,68 +118,32 @@ namespace SSFR_Movies.Views
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
-
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-            
-            //Task.Run(async ()=>
-            //{
-            //    await InitializeMsg(async () =>
-            //    {
-            //        await SpeakNow("Initializing resources, please wait a sencond.");
-            //    });
-            //});
+   
         }
 
         private void SuscribeToMessages()
         {
-            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", (s, e) =>
+            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", async (s, e) =>
             {
                 if (e == true)
                 {
                     vm.MsgVisible = false;
                     MessageImg.Source = null;
-                    MessageImg.TranslateTo(500, 0, 2);
-                    //Message.IsVisible = false;
+                    await MessageImg.TranslateTo(500, 0, 2);
                 }
             });
         }
 
-        private async void InitializeMsg(Func<Task> action)
+        private async void InitializeAsync(Func<Task> action)
         {
             await action();
         }
 
-        protected async override void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
       
-            var t5 = Scrollview.ScrollToAsync(100, 0, true);
-
-            var t6 = Scrollview.ScrollToAsync(0, 0, true);
-
-            await Task.WhenAll(t5, t6);
-
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
-
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                vm.MsgVisible = true;
-                vm.MsgText = "It seems like you don't have an internet connection!";
-                vm.IsEnabled = false;
-                vm.IsRunning = false;
-
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-            else
-            {
-                vm.MsgVisible = false;
-            }
         }
 
         private async Task SpeakNow(string msg)
@@ -195,7 +176,6 @@ namespace SSFR_Movies.Views
                     vm.ListVisible = true;
                     MessageImg.Source = ImageSource.FromFile("NoInternet.png");
                     MessageImg.TranslateTo(0, 0, 2);
-                    //MoviesList.BeginRefresh();
                 });
 
                 vm.GetStoreMoviesCommand.Execute(null);
@@ -204,9 +184,8 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
-                    //MoviesList.EndRefresh();
                     MoviesList.ItemsSource = null;
-                    MoviesList.ItemsSource = vm.AllMoviesList;
+                    MoviesList.ItemsSource = vm.AllMoviesList.Value;
                 });
             }
             else
@@ -218,62 +197,6 @@ namespace SSFR_Movies.Views
                     vm.ListVisible = false;
                     vm.IsRunning = false;
                     vm.IsEnabled = false;
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                });
-            }
-        }
-
-        private async void MoviesList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
-        {
-            await Task.Yield();
-
-            try
-            {
-                var list = (ListView)sender;
-
-                var Items = vm.AllMoviesList;
-
-                list.ItemsSource = Items;
-
-                if (Items.Count == 0)
-                {
-                    return;
-                }
-
-                if (e.Item == Items[Items.Count - 1])
-                {
-                    Settings.NextPage++;
-
-                    //Verify if internet connection is available
-                    if (!CrossConnectivity.Current.IsConnected)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                        {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                            return false;
-                        });
-                        return;
-                    }
-
-                    Device.BeginInvokeOnMainThread(()=>
-                    {
-                        //MoviesList.BeginRefresh();
-                    });
-
-                    //Parallel.Invoke(async ()=>
-                    //{
-                        await LoadMoreMovies();
-                    //});
-                }
-            }
-            catch (Exception e1)
-            {
-
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("An error has occurred!" + e1.InnerException);
-
-                    return false;
                 });
             }
         }
@@ -284,7 +207,6 @@ namespace SSFR_Movies.Views
 
             try
             {
-
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -296,13 +218,24 @@ namespace SSFR_Movies.Views
                     return;
                 }
 
-                vm.AllMoviesList.Clear();
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    activityIndicator.IsRunning = true;
+                    activityIndicator.IsVisible = true;
+                    MoviesList.IsVisible = false;
+                    RefreshBtn.IsEnabled = false;
+                    pull2refreshlyt.IsPullToRefreshEnabled = false;
+                });
+
+                Settings.NextPage++;
+
+                vm.AllMoviesList.Value.Clear();
                 
                 var token = new CancellationTokenSource();
 
                 token.CancelAfter(4000);
 
-                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false, token, page: Settings.NextPage++);
+                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
                 if (MoviesDownloaded)
                 {
@@ -316,7 +249,12 @@ namespace SSFR_Movies.Views
 
                         Device.BeginInvokeOnMainThread( () =>
                         {
-                            //MoviesList.EndRefresh();
+                            pull2refreshlyt.IsRefreshing = false;
+                            activityIndicator.IsRunning = false;
+                            MoviesList.IsVisible = true;
+                            activityIndicator.IsVisible = false;
+                            RefreshBtn.IsEnabled = true;
+                            pull2refreshlyt.IsPullToRefreshEnabled = true;
                         });
                     }
                 }
@@ -338,11 +276,9 @@ namespace SSFR_Movies.Views
 
             Device.BeginInvokeOnMainThread(() =>
             {
-
                 vm.ListVisible = false;
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
-                //MoviesList.BeginRefresh();
             });
 
             MoviesList.ItemsSource = null;
@@ -366,7 +302,7 @@ namespace SSFR_Movies.Views
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                var stored = await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
 
                 if (stored)
                 {
@@ -378,29 +314,24 @@ namespace SSFR_Movies.Views
 
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        MoviesList.ItemsSource = vm.AllMoviesList;
+                        MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                         await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                        //MoviesList.EndRefresh();
-
+                        
                         vm.ListVisible = true;
 
                         vm.IsEnabled = false;
 
                         vm.IsRunning = false;
-
                     });
                 }
                 else
                 {
                  
-                    MoviesList.ItemsSource = vm.AllMoviesList;
+                    MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                     Device.BeginInvokeOnMainThread(() =>
                     {
-                        //MoviesList.EndRefresh();
-
                         vm.ListVisible = true;
                         vm.IsRunning = false;
                         vm.IsEnabled = false;
@@ -418,22 +349,23 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(()=>
                 {
-
                     vm.ListVisible = false;
                     vm.IsEnabled = false;
                     vm.IsRunning = false;
                     vm.MsgVisible = true;
                     vm.MsgText = "An unexpected error has ocurred, try again.";
                 });  
-
-                //MoviesList.EndRefresh();
                 
             }
         }
 
-        private async void SearchClicked(object sender, EventArgs e)
+        private void SearchClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new SearchPage(), false);
+            InitializeAsync( async () =>
+            {
+                await Navigation.PushAsync(new SearchPage(), false);
+            });
+           
         }
 
         protected override void OnParentSet()
@@ -444,6 +376,22 @@ namespace SSFR_Movies.Views
             {
                 BindingContext = null;
             }
+        }
+
+        private void RefreshBtnClicked(object sender, EventArgs e)
+        {
+
+            InitializeAsync(async () =>
+            {
+                await LoadMoreMovies();
+                
+                await scroll.ScrollToAsync(0, 500, true);
+
+                await RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear);
+
+                await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
+            });
+            
         }
     }
 }

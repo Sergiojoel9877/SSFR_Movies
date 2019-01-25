@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Services;
 
 namespace SSFR_Movies.ViewModels
@@ -20,9 +21,9 @@ namespace SSFR_Movies.ViewModels
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
-        public ObservableCollection<Result> FavMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>());
 
-        private bool listVisible = false;
+        private bool listVisible = true;
         public bool ListVisible
         {
             get => listVisible;
@@ -43,28 +44,29 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref listEmpty, value);
         }
 
-        public async Task<bool> FillMoviesList()
+        public async Task<char> FillMoviesList()
         {
-           
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            await Task.Yield();
 
-            FavMoviesList.Clear();
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            FavMoviesList.Value.Clear();
 
             foreach (var MovieResult in movies)
             {
-                if (FavMoviesList.Contains(MovieResult))
+                if (!FavMoviesList.Value.Contains(MovieResult))
                 {
-                    return false;
+                    FavMoviesList.Value.Add(MovieResult);
                 }
-
-                FavMoviesList.Add(MovieResult);
             }
 
-            ListVisible = true;
+            if (FavMoviesList.Value.Count == 0)
+            {
+                return 'v'; //Indica que la lista esta vacia
+            }
 
-            ActivityIndicatorRunning = false;
-     
-            return true;
+            return 'r'; //Indica que la lista contiene elementos
+            
         }
 
         private Command getStoredMoviesCommand;
@@ -78,7 +80,7 @@ namespace SSFR_Movies.ViewModels
 
         public FavoriteMoviesPageViewModel()
         {
-            if (FavMoviesList.Count == 0)
+            if (FavMoviesList.Value.Count == 0)
             {
                 ListEmpty = true;
             }
