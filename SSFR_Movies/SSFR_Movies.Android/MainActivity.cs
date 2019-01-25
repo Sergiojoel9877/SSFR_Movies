@@ -25,10 +25,7 @@ namespace SSFR_Movies.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
-            ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(Application.Context, typeof(ExoPlayerAudioService));
-            var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
-            CrossMediaManager.Current.AudioPlayer = exoPlayer;
-
+         
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))

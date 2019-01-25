@@ -273,26 +273,21 @@ namespace SSFR_Movies.Views
             Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
-        private void StreamMovie_Tapped(object sender, EventArgs e)
+        private async void StreamMovie_Tapped(object sender, EventArgs e)
         {
 
             var item = BindingContext as Result;
 
             streamWV.IsVisible = true;
-            
-            //streamWV.Source = ServiceLocator.Current
-            //                    .GetInstance<Lazy<ApiClient>>()
-            //                        .Value
-            //                            .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
-            //                                item.ReleaseDate.Substring(0, 4));
 
+            await Scroll.ScrollToAsync(0, 500, true);
+            
             var URI = ServiceLocator.Current
                                 .GetInstance<Lazy<ApiClient>>()
                                     .Value
                                         .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
                                             item.ReleaseDate.Substring(0, 4));
-
-            Device.OpenUri(new Uri(URI));
+            streamWV.Source = URI;
 
             streamWV.Navigated += StreamWV_Navigated;
 
@@ -312,7 +307,6 @@ namespace SSFR_Movies.Views
                 else
                 {
                     var urlStream = ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetStreamURL(e.Url.ToString());
-                    
                 }
             }
             catch (Exception err)
@@ -332,8 +326,7 @@ namespace SSFR_Movies.Views
                     if (e.Url.StartsWith("https://openload.co"))
                     {
                         streamWV.IsVisible = false;
-                        streamWVswap.IsVisible = true;
-                        streamWVswap.Source = e.Url;
+                        Device.OpenUri(new Uri(e.Url));
                     }
                 }
             }
