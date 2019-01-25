@@ -18,6 +18,32 @@ namespace SSFR_Movies.Views
             InitializeComponent();
         }
 
+        Command fireContainerCommand;
+        Command FireContainerCommand
+        {
+            get => fireContainerCommand ?? (new Command(async () =>
+            {
+                await Task.Delay(2200);
+                
+                await Task.Factory.StartNew(() =>
+                {
+                    ContainerInitializer.Initialize();
+                }, TaskCreationOptions.RunContinuationsAsynchronously);
+
+                //var mainPage = new Lazy<MainPage>(()=> new MainPage
+                //{
+                //    BarBackgroundColor = Color.FromHex("#272B2E")
+                //});
+                //var mainPage = new Lazy<AppShell>(() => new AppShell());
+                var mainPage = new AppShell();
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await App.Current.MainPage.Navigation.PushAsync(mainPage);
+                });
+
+            }));
+        }
         protected override bool OnBackButtonPressed()
         {
             var c = DependencyService.Get<ICloseBackPress>();

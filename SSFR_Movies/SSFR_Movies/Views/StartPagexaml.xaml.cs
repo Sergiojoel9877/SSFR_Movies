@@ -42,19 +42,20 @@ namespace SSFR_Movies.Views
                 {
                     ContainerInitializer.Initialize();
                 },TaskCreationOptions.RunContinuationsAsynchronously);
-                
-                var mainPage = new Lazy<MainPage>(()=> new MainPage
-                {
-                    BarBackgroundColor = Color.FromHex("#272B2E")
-                });
 
+                //var mainPage = new Lazy<MainPage>(()=> new MainPage
+                //{
+                //    BarBackgroundColor = Color.FromHex("#272B2E")
+                //});
+                var mainPage = new Lazy<AppShell>(() => new AppShell());
+                
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     await ProBar.ProgressTo(100, 200, Easing.Linear);
 
                     Stack.IsVisible = false;
 
-                    await Navigation.PushAsync(mainPage.Value);
+                    App.Current.MainPage = mainPage.Value;
                 });
 
             }));

@@ -240,9 +240,9 @@ namespace SSFR_Movies.Helpers
 
             MessagingCenter.Send(this, "Hide", true);
 
-            await ExecuteAction(async ()=>
+            ExecuteAction(()=>
             {
-                await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+                App.Current.MainPage = new MovieDetailsPage(movie);
             });
         }
         
@@ -275,9 +275,9 @@ namespace SSFR_Movies.Helpers
             base.OnBindingContextChanged();
         }
         
-        async Task ExecuteAction(Func<Task> exe)
+        void ExecuteAction(Action exe)
         {
-            await exe();
+            exe();
         }
         
         private async void AddToFavListTap(object sender, EventArgs e)

@@ -32,7 +32,7 @@ namespace SSFR_Movies
 		{
             InitializeComponent();
 
-            var mainPage = new Lazy<NavigationPage>(()=> new NavigationPage(new StartPagexaml()));
+            var mainPage = new Lazy<NavigationPage>(() => new NavigationPage(new StartPagexaml()));
 
             MainPage = mainPage.Value;
 
@@ -40,9 +40,9 @@ namespace SSFR_Movies
             //{
             //    BarBackgroundColor = Color.FromHex("#272B2E")
             //};
-            var mainPage = new Lazy<AppShell>(()=> new AppShell());
+            //var mainPage = new StartPagexaml();
 
-            MainPage = mainPage.Value;
+            //MainPage = mainPage;
         }
 
         async void InitializeAsync(Func<Task> action)

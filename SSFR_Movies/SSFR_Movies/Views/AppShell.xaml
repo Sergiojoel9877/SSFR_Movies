@@ -2,16 +2,19 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:SSFR_Movies.Views"
+       Title="SSFR Movies Home"
        RouteHost="ssfr.com"
        RouteScheme="app"
+       NavigationPage.HasNavigationBar="False"
        Route="SSFR_Movies"
+       NavigationPage.HasBackButton="False"
        FlyoutBehavior="Disabled"
        x:Class="SSFR_Movies.Views.AppShell">
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">#2196F3</Color>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.ShellBackgroundColor" Value="{StaticResource NavigationPrimary}" />
+                <Setter Property="Shell.ShellBackgroundColor" Value="#272B2E" />
                 <Setter Property="Shell.ShellForegroundColor" Value="White" />
                 <Setter Property="Shell.ShellTitleColor" Value="White" />
                 <Setter Property="Shell.ShellDisabledColor" Value="#B4FFFFFF" />
