@@ -37,12 +37,13 @@ namespace SSFR_Movies
 
             SetHttpClient();
 
-            var mainPage = new NavigationPage(new MainPage())
-            {
-                BarBackgroundColor = Color.FromHex("#272B2E")
-            };
+            //var mainPage = new NavigationPage(new MainPage())
+            //{
+            //    BarBackgroundColor = Color.FromHex("#272B2E")
+            //};
+            var mainPage = new Lazy<AppShell>(()=> new AppShell());
 
-            MainPage = mainPage;
+            MainPage = mainPage.Value;
         }
 
         async void InitializeAsync(Func<Task> action)
