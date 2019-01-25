@@ -138,7 +138,7 @@ namespace SSFR_Movies.Views
                         if (addMovie)
                         {
                             
-                            await SpeakNow("Added Successfully"); //NOT COMPATIBLE WITH ANDROID 9.0 AT THE MOMENT.
+                            await SpeakNow("Added Successfully");
 
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
 
@@ -152,7 +152,6 @@ namespace SSFR_Movies.Views
 
                                 QuitFromFavLayout.IsVisible = true;
                             });
-
                         }
                     } 
                 }
