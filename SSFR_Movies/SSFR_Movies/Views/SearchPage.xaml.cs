@@ -33,6 +33,8 @@ namespace SSFR_Movies.Views
             BindingContext = vm;
 
             searchBar.Focus();
+
+            Shell.SetSearchHandler(this, new MovieSearchHandler());
         }
 
         protected override void OnAppearing()
@@ -49,9 +51,6 @@ namespace SSFR_Movies.Views
             base.OnDisappearing();
 
             BindingContext = null;
-
-            //GC.Collect(0, GCCollectionMode.Optimized, false);
-
         }
         
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
@@ -75,8 +74,6 @@ namespace SSFR_Movies.Views
 
                 return;
             }
-
-            //MoviesList.BeginRefresh();
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -205,6 +202,27 @@ namespace SSFR_Movies.Views
         private async void Back_Tapped(object sender, EventArgs e)
         {
             await Navigation.PopAsync(true);
+        }
+
+        public class MovieSearchHandler : SearchHandler
+        {
+            public MovieSearchHandler()
+            {
+                SearchBoxVisibility = SearchBoxVisiblity.Collapsable;
+                IsSearchEnabled = true;
+                Placeholder = "Search";
+            }
+
+            protected override void OnQueryConfirmed()
+            {
+                base.OnQueryConfirmed();
+
+            }
+
+            protected override void OnQueryChanged(string oldValue, string newValue)
+            {
+                // Do nothing, we will wait for confirmation
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
-    Title="SSFR Movies Home"
+    Title="SSFR Movies"
     BackgroundColor="#161513">
 
     <ContentPage.Resources>
@@ -296,7 +296,7 @@
                         WidthRequest="40"
                         Color="#FFF" />
 
-                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout CompressedLayout.IsHeadless="True">

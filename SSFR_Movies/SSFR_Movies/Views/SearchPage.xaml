@@ -10,43 +10,30 @@
     BackgroundColor="#161513"
     NavigationPage.HasNavigationBar="False">
 
+    <NavigationPage.TitleView>
+        <StackLayout
+            x:Name="Bar"
+            BackgroundColor="#272B2E"
+            HorizontalOptions="FillAndExpand"
+            Orientation="Horizontal"
+            VerticalOptions="Start">
+            <SearchBar
+                x:Name="searchBar"
+                CancelButtonColor="White"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Placeholder="Search"
+                PlaceholderColor="#65FFFFFF"
+                SearchButtonPressed="SearchBar_SearchButtonPressed"
+                TextColor="White"
+                VerticalOptions="FillAndExpand" />
+        </StackLayout>
+    </NavigationPage.TitleView>
+        
     <ContentPage.Content>
 
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True" BackgroundColor="#161513">
-
-            <StackLayout
-                x:Name="Bar"
-                BackgroundColor="#272B2E"
-                HeightRequest="56"
-                HorizontalOptions="FillAndExpand"
-                Orientation="Horizontal"
-                VerticalOptions="Start">
-                
-                <Image
-                    x:Name="back"
-                    Margin="16,16,0,16"
-                    HeightRequest="30"
-                    HorizontalOptions="Start"
-                    Source="Back.png"
-                    WidthRequest="30">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="Back_Tapped" />
-                    </Image.GestureRecognizers>
-                </Image>
-                
-                <SearchBar
-                    x:Name="searchBar"
-                    Margin="0,0,26,0"
-                    CancelButtonColor="White"
-                    FontAttributes="Bold"
-                    FontSize="Medium"
-                    HorizontalOptions="Center"
-                    Placeholder="Search"
-                    PlaceholderColor="#65FFFFFF"
-                    SearchButtonPressed="SearchBar_SearchButtonPressed"
-                    TextColor="White"
-                    VerticalOptions="FillAndExpand" />
-            </StackLayout>
 
             <ActivityIndicator
                 x:Name="activityIndicator"

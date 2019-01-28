@@ -234,16 +234,13 @@ namespace SSFR_Movies.Helpers
             
         }
 
-        private async void PosterTapped(object sender, EventArgs e)
+        private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
 
             MessagingCenter.Send(this, "Hide", true);
 
-            ExecuteAction(()=>
-            {
-                App.Current.MainPage = new MovieDetailsPage(movie);
-            });
+            MessagingCenter.Send(this, "PushAsync", movie);
         }
         
         protected override void OnBindingContextChanged()
@@ -379,9 +376,9 @@ namespace SSFR_Movies.Helpers
 
                     }
                 }
-                catch (Exception)
+                catch (Exception err)
                 {
-
+                    Debug.WriteLine(err.InnerException);
                 }
             }
         }

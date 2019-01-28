@@ -235,7 +235,7 @@
 
                     </StackLayout>
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
-                    <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+                    <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
                     <StackLayout>
                         <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
                         <WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>

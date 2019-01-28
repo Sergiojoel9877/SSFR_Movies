@@ -61,7 +61,7 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
 
-                var m = await App.httpClient.Value.GetAsync(requestUri);
+                var m = await App.httpClient.GetAsync(requestUri);
                
                 m.EnsureSuccessStatusCode();
 
@@ -101,7 +101,7 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/search/movie?api_key={API_KEY}&language={LANG}&query={name}&include_adult={include_adult.ToString().ToLower()}";
 
-                var m = await App.httpClient.Value.GetAsync(requestUri);
+                var m = await App.httpClient.GetAsync(requestUri);
                 m.EnsureSuccessStatusCode();
 
                 using (var stream = await m.Content.ReadAsStreamAsync())
@@ -143,7 +143,7 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={genre}";
                 
-                var m = await App.httpClient.Value.GetAsync(requestUri);
+                var m = await App.httpClient.GetAsync(requestUri);
                 m.EnsureSuccessStatusCode();
 
                 using (var stream = await m.Content.ReadAsStreamAsync())
@@ -184,7 +184,7 @@ namespace SSFR_Movies.Services
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
 
-            var m = await App.httpClient.Value.GetAsync(requestUri);
+            var m = await App.httpClient.GetAsync(requestUri);
             m.EnsureSuccessStatusCode();
 
             using (var stream = await m.Content.ReadAsStreamAsync())
@@ -202,7 +202,7 @@ namespace SSFR_Movies.Services
            
             var requestUri = $"/3/movie/{id}/videos?api_key={API_KEY}&language={LANG}";
 
-            var m = await App.httpClient.Value.GetAsync(requestUri);
+            var m = await App.httpClient.GetAsync(requestUri);
             m.EnsureSuccessStatusCode();
 
             using (var stream = await m.Content.ReadAsStreamAsync())

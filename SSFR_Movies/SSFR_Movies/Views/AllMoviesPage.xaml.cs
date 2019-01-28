@@ -16,6 +16,7 @@ using System.Threading;
 using System.Diagnostics;
 using Unity;
 using Refractored.XamForms.PullToRefresh;
+using static SSFR_Movies.Views.SearchPage;
 
 namespace SSFR_Movies.Views
 {
@@ -71,17 +72,21 @@ namespace SSFR_Movies.Views
                 await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
             });
 
-            searchToolbarItem = new ToolbarItem()
-            {
-                Text = "Search",
-                Icon = "Search.png",
-                Priority = 0,
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
-                Command = new Command(async () =>
-                {
-                    await Navigation.PushAsync(new SearchPage(), false);
-                })
-            };
+            //searchToolbarItem = new ToolbarItem()
+            //{
+            //    Text = "Search",
+            //    Icon = "Search.png",
+            //    Priority = 0,
+
+            //    Command = new Command(async () =>
+            //    {
+            //        await Navigation.PushAsync(new SearchPage(), false);
+            //    })
+            //};
+
+            Shell.SetSearchHandler(this, new MovieSearchHandler());
 
             updownList = new ToolbarItem()
             {
@@ -113,12 +118,18 @@ namespace SSFR_Movies.Views
                 })
             };
 
-            ToolbarItems.Add(searchToolbarItem);
+            //ToolbarItems.Add(searchToolbarItem);
 
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
    
+        }
+
+        private async void MovieSelected()
+        {
+            var movie = MoviesList.SelectedItem as Result;
+            await Navigation.PushAsync(new MovieDetailsPage(movie));
         }
 
         private void SuscribeToMessages()
@@ -132,6 +143,13 @@ namespace SSFR_Movies.Views
                     await MessageImg.TranslateTo(500, 0, 2);
                 }
             });
+
+            //MessagingCenter.Subscribe<CustomViewCell, Result>(this, "PushAsync", async (s, e) =>
+            //{
+            //    await Navigation.PushAsync(new MovieDetailsPage(e));
+            //});
+
+            //MessagingCenter.Unsubscribe<CustomViewCell>(this, "PushAsync");
         }
 
         private async void InitializeAsync(Func<Task> action)
@@ -367,6 +385,8 @@ namespace SSFR_Movies.Views
             });
            
         }
+        
+
 
         protected override void OnParentSet()
         {
@@ -377,7 +397,7 @@ namespace SSFR_Movies.Views
                 BindingContext = null;
             }
         }
-
+        
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
 
