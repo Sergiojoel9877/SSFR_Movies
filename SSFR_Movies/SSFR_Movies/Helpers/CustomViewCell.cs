@@ -240,7 +240,7 @@ namespace SSFR_Movies.Helpers
 
             MessagingCenter.Send(this, "Hide", true);
 
-            MessagingCenter.Send(this, "PushAsync", movie);
+            MessagingCenter.Send(this, "PushAsync");
         }
         
         protected override void OnBindingContextChanged()

@@ -144,10 +144,10 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            //MessagingCenter.Subscribe<CustomViewCell, Result>(this, "PushAsync", async (s, e) =>
-            //{
-            //    await Navigation.PushAsync(new MovieDetailsPage(e));
-            //});
+            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", async (s) =>
+            {
+                MovieSelected();
+            });
 
             //MessagingCenter.Unsubscribe<CustomViewCell>(this, "PushAsync");
         }

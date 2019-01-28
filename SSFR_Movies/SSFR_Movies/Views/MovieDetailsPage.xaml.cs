@@ -35,7 +35,7 @@ namespace SSFR_Movies.Views
 
             BindingContext = movie;
 
-            Scroll.TranslationX = -500;
+            //Scroll.TranslationX = -500;
 
             QuitFromFavLayout.Clicked += QuitFromFavorites;
             
@@ -228,7 +228,7 @@ namespace SSFR_Movies.Views
 
             await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
-            await Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
+            //await Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
             
             if (!CrossConnectivity.Current.IsConnected)
             {
