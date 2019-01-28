@@ -37,6 +37,8 @@ namespace SSFR_Movies.Views
 
             SetVisibility();
 
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+
             SubscribeToMessage();
         }
 
@@ -53,16 +55,12 @@ namespace SSFR_Movies.Views
                         {
                             UnPin.IsVisible = true;
                             Message.IsVisible = true;
-                            MoviesList.BeginRefresh();
-                            MoviesList.EndRefresh();
                         }
                         else if(estado == 'r')
                         {
                             MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
-                            MoviesList.BeginRefresh();
-                            MoviesList.EndRefresh();
                         }
                     });
                 }
@@ -77,8 +75,6 @@ namespace SSFR_Movies.Views
                         var estado = await vm.FillMoviesList();
                         if (estado == 'v')
                         {
-                            MoviesList.BeginRefresh();
-                            MoviesList.EndRefresh();
                             UnPin.IsVisible = true;
                             Message.IsVisible = true;
                         }
@@ -87,12 +83,21 @@ namespace SSFR_Movies.Views
                             MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
-                            MoviesList.BeginRefresh();
-                            MoviesList.EndRefresh();
                         }
                     });
                 }
             });
+
+            MessagingCenter.Subscribe<CustomViewCellFavPage>(this, "PushAsync", (e) =>
+            {
+                MovieSelected();
+            });
+        }
+
+        private async void MovieSelected()
+        {
+            var movie = MoviesList.SelectedItem as Result;
+            await Navigation.PushAsync(new MovieDetailsPage(movie));
         }
 
         private async void QuitFromFavorites(object sender, EventArgs e)
@@ -131,11 +136,11 @@ namespace SSFR_Movies.Views
 
                             BindingContext = vm;
 
-                            MoviesList.BeginRefresh();
+                            //MoviesList.BeginRefresh();
 
                             await Task.Delay(500);
 
-                            MoviesList.EndRefresh();
+                            //MoviesList.EndRefresh();
 
                             var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 

@@ -36,7 +36,17 @@
                 Text="You have not picked any movie as a favorite one"
                 TextColor="White" />
 
-            <ListView
+            <CollectionView x:Name="MoviesList" Visual="Material" ItemsSource="{Binding FavMoviesList.Value}" SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCellFavPage HeightRequest="300"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--<ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
                 RefreshControlColor="Blue"
@@ -48,9 +58,9 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <helpers:CustomViewCellFavPage>
-                            <!--    -->
+                            --><!--    --><!--
                         </helpers:CustomViewCellFavPage>
-                        <!--<ViewCell>
+                        --><!--<ViewCell>
                             <ViewCell.ContextActions>
 
                                 <MenuItem
@@ -156,10 +166,10 @@
                                     </StackLayout>
                                 </StackLayout>
                             </FlexLayout>
-                        </ViewCell>-->
+                        </ViewCell>--><!--
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>

@@ -219,7 +219,7 @@ namespace SSFR_Movies.Helpers
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
 
             AddToFavListCtxAct.Clicked += AddToFavList;
-
+            
             tap = new TapGestureRecognizer();
 
             imageTapped = new TapGestureRecognizer();
@@ -228,10 +228,12 @@ namespace SSFR_Movies.Helpers
 
             imageTapped.Tapped += PosterTapped;
 
+            absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
+
             compat.Value.GestureRecognizers.Add(tap);
 
-            cachedImage.Value.GestureRecognizers.Add(imageTapped);
-            
+            //cachedImage.Value.GestureRecognizers.Add(imageTapped);
+
         }
 
         private void PosterTapped(object sender, EventArgs e)

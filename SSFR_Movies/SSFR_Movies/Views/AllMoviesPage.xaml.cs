@@ -74,18 +74,6 @@ namespace SSFR_Movies.Views
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
-            //searchToolbarItem = new ToolbarItem()
-            //{
-            //    Text = "Search",
-            //    Icon = "Search.png",
-            //    Priority = 0,
-
-            //    Command = new Command(async () =>
-            //    {
-            //        await Navigation.PushAsync(new SearchPage(), false);
-            //    })
-            //};
-
             Shell.SetSearchHandler(this, new MovieSearchHandler());
 
             updownList = new ToolbarItem()
@@ -117,9 +105,7 @@ namespace SSFR_Movies.Views
                     }
                 })
             };
-
-            //ToolbarItems.Add(searchToolbarItem);
-
+            
             ToolbarItems.Add(updownList);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
@@ -144,12 +130,11 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", async (s) =>
+            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
             {
                 MovieSelected();
             });
-
-            //MessagingCenter.Unsubscribe<CustomViewCell>(this, "PushAsync");
+           
         }
 
         private async void InitializeAsync(Func<Task> action)

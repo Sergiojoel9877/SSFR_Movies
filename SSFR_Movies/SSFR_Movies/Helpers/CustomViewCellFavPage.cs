@@ -19,7 +19,7 @@ using Debug = System.Diagnostics;
 namespace SSFR_Movies.Helpers
 {
     [Preserve(AllMembers = true)]
-    public class CustomViewCellFavPage : ViewCell
+    public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
         private Lazy<CachedImage> blurCachedImage = null;
@@ -47,13 +47,17 @@ namespace SSFR_Movies.Helpers
         public CustomViewCellFavPage()
         {
 
-            BindingContext = BindingContext;
-
-            FlexLayout = new FlexLayout()
-            {
-                Direction = FlexDirection.Column,
-                AlignContent = FlexAlignContent.Center
-            };
+            //BindingContext = BindingContext;
+            HeightRequest = 300;
+            Direction = FlexDirection.Column;
+            Margin = 16;
+            AlignContent = FlexAlignContent.Center;
+            
+            //FlexLayout = new FlexLayout()
+            //{
+            //    Direction = FlexDirection.Column,
+            //    AlignContent = FlexAlignContent.Center
+            //};
 
             Container = new StackLayout()
             {
@@ -222,13 +226,13 @@ namespace SSFR_Movies.Helpers
             Container.Children.Add(SubContainer);
             Container.Children.Add(panelContainer);
 
-            FlexLayout.Children.Add(Container);
+            this.Children.Add(Container);
 
             QuitFromFavListCtxAct = new MenuItem { Text = "Quit from Favorites", Icon = "StarEmpty.png" };
 
             QuitFromFavListCtxAct.Clicked += QuitFromFavList;
 
-            ContextActions.Add(QuitFromFavListCtxAct);
+            //ContextActions.Add(QuitFromFavListCtxAct);
 
             tap = new TapGestureRecognizer();
 
@@ -240,9 +244,11 @@ namespace SSFR_Movies.Helpers
 
             compat.GestureRecognizers.Add(tap);
 
-            cachedImage.Value.GestureRecognizers.Add(imageTapped);
+            absoluteLayout.GestureRecognizers.Add(imageTapped);
 
-            View = FlexLayout;
+            //cachedImage.Value.GestureRecognizers.Add(imageTapped);
+
+            //View = FlexLayout;
 
         }
 
@@ -250,10 +256,9 @@ namespace SSFR_Movies.Helpers
         {
             var movie = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
-            });
+            //await App.Current.MainPage.Navigation.PushAsync(new MovieDetailsPage(movie), true);
+            MessagingCenter.Send(this, "PushAsync");
+           
         }
 
         protected override void OnBindingContextChanged()

@@ -34,9 +34,7 @@ namespace SSFR_Movies.Views
             AddToFav.Source = "StarEmpty.png";
 
             BindingContext = movie;
-
-            //Scroll.TranslationX = -500;
-
+            
             QuitFromFavLayout.Clicked += QuitFromFavorites;
             
             AddToFavLayout.Clicked += Tap_Tapped;

@@ -42,11 +42,7 @@ namespace SSFR_Movies.Views
                 {
                     ContainerInitializer.Initialize();
                 },TaskCreationOptions.RunContinuationsAsynchronously);
-
-                //var mainPage = new Lazy<MainPage>(()=> new MainPage
-                //{
-                //    BarBackgroundColor = Color.FromHex("#272B2E")
-                //});
+                
                 var mainPage = new Lazy<AppShell>(() => new AppShell());
                 
                 Device.BeginInvokeOnMainThread(async () =>
