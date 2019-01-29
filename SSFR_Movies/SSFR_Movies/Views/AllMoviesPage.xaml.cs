@@ -116,6 +116,7 @@ namespace SSFR_Movies.Views
         {
             var movie = MoviesList.SelectedItem as Result;
             await Navigation.PushAsync(new MovieDetailsPage(movie));
+            BindingContext = null;
         }
 
         private void SuscribeToMessages()

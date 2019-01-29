@@ -46,9 +46,7 @@ namespace SSFR_Movies.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             PullToRefreshLayoutRenderer.Init();
-
-            VideoViewRenderer.Init();
-
+            
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
