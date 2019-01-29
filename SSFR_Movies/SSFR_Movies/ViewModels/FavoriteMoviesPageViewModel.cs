@@ -21,7 +21,7 @@ namespace SSFR_Movies.ViewModels
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
-        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>());
+        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>(), isThreadSafe: true);
 
         private bool listVisible = true;
         public bool ListVisible
@@ -48,9 +48,9 @@ namespace SSFR_Movies.ViewModels
         {
             await Task.Yield();
 
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
-
             FavMoviesList.Value.Clear();
+
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
             foreach (var MovieResult in movies)
             {

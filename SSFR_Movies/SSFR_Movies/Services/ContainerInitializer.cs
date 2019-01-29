@@ -34,8 +34,8 @@ namespace SSFR_Movies.Services
             container.Value.RegisterInstance(typeof(Lazy<ApiClient>));
             container.Value.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
             container.Value.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
-            container.Value.RegisterInstance(typeof(DBRepository<>));
             container.Value.RegisterInstance(typeof(DatabaseContext<>));
+            container.Value.RegisterInstance(typeof(DBRepository<>));
             container.Value.RegisterType(typeof(DatabaseContext<>));
             container.Value.RegisterType(typeof(DbContextOptionsBuilder));
 
@@ -49,8 +49,6 @@ namespace SSFR_Movies.Services
                 });
                 return;
             }
-
         }
-      
     }
 }

@@ -18,10 +18,10 @@
                 <Setter Property="Shell.ShellForegroundColor" Value="White" />
                 <Setter Property="Shell.ShellTitleColor" Value="White" />
                 <Setter Property="Shell.ShellDisabledColor" Value="#B4FFFFFF" />
-                <Setter Property="Shell.ShellUnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.ShellUnselectedColor" Value="#0088FF" />
                 <Setter Property="Shell.ShellTabBarBackgroundColor" Value="#272B2E" />
                 <Setter Property="Shell.ShellTabBarForegroundColor" Value="White"/>
-                <Setter Property="Shell.ShellTabBarUnselectedColor" Value="#95FFFFFF"/>
+                <Setter Property="Shell.ShellTabBarUnselectedColor" Value="#0088FF"/>
                 <Setter Property="Shell.ShellTabBarTitleColor" Value="White"/>
             </Style>
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
@@ -32,7 +32,9 @@
             <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
         </ShellSection>
         <ShellSection Title="Favorites" Icon="Heart.png" >
-            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
+            <ShellContent>
+                <local:FavoritesMoviesPage/>
+            </ShellContent>
         </ShellSection>
         <ShellSection Title="About" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>

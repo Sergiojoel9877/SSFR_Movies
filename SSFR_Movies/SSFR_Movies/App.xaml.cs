@@ -27,7 +27,7 @@ namespace SSFR_Movies
     public partial class App : Application
 	{
         public static HttpClient httpClient { get; set; }
-      
+        
         public App ()
 		{
             InitializeComponent();
@@ -35,9 +35,9 @@ namespace SSFR_Movies
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;
-
+            
             SetHttpClient();
-        }
+        }                                   
 
         async void InitializeAsync(Func<Task> action)
         {

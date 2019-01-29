@@ -114,11 +114,13 @@ namespace SSFR_Movies.Views
 
         private async void MovieSelected()
         {
-            var movie = MoviesList.SelectedItem as Result;
-            await Navigation.PushAsync(new MovieDetailsPage(movie));
-            BindingContext = null;
+            if (MoviesList.SelectedItem != null)
+            {
+                var movie = MoviesList.SelectedItem as Result;
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
+            }
         }
-
+        
         private void SuscribeToMessages()
         {
             MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Hide", async (s, e) =>
@@ -135,7 +137,16 @@ namespace SSFR_Movies.Views
             {
                 MovieSelected();
             });
-           
+
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+        }
+
+        private void T_Tapped(object sender, EventArgs e)
+        {
+            MovieSelected();
         }
 
         private async void InitializeAsync(Func<Task> action)
@@ -146,7 +157,9 @@ namespace SSFR_Movies.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-      
+
+            SuscribeToMessages();
+            
             CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
         }
 

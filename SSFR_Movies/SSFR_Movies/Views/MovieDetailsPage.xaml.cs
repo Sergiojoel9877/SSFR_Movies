@@ -22,7 +22,14 @@ namespace SSFR_Movies.Views
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
-            
+
+            if (movie == null)
+            {
+                Task.Run(async ()=> { await Navigation.PopAsync(); });
+            }
+
+            MessagingCenter.Send(this, "ClearSelection");
+
             var tap = new TapGestureRecognizer();
 
             tap.Tapped += TitleTapped;
@@ -226,14 +233,14 @@ namespace SSFR_Movies.Views
 
             await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
-            //await Scroll.TranslateTo(0, 0, 1500, Easing.SpringOut);
-            
+            MessagingCenter.Send(this, "ClearSelection");
+
             if (!CrossConnectivity.Current.IsConnected)
             {
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
                 return;
             }
-
+            
             var movie = (Result)BindingContext;
 
             var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);

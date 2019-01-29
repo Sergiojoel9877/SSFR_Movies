@@ -35,7 +35,7 @@ namespace SSFR_Movies.Helpers
         private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
-        private Lazy<Image> pin2FavList = null;
+        private Lazy<CachedImage> pin2FavList = null;
         private Lazy<StackLayout> compat = null;
         private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
@@ -80,7 +80,7 @@ namespace SSFR_Movies.Helpers
             {
                 BitmapOptimizations = true,
                 DownsampleToViewSize = true,
-                HeightRequest = 350,
+                HeightRequest = 330,
                 FadeAnimationEnabled = true,
                 FadeAnimationForCachedImages = true,
                 RetryCount = 5,
@@ -91,7 +91,7 @@ namespace SSFR_Movies.Helpers
                 Scale = 3,
                 LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 350,
+                WidthRequest = 330,
                 Transformations = Blur
             });
             blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
@@ -115,7 +115,7 @@ namespace SSFR_Movies.Helpers
 
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
-                HeightRequest = 100,
+                HeightRequest = 125,
                 HorizontalOptions = LayoutOptions.Center,
             });
 
@@ -183,10 +183,20 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<Image>(()=> new Image()
+            pin2FavList = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HeightRequest = 40,
-                WidthRequest = 40
+                WidthRequest = 40,
+                BitmapOptimizations = true,
+                DownsampleToViewSize = true,
+                FadeAnimationEnabled = true,
+                FadeAnimationForCachedImages = true,
+                RetryCount = 5,
+                RetryDelay = 2000,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
 
             compat.Value.Children.Add(pin2FavList.Value);
@@ -194,7 +204,7 @@ namespace SSFR_Movies.Helpers
             gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
             Grid.SetColumnSpan(scrollTitle.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
-            gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
+            //gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);

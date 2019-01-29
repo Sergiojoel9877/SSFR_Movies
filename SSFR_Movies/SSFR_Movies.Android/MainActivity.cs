@@ -11,9 +11,6 @@ using SSFR_Movies.Services;
 using FFImageLoading;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Android.Widget;
-using Plugin.MediaManager.Forms.Android;
-using Plugin.MediaManager;
-using Plugin.MediaManager.MediaSession;
 
 namespace SSFR_Movies.Droid
 {

@@ -38,9 +38,15 @@ namespace SSFR_Movies.Views
             SetVisibility();
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+            //MoviesList.SelectionChanged += MoviesList_SelectionChanged;
 
             SubscribeToMessage();
         }
+
+        //private void MoviesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ((CollectionView)sender).SelectedItem = null;
+        //}
 
         private void SubscribeToMessage()
         {
@@ -92,13 +98,30 @@ namespace SSFR_Movies.Views
             {
                 MovieSelected();
             });
+
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+
+            //var t = new TapGestureRecognizer();
+            //t.Tapped += T_Tapped;
+
+            //MoviesList.GestureRecognizers.Add(t);
+        }
+
+        private void T_Tapped(object sender, EventArgs e)
+        {
+            MovieSelected();
         }
 
         private async void MovieSelected()
         {
-            var movie = MoviesList.SelectedItem as Result;
-            await Navigation.PushAsync(new MovieDetailsPage(movie));
-            BindingContext = null;
+            if (MoviesList.SelectedItem != null)
+            {
+                var movie = MoviesList.SelectedItem as Result;
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
+            }
         }
 
         private async void QuitFromFavorites(object sender, EventArgs e)
@@ -163,8 +186,7 @@ namespace SSFR_Movies.Views
                 }
             }
         }
-
-
+        
         private async void SetVisibility()
         {
             var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
