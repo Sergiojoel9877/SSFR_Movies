@@ -325,7 +325,6 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
             
-            //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
             return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
 
         }

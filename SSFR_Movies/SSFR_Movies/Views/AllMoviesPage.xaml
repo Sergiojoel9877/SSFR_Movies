@@ -16,7 +16,11 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout x:Name="stack" CompressedLayout.IsHeadless="True">
+        <StackLayout x:Name="stack">
+            <StackLayout.GestureRecognizers>
+                <SwipeGestureRecognizer  Direction="Right" Swiped="stackSwiped"/>
+            </StackLayout.GestureRecognizers>
+            
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout

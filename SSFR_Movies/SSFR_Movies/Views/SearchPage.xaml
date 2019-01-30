@@ -6,34 +6,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    x:DataType="vm:AllMoviesPageViewModel"
-    BackgroundColor="#161513"
-    NavigationPage.HasNavigationBar="False">
-
-    <NavigationPage.TitleView>
-        <StackLayout
-            x:Name="Bar"
-            BackgroundColor="#272B2E"
-            HorizontalOptions="FillAndExpand"
-            Orientation="Horizontal"
-            VerticalOptions="Start">
-            <SearchBar
-                x:Name="searchBar"
-                CancelButtonColor="White"
-                FontAttributes="Bold"
-                FontSize="Medium"
-                HorizontalOptions="Center"
-                Placeholder="Search"
-                PlaceholderColor="#65FFFFFF"
-                SearchButtonPressed="SearchBar_SearchButtonPressed"
-                TextColor="White"
-                VerticalOptions="FillAndExpand" />
-        </StackLayout>
-    </NavigationPage.TitleView>
-        
+    BackgroundColor="#161513">
     <ContentPage.Content>
 
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True" BackgroundColor="#161513">
+
+            <StackLayout
+                x:Name="Bar"
+                BackgroundColor="#272B2E"
+                HeightRequest="56"
+                HorizontalOptions="FillAndExpand"
+                Orientation="Horizontal"
+                VerticalOptions="Start">
+
+                <Image
+                    x:Name="back"
+                    Margin="16,16,0,16"
+                    HeightRequest="20"
+                    HorizontalOptions="Start"
+                    Source="Back.png"
+                    WidthRequest="20">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Back_Tapped" />
+                    </Image.GestureRecognizers>
+                </Image>
+
+                <SearchBar
+                    x:Name="searchBar"
+                    Margin="0,2,16,0"
+                    CancelButtonColor="White"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="Center"
+                    Placeholder="Search..."
+                    PlaceholderColor="#FFFFFF"
+                    SearchButtonPressed="SearchBar_SearchButtonPressed"
+                    TextColor="White"
+                    VerticalOptions="FillAndExpand" />
+            </StackLayout>
 
             <ActivityIndicator
                 x:Name="activityIndicator"
@@ -44,11 +54,11 @@
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" x:DataType="vm:AllMoviesPageViewModel" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                            <helpers:CustomViewCell HeightRequest="350"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -69,7 +79,8 @@
                         <StackLayout CompressedLayout.IsHeadless="True">
                             <helpers:CustomViewCell>
                                 
-                                --><!----><!--
+                                -->
+            <!----><!--
                                 
                             </helpers:CustomViewCell>
                         </StackLayout>

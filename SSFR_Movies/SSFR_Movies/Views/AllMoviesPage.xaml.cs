@@ -74,7 +74,7 @@ namespace SSFR_Movies.Views
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
-            Shell.SetSearchHandler(this, new MovieSearchHandler());
+            //Shell.SetSearchHandler(this, new MovieSearchHandler());
 
             updownList = new ToolbarItem()
             {
@@ -106,10 +106,23 @@ namespace SSFR_Movies.Views
                 })
             };
             
+            searchToolbarItem = new ToolbarItem()
+            {
+                Text = "Search",
+                Icon = "Search.png",
+                Priority = 0,
+
+                Command = new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SearchPage(), true);
+                })
+            };
+            
             ToolbarItems.Add(updownList);
+
+            ToolbarItems.Add(searchToolbarItem);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
-   
         }
 
         private async void MovieSelected()
@@ -177,9 +190,7 @@ namespace SSFR_Movies.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-
-            vm.MsgVisible = false;
-
+            
             CrossConnectivity.Current.ConnectivityChanged -= Current_ConnectivityChanged;
         }
 
@@ -385,8 +396,6 @@ namespace SSFR_Movies.Views
            
         }
         
-
-
         protected override void OnParentSet()
         {
             base.OnParentSet();
@@ -412,5 +421,125 @@ namespace SSFR_Movies.Views
             });
             
         }
+
+        private void stackSwiped(object sender, SwipedEventArgs e)
+        {
+            switch (e.Direction)
+            {
+                case SwipeDirection.Left:
+                    (App.Current.MainPage as Shell).GoToAsync("app:///ssfr/favorites", true);
+                    break;
+            }    
+          
+        }
+
+        #region searchfunction
+        public async void SearchBar_SearchButtonPressed(string sender)
+        {
+
+            await Task.Yield();
+
+            activityIndicator.IsVisible = true;
+
+            activityIndicator.IsRunning = true;
+
+            MoviesList.IsVisible = false;
+
+            //var key = ((SearchBar)sender).Text;
+            var key = sender;
+
+            if (key == "")
+            {
+                DependencyService.Get<IToast>().LongAlert("The name can't be empty");
+
+                await SpeakNow("The name can't be empty");
+
+                return;
+            }
+
+            //Verify if internet connection is available
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    return false;
+                });
+                return;
+            }
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+
+                try
+                {
+
+                    if (key != "")
+                    {
+
+                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
+
+                        if (movie_results.Results.Count != 0)
+                        {
+
+                            vm.AllMoviesList.Value.Clear();
+
+                            foreach (var MovieResult in movie_results.Results)
+                            {
+                                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
+
+                                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
+
+                                //MovieResult.PosterPath = PosterPath;
+
+                                //MovieResult.BackdropPath = Backdroppath;
+
+                                vm.AllMoviesList.Value.Add(MovieResult);
+                            }
+
+                            BindingContext = vm;
+
+                            MoviesList.IsVisible = true;
+
+                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
+
+                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
+
+                            activityIndicator.IsVisible = false;
+
+                            activityIndicator.IsRunning = false;
+
+                            await SpeakNow("Search completed");
+
+                        }
+                        else
+                        {
+
+                            MoviesList.ItemsSource = null;
+
+                            activityIndicator.IsVisible = false;
+
+                            activityIndicator.IsRunning = false;
+
+                            MoviesList.IsVisible = true;
+
+                            DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
+
+                            await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
+
+                            Vibration.Vibrate();
+
+                        }
+                    }
+                }
+                catch (Exception e3)
+                {
+                    Debug.WriteLine("Error: " + e3.InnerException);
+                    //MoviesList.EndRefresh();
+                }
+            });
+        }
+
+        #endregion
     }
 }

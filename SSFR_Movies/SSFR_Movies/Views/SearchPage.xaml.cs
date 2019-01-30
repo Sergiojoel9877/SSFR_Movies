@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonServiceLocator;
 using Plugin.Connectivity;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -31,10 +32,37 @@ namespace SSFR_Movies.Views
             activityIndicator.IsVisible = false;
 
             BindingContext = vm;
-
+            
             searchBar.Focus();
 
-            Shell.SetSearchHandler(this, new MovieSearchHandler());
+            SuscribeToMessages();
+
+            Shell.SetNavBarIsVisible(this, false);
+
+            //Shell.SetSearchHandler(this, new MovieSearchHandler());
+        }
+
+        private void SuscribeToMessages()
+        {
+       
+            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
+            {
+                MovieSelected();
+            });
+
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+        }
+
+        private async void MovieSelected()
+        {
+            if (MoviesList.SelectedItem != null)
+            {
+                var movie = MoviesList.SelectedItem as Result;
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
+            }
         }
 
         protected override void OnAppearing()
@@ -44,6 +72,9 @@ namespace SSFR_Movies.Views
             BindingContext = vm;
 
             searchBar.Focus();
+
+            SuscribeToMessages();
+
         }
 
         protected override void OnDisappearing()
@@ -216,12 +247,12 @@ namespace SSFR_Movies.Views
             protected override void OnQueryConfirmed()
             {
                 base.OnQueryConfirmed();
-
             }
 
             protected override void OnQueryChanged(string oldValue, string newValue)
             {
                 // Do nothing, we will wait for confirmation
+               
             }
         }
     }
