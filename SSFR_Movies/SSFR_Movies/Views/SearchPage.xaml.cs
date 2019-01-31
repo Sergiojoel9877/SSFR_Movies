@@ -38,8 +38,7 @@ namespace SSFR_Movies.Views
             SuscribeToMessages();
 
             Shell.SetNavBarIsVisible(this, false);
-
-            //Shell.SetSearchHandler(this, new MovieSearchHandler());
+            
         }
 
         private void SuscribeToMessages()
@@ -70,9 +69,7 @@ namespace SSFR_Movies.Views
             base.OnAppearing();
 
             BindingContext = vm;
-
-            searchBar.Focus();
-
+            
             SuscribeToMessages();
 
         }

@@ -33,7 +33,7 @@
 
                 <SearchBar
                     x:Name="searchBar"
-                    Margin="0,2,16,0"
+                    Margin="0,5,16,0"
                     CancelButtonColor="White"
                     FontAttributes="Bold"
                     FontSize="Medium"

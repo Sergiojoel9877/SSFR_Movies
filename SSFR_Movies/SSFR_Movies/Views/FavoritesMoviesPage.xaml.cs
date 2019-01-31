@@ -38,15 +38,9 @@ namespace SSFR_Movies.Views
             SetVisibility();
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            //MoviesList.SelectionChanged += MoviesList_SelectionChanged;
 
             SubscribeToMessage();
         }
-
-        //private void MoviesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    ((CollectionView)sender).SelectedItem = null;
-        //}
 
         private void SubscribeToMessage()
         {
@@ -103,11 +97,6 @@ namespace SSFR_Movies.Views
             {
                 MoviesList.SelectedItem = null;
             });
-
-            //var t = new TapGestureRecognizer();
-            //t.Tapped += T_Tapped;
-
-            //MoviesList.GestureRecognizers.Add(t);
         }
 
         private void T_Tapped(object sender, EventArgs e)
