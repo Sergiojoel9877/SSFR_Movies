@@ -73,9 +73,7 @@ namespace SSFR_Movies.Views
             });
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-
-            //Shell.SetSearchHandler(this, new MovieSearchHandler());
-
+            
             updownList = new ToolbarItem()
             {
                 Text = "Up",
@@ -155,11 +153,6 @@ namespace SSFR_Movies.Views
             {
                 MoviesList.SelectedItem = null;
             });
-        }
-
-        private void T_Tapped(object sender, EventArgs e)
-        {
-            MovieSelected();
         }
 
         private async void InitializeAsync(Func<Task> action)
@@ -252,7 +245,6 @@ namespace SSFR_Movies.Views
                     activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
                     RefreshBtn.IsEnabled = false;
-                    pull2refreshlyt.IsPullToRefreshEnabled = false;
                 });
 
                 Settings.NextPage++;
@@ -282,7 +274,6 @@ namespace SSFR_Movies.Views
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
                             RefreshBtn.IsEnabled = true;
-                            pull2refreshlyt.IsPullToRefreshEnabled = true;
                         });
                     }
                 }
@@ -391,20 +382,20 @@ namespace SSFR_Movies.Views
         {
             InitializeAsync( async () =>
             {
-                await Navigation.PushAsync(new SearchPage(), false);
+                await Navigation.PushAsync(new SearchPage(), true);
             });
            
         }
         
-        protected override void OnParentSet()
-        {
-            base.OnParentSet();
+        //protected override void OnParentSet()
+        //{
+        //    base.OnParentSet();
 
-            if (Parent == null)
-            {
-                BindingContext = null;
-            }
-        }
+        //    if (Parent == null)
+        //    {
+        //        BindingContext = null;
+        //    }
+        //}
         
         private void RefreshBtnClicked(object sender, EventArgs e)
         {

@@ -17,7 +17,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout CompressedLayout.IsHeadless="True">
+        <StackLayout>
             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"

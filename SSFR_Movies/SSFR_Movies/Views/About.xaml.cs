@@ -14,9 +14,26 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class About : ContentPage
 	{
-		public About ()
+
+        ToolbarItem searchToolbarItem = null;
+
+        public About ()
 		{
 			InitializeComponent ();
-		}
+
+            searchToolbarItem = new ToolbarItem()
+            {
+                Text = "Search",
+                Icon = "Search.png",
+                Priority = 0,
+
+                Command = new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SearchPage(), true);
+                })
+            };
+
+            ToolbarItems.Add(searchToolbarItem);
+        }
 	}
 }

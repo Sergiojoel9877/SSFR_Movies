@@ -14,9 +14,20 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AppShell : Shell
     {
+
+        ToolbarItem searchToolbarItem = null;
+
         public AppShell()
         {
             InitializeComponent();
+
+            SetRoutes();
+        }
+
+        void SetRoutes()
+        {
+            Routing.RegisterRoute("moviedetailspage", typeof(MovieDetailsPage));
+            Routing.RegisterRoute("searchpage", typeof(SearchPage));
         }
 
         protected override bool OnBackButtonPressed()

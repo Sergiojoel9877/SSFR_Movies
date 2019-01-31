@@ -73,7 +73,7 @@ namespace SSFR_Movies.Views
         private async void IsPresentInFavList(Result m)
         {
 
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id).ConfigureAwait(false);
+            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
 
             if (movieExists)
             {

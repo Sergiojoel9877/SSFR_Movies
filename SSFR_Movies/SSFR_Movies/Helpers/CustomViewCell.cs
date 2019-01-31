@@ -241,9 +241,6 @@ namespace SSFR_Movies.Helpers
             absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
 
             compat.Value.GestureRecognizers.Add(tap);
-
-            //cachedImage.Value.GestureRecognizers.Add(imageTapped);
-
         }
 
         private void PosterTapped(object sender, EventArgs e)
@@ -253,6 +250,8 @@ namespace SSFR_Movies.Helpers
             MessagingCenter.Send(this, "Hide", true);
 
             MessagingCenter.Send(this, "PushAsync");
+            
+            MessagingCenter.Send(this, "_PushAsync");
         }
         
         protected override void OnBindingContextChanged()

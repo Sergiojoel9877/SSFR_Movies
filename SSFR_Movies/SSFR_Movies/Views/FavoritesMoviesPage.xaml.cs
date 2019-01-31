@@ -26,6 +26,8 @@ namespace SSFR_Movies.Views
 	public partial class FavoritesMoviesPage : ContentPage
 	{
         FavoriteMoviesPageViewModel vm;
+        
+        ToolbarItem searchToolbarItem = null;
 
         public FavoritesMoviesPage ()
 		{
@@ -36,6 +38,20 @@ namespace SSFR_Movies.Views
             BindingContext = vm;
 
             SetVisibility();
+
+            searchToolbarItem = new ToolbarItem()
+            {
+                Text = "Search",
+                Icon = "Search.png",
+                Priority = 0,
+
+                Command = new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SearchPage(), true);
+                })
+            };
+                       
+            ToolbarItems.Add(searchToolbarItem);
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
