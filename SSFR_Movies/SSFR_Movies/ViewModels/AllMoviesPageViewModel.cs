@@ -117,7 +117,7 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); //VERIFY...
+            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); 
 
             if (movies == null)
             {

@@ -47,9 +47,7 @@ namespace SSFR_Movies.ViewModels
         public async Task<char> FillMoviesList()
         {
             await Task.Yield();
-
-            FavMoviesList.Value.Clear();
-
+            
             var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
             foreach (var MovieResult in movies)

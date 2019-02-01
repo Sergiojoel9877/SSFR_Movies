@@ -135,6 +135,9 @@ namespace SSFR_Movies.Views
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
+
+                        Settings.ClearSelectionAllMoviesPage = false;
+                        Settings.ClearSelectionFavMoviesPage = false;
                     }
                     else
                     {
@@ -148,7 +151,7 @@ namespace SSFR_Movies.Views
                             await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
 
                             MessagingCenter.Send(this, "Refresh", true);
-
+                            
                             MessagingCenter.Send(this, "ClearSelection");
 
                             Device.BeginInvokeOnMainThread(()=>
@@ -158,6 +161,10 @@ namespace SSFR_Movies.Views
                                 AddToFavLayout.IsVisible = false;
 
                                 QuitFromFavLayout.IsVisible = true;
+
+                                Settings.ClearSelectionAllMoviesPage = true;
+
+                                Settings.ClearSelectionFavMoviesPage = true;
                             });
                         }
                     } 
@@ -206,8 +213,10 @@ namespace SSFR_Movies.Views
                         QuitFromFavLayout.IsVisible = false;
 
                         MessagingCenter.Send(this, "Refresh", true);
+                        
+                        Settings.ClearSelectionAllMoviesPage = true;
 
-                        MessagingCenter.Send(this, "ClearSelection");
+                        Settings.ClearSelectionFavMoviesPage = true;
                     }
                 }
                 catch (Exception)
@@ -218,6 +227,10 @@ namespace SSFR_Movies.Views
 
                         return false;
                     });
+
+                    Settings.ClearSelectionAllMoviesPage = true;
+
+                    Settings.ClearSelectionFavMoviesPage = true;
                 }
             }
             else
@@ -238,6 +251,10 @@ namespace SSFR_Movies.Views
             await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
             MessagingCenter.Send(this, "ClearSelection");
+            
+            Settings.ClearSelectionAllMoviesPage = true;
+
+            Settings.ClearSelectionFavMoviesPage = true;
 
             if (!CrossConnectivity.Current.IsConnected)
             {

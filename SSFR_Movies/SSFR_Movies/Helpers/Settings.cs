@@ -57,6 +57,18 @@ namespace SSFR_Movies.Helpers
             }
         }
 
+        public static bool ClearSelectionAllMoviesPage
+        {
+            get => AppSettings.GetValueOrDefault("ClearSelectionAllMoviesPage", false);
+            set => AppSettings.AddOrUpdateValue("ClearSelectionAllMoviesPage", value);
+        }
+
+        public static bool ClearSelectionFavMoviesPage
+        {
+            get => AppSettings.GetValueOrDefault("ClearSelectionFavMoviesPage", false);
+            set => AppSettings.AddOrUpdateValue("ClearSelectionFavMoviesPage", value);
+        }
+
         public static bool UpdateList
         {
             get => AppSettings.GetValueOrDefault("UpdateList", false);
