@@ -29,9 +29,9 @@ namespace SSFR_Movies.Views
         
         ToolbarItem searchToolbarItem = null;
 
-        public FavoritesMoviesPage ()
+        public FavoritesMoviesPage()
 		{
-			InitializeComponent ();
+			InitializeComponent();
 
             vm = ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value;
 

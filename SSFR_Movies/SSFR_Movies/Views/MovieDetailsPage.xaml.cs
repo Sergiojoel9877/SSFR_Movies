@@ -149,6 +149,8 @@ namespace SSFR_Movies.Views
 
                             MessagingCenter.Send(this, "Refresh", true);
 
+                            MessagingCenter.Send(this, "ClearSelection");
+
                             Device.BeginInvokeOnMainThread(()=>
                             {
                                 AddToFav.Source = "Star.png";
@@ -204,6 +206,8 @@ namespace SSFR_Movies.Views
                         QuitFromFavLayout.IsVisible = false;
 
                         MessagingCenter.Send(this, "Refresh", true);
+
+                        MessagingCenter.Send(this, "ClearSelection");
                     }
                 }
                 catch (Exception)

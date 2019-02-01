@@ -19,7 +19,7 @@ namespace SSFR_Movies.Views
 
         public About ()
 		{
-			InitializeComponent ();
+			InitializeComponent();
 
             searchToolbarItem = new ToolbarItem()
             {

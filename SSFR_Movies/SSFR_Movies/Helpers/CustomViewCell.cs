@@ -45,6 +45,7 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCell()
         {
+      
             HeightRequest = 300;
             Direction = FlexDirection.Column;
             Margin = 16;
