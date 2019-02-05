@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Services;
+using System.Linq;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -65,6 +66,48 @@ namespace SSFR_Movies.ViewModels
 
             return 'r'; //Indica que la lista contiene elementos
             
+        }
+        public async Task<KeyValuePair<char, ObservableCollection<Result>>> FillMoviesList(IEnumerable<Result> results)
+        {
+            await Task.Yield();
+
+            var objs = new ObservableCollection<Result>();
+
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            movies.ForEach((m) =>
+            {
+                if (results.ToList().Count > 0)
+                {
+                    results.ForEach((r) =>
+                    {
+                        if (r.Title == m.Title)
+                        {
+                            objs.Add(m);
+                        }
+                    });
+                }
+                else
+                {
+                    objs.Add(m);
+                }
+            });
+            
+            //foreach (var MovieResult in movies)
+            //{
+            //    if (!FavMoviesList.Value.Contains(MovieResult))
+            //    {
+            //        FavMoviesList.Value.Add(MovieResult);
+            //    }
+            //}
+
+            //if (FavMoviesList.Value.Count == 0)
+            //{
+            //    return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista esta vacia
+            //}
+
+            return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista contiene elementos
+
         }
 
         private Command getStoredMoviesCommand;

@@ -65,11 +65,6 @@ namespace SSFR_Movies.Views
 
         }
 
-        async void RunAsync(Func<Task> func)
-        {
-            await Task.Run(async ()=> { await func(); });
-        }
-
         private async void IsPresentInFavList(Result m)
         {
 

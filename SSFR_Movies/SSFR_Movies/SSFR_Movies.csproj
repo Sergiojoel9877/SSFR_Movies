@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.12.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.12.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
-    <PackageReference Include="MonkeyCache" Version="1.1.0-beta" />
-    <PackageReference Include="MonkeyCache.FileStore" Version="1.1.0-beta" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.13.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.13.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0-preview.19074.3" />
+    <PackageReference Include="MonkeyCache" Version="1.2.0-beta" />
+    <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
     <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.3" />
     <PackageReference Include="System.Memory" Version="4.5.2" />
     <PackageReference Include="Unity" Version="5.9.3" />

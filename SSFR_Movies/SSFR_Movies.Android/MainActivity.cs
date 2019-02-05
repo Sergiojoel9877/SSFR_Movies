@@ -18,7 +18,7 @@ namespace SSFR_Movies.Droid
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", /*Theme = "@style/MainTheme",*/ Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        Lazy<App> LazyApp = new Lazy<App>(() => new App());
+        readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
 
         protected override void OnCreate(Bundle bundle)
         {

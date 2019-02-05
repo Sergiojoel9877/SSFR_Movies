@@ -413,7 +413,7 @@ namespace SSFR_Movies.Views
             
         }
 
-        private void stackSwiped(object sender, SwipedEventArgs e)
+        private void StackSwiped(object sender, SwipedEventArgs e)
         {
             switch (e.Direction)
             {

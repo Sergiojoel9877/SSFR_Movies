@@ -66,17 +66,22 @@ namespace SSFR_Movies.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        var estado = await vm.FillMoviesList();
-                        if (estado == 'v')
+                        var estado = await vm.FillMoviesList(MoviesList.ItemsSource as IEnumerable<Result>);
+                        if (estado.Key == 'v')
                         {
-                            UnPin.IsVisible = true;
-                            Message.IsVisible = true;
+                            //UnPin.IsVisible = true;
+                            //Message.IsVisible = true;
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
                         }
-                        else if(estado == 'r')
+                        else if(estado.Key == 'r')
                         {
                             MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
                         }
                     });
                 }
@@ -109,10 +114,10 @@ namespace SSFR_Movies.Views
                 MovieSelected();
             });
 
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
+            //MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            //{
+            //    MoviesList.SelectedItem = null;
+            //});
         }
 
         private void T_Tapped(object sender, EventArgs e)
@@ -131,12 +136,10 @@ namespace SSFR_Movies.Views
 
         private async void QuitFromFavorites(object sender, EventArgs e)
         {
-     
-            var opt = sender as MenuItem;
 
-            if (opt != null)
+
+            if (sender is MenuItem opt)
             {
-
                 var movie = opt.BindingContext as Result;
 
                 //Verify if internet connection is available
@@ -145,7 +148,7 @@ namespace SSFR_Movies.Views
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
                         DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;  
+                        return false;
                     });
                     return;
                 }
@@ -154,7 +157,7 @@ namespace SSFR_Movies.Views
                 {
                     try
                     {
-                        
+
                         var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
                         if (deleteMovie)
@@ -230,12 +233,7 @@ namespace SSFR_Movies.Views
             await Navigation.PushAsync(new MovieDetailsPage(movie));
 
         }
-        
-        async void InitializeAsync(Func<Task> action)
-        {
-            await action();
-        }
-        
+    
         /// <summary>
         /// To animate the Quit from Favorite list icon..
         /// </summary>

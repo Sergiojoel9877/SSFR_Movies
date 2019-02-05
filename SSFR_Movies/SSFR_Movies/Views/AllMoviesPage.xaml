@@ -18,7 +18,7 @@
     <ContentPage.Content>
         <StackLayout x:Name="stack">
             <StackLayout.GestureRecognizers>
-                <SwipeGestureRecognizer  Direction="Right" Swiped="stackSwiped"/>
+                <SwipeGestureRecognizer  Direction="Right" Swiped="StackSwiped"/>
             </StackLayout.GestureRecognizers>
             
             <ScrollView x:Name="scroll">
