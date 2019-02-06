@@ -66,7 +66,7 @@ namespace SSFR_Movies.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        var estado = await vm.FillMoviesList(MoviesList.ItemsSource as IEnumerable<Result>);
+                    var estado = await vm.FillMoviesList(null);
                         if (estado.Key == 'v')
                         {
                             //UnPin.IsVisible = true;
@@ -75,6 +75,7 @@ namespace SSFR_Movies.Views
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
                             MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
                         }
                         else if(estado.Key == 'r')
                         {
@@ -82,6 +83,7 @@ namespace SSFR_Movies.Views
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
                             MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
                         }
                     });
                 }
@@ -130,6 +132,7 @@ namespace SSFR_Movies.Views
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
+                MoviesList.SelectedItem = null;
                 await Navigation.PushAsync(new MovieDetailsPage(movie));
             }
         }

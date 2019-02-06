@@ -75,24 +75,38 @@ namespace SSFR_Movies.ViewModels
 
             var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
-            movies.ForEach((m) =>
+            if (movies.ToList().Count > 0)
             {
-                if (results.ToList().Count > 0)
-                {
-                    results.ForEach((r) =>
-                    {
-                        if (r.Title == m.Title)
-                        {
-                            objs.Add(m);
-                        }
-                    });
-                }
-                else
+                movies.ForEach((m) =>
                 {
                     objs.Add(m);
-                }
-            });
+                });
+                return new KeyValuePair<char, ObservableCollection<Result>>('r', objs); //Indica que la lista contiene elementos
+            }
+            else
+            {
+                return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista contiene elementos
+            }
             
+            //movies.ForEach((m) =>
+            //{
+            //    if (results.ToList().Count > 0)
+            //    {
+            //        results.ForEach((r) =>
+            //        {
+            //            if (r.Title == m.Title)
+            //            {
+            //                objs.Add(m);
+            //            }
+            //        });
+            //    }
+            //    else
+            //    {
+            //        objs.Add(m);
+            //    }
+            //});
+
+
             //foreach (var MovieResult in movies)
             //{
             //    if (!FavMoviesList.Value.Contains(MovieResult))
@@ -106,7 +120,6 @@ namespace SSFR_Movies.ViewModels
             //    return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista esta vacia
             //}
 
-            return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista contiene elementos
 
         }
 
