@@ -66,23 +66,21 @@ namespace SSFR_Movies.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                    var estado = await vm.FillMoviesList(null);
-                        if (estado.Key == 'v')
+                        var estado = await vm.FillMoviesList(null);
+
+                        if (estado.Key == 'r')
                         {
-                            //UnPin.IsVisible = true;
-                            //Message.IsVisible = true;
                             MoviesList.IsVisible = true;
                             UnPin.IsVisible = false;
                             Message.IsVisible = false;
                             MoviesList.ItemsSource = estado.Value;
                             MoviesList.SelectedItem = null;
                         }
-                        else if(estado.Key == 'r')
+                        else if(estado.Key == 'v')
                         {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
                             MoviesList.SelectedItem = null;
                         }
                     });
