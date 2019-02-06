@@ -22,6 +22,7 @@
     <AndroidExplicitCrunch>true</AndroidExplicitCrunch>
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <AndroidDexTool>d8</AndroidDexTool>
+    <AndroidEnableDesugar>true</AndroidEnableDesugar>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +40,6 @@
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <EnableProguard>false</EnableProguard>
-    <AndroidEnableDesugar>True</AndroidEnableDesugar>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
@@ -65,7 +65,6 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidSupportedAbis>x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <EnableProguard>false</EnableProguard>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <BundleAssemblies>false</BundleAssemblies>
