@@ -287,8 +287,14 @@ namespace SSFR_Movies.Views
 
             var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
 
-            if(video.Results.Count() > 0)
+            if (video.Results.Count() > 0)
+            {
                 Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
+            }
+            else
+            {
+                DependencyService.Get<IToast>().LongAlert("No trailers for this movie/serie found");
+            }
         }
 
         private async void StreamMovie_Tapped(object sender, EventArgs e)
