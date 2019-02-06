@@ -3,8 +3,12 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
+    Title="SSFR Movies"
+    x:DataType="vm:FavoriteMoviesPageViewModel"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
 
@@ -13,18 +17,15 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout CompressedLayout.IsHeadless="True">
-
-            <ffimage:CachedImage
+        <StackLayout>
+            <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
-                BitmapOptimizations="True"
-                DownsampleToViewSize="True"
                 HeightRequest="300"
                 HorizontalOptions="Center"
                 Source="Unpin.png"
                 WidthRequest="300" />
-
+            
             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"
@@ -32,21 +33,34 @@
                 FontSize="Medium"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
-                IsVisible="{Binding ListEmpty}"
                 Text="You have not picked any movie as a favorite one"
                 TextColor="White" />
 
-            <ListView
+            <CollectionView x:Name="MoviesList" Visual="Material" ItemsSource="{Binding FavMoviesList.Value}" SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCellFavPage HeightRequest="300"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!--<ListView
                 x:Name="MoviesList"
                 CachingStrategy="RecycleElementAndDataTemplate"
+                RefreshControlColor="Blue"
                 HasUnevenRows="True"
-                HorizontalOptions="CenterAndExpand"
+                HorizontalOptions="FillAndExpand"
                 ItemTapped="ItemSelected"
-                ItemsSource="{Binding FavMoviesList, Mode=TwoWay}"
+                ItemsSource="{Binding FavMoviesList.Value}"
                 RowHeight="350">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
+                        <helpers:CustomViewCellFavPage>
+                            --><!--    --><!--
+                        </helpers:CustomViewCellFavPage>
+                        --><!--<ViewCell>
                             <ViewCell.ContextActions>
 
                                 <MenuItem
@@ -152,10 +166,10 @@
                                     </StackLayout>
                                 </StackLayout>
                             </FlexLayout>
-                        </ViewCell>
+                        </ViewCell>--><!--
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>

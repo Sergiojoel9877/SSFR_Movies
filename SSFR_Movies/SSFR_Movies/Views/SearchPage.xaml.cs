@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonServiceLocator;
 using Plugin.Connectivity;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
+    [Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchPage : ContentPage
     {
@@ -23,34 +27,52 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
+            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
 
             activityIndicator.IsVisible = false;
 
             BindingContext = vm;
+            
+            Shell.SetNavBarIsVisible(this, false);
 
             searchBar.Focus();
+
+            SuscribeToMessages();
+
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+            
+        }
+
+        private void SuscribeToMessages()
+        {
+       
+            MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
+            {
+                MovieSelected();
+            });
+
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+        }
+
+        private async void MovieSelected()
+        {
+            if (MoviesList.SelectedItem != null)
+            {
+                var movie = MoviesList.SelectedItem as Result;
+                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
+            }
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            BindingContext = vm;
-
-            searchBar.Focus();
+            
+            SuscribeToMessages();
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            BindingContext = null;
-
-            GC.Collect(0, GCCollectionMode.Optimized, false);
-
-        }
-        
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
         {
 
@@ -59,6 +81,8 @@ namespace SSFR_Movies.Views
             activityIndicator.IsVisible = true;
 
             activityIndicator.IsRunning = true;
+
+            MoviesList.IsVisible = false;
 
             var key = ((SearchBar)sender).Text;
 
@@ -70,8 +94,6 @@ namespace SSFR_Movies.Views
 
                 return;
             }
-
-            MoviesList.BeginRefresh();
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
@@ -89,56 +111,46 @@ namespace SSFR_Movies.Views
 
                 try
                 {
-
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<ApiClient>().SearchMovieByName(key);
+                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
 
-                        if (movie_results.Results.Capacity != 0)
+                        if (movie_results.Results.Count != 0)
                         {
 
-                            vm.AllMoviesList.Clear();
+                            vm.AllMoviesList.Value.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                                MovieResult.PosterPath = PosterPath;
-
-                                MovieResult.BackdropPath = Backdroppath;
-
-                                vm.AllMoviesList.Add(MovieResult);
-
+                                vm.AllMoviesList.Value.Add(MovieResult);
                             }
 
                             BindingContext = vm;
 
-                            MoviesList.ItemsSource = vm.AllMoviesList;
+                            MoviesList.IsVisible = true;
+
+                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                            MoviesList.EndRefresh();
                             
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
-                            
+
                             await SpeakNow("Search completed");
 
                         }
                         else
                         {
-                            
-                            MoviesList.EndRefresh();
-
+                           
                             MoviesList.ItemsSource = null;
 
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
+
+                            MoviesList.IsVisible = true;
 
                             DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
@@ -151,9 +163,7 @@ namespace SSFR_Movies.Views
                 }
                 catch (Exception e3)
                 {
-
-                    MoviesList.EndRefresh();
-
+                    Debug.WriteLine("Error: " + e3.InnerException);
                 }
             });
         }
@@ -172,7 +182,7 @@ namespace SSFR_Movies.Views
 
                 ((ListView)sender).SelectedItem = null;
                 
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
 
             }
             catch (Exception e4)
@@ -180,7 +190,7 @@ namespace SSFR_Movies.Views
                 Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
-
+                    Debug.WriteLine("Error: " + e4.InnerException);
                     Vibration.Vibrate();
 
                     return false;
@@ -190,7 +200,7 @@ namespace SSFR_Movies.Views
 
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeakSettings()
+            var settings = new SpeechOptions()
             {
                 Volume = 1f,
                 Pitch = 1.0f
@@ -201,7 +211,28 @@ namespace SSFR_Movies.Views
 
         private async void Back_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PopAsync(false);
+            await Navigation.PopAsync(true);
+        }
+
+        public class MovieSearchHandler : SearchHandler
+        {
+            public MovieSearchHandler()
+            {
+                SearchBoxVisibility = SearchBoxVisiblity.Collapsable;
+                IsSearchEnabled = true;
+                Placeholder = "Search";
+            }
+
+            protected override void OnQueryConfirmed()
+            {
+                base.OnQueryConfirmed();
+            }
+
+            protected override void OnQueryChanged(string oldValue, string newValue)
+            {
+                // Do nothing, we will wait for confirmation
+               
+            }
         }
     }
 }

@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    x:Name="Content"
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:customViewCell="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    BackgroundColor="#161513"
-    NavigationPage.HasNavigationBar="False">
+    BackgroundColor="#161513">
     <ContentPage.Content>
 
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True" BackgroundColor="#161513">
 
             <StackLayout
                 x:Name="Bar"
@@ -20,28 +19,27 @@
                 Orientation="Horizontal"
                 VerticalOptions="Start">
 
-                <ffimage:CachedImage
+                <Image
                     x:Name="back"
                     Margin="16,16,0,16"
-                    BitmapOptimizations="True"
-                    HeightRequest="30"
+                    HeightRequest="20"
                     HorizontalOptions="Start"
                     Source="Back.png"
-                    WidthRequest="30">
-                    <ffimage:CachedImage.GestureRecognizers>
+                    WidthRequest="20">
+                    <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="Back_Tapped" />
-                    </ffimage:CachedImage.GestureRecognizers>
-                </ffimage:CachedImage>
+                    </Image.GestureRecognizers>
+                </Image>
 
                 <SearchBar
                     x:Name="searchBar"
-                    Margin="0,0,26,0"
+                    Margin="0,5,16,0"
                     CancelButtonColor="White"
                     FontAttributes="Bold"
                     FontSize="Medium"
                     HorizontalOptions="Center"
-                    Placeholder="Search"
-                    PlaceholderColor="#65FFFFFF"
+                    Placeholder="Search..."
+                    PlaceholderColor="#FFFFFF"
                     SearchButtonPressed="SearchBar_SearchButtonPressed"
                     TextColor="White"
                     VerticalOptions="FillAndExpand" />
@@ -50,27 +48,21 @@
             <ActivityIndicator
                 x:Name="activityIndicator"
                 BackgroundColor="Transparent"
-                HeightRequest="50"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="FillAndExpand"
-                WidthRequest="50"
-                Color="#0088FF" />
+                HeightRequest="40"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                WidthRequest="40"
+                Color="White" />
 
-            <ListView
-                x:Name="MoviesList"
-                CachingStrategy="RecycleElementAndDataTemplate"
-                HasUnevenRows="True"
-                IsPullToRefreshEnabled="True"
-                IsRefreshing="{Binding IsRefreshing}"
-                IsVisible="{Binding ListVisible}"
-                ItemTapped="ItemSelected"
-                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
-                <ListView.ItemTemplate>
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <helpers:CustomViewCell />
+                        <StackLayout CompressedLayout.IsHeadless="True">
+                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                        </StackLayout>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />

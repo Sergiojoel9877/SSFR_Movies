@@ -21,29 +21,27 @@ using SSFR_Movies.Models;
 namespace SSFR_Movies
 {
     /// <summary>
-    /// The main class of a Xamarin Fomrs App.
+    /// The main class of a Xamarin Forms App.
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public partial class App : Application
 	{
         public static HttpClient httpClient { get; set; }
-      
+        
         public App ()
 		{
-           
             InitializeComponent();
 
-            ContainerInitializer.Initialize();
-            
-            var mainPage = new NavigationPage(new MainPage())
-            {
-                BarBackgroundColor = Color.FromHex("#272B2E")
-            };
+            var mainPage = new StartPagexaml();
 
             MainPage = mainPage;
-    
+            
             SetHttpClient();
+        }                                   
 
+        async void InitializeAsync(Func<Task> action)
+        {
+            await action();
         }
 
         protected override void OnStart ()
@@ -60,14 +58,15 @@ namespace SSFR_Movies
 		{
           
 		}
-
+        
         /// <summary>
         /// Sets the httpClient Baseaddress
         /// </summary>
         private void SetHttpClient() => httpClient = new HttpClient()
-                                        {
-                                            BaseAddress = new Uri("https://api.themoviedb.org")
-                                        };
-      
+        {
+            BaseAddress = new Uri("https://api.themoviedb.org")
+        };
+
+
     }
 }

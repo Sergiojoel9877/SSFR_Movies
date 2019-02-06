@@ -9,20 +9,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Services;
+using System.Linq;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
-  
+    [Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
-        public ObservableCollection<Result> FavMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>(), isThreadSafe: true);
 
-        private bool listVisible = false;
+        private bool listVisible = true;
         public bool ListVisible
         {
             get => listVisible;
@@ -43,28 +45,82 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref listEmpty, value);
         }
 
-        public async Task<bool> FillMoviesList()
+        public async Task<char> FillMoviesList()
         {
-           
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-            FavMoviesList.Clear();
+            await Task.Yield();
+            
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
             foreach (var MovieResult in movies)
             {
-                if (FavMoviesList.Contains(MovieResult))
+                if (!FavMoviesList.Value.Contains(MovieResult))
                 {
-                    return false;
+                    FavMoviesList.Value.Add(MovieResult);
                 }
-
-                FavMoviesList.Add(MovieResult);
             }
 
-            ListVisible = true;
+            if (FavMoviesList.Value.Count == 0)
+            {
+                return 'v'; //Indica que la lista esta vacia
+            }
 
-            ActivityIndicatorRunning = false;
-     
-            return true;
+            return 'r'; //Indica que la lista contiene elementos
+            
+        }
+        public async Task<KeyValuePair<char, ObservableCollection<Result>>> FillMoviesList(IEnumerable<Result> results)
+        {
+            await Task.Yield();
+
+            var objs = new ObservableCollection<Result>();
+
+            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            if (movies.ToList().Count > 0)
+            {
+                movies.ForEach((m) =>
+                {
+                    objs.Add(m);
+                });
+                return new KeyValuePair<char, ObservableCollection<Result>>('r', objs); //Indica que la lista contiene elementos
+            }
+            else
+            {
+                return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista contiene elementos
+            }
+            
+            //movies.ForEach((m) =>
+            //{
+            //    if (results.ToList().Count > 0)
+            //    {
+            //        results.ForEach((r) =>
+            //        {
+            //            if (r.Title == m.Title)
+            //            {
+            //                objs.Add(m);
+            //            }
+            //        });
+            //    }
+            //    else
+            //    {
+            //        objs.Add(m);
+            //    }
+            //});
+
+
+            //foreach (var MovieResult in movies)
+            //{
+            //    if (!FavMoviesList.Value.Contains(MovieResult))
+            //    {
+            //        FavMoviesList.Value.Add(MovieResult);
+            //    }
+            //}
+
+            //if (FavMoviesList.Value.Count == 0)
+            //{
+            //    return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista esta vacia
+            //}
+
+
         }
 
         private Command getStoredMoviesCommand;
@@ -72,13 +128,13 @@ namespace SSFR_Movies.ViewModels
         {
             get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new Command(async () =>
             {
-                    await FillMoviesList();
+                await FillMoviesList();
             }));
         }
 
         public FavoriteMoviesPageViewModel()
         {
-            if (FavMoviesList.Count == 0)
+            if (FavMoviesList.Value.Count == 0)
             {
                 ListEmpty = true;
             }

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:SSFR_Movies.Views"
+       Title="SSFR Movies Home"
+       RouteScheme="app"
+       RouteHost="ssfr.com"
+       Route="ssfrmovies"
+       NavigationPage.HasNavigationBar="False"
+       NavigationPage.HasBackButton="False"
+       FlyoutBehavior="Disabled"
+       x:Class="SSFR_Movies.Views.AppShell">
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Color x:Key="NavigationPrimary">#2196F3</Color>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.ShellBackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.ShellForegroundColor" Value="White" />
+                <Setter Property="Shell.ShellTitleColor" Value="White" />
+                <Setter Property="Shell.ShellDisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.ShellUnselectedColor" Value="#0088FF" />
+                <Setter Property="Shell.ShellTabBarBackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.ShellTabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.ShellTabBarUnselectedColor" Value="#0088FF"/>
+                <Setter Property="Shell.ShellTabBarTitleColor" Value="White"/>
+            </Style>
+            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
+    <ShellItem>
+        <ShellSection Title="All" Route="home" Icon="Recent.png">
+            <!--<ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>-->
+            <ShellContent>
+                <local:AllMoviesPage/>
+            </ShellContent>
+        </ShellSection>
+        <ShellSection Title="Favorites" Route="favorites" Icon="Heart.png" >
+            <!--<ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>-->
+            <ShellContent>
+                <local:FavoritesMoviesPage/>
+            </ShellContent>
+        </ShellSection>
+        <ShellSection Title="About" Route="about" Icon="About.png">
+            <ShellContent ContentTemplate="{DataTemplate local:About}"/>
+        </ShellSection>
+    </ShellItem>
+</Shell>
