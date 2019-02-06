@@ -160,7 +160,6 @@ namespace SSFR_Movies.Views
                 {
                     try
                     {
-
                         var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
                         if (deleteMovie)
@@ -171,11 +170,7 @@ namespace SSFR_Movies.Views
 
                             BindingContext = vm;
 
-                            //MoviesList.BeginRefresh();
-
                             await Task.Delay(500);
-
-                            //MoviesList.EndRefresh();
 
                             var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 

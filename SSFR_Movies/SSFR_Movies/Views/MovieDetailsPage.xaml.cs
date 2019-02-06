@@ -35,9 +35,7 @@ namespace SSFR_Movies.Views
             tap.Tapped += TitleTapped;
 
             PosterPathImage.GestureRecognizers.Add(tap);
-
-            IsPresentInFavList(movie);
-
+            
             AddToFav.Source = "StarEmpty.png";
 
             BindingContext = movie;
@@ -236,7 +234,6 @@ namespace SSFR_Movies.Views
         
         protected async override void OnAppearing()
         {
-
             base.OnAppearing();
             
             var item = BindingContext as Result;
@@ -290,7 +287,8 @@ namespace SSFR_Movies.Views
 
             var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
 
-            Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
+            if(video.Results.Count() > 0)
+                Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
         }
 
         private async void StreamMovie_Tapped(object sender, EventArgs e)
