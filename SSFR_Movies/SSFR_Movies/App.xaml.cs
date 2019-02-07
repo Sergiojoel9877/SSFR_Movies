@@ -9,9 +9,9 @@ using System.Net.Http;
 using MonkeyCache.FileStore;
 using SSFR_Movies.Helpers;
 using System.Collections;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
+//using Microsoft.AppCenter;
+//using Microsoft.AppCenter.Analytics;
+//using Microsoft.AppCenter.Crashes;
 using System.Collections.Generic;
 using Xamarin.Forms.Internals;
 using SSFR_Movies.Data;
@@ -46,7 +46,7 @@ namespace SSFR_Movies
 
         protected override void OnStart ()
 		{
-            AppCenter.Start("android=8d9e8fc5-562a-434b-934c-cd959dc47068;", typeof(Analytics), typeof(Crashes));
+            //AppCenter.Start("android=8d9e8fc5-562a-434b-934c-cd959dc47068;", typeof(Analytics), typeof(Crashes));
         }
 
 		protected override void OnSleep ()
@@ -66,7 +66,5 @@ namespace SSFR_Movies
         {
             BaseAddress = new Uri("https://api.themoviedb.org")
         };
-
-
     }
 }
