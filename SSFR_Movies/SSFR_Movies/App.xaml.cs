@@ -31,17 +31,12 @@ namespace SSFR_Movies
         public App ()
 		{
             InitializeComponent();
-
+            
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;
             
             SetHttpClient();
-        }                                   
-
-        async void InitializeAsync(Func<Task> action)
-        {
-            await action();
         }
 
         protected override void OnStart ()
