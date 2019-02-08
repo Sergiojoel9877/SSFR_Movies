@@ -8,11 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="MonkeyCache" Version="1.2.0-beta" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
+    <PackageReference Include="Realm" Version="3.4.0" />
+    <PackageReference Include="Realm.Database" Version="3.4.0" />
+    <PackageReference Include="Realm.DataBinding" Version="1.2.0" />
     <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.3" />
-    <PackageReference Include="System.Memory" Version="4.5.2" />
     <PackageReference Include="Unity" Version="5.9.3" />
     <PackageReference Include="Unity.Abstractions" Version="4.0.2" />
     <PackageReference Include="Unity.ServiceLocation" Version="5.9.1" />
