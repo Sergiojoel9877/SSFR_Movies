@@ -66,46 +66,22 @@ namespace SSFR_Movies.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                    var estado = await vm.FillMoviesList(null);
-                        if (estado.Key == 'v')
-                        {
-                            //UnPin.IsVisible = true;
-                            //Message.IsVisible = true;
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
-                            MoviesList.SelectedItem = null;
-                        }
-                        else if(estado.Key == 'r')
-                        {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
-                            MoviesList.SelectedItem = null;
-                        }
-                    });
-                }
-            });
+                        var estado = await vm.FillMoviesList(null);
 
-            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
-            {
-                if (e)
-                {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        var estado = await vm.FillMoviesList();
-                        if (estado == 'v')
+                        if (estado.Key == 'r')
                         {
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
+                        }
+                        else if(estado.Key == 'v')
+                        {
+                            MoviesList.IsVisible = false;
                             UnPin.IsVisible = true;
                             Message.IsVisible = true;
-                        }
-                        else if (estado == 'r')
-                        {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
+                            MoviesList.SelectedItem = null;
                         }
                     });
                 }
@@ -115,18 +91,8 @@ namespace SSFR_Movies.Views
             {
                 MovieSelected();
             });
-
-            //MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            //{
-            //    MoviesList.SelectedItem = null;
-            //});
         }
-
-        private void T_Tapped(object sender, EventArgs e)
-        {
-            MovieSelected();
-        }
-
+        
         private async void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
@@ -139,8 +105,6 @@ namespace SSFR_Movies.Views
 
         private async void QuitFromFavorites(object sender, EventArgs e)
         {
-
-
             if (sender is MenuItem opt)
             {
                 var movie = opt.BindingContext as Result;

@@ -29,13 +29,11 @@
     </Shell.Resources>
     <ShellItem>
         <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <!--<ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>-->
             <ShellContent>
                 <local:AllMoviesPage/>
             </ShellContent>
         </ShellSection>
         <ShellSection Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <!--<ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>-->
             <ShellContent>
                 <local:FavoritesMoviesPage/>
             </ShellContent>

@@ -24,7 +24,6 @@ namespace SSFR_Movies.Helpers
         #region Controls
         private Lazy<CachedImage> blurCachedImage = null;
         private Lazy<CachedImage> cachedImage = null;
-        private Lazy<FlexLayout> FlexLayout = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -36,7 +35,6 @@ namespace SSFR_Movies.Helpers
         public Lazy<Label> title = null;
         private Lazy<CachedImage> unPinFromFavList = null;
         private Lazy<StackLayout> compat = null;
-        private MenuItem QuitFromFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
         #endregion
@@ -201,7 +199,6 @@ namespace SSFR_Movies.Helpers
             gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
             Grid.SetColumnSpan(scrollTitle.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
-            //gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
@@ -223,23 +220,15 @@ namespace SSFR_Movies.Helpers
 
             Children.Add(Container.Value);
 
-            //AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
-
-            //AddToFavListCtxAct.Clicked += AddToFavList;
-
             tap = new TapGestureRecognizer();
 
             imageTapped = new TapGestureRecognizer();
-
-            //tap.Tapped += AddToFavListTap;
-
+            
             imageTapped.Tapped += PosterTapped;
 
             absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
 
             compat.Value.GestureRecognizers.Add(tap);
-
-            //cachedImage.Value.GestureRecognizers.Add(imageTapped);
             
         }
 

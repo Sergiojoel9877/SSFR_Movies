@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.13.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.13.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="MonkeyCache" Version="1.2.0-beta" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
@@ -49,9 +47,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\SearchPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\ShellSplash.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\StartPagexaml.xaml">

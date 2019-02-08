@@ -67,60 +67,20 @@ namespace SSFR_Movies.ViewModels
             return 'r'; //Indica que la lista contiene elementos
             
         }
-        public async Task<KeyValuePair<char, ObservableCollection<Result>>> FillMoviesList(IEnumerable<Result> results)
+        public async Task<KeyValuePair<char, IEnumerable<Result>>> FillMoviesList(IEnumerable<Result> results)
         {
             await Task.Yield();
-
-            var objs = new ObservableCollection<Result>();
 
             var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
             if (movies.ToList().Count > 0)
             {
-                movies.ForEach((m) =>
-                {
-                    objs.Add(m);
-                });
-                return new KeyValuePair<char, ObservableCollection<Result>>('r', objs); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
             }
             else
             {
-                return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
             }
-            
-            //movies.ForEach((m) =>
-            //{
-            //    if (results.ToList().Count > 0)
-            //    {
-            //        results.ForEach((r) =>
-            //        {
-            //            if (r.Title == m.Title)
-            //            {
-            //                objs.Add(m);
-            //            }
-            //        });
-            //    }
-            //    else
-            //    {
-            //        objs.Add(m);
-            //    }
-            //});
-
-
-            //foreach (var MovieResult in movies)
-            //{
-            //    if (!FavMoviesList.Value.Contains(MovieResult))
-            //    {
-            //        FavMoviesList.Value.Add(MovieResult);
-            //    }
-            //}
-
-            //if (FavMoviesList.Value.Count == 0)
-            //{
-            //    return new KeyValuePair<char, ObservableCollection<Result>>('v', objs); //Indica que la lista esta vacia
-            //}
-
-
         }
 
         private Command getStoredMoviesCommand;
