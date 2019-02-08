@@ -14,13 +14,14 @@ using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
 using System.Threading;
 using Xamarin.Essentials;
+using Realms;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
@@ -117,7 +118,10 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); 
+            //var movies = Barrel.Current.Get<Movie>("Movies.Cached"); 
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies = realm.All<Movie>().SingleOrDefault();
 
             if (movies == null)
             {
@@ -151,8 +155,11 @@ namespace SSFR_Movies.ViewModels
                 });
                 return;
             }
+            var realm = Realm.GetInstance();
 
-            var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
+            var movies = realm.All<Movie>().SingleOrDefault();
+
+            //var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
 
             AllMoviesList.Value.Clear();
 
@@ -362,6 +369,10 @@ namespace SSFR_Movies.ViewModels
 
         public AllMoviesPageViewModel()
         {
+            var realm = Realm.GetInstance();
+
+            var movies = realm.All<Movie>().SingleOrDefault();
+
             Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = false;
@@ -386,15 +397,25 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            if (movies != null)
             {
                 GetStoreMoviesCommand.Execute(null);
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
-               FillUpMovies.Execute(null);
+                FillUpMovies.Execute(null);
             }
+
+            //if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            //{
+            //    GetStoreMoviesCommand.Execute(null);
+            //    GetMoviesGenresCommand.Execute(null);
+            //}
+            //else
+            //{
+            //   FillUpMovies.Execute(null);
+            //}
 
             Device.BeginInvokeOnMainThread(() =>
             {
