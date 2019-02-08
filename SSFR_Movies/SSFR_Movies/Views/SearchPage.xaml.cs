@@ -53,7 +53,7 @@ namespace SSFR_Movies.Views
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
-                MoviesList.SelectedItem = null;
+                 MoviesList.SelectedItem = null;
             });
         }
 
