@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Realms;
 
 namespace SSFR_Movies.Models
 {
-    public partial class DownloadLink
+    public partial class DownloadLink : RealmObject
     {
         [JsonProperty("status")]
         public long Status { get; set; }
@@ -19,7 +20,7 @@ namespace SSFR_Movies.Models
         public Result Result { get; set; }
     }
 
-    public partial class ResultDW
+    public partial class ResultDW : RealmObject
     {
         [JsonProperty("name")]
         public string Name { get; set; }

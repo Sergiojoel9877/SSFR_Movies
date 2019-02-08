@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Realms;
 
 namespace SSFR_Movies.Models
 {
-    public class MovieVideo
+    public class MovieVideo : RealmObject
     {
         [JsonProperty("id")]
         public long Id { get; set; }
@@ -11,7 +12,7 @@ namespace SSFR_Movies.Models
         public VideoResult[] Results { get; set; }
     }
 
-    public class VideoResult
+    public class VideoResult : RealmObject
     {
         [JsonProperty("id")]
         public string Id { get; set; }

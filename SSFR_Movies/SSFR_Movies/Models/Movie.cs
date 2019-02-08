@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SSFR_Movies.Models
@@ -47,8 +46,7 @@ namespace SSFR_Movies.Models
 
         [JsonProperty("original_title")]
         public string OriginalTitle { get; set; }
-
-        [NotMapped]
+        
         [JsonProperty("genre_ids")]
         public int[] GenreIds { get; set; }
 

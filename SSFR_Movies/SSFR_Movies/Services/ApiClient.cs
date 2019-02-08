@@ -16,13 +16,14 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Net.Http;
+using Realms;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
@@ -32,6 +33,8 @@ namespace SSFR_Movies.Services
         private const string LANG = "en-US";
                
         Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
+
+        private readonly Realm realm = Realm.GetInstance();
 
         #region MoviesCacheFunctionsEtcRegion
 
@@ -239,8 +242,9 @@ namespace SSFR_Movies.Services
 
                 try
                 {
+                    realm.Write(()=> realm.Add(movies));
                     //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
-                    Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
+                    //Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
                 }
                 catch (DirectoryNotFoundException e)
                 {
@@ -277,7 +281,6 @@ namespace SSFR_Movies.Services
 
         public async Task<ResultDW> GetStreamURL(string URL)
         {
-            var obj = default(string);
             var obj1 = default(ResultOP);
             var fileID = URL.Substring(URL.Length - 11);
 
