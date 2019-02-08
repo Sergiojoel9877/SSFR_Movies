@@ -1,5 +1,5 @@
 ﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -124,25 +124,25 @@ namespace SSFR_Movies.Views
                 {
                     try
                     {
-                        var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+                        //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
-                        if (deleteMovie)
-                        {
-                            await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
+                        //if (deleteMovie)
+                        //{
+                        //    await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                            vm.FavMoviesList.Value.Remove(movie);
+                        //    vm.FavMoviesList.Value.Remove(movie);
 
-                            BindingContext = vm;
+                        //    BindingContext = vm;
 
-                            await Task.Delay(500);
+                        //    await Task.Delay(500);
 
-                            var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+                        //    var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
-                            if (moviesRemaining.Count() == 0)
-                            {
-                                QuitVisibility();
-                            }
-                        }
+                        //    if (moviesRemaining.Count() == 0)
+                        //    {
+                        //        QuitVisibility();
+                        //    }
+                        //}
                     }
                     catch (Exception)
                     {
@@ -159,24 +159,24 @@ namespace SSFR_Movies.Views
         
         private async void SetVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            //var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
-            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
+            //UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
+            //Message.IsVisible = UnPin.IsVisible == true ? true : false;
 
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
+            //MoviesList.IsVisible = Message.IsVisible == true ? false : true;
         }
 
         private async void QuitVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            //var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
 
-            UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
+            //UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
 
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
+            //Message.IsVisible = UnPin.IsVisible == true ? true : false;
 
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
+            //MoviesList.IsVisible = Message.IsVisible == true ? false : true;
 
         }
 

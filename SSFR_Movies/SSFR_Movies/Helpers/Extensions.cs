@@ -1,5 +1,5 @@
 ﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -29,15 +29,15 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id).ConfigureAwait(false);
+            //bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id).ConfigureAwait(false);
 
-            if (movieExists)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    pin2FavList.Source = "Star.png";
-                });
-            }
+            //if (movieExists)
+            //{
+            //    Device.BeginInvokeOnMainThread(() =>
+            //    {
+            //        pin2FavList.Source = "Star.png";
+            //    });
+            //}
         }
     }
 }

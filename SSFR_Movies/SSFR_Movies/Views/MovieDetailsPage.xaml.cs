@@ -1,6 +1,7 @@
 ﻿using CommonServiceLocator;
 using Plugin.Connectivity;
-using SSFR_Movies.Data;
+using Realms;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -15,7 +16,7 @@ using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
@@ -66,10 +67,14 @@ namespace SSFR_Movies.Views
         private async void IsPresentInFavList(Result m)
         {
 
-            var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+            var realm = await Realm.GetInstanceAsync();
 
-            if (movieExists)
-            {
+            var movieExists = realm.Find<Result>(m.Id);
+
+            //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
+
+            ////if (movieExists)
+            //{
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     AddToFav.Source = "Star.png";
@@ -78,16 +83,16 @@ namespace SSFR_Movies.Views
 
                     QuitFromFavLayout.IsVisible = true;
                 });
-            }
-            else
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    AddToFavLayout.IsVisible = true;
+            //}
+            //else
+            //{
+            //    Device.BeginInvokeOnMainThread(() =>
+            //    {
+            //        AddToFavLayout.IsVisible = true;
 
-                    QuitFromFavLayout.IsVisible = false;
-                });
-            }
+            //        QuitFromFavLayout.IsVisible = false;
+            //    });
+            //}
         }
 
         private async void Tap_Tapped(object sender, EventArgs e)
@@ -107,6 +112,8 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
+            var realm = await Realm.GetInstanceAsync();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -122,9 +129,11 @@ namespace SSFR_Movies.Views
             {
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
-                    if (movieExists)
+                    var movieExists = realm.Find<Result>(movie.Id);
+
+                    if (movieExists != null)
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
@@ -134,10 +143,12 @@ namespace SSFR_Movies.Views
                     }
                     else
                     {
-                        var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
 
-                        if (addMovie)
-                        {
+                        //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                        await realm.WriteAsync((r) => realm.Add(movie));
+
+                        //if (addmovie)
+                        //{
                             
                             await SpeakNow("Added Successfully");
 
@@ -159,7 +170,7 @@ namespace SSFR_Movies.Views
 
                                 Settings.ClearSelectionFavMoviesPage = true;
                             });
-                        }
+                        //}
                     } 
                 }
                 catch (Exception e)
@@ -193,10 +204,14 @@ namespace SSFR_Movies.Views
                 try
                 {
 
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
+                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
 
-                    if (deleteMovie)
-                    {
+                    var realm = await Realm.GetInstanceAsync();
+
+                    realm.Remove(movie);
+
+                    //if (deleteMovie)
+                    //{
                         await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
                         AddToFav.Source = "StarEmpty.png";
@@ -210,7 +225,7 @@ namespace SSFR_Movies.Views
                         Settings.ClearSelectionAllMoviesPage = true;
 
                         Settings.ClearSelectionFavMoviesPage = true;
-                    }
+                    //}
                 }
                 catch (Exception)
                 {
@@ -330,7 +345,7 @@ namespace SSFR_Movies.Views
                 }
                 else
                 {
-                    var urlStream = ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetStreamURL(e.Url.ToString());
+                    
                 }
             }
             catch (Exception err)

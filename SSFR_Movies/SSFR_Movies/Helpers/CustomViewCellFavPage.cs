@@ -2,7 +2,7 @@
 using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -297,16 +297,16 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
+                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
 
-                    if (deleteMovie)
-                    {
-                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+                    //if (deleteMovie)
+                    //{
+                    //    ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
-                        MessagingCenter.Send(this, "Refresh", true);
+                    //    MessagingCenter.Send(this, "Refresh", true);
 
-                        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    }
+                    //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    //}
                 
                 }
                 catch (Exception e15)
@@ -337,23 +337,23 @@ namespace SSFR_Movies.Helpers
                 try
                 {
 
-                    var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
+                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
 
-                    if (deleteMovie)
-                    {
-                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+                    //if (deleteMovie)
+                    //{
+                    //    ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
-                        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
-                        MessagingCenter.Send(this, "RefreshList", true);
+                    //    MessagingCenter.Send(this, "RefreshList", true);
 
-                        DependencyService.Get<IToast>().LongAlert("Removed Successfully, The movie " + movie.Title + " was removed from your favorite list!");
+                    //    DependencyService.Get<IToast>().LongAlert("Removed Successfully, The movie " + movie.Title + " was removed from your favorite list!");
 
-                        await SpeakNow("Removed Successfully");
+                    //    await SpeakNow("Removed Successfully");
 
-                        Vibration.Vibrate(0.5);
+                    //    Vibration.Vibrate(0.5);
 
-                    }
+                    //}
                 }
                 catch (Exception err)
                 {

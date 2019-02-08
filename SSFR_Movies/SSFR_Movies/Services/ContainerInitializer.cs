@@ -1,8 +1,8 @@
 ﻿using CommonServiceLocator;
-using Microsoft.EntityFrameworkCore;
+ 
 using MonkeyCache.FileStore;
 using Plugin.Connectivity;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.ViewModels;
 using System;
 using Unity;

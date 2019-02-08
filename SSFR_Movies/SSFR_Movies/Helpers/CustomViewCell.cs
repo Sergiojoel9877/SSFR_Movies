@@ -2,7 +2,7 @@
 using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.Views;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
+using Realms;
 
 namespace SSFR_Movies.Helpers
 {
@@ -313,9 +313,12 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var realm = await Realm.GetInstanceAsync();
+                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
-                    if (movieExists)
+                    var movieExists = realm.Find<Result>(movie.Id);
+
+                    if (movieExists != null)
                     {
 
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
@@ -323,10 +326,10 @@ namespace SSFR_Movies.Helpers
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
                     }
 
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                    if (addMovie)
-                    {
+                    //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                    await realm.WriteAsync((r) => realm.Add(movie));
+                    //if (addMovie)
+                    //{
 
                         DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
@@ -339,7 +342,7 @@ namespace SSFR_Movies.Helpers
 
                         await SpeakNow("Added Successfully");
 
-                    }
+                    //}
                 }
                 catch (Exception e15)
                 {
@@ -368,17 +371,22 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var realm = await Realm.GetInstanceAsync();
+                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
-                    if (movieExists)
+                    var movieExists = realm.Find<Result>(movie.Id);
+                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+
+                    if (movieExists != null)
                     {
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
                     }
 
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                    //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
+                    await realm.WriteAsync((r) => realm.Add(movie));
 
-                    if (addMovie)
-                    {
+                    //if (addMovie)
+                    //{
 
                         DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
@@ -386,7 +394,7 @@ namespace SSFR_Movies.Helpers
 
                         Vibration.Vibrate(0.5);
 
-                    }
+                    //}
                 }
                 catch (Exception err)
                 {

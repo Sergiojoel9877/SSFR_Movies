@@ -8,7 +8,7 @@ using Realms;
 
 namespace SSFR_Movies.Models
 {
-    public partial class DownloadLink : RealmObject
+    public class DownloadLink
     {
         [JsonProperty("status")]
         public long Status { get; set; }
@@ -20,7 +20,7 @@ namespace SSFR_Movies.Models
         public Result Result { get; set; }
     }
 
-    public partial class ResultDW : RealmObject
+    public class ResultDW
     {
         [JsonProperty("name")]
         public string Name { get; set; }

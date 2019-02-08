@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using Realms;
 
 namespace SSFR_Movies.Models
 {
 
-    public class Movie : BaseEntity
+    public class Movie : RealmObject
     {
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
         [JsonProperty("page")]
         public long Page { get; set; }
 
@@ -16,13 +20,17 @@ namespace SSFR_Movies.Models
         public long TotalPages { get; set; }
 
         [JsonProperty("results")]
+        
         public List<Result> Results { get; set; }
        
     }
 
   
-    public class Result : BaseEntity
+    public class Result : RealmObject
     {
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
         [JsonProperty("vote_count")]
         public long VoteCount { get; set; }
 
@@ -48,6 +56,7 @@ namespace SSFR_Movies.Models
         public string OriginalTitle { get; set; }
         
         [JsonProperty("genre_ids")]
+        [Ignored]
         public int[] GenreIds { get; set; }
 
         [JsonProperty("backdrop_path")]

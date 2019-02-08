@@ -1,5 +1,5 @@
 ﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using MonkeyCache.FileStore;
 using System;
@@ -12,13 +12,14 @@ using Xamarin.Forms.Internals;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Services;
 using System.Linq;
+using Realms;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
@@ -48,8 +49,12 @@ namespace SSFR_Movies.ViewModels
         public async Task<char> FillMoviesList()
         {
             await Task.Yield();
-            
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            var realm = await Realm.GetInstanceAsync();
+
+            //var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+
+            var movies = realm.All<Result>();
 
             foreach (var MovieResult in movies)
             {
@@ -71,7 +76,11 @@ namespace SSFR_Movies.ViewModels
         {
             await Task.Yield();
 
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies = realm.All<Result>();
+
+            //var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
             if (movies.ToList().Count > 0)
             {

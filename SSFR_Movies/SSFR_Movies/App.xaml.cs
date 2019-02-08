@@ -14,7 +14,7 @@ using System.Collections;
 //using Microsoft.AppCenter.Crashes;
 using System.Collections.Generic;
 using Xamarin.Forms.Internals;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]

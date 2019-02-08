@@ -283,57 +283,57 @@ namespace SSFR_Movies.Services
             return url;
         }
 
-        public async Task<ResultDW> GetStreamURL(string URL)
-        {
-            var obj1 = default(ResultOP);
-            var fileID = URL.Substring(URL.Length - 11);
+        //public async Task<ResultDW> GetStreamURL(string URL)
+        //{
+        //    var obj1 = default(ResultOP);
+        //    var fileID = URL.Substring(URL.Length - 11);
 
-            System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
-            {
-                BaseAddress = new Uri("https://api.openload.co/1")
-            };
-            httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        //    System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
+        //    {
+        //        BaseAddress = new Uri("https://api.openload.co/1")
+        //    };
+        //    httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
-            try
-            {
-                string request = $"/file/dlticket?file={fileID}";
+        //    try
+        //    {
+        //        string request = $"/file/dlticket?file={fileID}";
 
-                var m = await httpClient.GetAsync(request);
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
-            }
-            catch (Exception E)
-            {
-                Debug.WriteLine($"ERROR: {E.InnerException}");
-            }
-            var downloadLink = await GetDownloadLink(fileID, obj1);
+        //        obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
+        //    }
+        //    catch (Exception E)
+        //    {
+        //        Debug.WriteLine($"ERROR: {E.InnerException}");
+        //    }
+        //    var downloadLink = await GetDownloadLink(fileID, obj1);
 
-            return downloadLink;
-        }
+        //    return downloadLink;
+        //}
 
-        public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
-        {
-            HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("https://api.openload.co/1");
+        //public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
+        //{
+        //    HttpClient httpClient = new HttpClient();
+        //    httpClient.BaseAddress = new Uri("https://api.openload.co/1");
             
-            string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
+        //    string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
 
-            try
-            {
-                var m = await httpClient.GetAsync(request);
+        //    try
+        //    {
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
-            }
-            catch (Exception ER)
-            {
-                Debug.WriteLine($"ERROR: {ER.InnerException}");
-            }
-            return null;
-        }
+        //        var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
+        //    }
+        //    catch (Exception ER)
+        //    {
+        //        Debug.WriteLine($"ERROR: {ER.InnerException}");
+        //    }
+        //    return null;
+        //}
         
         private static string HttpGet(string URL)
         {
