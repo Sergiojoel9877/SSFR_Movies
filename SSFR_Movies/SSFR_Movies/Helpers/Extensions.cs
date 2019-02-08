@@ -1,6 +1,7 @@
 ﻿using CommonServiceLocator;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Models;
+using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -24,6 +25,8 @@ namespace SSFR_Movies.Helpers
                 }, () => true);
             });
         }
+
+        public static OriginalLanguage ToEnum(this string value) => (OriginalLanguage)Enum.Parse(typeof(OriginalLanguage), value, true);
 
         public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
         {

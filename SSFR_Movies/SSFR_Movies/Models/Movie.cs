@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using Realms;
+using System.Linq;
+using System;
 
 namespace SSFR_Movies.Models
 {
 
     public class Movie : RealmObject
     {
+        [PrimaryKey]
         [JsonProperty("id")]
         public long Id { get; set; }
 
@@ -20,8 +23,7 @@ namespace SSFR_Movies.Models
         public long TotalPages { get; set; }
 
         [JsonProperty("results")]
-        
-        public List<Result> Results { get; set; }
+        public IRealmCollection<Result> Results { get; }
        
     }
 
@@ -50,7 +52,7 @@ namespace SSFR_Movies.Models
         public string PosterPath { get; set; }
 
         [JsonProperty("original_language")]
-        public OriginalLanguage OriginalLanguage { get; set; }
+        public EnumeOL OriginalLanguage { get; set; }
 
         [JsonProperty("original_title")]
         public string OriginalTitle { get; set; }
@@ -72,7 +74,17 @@ namespace SSFR_Movies.Models
         public string ReleaseDate { get; set; }
 
     }
-   
+    
     public enum OriginalLanguage { En, Ja, Zh, Ko, Ta, Fr, Ru, Es, No, Hi, Hr, Ht, Hu, Hy, Ar, As, Av, Az, Ba, Be, Bg, Bh, Bm, Bn, Bo, Br, Bs, Ca, Ce, Ch, Co, Cr, Cs, Cn, Cu, Cv, Cy, Da, De, Dv, Ee, El, Eo, Et, Eu, Fa, Ff, Fi, Fj, Fl, Fo, Fy, Ga, Gd, Gl, Gn, Gu, Gv, Ha, He, Ho, Hz, Ia, Id, Ie, Ig, Ii, Ik, Io, Is, It, Iu,  Jv, Ka, Kg, Ki, Kj, Kk, Kl, Km, Kn, Kr, Ks, Ku, Kv, Kw, Ky, La, Lb, Li, Ln, Lo, Lt, Lu, Lv, Mg, Mh, Mi, Mk, Ml, Mn, Mr, Ms, Mt, My, Na, Nb, Nd, Ne, Ng, Nl, Nn, Nr, Nv, Ny, Oc, Oj, Om, Or, Os, Pa, pi, Pl, Ps, Pt, Qu, Rm, Rn, Ro, Rw, Sa, Sc, Sd, Se,Sg, Si, Sk, Sl, Sm, Sn, So, Sq, Sr, Ss, St, Su, Sv, Sw, Te, Tg, Th, Ti, Tk, Tl, Tn, To, Tr, Ts, Tt, Tw, Ty, Ug, Uk, Ur, Uz, Ve, Vi, Vo, Wa, Wo, Xh, Yi, Yo, Za, Ah, Zu};
+
+    public class EnumeOL : RealmObject
+    {
+        string EnumDescription { get; set; }
+
+        public void SaveEnum(OriginalLanguage value)
+        {
+            EnumDescription = value.ToString();
+        }
+    }
 }
 
