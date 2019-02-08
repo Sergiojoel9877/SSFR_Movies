@@ -225,7 +225,9 @@ namespace SSFR_Movies.Services
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
             try
             {
-                Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+                realm.Write(()=> realm.Add(movies));
+
+                //Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
             }
             catch (DirectoryNotFoundException)
             {
