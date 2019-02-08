@@ -173,9 +173,11 @@ namespace SSFR_Movies.Services
         private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
             var movies = serializer.Value.Deserialize<Movie>(results);
-            
-            //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
-            Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
+
+            realm.Write(()=> realm.Add(movies));
+
+            ////Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
+            //Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
             return true;
         }
