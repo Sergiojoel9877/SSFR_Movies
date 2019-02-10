@@ -371,7 +371,7 @@ namespace SSFR_Movies.ViewModels
         {
             var realm = Realm.GetInstance();
 
-            var movies = realm.All<Movie>().SingleOrDefault();
+            var movies = realm.All<Movie>().ToList();
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -397,7 +397,7 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            if (movies != null)
+            if (movies.Count < 1)
             {
                 GetStoreMoviesCommand.Execute(null);
                 GetMoviesGenresCommand.Execute(null);

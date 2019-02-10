@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Realms;
 using System.Linq;
 using System;
+using Newtonsoft.Json.Converters;
 
 namespace SSFR_Movies.Models
 {
@@ -11,7 +12,7 @@ namespace SSFR_Movies.Models
     {
         [PrimaryKey]
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("page")]
         public long Page { get; set; }
@@ -23,7 +24,7 @@ namespace SSFR_Movies.Models
         public long TotalPages { get; set; }
 
         [JsonProperty("results")]
-        public IRealmCollection<Result> Results { get; }
+        public IList<Result> Results { get; }
        
     }
 
@@ -53,14 +54,15 @@ namespace SSFR_Movies.Models
         public string PosterPath { get; set; }
 
         [JsonProperty("original_language")]
-        public EnumeOL OriginalLanguage { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        [Ignored]
+        public OriginalLanguage OriginalLanguage { get; set; }
 
         [JsonProperty("original_title")]
         public string OriginalTitle { get; set; }
         
         [JsonProperty("genre_ids")]
-        [Ignored]
-        public int[] GenreIds { get; set; }
+        public IList<int> GenreIds { get; }
 
         [JsonProperty("backdrop_path")]
         public string BackdropPath { get; set; }

@@ -174,7 +174,7 @@ namespace SSFR_Movies.Services
         {
             var movies = serializer.Value.Deserialize<Movie>(results);
 
-            realm.Write(()=> realm.Add(movies));
+            realm.Write(()=> realm.Add(movies, true));
 
             ////Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
             //Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
@@ -225,11 +225,11 @@ namespace SSFR_Movies.Services
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
             try
             {
-                realm.Write(()=> realm.Add(movies));
+                realm.Write(()=> realm.Add(movies, true));
 
                 //Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
             }
-            catch (DirectoryNotFoundException)
+            catch (DirectoryNotFoundException er)
             {
                 Debug.WriteLine("No storage left");
                 return false;
@@ -243,10 +243,10 @@ namespace SSFR_Movies.Services
             try
             {
                 var movies = serializer.Value.Deserialize<Movie>(results);
-
+                
                 try
                 {
-                    realm.Write(()=> realm.Add(movies));
+                    realm.Write(()=> realm.Add(movies, true));
                     //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
                     //Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
                 }
