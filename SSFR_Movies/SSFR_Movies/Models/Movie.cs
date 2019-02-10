@@ -31,7 +31,8 @@ namespace SSFR_Movies.Models
     public class Result : RealmObject
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        [PrimaryKey]
+        public int Id { get; set; }
 
         [JsonProperty("vote_count")]
         public long VoteCount { get; set; }

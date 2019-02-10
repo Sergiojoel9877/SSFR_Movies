@@ -12,13 +12,14 @@ namespace SSFR_Movies.Models
     public partial class Genres : RealmObject
     {
         [JsonProperty("genres")]
-        public Genre[] GenresGenres { get; set; }
+        public IList<Genre> GenresGenres { get; }
     }
 
     public partial class Genre : RealmObject
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        [PrimaryKey]
+        public int Id { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
