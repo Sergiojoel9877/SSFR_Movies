@@ -18,7 +18,7 @@ namespace SSFR_Movies.Droid
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", /*Theme = "@style/MainTheme",*/ Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        Lazy<App> LazyApp = new Lazy<App>(() => new App());
+        readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -55,22 +55,22 @@ namespace SSFR_Movies.Droid
             LoadApplication(LazyApp.Value);
         }
 
-        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
             base.OnTrimMemory(level);
         }
 
-        public override async void OnLowMemory()
+        public override void OnLowMemory()
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 

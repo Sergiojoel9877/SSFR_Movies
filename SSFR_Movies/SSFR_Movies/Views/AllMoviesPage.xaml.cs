@@ -17,13 +17,14 @@ using System.Diagnostics;
 using Unity;
 using Refractored.XamForms.PullToRefresh;
 using static SSFR_Movies.Views.SearchPage;
+using Realms;
 
 namespace SSFR_Movies.Views
 {
     /// <summary>
     /// AllMoviesPage Code Behind
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AllMoviesPage : ContentPage
     {
@@ -315,9 +316,12 @@ namespace SSFR_Movies.Views
 
             try
             {
+                var realm = await Realm.GetInstanceAsync();
+
                 var genreType = ((Label)sender).Text;
 
-                var genres = Barrel.Current.Get<Genres>("Genres.Cached");
+                //var genres = Barrel.Current.Get<Genres>("Genres.Cached");
+                var genres = realm.All<Genres>().FirstOrDefault();
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
@@ -413,7 +417,7 @@ namespace SSFR_Movies.Views
             
         }
 
-        private void stackSwiped(object sender, SwipedEventArgs e)
+        private void StackSwiped(object sender, SwipedEventArgs e)
         {
             switch (e.Direction)
             {

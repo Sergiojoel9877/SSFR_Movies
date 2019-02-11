@@ -1,8 +1,8 @@
 ﻿using CommonServiceLocator;
-using Microsoft.EntityFrameworkCore;
+ 
 using MonkeyCache.FileStore;
 using Plugin.Connectivity;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.ViewModels;
 using System;
 using Unity;
@@ -34,10 +34,10 @@ namespace SSFR_Movies.Services
             container.Value.RegisterInstance(typeof(Lazy<ApiClient>));
             container.Value.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
             container.Value.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
-            container.Value.RegisterInstance(typeof(DatabaseContext<>));
-            container.Value.RegisterInstance(typeof(DBRepository<>));
-            container.Value.RegisterType(typeof(DatabaseContext<>));
-            container.Value.RegisterType(typeof(DbContextOptionsBuilder));
+            //container.Value.RegisterInstance(typeof(DatabaseContext<>));
+            //container.Value.RegisterInstance(typeof(DBRepository<>));
+            //container.Value.RegisterType(typeof(DatabaseContext<>));
+            //container.Value.RegisterType(typeof(DbContextOptionsBuilder));
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Realms;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +11,7 @@ namespace SSFR_Movies.Models
     /// The BaseEntity.. all models inherit from it.
     /// </summary>
   
-    public class BaseEntity
+    public class BaseEntity : RealmObject
     {
         [JsonProperty("id")]
         public long Id { get; set; }

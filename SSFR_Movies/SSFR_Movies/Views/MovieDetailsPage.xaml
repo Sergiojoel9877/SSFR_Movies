@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:videoView="clr-namespace:Plugin.MediaManager.Forms;assembly=Plugin.MediaManager.Forms"
     Title="Details"
     BackgroundColor="#006FDE">
 
@@ -38,6 +37,7 @@
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                             AbsoluteLayout.LayoutFlags="All"
                             HorizontalOptions="FillAndExpand"
+                            HeightRequest="300"
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
@@ -50,7 +50,7 @@
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
-                                WidthRequest="500" />
+                                WidthRequest="500"/>
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
@@ -161,10 +161,11 @@
                                 HorizontalOptions="Start"
                                 Style="{StaticResource ImageInsideCardStyle}"
                                 WidthRequest="300" />
+                 
                         </AbsoluteLayout>
                     </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
-                        <StackLayout CompressedLayout.IsHeadless="True" Orientation="Horizontal">
+                        <StackLayout Orientation="Horizontal">
                             <Label
                                 Margin="16,5,16,0"
                                 FontAttributes="Bold"
@@ -188,7 +189,11 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <ffimage:CachedImage
+                                    <!--<ffimage:CachedImage
+                                        HeightRequest="35"
+                                        Source="YoutubeBtn.png"
+                                        WidthRequest="35" />-->
+                                    <Image
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
                                         WidthRequest="35" />
@@ -235,7 +240,7 @@
 
                     </StackLayout>
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
-                    <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
+                    <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
                         <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
                         <WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>

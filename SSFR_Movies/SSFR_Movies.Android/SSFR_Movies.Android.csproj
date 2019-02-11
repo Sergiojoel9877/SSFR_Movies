@@ -20,8 +20,9 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AndroidExplicitCrunch>true</AndroidExplicitCrunch>
-    <AndroidUseAapt2>true</AndroidUseAapt2>
+    <AndroidUseAapt2>false</AndroidUseAapt2>
     <AndroidDexTool>d8</AndroidDexTool>
+    <AndroidEnableDesugar>true</AndroidEnableDesugar>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +40,6 @@
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <EnableProguard>false</EnableProguard>
-    <AndroidEnableDesugar>True</AndroidEnableDesugar>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
@@ -63,15 +63,16 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>x86;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>x86</AndroidSupportedAbis>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <EnableProguard>false</EnableProguard>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidLinkSkip>
     </AndroidLinkSkip>
     <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
+    <EnableProguard>true</EnableProguard>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -84,29 +85,20 @@
     <PackageReference Include="glidex.forms">
       <Version>1.0.3</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>1.12.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>1.12.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
-      <Version>2.1.4</Version>
-    </PackageReference>
     <PackageReference Include="MonkeyCache">
-      <Version>1.1.0-beta</Version>
+      <Version>1.2.0-beta</Version>
     </PackageReference>
     <PackageReference Include="Plugin.CurrentActivity">
       <Version>2.1.0.4</Version>
     </PackageReference>
+    <PackageReference Include="Realm">
+      <Version>3.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Realm.Database">
+      <Version>3.4.0</Version>
+    </PackageReference>
     <PackageReference Include="Refractored.XamForms.PullToRefresh">
       <Version>2.2.3</Version>
-    </PackageReference>
-    <PackageReference Include="System.Buffers">
-      <Version>4.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Memory">
-      <Version>4.5.2</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>4.6.0-preview.19073.11</Version>
@@ -161,7 +153,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CloseBackPress.cs" />
     <Compile Include="Services\ToastAlert.cs" />
-    <Compile Include="SplashScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Proguard.cfg" />
@@ -270,6 +261,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Icon1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

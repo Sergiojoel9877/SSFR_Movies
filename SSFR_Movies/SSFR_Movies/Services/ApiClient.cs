@@ -16,13 +16,14 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Net.Http;
+using Realms;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
@@ -32,6 +33,8 @@ namespace SSFR_Movies.Services
         private const string LANG = "en-US";
                
         Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
+
+        private readonly Realm realm = Realm.GetInstance();
 
         #region MoviesCacheFunctionsEtcRegion
 
@@ -166,13 +169,15 @@ namespace SSFR_Movies.Services
             }
 
         }
-
+         
         private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
             var movies = serializer.Value.Deserialize<Movie>(results);
-            
-            //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
-            Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
+
+            realm.Write(()=> realm.Add(movies, true));
+
+            ////Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
+            //Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
             return true;
         }
@@ -220,9 +225,11 @@ namespace SSFR_Movies.Services
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
             try
             {
-                Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+                realm.Write(()=> realm.Add(movies, true));
+
+                //Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
             }
-            catch (DirectoryNotFoundException)
+            catch (DirectoryNotFoundException er)
             {
                 Debug.WriteLine("No storage left");
                 return false;
@@ -236,11 +243,12 @@ namespace SSFR_Movies.Services
             try
             {
                 var movies = serializer.Value.Deserialize<Movie>(results);
-
+                
                 try
                 {
+                    realm.Write(()=> realm.Add(movies, true));
                     //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
-                    Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
+                    //Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
                 }
                 catch (DirectoryNotFoundException e)
                 {
@@ -275,58 +283,57 @@ namespace SSFR_Movies.Services
             return url;
         }
 
-        public async Task<ResultDW> GetStreamURL(string URL)
-        {
-            var obj = default(string);
-            var obj1 = default(ResultOP);
-            var fileID = URL.Substring(URL.Length - 11);
+        //public async Task<ResultDW> GetStreamURL(string URL)
+        //{
+        //    var obj1 = default(ResultOP);
+        //    var fileID = URL.Substring(URL.Length - 11);
 
-            System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
-            {
-                BaseAddress = new Uri("https://api.openload.co/1")
-            };
-            httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        //    System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
+        //    {
+        //        BaseAddress = new Uri("https://api.openload.co/1")
+        //    };
+        //    httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
-            try
-            {
-                string request = $"/file/dlticket?file={fileID}";
+        //    try
+        //    {
+        //        string request = $"/file/dlticket?file={fileID}";
 
-                var m = await httpClient.GetAsync(request);
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
-            }
-            catch (Exception E)
-            {
-                Debug.WriteLine($"ERROR: {E.InnerException}");
-            }
-            var downloadLink = await GetDownloadLink(fileID, obj1);
+        //        obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
+        //    }
+        //    catch (Exception E)
+        //    {
+        //        Debug.WriteLine($"ERROR: {E.InnerException}");
+        //    }
+        //    var downloadLink = await GetDownloadLink(fileID, obj1);
 
-            return downloadLink;
-        }
+        //    return downloadLink;
+        //}
 
-        public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
-        {
-            HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("https://api.openload.co/1");
+        //public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
+        //{
+        //    HttpClient httpClient = new HttpClient();
+        //    httpClient.BaseAddress = new Uri("https://api.openload.co/1");
             
-            string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
+        //    string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
 
-            try
-            {
-                var m = await httpClient.GetAsync(request);
+        //    try
+        //    {
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
-            }
-            catch (Exception ER)
-            {
-                Debug.WriteLine($"ERROR: {ER.InnerException}");
-            }
-            return null;
-        }
+        //        var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
+        //    }
+        //    catch (Exception ER)
+        //    {
+        //        Debug.WriteLine($"ERROR: {ER.InnerException}");
+        //    }
+        //    return null;
+        //}
         
         private static string HttpGet(string URL)
         {
