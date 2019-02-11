@@ -23,12 +23,7 @@ namespace SSFR_Movies.Views
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
-
-            if (movie == null)
-            {
-                Task.Run(async ()=> { await Navigation.PopAsync(); });
-            }
-
+            
             MessagingCenter.Send(this, "ClearSelection");
 
             var tap = new TapGestureRecognizer();
@@ -220,10 +215,6 @@ namespace SSFR_Movies.Views
                         return false;
                     });
                 }
-            }
-            else
-            {
-                Settings.UpdateList = false;
             }
         }
         

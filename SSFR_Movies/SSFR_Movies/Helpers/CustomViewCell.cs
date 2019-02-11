@@ -285,11 +285,6 @@ namespace SSFR_Movies.Helpers
             base.OnBindingContextChanged();
         }
         
-        void ExecuteAction(Action exe)
-        {
-            exe();
-        }
-        
         private async void AddToFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
@@ -369,29 +364,21 @@ namespace SSFR_Movies.Helpers
                 try
                 {
                     var realm = await Realm.GetInstanceAsync();
-                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
+                    
                     var movieExists = realm.Find<Result>(movie.Id);
-                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
+                    
                     if (movieExists != null)
                     {
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
                     }
 
-                    //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
                     await realm.WriteAsync((r) => realm.Add(movie));
 
-                    //if (addMovie)
-                    //{
+                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
 
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+                    await SpeakNow("Added Successfully");
 
-                        await SpeakNow("Added Successfully");
-
-                        Vibration.Vibrate(0.5);
-
-                    //}
+                    Vibration.Vibrate(0.5);
                 }
                 catch (Exception err)
                 {
