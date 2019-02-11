@@ -70,11 +70,9 @@ namespace SSFR_Movies.Views
             var realm = await Realm.GetInstanceAsync();
 
             var movieExists = realm.Find<Result>(m.Id);
-
-            //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(m.Id);
-
-            ////if (movieExists)
-            //{
+            
+            if (movieExists != null && movieExists.FavoriteMovie == true)
+            {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     AddToFav.Source = "Star.png";
@@ -83,16 +81,16 @@ namespace SSFR_Movies.Views
 
                     QuitFromFavLayout.IsVisible = true;
                 });
-            //}
-            //else
-            //{
-            //    Device.BeginInvokeOnMainThread(() =>
-            //    {
-            //        AddToFavLayout.IsVisible = true;
+            }
+            else
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    AddToFavLayout.IsVisible = true;
 
-            //        QuitFromFavLayout.IsVisible = false;
-            //    });
-            //}
+                    QuitFromFavLayout.IsVisible = false;
+                });
+            }
         }
 
         private async void Tap_Tapped(object sender, EventArgs e)
@@ -129,11 +127,9 @@ namespace SSFR_Movies.Views
             {
                 try
                 {
-                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
                     var movieExists = realm.Find<Result>(movie.Id);
 
-                    if (movieExists != null)
+                    if (movieExists != null && movieExists.FavoriteMovie == true)
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
@@ -143,34 +139,34 @@ namespace SSFR_Movies.Views
                     }
                     else
                     {
+                       
+                        realm.Write(() =>
+                        {
+                            movie.FavoriteMovie = true;
 
-                        //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-                        await realm.WriteAsync((r) => realm.Add(movie));
+                            realm.Add(movie, true);
+                        });
+                        
+                        await SpeakNow("Added Successfully");
 
-                        //if (addmovie)
-                        //{
+                        await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+
+                        MessagingCenter.Send(this, "Refresh", true);
                             
-                            await SpeakNow("Added Successfully");
+                        MessagingCenter.Send(this, "ClearSelection");
 
-                            await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
+                        Device.BeginInvokeOnMainThread(()=>
+                        {
+                            AddToFav.Source = "Star.png";
 
-                            MessagingCenter.Send(this, "Refresh", true);
-                            
-                            MessagingCenter.Send(this, "ClearSelection");
+                            AddToFavLayout.IsVisible = false;
 
-                            Device.BeginInvokeOnMainThread(()=>
-                            {
-                                AddToFav.Source = "Star.png";
+                            QuitFromFavLayout.IsVisible = true;
 
-                                AddToFavLayout.IsVisible = false;
+                            Settings.ClearSelectionAllMoviesPage = true;
 
-                                QuitFromFavLayout.IsVisible = true;
-
-                                Settings.ClearSelectionAllMoviesPage = true;
-
-                                Settings.ClearSelectionFavMoviesPage = true;
-                            });
-                        //}
+                            Settings.ClearSelectionFavMoviesPage = true;
+                        });
                     } 
                 }
                 catch (Exception e)
@@ -203,29 +199,28 @@ namespace SSFR_Movies.Views
             {
                 try
                 {
-
-                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
-
                     var realm = await Realm.GetInstanceAsync();
 
-                    realm.Remove(movie);
+                    realm.Write(() =>
+                    {
+                        movie.FavoriteMovie = false;
 
-                    //if (deleteMovie)
-                    //{
-                        await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
+                        realm.Add(movie, true);
+                    });
+                    
+                    await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                        AddToFav.Source = "StarEmpty.png";
+                    AddToFav.Source = "StarEmpty.png";
 
-                        AddToFavLayout.IsVisible = true;
+                    AddToFavLayout.IsVisible = true;
 
-                        QuitFromFavLayout.IsVisible = false;
+                    QuitFromFavLayout.IsVisible = false;
 
-                        MessagingCenter.Send(this, "Refresh", true);
+                    MessagingCenter.Send(this, "Refresh", true);
                         
-                        Settings.ClearSelectionAllMoviesPage = true;
+                    Settings.ClearSelectionAllMoviesPage = true;
 
-                        Settings.ClearSelectionFavMoviesPage = true;
-                    //}
+                    Settings.ClearSelectionFavMoviesPage = true;
                 }
                 catch (Exception)
                 {

@@ -52,17 +52,16 @@ namespace SSFR_Movies.ViewModels
 
             var realm = await Realm.GetInstanceAsync();
 
-            //var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == true);
 
-            var movies = realm.All<Result>();
-
-            foreach (var MovieResult in movies)
-            {
-                if (!FavMoviesList.Value.Contains(MovieResult))
+            if (movies != null)
+                foreach (var MovieResult in movies)
                 {
-                    FavMoviesList.Value.Add(MovieResult);
+                    if (!FavMoviesList.Value.Contains(MovieResult))
+                    {
+                        FavMoviesList.Value.Add(MovieResult);
+                    }
                 }
-            }
 
             if (FavMoviesList.Value.Count == 0)
             {
@@ -72,23 +71,21 @@ namespace SSFR_Movies.ViewModels
             return 'r'; //Indica que la lista contiene elementos
             
         }
-        public async Task<KeyValuePair<char, IEnumerable<Result>>> FillMoviesList(IEnumerable<Result> results)
+        public async Task<KeyValuePair<char, List<Result>>> FillMoviesList(IEnumerable<Result> results)
         {
             await Task.Yield();
 
             var realm = await Realm.GetInstanceAsync();
 
-            var movies = realm.All<Result>();
-
-            //var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == true).ToList();
 
             if (movies.ToList().Count > 0)
             {
-                return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, List<Result>> ('r', movies); //Indica que la lista contiene elementos
             }
             else
             {
-                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
+                return new KeyValuePair<char, List<Result>> ('v', movies); //Indica que la lista NO contiene elementos
             }
         }
 
