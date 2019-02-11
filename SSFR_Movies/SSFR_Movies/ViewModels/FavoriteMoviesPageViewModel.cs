@@ -71,21 +71,21 @@ namespace SSFR_Movies.ViewModels
             return 'r'; //Indica que la lista contiene elementos
             
         }
-        public async Task<KeyValuePair<char, List<Result>>> FillMoviesList(IEnumerable<Result> results)
+        public async Task<KeyValuePair<char, IEnumerable<Result>>> FillMoviesList(IEnumerable<Result> results)
         {
             await Task.Yield();
 
             var realm = await Realm.GetInstanceAsync();
 
-            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
 
             if (movies.ToList().Count > 0)
             {
-                return new KeyValuePair<char, List<Result>> ('r', movies); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>> ('r', movies); //Indica que la lista contiene elementos
             }
             else
             {
-                return new KeyValuePair<char, List<Result>> ('v', movies); //Indica que la lista NO contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>> ('v', movies); //Indica que la lista NO contiene elementos
             }
         }
 
