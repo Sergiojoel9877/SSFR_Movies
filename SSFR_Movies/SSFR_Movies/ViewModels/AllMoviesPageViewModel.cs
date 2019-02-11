@@ -118,7 +118,6 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            //var movies = Barrel.Current.Get<Movie>("Movies.Cached"); 
             var realm = await Realm.GetInstanceAsync();
 
             var movies = realm.All<Movie>().SingleOrDefault();
@@ -159,8 +158,6 @@ namespace SSFR_Movies.ViewModels
 
             var movies = realm.All<Movie>().SingleOrDefault();
 
-            //var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
-
             AllMoviesList.Value.Clear();
 
             movies.Results.ForEach((r)=>
@@ -174,7 +171,6 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = false;
                 IsEnabled = false;
             });
- 
         }
 
         /// <summary>
@@ -406,17 +402,7 @@ namespace SSFR_Movies.ViewModels
             {
                 FillUpMovies.Execute(null);
             }
-
-            //if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
-            //{
-            //    GetStoreMoviesCommand.Execute(null);
-            //    GetMoviesGenresCommand.Execute(null);
-            //}
-            //else
-            //{
-            //   FillUpMovies.Execute(null);
-            //}
-
+            
             Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = true;

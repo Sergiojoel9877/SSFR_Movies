@@ -199,13 +199,14 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
+            pin2FavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
 
             gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
             Grid.SetColumnSpan(scrollTitle.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
-            //gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
+            gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
@@ -314,35 +315,31 @@ namespace SSFR_Movies.Helpers
                 try
                 {
                     var realm = await Realm.GetInstanceAsync();
-                    //var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
 
                     var movieExists = realm.Find<Result>(movie.Id);
 
-                    if (movieExists != null)
+                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
                     {
-
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
 
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
                     }
+                    
+                    realm.Write(() =>
+                    {
+                        movie.FavoriteMovie = "Star.png";
 
-                    //var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-                    await realm.WriteAsync((r) => realm.Add(movie));
-                    //if (addMovie)
-                    //{
+                        realm.Add(movie, true);
+                    });
+                    
+                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+                    
+                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+                    await SpeakNow("Added Successfully");
+                    
+                    MessagingCenter.Send(this, "Refresh", true);
 
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            pin2FavList.Value.Source = "Star.png";
-                        });
-
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-
-                        await SpeakNow("Added Successfully");
-
-                    //}
                 }
                 catch (Exception e15)
                 {

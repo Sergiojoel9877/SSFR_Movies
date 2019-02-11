@@ -52,7 +52,7 @@ namespace SSFR_Movies.ViewModels
 
             var realm = await Realm.GetInstanceAsync();
 
-            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == true);
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
 
             if (movies != null)
                 foreach (var MovieResult in movies)
@@ -77,7 +77,7 @@ namespace SSFR_Movies.ViewModels
 
             var realm = await Realm.GetInstanceAsync();
 
-            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == true).ToList();
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
 
             if (movies.ToList().Count > 0)
             {

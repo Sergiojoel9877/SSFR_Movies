@@ -2,6 +2,7 @@
 using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
+using Realms;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -18,7 +19,7 @@ using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
 {
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
@@ -193,12 +194,14 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
+            unPinFromFavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(unPinFromFavList.Value);
 
             gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            Grid.SetColumnSpan(scrollTitle.Value, 3);
+            Grid.SetColumnSpan(scrollTitle.Value, 2);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
+            gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
@@ -222,6 +225,8 @@ namespace SSFR_Movies.Helpers
 
             tap = new TapGestureRecognizer();
 
+            tap.Tapped += QuitFromFavListTap;
+
             imageTapped = new TapGestureRecognizer();
             
             imageTapped.Tapped += PosterTapped;
@@ -231,7 +236,7 @@ namespace SSFR_Movies.Helpers
             compat.Value.GestureRecognizers.Add(tap);
             
         }
-
+        
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
@@ -297,17 +302,26 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
+                    var realm = await Realm.GetInstanceAsync();
 
-                    //if (deleteMovie)
-                    //{
-                    //    ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+                    var deleteMovie = realm.Find<Result>(movie.Id);
 
-                    //    MessagingCenter.Send(this, "Refresh", true);
+                    if (deleteMovie != null)
+                    {
+                        realm.Write(()=>
+                        {
+                            movie.FavoriteMovie = "StarEmpty.png";
 
-                    //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    //}
-                
+                            realm.Add(movie, true);
+                        });
+
+                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+
+                        MessagingCenter.Send(this, "Refresh", true);
+
+                        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    }
+
                 }
                 catch (Exception e15)
                 {

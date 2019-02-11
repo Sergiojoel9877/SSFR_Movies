@@ -71,7 +71,7 @@ namespace SSFR_Movies.Views
 
             var movieExists = realm.Find<Result>(m.Id);
             
-            if (movieExists != null && movieExists.FavoriteMovie == true)
+            if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -129,7 +129,7 @@ namespace SSFR_Movies.Views
                 {
                     var movieExists = realm.Find<Result>(movie.Id);
 
-                    if (movieExists != null && movieExists.FavoriteMovie == true)
+                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
                     {
                         await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
                         AddToFav.Source = "Star.png";
@@ -142,7 +142,7 @@ namespace SSFR_Movies.Views
                        
                         realm.Write(() =>
                         {
-                            movie.FavoriteMovie = true;
+                            movie.FavoriteMovie = "Star.png";
 
                             realm.Add(movie, true);
                         });
@@ -203,7 +203,7 @@ namespace SSFR_Movies.Views
 
                     realm.Write(() =>
                     {
-                        movie.FavoriteMovie = false;
+                        movie.FavoriteMovie = "StarEmpty.png";
 
                         realm.Add(movie, true);
                     });

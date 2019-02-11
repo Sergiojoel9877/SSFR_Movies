@@ -92,6 +92,60 @@ namespace SSFR_Movies.Views
             {
                 MovieSelected();
             });
+            
+            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
+            {
+                if (e)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var estado = await vm.FillMoviesList(null);
+
+                        if (estado.Key == 'r')
+                        {
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
+                        }
+                        else if (estado.Key == 'v')
+                        {
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                            MoviesList.SelectedItem = null;
+                        }
+                    });
+                }
+            });
+
+            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
+            {
+                if (e)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var estado = await vm.FillMoviesList(null);
+
+                        if (estado.Key == 'r')
+                        {
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
+                        }
+                        else if (estado.Key == 'v')
+                        {
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                            MoviesList.SelectedItem = null;
+                        }
+                    });
+                }
+            });
         }
         
         private async void MovieSelected()
@@ -108,7 +162,7 @@ namespace SSFR_Movies.Views
         {
             var realm = await Realm.GetInstanceAsync();
 
-            var movies_db = realm.All<Result>().Where(x => x.FavoriteMovie == true).ToList();
+            var movies_db = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
