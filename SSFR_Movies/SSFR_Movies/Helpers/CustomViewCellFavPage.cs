@@ -23,8 +23,10 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private Lazy<CachedImage> blurCachedImage = null;
-        private Lazy<CachedImage> cachedImage = null;
+        private Lazy<Image> blurCachedImage = null;
+        //private Image blurCachedImage = null;
+        private Lazy<Image> cachedImage = null;
+        //private Image cachedImage = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -34,7 +36,7 @@ namespace SSFR_Movies.Helpers
         private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
-        private Lazy<CachedImage> unPinFromFavList = null;
+        private Lazy<Image> unPinFromFavList = null;
         private Lazy<StackLayout> compat = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
@@ -73,42 +75,42 @@ namespace SSFR_Movies.Helpers
                 new BlurredTransformation(15)
             };
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
                 HeightRequest = 330,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                LoadingPlaceholder = "Loading.png",
+                //LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 330,
-                Transformations = Blur
+                WidthRequest = 330
+                //Transformations = Blur
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, "BackdropPath", stringFormat: $"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{0}");
 
-            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            cachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
                 HeightRequest = 280,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
+            cachedImage.Value.SetBinding(Image.SourceProperty, "PosterPath", stringFormat: $"https://image.tmdb.org/t/p/w370_and_h556_bestv2{0}");
 
             panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
@@ -179,22 +181,22 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 50
             });
 
-            unPinFromFavList = new Lazy<CachedImage>(() => new CachedImage()
+            unPinFromFavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            unPinFromFavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
+            unPinFromFavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(unPinFromFavList.Value);
 

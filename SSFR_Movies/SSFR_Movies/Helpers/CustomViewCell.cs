@@ -21,10 +21,11 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCell : FlexLayout
     {
         #region Controls
-        private Lazy<CachedImage> blurCachedImage = null;
+        private Lazy<Image> blurCachedImage = null;
         //private Image blurCachedImage = null;
-        private Lazy<CachedImage> cachedImage = null;
+        private Lazy<Image> cachedImage = null;
         //private Image cachedImage = null;
+        private Lazy<ActivityIndicator> imageLoading = null;
         private Lazy<FlexLayout> FlexLayout = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
@@ -35,7 +36,7 @@ namespace SSFR_Movies.Helpers
         private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
-        private Lazy<CachedImage> pin2FavList = null;
+        private Lazy<Image> pin2FavList = null;
         private Lazy<StackLayout> compat = null;
         private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
@@ -77,42 +78,50 @@ namespace SSFR_Movies.Helpers
                 new BlurredTransformation(15)
             };
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
                 HeightRequest = 330,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
+                Opacity = 0.6,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                LoadingPlaceholder = "Loading.png",
+                //LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 330,
-                Transformations = Blur
+                WidthRequest = 330
+                //Transformations = Blur
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
 
-            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            cachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
                 HeightRequest = 280,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                WidthRequest = 280
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
+
+            imageLoading = new Lazy<ActivityIndicator>( ()=> new ActivityIndicator()
+            {
+                 Visual = VisualMarker.Material,
+                 HeightRequest = 35,
+                 Color = Color.White
+            });
+            imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, "IsLoading");
+            imageLoading.Value.BindingContext = cachedImage;
 
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
@@ -184,22 +193,22 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<CachedImage>(() => new CachedImage()
+            pin2FavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            pin2FavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
+            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
 
@@ -255,36 +264,50 @@ namespace SSFR_Movies.Helpers
             
             MessagingCenter.Send(this, "_PushAsync");
         }
-        
+
         protected override void OnBindingContextChanged()
         {
-            
+
+
             blurCachedImage.Value.Source = null;
 
             cachedImage.Value.Source = null;
-            
+
             var item = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread(()=>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 if (title.Value.Text.Length >= 15)
                 {
                     title.Value.SetAnimation();
                 }
             });
-               
+
             if (item == null)
             {
                 return;
             }
-            
+
             blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
 
             cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
+            blurCachedImage.Value.Source = new UriImageSource
+            {
+                Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(5, 60, 60)
+            };
+
+            cachedImage.Value.Source = new UriImageSource
+            {
+                Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(5, 60, 60)
+            };
 
             base.OnBindingContextChanged();
         }
-        
+
         private async void AddToFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
@@ -326,15 +349,15 @@ namespace SSFR_Movies.Helpers
 
                         realm.Add(movie, true);
                     });
-                    
+
+                    MessagingCenter.Send(this, "Refresh", true);
+
                     DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
                     
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
                     await SpeakNow("Added Successfully");
                     
-                    MessagingCenter.Send(this, "Refresh", true);
-
                 }
                 catch (Exception e15)
                 {

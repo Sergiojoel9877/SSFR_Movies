@@ -10,9 +10,7 @@
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
-                    <ffimage:CachedImage
-                        BitmapOptimizations="True"
-                        DownsampleToViewSize="True"
+                    <Image
                         HeightRequest="250"
                         HorizontalOptions="Center"
                         Source="icon.png"

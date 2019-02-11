@@ -55,22 +55,22 @@ namespace SSFR_Movies.Droid
             LoadApplication(LazyApp.Value);
         }
 
-        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
             base.OnTrimMemory(level);
         }
 
-        public override async void OnLowMemory()
+        public override void OnLowMemory()
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 

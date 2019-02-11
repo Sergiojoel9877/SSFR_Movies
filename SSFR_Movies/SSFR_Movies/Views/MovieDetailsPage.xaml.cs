@@ -23,13 +23,29 @@ namespace SSFR_Movies.Views
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
-            
+
             MessagingCenter.Send(this, "ClearSelection");
+
+            var match = Realm.GetInstance().All<Result>().Where(x => x.Title == movie.Title).FirstOrDefault();
+
+            PosterPathImage.Source = new UriImageSource()
+            {
+                Uri = new Uri("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + match.PosterPath),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(5,60,60)
+            };
+
+            BackDropImage.Source = new UriImageSource
+            {
+                Uri = new Uri("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + match.BackdropPath),
+                CachingEnabled = true,
+                CacheValidity = new TimeSpan(5, 60, 60)
+            };
 
             var tap = new TapGestureRecognizer();
 
             tap.Tapped += TitleTapped;
-
+            
             PosterPathImage.GestureRecognizers.Add(tap);
             
             AddToFav.Source = "StarEmpty.png";
@@ -40,7 +56,7 @@ namespace SSFR_Movies.Views
             
             AddToFavLayout.Clicked += Tap_Tapped;
 
-            SetImagesContent();
+            //SetImagesContent();
 
             if (movie.Title.Length >= 25)
             {

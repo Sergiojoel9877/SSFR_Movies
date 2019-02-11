@@ -37,6 +37,7 @@
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                             AbsoluteLayout.LayoutFlags="All"
                             HorizontalOptions="FillAndExpand"
+                            HeightRequest="300"
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
@@ -49,7 +50,7 @@
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
-                                WidthRequest="500" />
+                                WidthRequest="500"/>
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
@@ -160,6 +161,7 @@
                                 HorizontalOptions="Start"
                                 Style="{StaticResource ImageInsideCardStyle}"
                                 WidthRequest="300" />
+                 
                         </AbsoluteLayout>
                     </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
@@ -187,7 +189,11 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <ffimage:CachedImage
+                                    <!--<ffimage:CachedImage
+                                        HeightRequest="35"
+                                        Source="YoutubeBtn.png"
+                                        WidthRequest="35" />-->
+                                    <Image
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
                                         WidthRequest="35" />
