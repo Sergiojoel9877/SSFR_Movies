@@ -2,7 +2,6 @@
 using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
-//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.Views;
@@ -80,47 +79,29 @@ namespace SSFR_Movies.Helpers
 
             blurCachedImage = new Lazy<Image>(() => new Image()
             {
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
                 HeightRequest = 330,
-                Opacity = 0.6,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                //LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
-                //Transformations = Blur
             });
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
                 HeightRequest = 280,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+            });
+            
+            imageLoading = new Lazy<ActivityIndicator>(() => new ActivityIndicator()
+            {
+                HeightRequest = 35,
+                Color = Color.White
             });
 
-            imageLoading = new Lazy<ActivityIndicator>( ()=> new ActivityIndicator()
-            {
-                 Visual = VisualMarker.Material,
-                 HeightRequest = 35,
-                 Color = Color.White
-            });
             imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, "IsLoading");
+            imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
             imageLoading.Value.BindingContext = cachedImage;
 
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
@@ -197,16 +178,8 @@ namespace SSFR_Movies.Helpers
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
             pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
@@ -221,11 +194,14 @@ namespace SSFR_Movies.Helpers
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
-            
+            AbsoluteLayout.SetLayoutBounds(imageLoading.Value, new Rectangle(.5, .5, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(imageLoading.Value, AbsoluteLayoutFlags.All);
+
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
             absoluteLayout.Value.Children.Add(cachedImage.Value);
+            absoluteLayout.Value.Children.Add(imageLoading.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
             panelContainer.Value.Children.Add(FrameUnderImages.Value);
@@ -238,8 +214,6 @@ namespace SSFR_Movies.Helpers
             Children.Add(Container.Value);
             
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
-
-            //AddToFavListCtxAct.Clicked += AddToFavList;
             
             tap = new TapGestureRecognizer();
 
@@ -267,8 +241,6 @@ namespace SSFR_Movies.Helpers
 
         protected override void OnBindingContextChanged()
         {
-
-
             blurCachedImage.Value.Source = null;
 
             cachedImage.Value.Source = null;
@@ -287,10 +259,7 @@ namespace SSFR_Movies.Helpers
             {
                 return;
             }
-
-            blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
-
-            cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
+            
             blurCachedImage.Value.Source = new UriImageSource
             {
                 Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
@@ -304,7 +273,7 @@ namespace SSFR_Movies.Helpers
                 CachingEnabled = true,
                 CacheValidity = new TimeSpan(5, 60, 60)
             };
-
+            
             base.OnBindingContextChanged();
         }
 
