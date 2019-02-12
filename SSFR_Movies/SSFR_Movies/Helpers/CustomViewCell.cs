@@ -239,7 +239,7 @@ namespace SSFR_Movies.Helpers
             
             AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
 
-            AddToFavListCtxAct.Clicked += AddToFavList;
+            //AddToFavListCtxAct.Clicked += AddToFavList;
             
             tap = new TapGestureRecognizer();
 
@@ -341,6 +341,8 @@ namespace SSFR_Movies.Helpers
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
 
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        
+                        return;
                     }
                     
                     realm.Write(() =>
@@ -393,6 +395,7 @@ namespace SSFR_Movies.Helpers
                     if (movieExists != null)
                     {
                         DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
+                        return;
                     }
 
                     await realm.WriteAsync((r) => realm.Add(movie));

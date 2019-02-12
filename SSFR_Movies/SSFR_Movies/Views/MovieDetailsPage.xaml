@@ -46,6 +46,7 @@
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
+                                Opacity="0.6"
                                 DownsampleToViewSize="True"
                                 LoadingPlaceholder="Loading.png"
                                 Scale="3"

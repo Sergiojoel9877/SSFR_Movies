@@ -80,6 +80,7 @@ namespace SSFR_Movies.Helpers
                 //BitmapOptimizations = true,
                 //DownsampleToViewSize = true,
                 HeightRequest = 330,
+                Opacity = 0.6,
                 //FadeAnimationEnabled = true,
                 //FadeAnimationForCachedImages = true,
                 //RetryCount = 5,
