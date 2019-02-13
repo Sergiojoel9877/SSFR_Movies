@@ -62,7 +62,7 @@ namespace SSFR_Movies.Views
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
             }
         }
 

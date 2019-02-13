@@ -3,6 +3,7 @@
     x:Class="SSFR_Movies.Views.MovieDetailsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
@@ -10,6 +11,10 @@
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
+        <ResourceDictionary>
+            <local:BackgroundImageUrlConverter x:Key="BackgroundConverter"/>
+            <local:PosterImageUrlConverter x:Key="PosterConverter"/>
+        </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
@@ -47,6 +52,7 @@
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
                                 Opacity="0.6"
+                                Source="{Binding BackdropPath, Converter={StaticResource BackgroundConverter}}"
                                 DownsampleToViewSize="True"
                                 LoadingPlaceholder="Loading.png"
                                 Scale="3"
@@ -156,6 +162,7 @@
                                 x:Name="PosterPathImage"
                                 CacheType="All"
                                 Margin="8,0,8,0"
+                                Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"
                                 LoadingPlaceholder="Loading.png"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"

@@ -44,37 +44,7 @@ namespace SSFR_Movies.Views
             {
                 MovieTitle.SetAnimation();
             }
-
             
-            //if (PosterPathImage == null)
-            //{
-            //    PosterPathImage = new FFImageLoading.Forms.CachedImage()
-            //    {
-            //        CacheType = FFImageLoading.Cache.CacheType.All,
-            //        LoadingPlaceholder = "Loading.png",
-            //        DownsampleToViewSize = true,
-            //        WidthRequest = 300,
-            //        HeightRequest = 300,
-            //        BitmapOptimizations = true,
-            //        Margin = new Thickness(left:8, top:0, right:8, bottom:0)
-            //    };
-            //    AbsoluteLayout.SetLayoutBounds(PosterPathImage, new Rectangle(0, .6, .5, .6));
-            //    AbsoluteLayout.SetLayoutFlags(PosterPathImage, AbsoluteLayoutFlags.All);
-            //    absoluteLayout.Children.Add(PosterPathImage);
-            //}
-
-           
-        }
-
-        public void SetImagesContent()
-        {
-       
-            var item = BindingContext as Result;
-
-            PosterPathImage.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath; 
-
-            BackDropImage.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
-
         }
 
         private async void IsPresentInFavList(Result m)
@@ -243,23 +213,7 @@ namespace SSFR_Movies.Views
             var item = BindingContext as Result;
 
             IsPresentInFavList(item);
-
-            var match = Realm.GetInstance().All<Result>().Where(x => x.Title == item.Title).FirstOrDefault();
-
-            PosterPathImage.Source = new UriImageSource() //VERIFY
-            {
-                Uri = new Uri("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + match.PosterPath),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
-
-            BackDropImage.Source = new UriImageSource
-            {
-                Uri = new Uri("https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + match.BackdropPath),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
-
+            
             await ScrollTrailer.ScrollToAsync(-200, 0, true);
 
             MessagingCenter.Send(this, "ClearSelection");
