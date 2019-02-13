@@ -104,10 +104,16 @@ namespace SSFR_Movies.Helpers
                 Color = Color.White
             });
 
-            imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, "IsLoading");
-            imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
-            imageLoading.Value.BindingContext = cachedImage;
-
+            //cachedImage.Value.PropertyChanged += (s, e) =>
+            //{
+            //    if (e.PropertyName == "IsLoading")
+            //    {
+            //        imageLoading.Value.BindingContext = cachedImage;
+            //        imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, new Binding("IsLoading", BindingMode.Default));
+            //        imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
+            //    }
+            //};
+            
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
                 HeightRequest = 125,
@@ -245,6 +251,8 @@ namespace SSFR_Movies.Helpers
 
         protected override void OnBindingContextChanged()
         {
+
+            base.OnBindingContextChanged();
             //blurCachedImage.Value.Source = null;
 
             //cachedImage.Value.Source = null;
@@ -278,7 +286,6 @@ namespace SSFR_Movies.Helpers
             //    CacheValidity = new TimeSpan(5, 60, 60)
             //};
             
-            base.OnBindingContextChanged();
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)
