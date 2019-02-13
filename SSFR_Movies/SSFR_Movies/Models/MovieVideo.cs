@@ -1,22 +1,24 @@
 ﻿using Newtonsoft.Json;
-using System;
+using Realms;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SSFR_Movies.Models
 {
-    public class MovieVideo
+    public class MovieVideo : RealmObject
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        [PrimaryKey]
+        public int Id { get; set; }
 
         [JsonProperty("results")]
-        public VideoResult[] Results { get; set; }
+        public IList<VideoResult> Results { get; }
     }
 
-    public class VideoResult
+    public class VideoResult : RealmObject
     {
         [JsonProperty("id")]
+        [PrimaryKey]
         public string Id { get; set; }
 
         [JsonProperty("iso_639_1")]

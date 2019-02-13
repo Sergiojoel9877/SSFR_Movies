@@ -1,5 +1,5 @@
 ﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -14,113 +14,155 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SSFR_Movies.Helpers;
+using Xamarin.Forms.Internals;
+using Realms;
 
 namespace SSFR_Movies.Views
 {
     /// <summary>
     /// FavoriteMoviesPage Code Behind
     /// </summary>
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class FavoritesMoviesPage : ContentPage
 	{
         FavoriteMoviesPageViewModel vm;
+        
+        ToolbarItem searchToolbarItem = null;
 
-        Label _title;
-
-        public FavoritesMoviesPage ()
+        public FavoritesMoviesPage()
 		{
-			InitializeComponent ();
+			InitializeComponent();
 
-            /* Here is how to deal with the items inside a ViewCell I must use reflection.. kinda expenpensive from a performance perspective 
-             * but it works..., or make use of a custom viewCell, it's a better option in terms of performance.
-             *  https://stackoverflow.com/questions/35849187/xamarin-forms-get-all-cells-items-of-a-listview
-             */
-            //_title = this.FindByName<Label>("title");
-
-            //Task.Run(async () =>
-            //{
-            //    await _title.SetAnimation();
-            //});
-
-            vm = ServiceLocator.Current.GetInstance<FavoriteMoviesPageViewModel>();
+            vm = ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value;
 
             BindingContext = vm;
 
             SetVisibility();
-            
+
+            searchToolbarItem = new ToolbarItem()
+            {
+                Text = "Search",
+                Icon = "Search.png",
+                Priority = 0,
+
+                Command = new Command(async () =>
+                {
+                    await Navigation.PushAsync(new SearchPage(), true);
+                })
+            };
+                       
+            ToolbarItems.Add(searchToolbarItem);
+
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+
+            SubscribeToMessage();
         }
 
-        private async void QuitFromFavorites(object sender, EventArgs e)
+        private void SubscribeToMessage()
         {
-     
-            var opt = sender as MenuItem;
-
-            if (opt != null)
+            MessagingCenter.Subscribe<MovieDetailsPage, bool>(this, "Refresh", (s, e) =>
             {
-
-                var movie = opt.BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (e)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    Device.BeginInvokeOnMainThread(async () =>
                     {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
+                        var estado = await vm.FillMoviesList(null);
 
-                if (await DisplayAlert("Suggestion", "Would you like to delete this movie from your favorites list?", "Yes", "No"))
-                {
-                    try
-                    {
-                        
-                        var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie);
-
-                        if (deleteMovie)
+                        if (estado.Key == 'r')
                         {
-                            await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
-
-                            vm.FavMoviesList.Remove(movie);
-
-                            BindingContext = vm;
-
-                            MoviesList.BeginRefresh();
-
-                            await Task.Delay(500);
-
-                            MoviesList.EndRefresh();
-
-                            var moviesRemaining = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-                            if (moviesRemaining.Count() == 0)
-                            {
-                                QuitVisibility();
-                            }
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
                         }
-                    }
-                    catch (Exception)
-                    {
-                        Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                        else if(estado.Key == 'v')
                         {
-                            DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                            MoviesList.SelectedItem = null;
+                        }
+                    });
+                }
+            });
 
-                            return false;
-                        });
-                    }
-                }
-                else
+            MessagingCenter.Subscribe<CustomViewCellFavPage>(this, "PushAsync", (e) =>
+            {
+                MovieSelected();
+            });
+            
+            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
+            {
+                if (e)
                 {
-                
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var estado = await vm.FillMoviesList(null);
+
+                        if (estado.Key == 'r')
+                        {
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
+                        }
+                        else if (estado.Key == 'v')
+                        {
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                            MoviesList.SelectedItem = null;
+                        }
+                    });
                 }
+            });
+
+            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
+            {
+                if (e)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        var estado = await vm.FillMoviesList(null);
+
+                        if (estado.Key == 'r')
+                        {
+                            MoviesList.IsVisible = true;
+                            UnPin.IsVisible = false;
+                            Message.IsVisible = false;
+                            MoviesList.ItemsSource = estado.Value;
+                            MoviesList.SelectedItem = null;
+                        }
+                        else if (estado.Key == 'v')
+                        {
+                            MoviesList.IsVisible = false;
+                            UnPin.IsVisible = true;
+                            Message.IsVisible = true;
+                            MoviesList.SelectedItem = null;
+                        }
+                    });
+                }
+            });
+        }
+        
+        private async void MovieSelected()
+        {
+            if (MoviesList.SelectedItem != null)
+            {
+                var movie = MoviesList.SelectedItem as Result;
+                MoviesList.SelectedItem = null;
+                await Navigation.PushAsync(new MovieDetailsPage(movie));
             }
         }
-
-
+        
         private async void SetVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies_db = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
 
             UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
 
@@ -131,7 +173,9 @@ namespace SSFR_Movies.Views
 
         private async void QuitVisibility()
         {
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies_db = realm.All<Result>().ToList();
 
             UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
 
@@ -155,36 +199,8 @@ namespace SSFR_Movies.Views
 
             await Navigation.PushAsync(new MovieDetailsPage(movie));
 
-            GC.Collect(0, GCCollectionMode.Optimized, false);
-
         }
-
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-
-            var movies_db = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities();
-
-            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
-
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
-
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
     
-            ForceLayout();
-            
-            vm.GetStoreMoviesCommand.Execute(null);
-
-            BindingContext = vm;
-
-            MoviesList.BeginRefresh();
-
-            await Task.Delay(500);
-
-            MoviesList.EndRefresh();
-
-        }
-
         /// <summary>
         /// To animate the Quit from Favorite list icon..
         /// </summary>

@@ -17,56 +17,92 @@
             CompressedLayout.IsHeadless="True"
             Direction="Column"
             Wrap="NoWrap">
-            <ScrollView VerticalOptions="FillAndExpand">
+           
+            <ScrollView x:Name="Scroll" VerticalOptions="FillAndExpand">
                 <StackLayout
                     CompressedLayout.IsHeadless="True"
+                    WidthRequest="{Binding Source={x:Reference Scroll}, Path=WidthRequest}"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
-                    <StackLayout
+                    <Frame 
+                        x:Name="frame"
+                        Visual="Material"
                         BackgroundColor="#00103B"
                         HeightRequest="300"
+                        CornerRadius="5"
+                        WidthRequest="{Binding Source={x:Reference Scroll}, Path=WidthRequest}"
+                        HasShadow="True"
                         VerticalOptions="Center">
                         <AbsoluteLayout
+                            x:Name="absoluteLayout"
                             AbsoluteLayout.LayoutBounds="0,0,1,1"
                             AbsoluteLayout.LayoutFlags="All"
-                            CompressedLayout.IsHeadless="True"
+                            HorizontalOptions="FillAndExpand"
+                            HeightRequest="300"
                             VerticalOptions="FillAndExpand">
 
                             <ffimage:CachedImage
+                                x:Name="BackDropImage"
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BitmapOptimizations="True"
+                                Opacity="0.6"
                                 DownsampleToViewSize="True"
-                                HeightRequest="320"
+                                LoadingPlaceholder="Loading.png"
+                                Scale="3"
+                                HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
-                                Source="{Binding BackdropPath}"
-                                WidthRequest="533" />
+                                WidthRequest="500"/>
 
                             <StackLayout
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
                                 AbsoluteLayout.LayoutFlags="All"
-                                BackgroundColor="#00103B"
+                                BackgroundColor="#44312D2D"
+                                HeightRequest="200"
                                 HorizontalOptions="FillAndExpand"
-                                WidthRequest="295">
-                                <Grid CompressedLayout.IsHeadless="True">
+                                WidthRequest="{Binding Source={x:Reference frame}, Path=WidthRequest}">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="*"/>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
                                     <StackLayout
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Margin="16,8,16,0"
                                         HorizontalOptions="End"
                                         Orientation="Vertical"
+                                        Margin="0,0,8,0"
                                         VerticalOptions="Start">
+                                        <StackLayout
+                                            Margin="0"
+                                            HorizontalOptions="End"
+                                            Orientation="Horizontal">
+                                            <StackLayout.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="StreamMovie_Tapped" />
+                                            </StackLayout.GestureRecognizers>
+                                            <ffimage:CachedImage
+                                                DownsampleToViewSize="True"
+                                                HeightRequest="35"
+                                                Source="Play.png"
+                                                WidthRequest="35" />
+                                            <Label
+                                                Margin="5,0,0,0"
+                                                FontAttributes="Bold"
+                                                FontSize="Small"
+                                                HorizontalTextAlignment="End"
+                                                LineBreakMode="NoWrap"
+                                                Text="Play Movie"
+                                                TextColor="White"
+                                                VerticalTextAlignment="Center" />   
+                                        </StackLayout>
                                         <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
-                                            <Image
+                                            <ffimage:CachedImage
                                                 x:Name="AddToFav"
+                                                BitmapOptimizations="True"
+                                                DownsampleToViewSize="True"
                                                 HeightRequest="40"
                                                 Source="StarEmpty.png"
                                                 WidthRequest="40" />
@@ -84,16 +120,15 @@
                                     </StackLayout>
 
                                     <StackLayout
-                                        Grid.Row="1"
+                                        Grid.Row="2"
                                         Grid.Column="0"
-                                        Margin="16,5,16,8"
-                                        CompressedLayout.IsHeadless="True"
+                                        Margin="0,5,0,8"
                                         HorizontalOptions="FillAndExpand"
                                         Orientation="Vertical"
                                         VerticalOptions="End">
                                         <ScrollView
                                             x:Name="ScrollTitle"
-                                            HorizontalOptions="End"
+                                            HorizontalOptions="FillAndExpand"
                                             HorizontalScrollBarVisibility="Never"
                                             Orientation="Horizontal"
                                             VerticalScrollBarVisibility="Never">
@@ -116,22 +151,23 @@
                             </StackLayout>
 
                             <ffimage:CachedImage
-                                x:Name="PosterPath"
-                                Margin="8,0,8,0"
-                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.4, 0.6"
+                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.5, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
+                                x:Name="PosterPathImage"
+                                CacheType="All"
+                                Margin="8,0,8,0"
+                                LoadingPlaceholder="Loading.png"
                                 BitmapOptimizations="True"
                                 DownsampleToViewSize="True"
-                                HeightRequest="200"
+                                HeightRequest="300"
                                 HorizontalOptions="Start"
-                                Source="{Binding PosterPath}"
                                 Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="200" />
-
+                                WidthRequest="300" />
+                 
                         </AbsoluteLayout>
-                    </StackLayout>
+                    </Frame>
                     <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
-                        <StackLayout CompressedLayout.IsHeadless="True" Orientation="Horizontal">
+                        <StackLayout Orientation="Horizontal">
                             <Label
                                 Margin="16,5,16,0"
                                 FontAttributes="Bold"
@@ -155,7 +191,11 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <ffimage:CachedImage
+                                    <!--<ffimage:CachedImage
+                                        HeightRequest="35"
+                                        Source="YoutubeBtn.png"
+                                        WidthRequest="35" />-->
+                                    <Image
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
                                         WidthRequest="35" />
@@ -178,36 +218,35 @@
                             Style="{StaticResource LabelsStyle}"
                             Text="{Binding Overview}" />
 
-                        <StackLayout
+                        <Button
                             x:Name="AddToFavLayout"
                             Margin="16"
                             BackgroundColor="#44FFFFFF"
-                            HorizontalOptions="FillAndExpand">
-                            <Label
-                                Margin="16"
-                                FontAttributes="Bold"
-                                FontSize="Medium"
-                                HorizontalTextAlignment="Center"
-                                Text="Add To Favorites List"
-                                TextColor="White" />
-                        </StackLayout>
+                            HorizontalOptions="FillAndExpand"
+                            CornerRadius="30"
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Add To Favorites List"
+                            TextColor="White"/>
 
-                        <StackLayout
+                        <Button 
                             x:Name="QuitFromFavLayout"
                             Margin="16"
                             BackgroundColor="#FF0000"
-                            HorizontalOptions="FillAndExpand">
-                            <Label
-                                Margin="16"
-                                FontAttributes="Bold"
-                                FontSize="Medium"
-                                HorizontalTextAlignment="Center"
-                                Text="Quit from the favorites list"
-                                TextColor="White" />
-                        </StackLayout>
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            CornerRadius="30"
+                            Text="Quit from the favorites list"
+                            TextColor="White" 
+                            HorizontalOptions="FillAndExpand" />
+
                     </StackLayout>
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+                    <StackLayout>
+                        <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                        <WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
                 </StackLayout>
             </ScrollView>
         </FlexLayout>

@@ -5,6 +5,7 @@ using System.Text;
 
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
+using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Helpers
 {
@@ -13,6 +14,7 @@ namespace SSFR_Movies.Helpers
     /// of your client applications. All settings are laid out the same exact way with getters
     /// and setters. 
     /// </summary>
+    [Preserve(AllMembers = true)]
     public static class Settings
     {
         private static ISettings AppSettings
@@ -53,6 +55,12 @@ namespace SSFR_Movies.Helpers
             {
                 AppSettings.AddOrUpdateValue("NextPage", value);
             }
+        }
+
+        public static bool UpdateList
+        {
+            get => AppSettings.GetValueOrDefault("UpdateList", false);
+            set => AppSettings.AddOrUpdateValue("UpdateList", value);
         }
 
         public static int NextPageForGenre

@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
+    [Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : Xamarin.Forms.TabbedPage
     {
@@ -26,15 +28,8 @@ namespace SSFR_Movies.Views
 
             On<Xamarin.Forms.PlatformConfiguration.Android>().SetBarSelectedItemColor(Color.White);
 
-            On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6);
+            On<Xamarin.Forms.PlatformConfiguration.Android>().EnableSmoothScroll();
 
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            GC.Collect(0, GCCollectionMode.Optimized, false);
         }
 
         protected override bool OnBackButtonPressed()

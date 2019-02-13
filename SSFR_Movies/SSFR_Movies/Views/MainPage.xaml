@@ -6,6 +6,7 @@
     xmlns:pages="clr-namespace:SSFR_Movies.Views"
     Title="SSFR Movies Home"
     BarBackgroundColor="#272B2E"
+    CompressedLayout.IsHeadless="True"
     NavigationPage.HasBackButton="False">
 
     <pages:AllMoviesPage Title="All" Icon="Recent.png" />

@@ -12,18 +12,21 @@ using CommonServiceLocator;
 using SSFR_Movies.Services;
 using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
+using System.Threading;
+using Xamarin.Essentials;
+using Realms;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
-  
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public ObservableCollection<Result> AllMoviesList { get; set; } = new ObservableCollection<Result>();
+        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
 
-        private bool listVisible = false;
+        private bool listVisible = true;
         public bool ListVisible
         {
             get => listVisible;
@@ -37,6 +40,13 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref msgVisible, value);
         }
 
+        private string msgText;
+        public string MsgText
+        {
+            get => msgText;
+            set => SetProperty(ref msgText, value);
+        }
+
         private bool isRefreshing;
         public bool IsRefreshing
         {
@@ -44,11 +54,25 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref isRefreshing, value);
         }
 
-        private bool isEnabled;
+        private bool isEnabled = false;
         public bool IsEnabled
         {
             get => isEnabled;
             set => SetProperty(ref isEnabled, value);
+        }
+        
+        private bool isMLEnabled = true;
+        public bool IsMLEnabled
+        {
+            get => isMLEnabled;
+            set => SetProperty(ref isMLEnabled, value);
+        }
+
+        private bool animationEnabled = false;
+        public bool AnimationEnabled
+        {
+            get => animationEnabled;
+            set => SetProperty(ref animationEnabled, value);
         }
 
         private bool isRunning;
@@ -76,9 +100,6 @@ namespace SSFR_Movies.ViewModels
         {
             await Task.Yield();
 
-            IsEnabled = true;
-            IsRunning = true;
-
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -90,27 +111,39 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached");
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = false;
+                IsEnabled = true;
+                IsRunning = true;
+            });
 
-            movies.Results.ForEach(r => AllMoviesList.Add(r));
+            var realm = await Realm.GetInstanceAsync();
 
-            ListVisible = true;
+            var movies = realm.All<Movie>().SingleOrDefault();
 
-            MsgVisible = false;
+            if (movies == null)
+            {
+                return;
+            }
 
-            ActivityIndicatorRunning = false;
+            movies.Results.ForEach((r)=>
+            {
+                AllMoviesList.Value.Add(r);
+            });
 
-            IsRefreshing = false;
-            
-            IsEnabled = false;
-            IsRunning = false;
-
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = true;
+                MsgVisible = false;
+                IsEnabled = false;
+                IsRunning = false;
+            });
         }
 
-        public async Task FillMoviesByGenreList()
+        public void FillMoviesByGenreList()
         {
-            await Task.Yield();
-
+                
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -121,22 +154,32 @@ namespace SSFR_Movies.ViewModels
                 });
                 return;
             }
+            var realm = Realm.GetInstance();
 
-            var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
+            var movies = realm.All<Movie>().SingleOrDefault();
 
-            AllMoviesList.Clear();
+            AllMoviesList.Value.Clear();
 
-            movies.Results.ForEach(r => AllMoviesList.Add(r));
+            movies.Results.ForEach((r)=>
+            {
+                AllMoviesList.Value.Add(r);
+            });
 
-            ActivityIndicatorRunning = false;
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                ListVisible = true;
+                IsRunning = false;
+                IsEnabled = false;
+            });
         }
 
         /// <summary>
         ///  Get movies from server and store them in cache.. with a TimeSpan limit.
         /// </summary>
         /// <returns>Bool if they are succesfully saved..</returns>
-        private static async Task<bool> GetAndStoreMoviesAsync()
+        public static async Task<bool> GetAndStoreMoviesAsync()
         {
+            
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -148,8 +191,20 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            //return await ServiceLocator.Current.GetInstance<await ServiceLocator.Current.GetInstance<ApiClient>()>().GetAndStoreMoviesAsync(false);
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMoviesAsync(false);
+            var token = new CancellationTokenSource();
+
+            token.CancelAfter(4000);
+
+            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
+
+            if (done)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private Command getStoreMoviesCommand;
@@ -170,7 +225,32 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ListVisible = false;
+                    IsRunning = true;
+                    IsEnabled = true;
+                });
+
                 var stored = await GetAndStoreMoviesAsync();
+
+                if (!stored) 
+                {
+                    Device.BeginInvokeOnMainThread(()=>
+                    {
+                        MsgVisible = true;
+                        MsgText = "Low storage left!";
+                        IsRunning = false;
+                        IsEnabled = false;
+                    });
+                }
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ListVisible = true;
+                    IsEnabled = false;
+                    IsRunning = false;
+                });
 
                 MoviesStored = stored;
 
@@ -185,7 +265,7 @@ namespace SSFR_Movies.ViewModels
         private Command getStoreMoviesByGenresCommand;
         public Command GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command(async () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
             {
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
@@ -198,7 +278,7 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                await FillMoviesByGenreList();
+                FillMoviesByGenreList();
          
             }));
         }
@@ -208,6 +288,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Command(async () =>
             {
+                await Task.Yield();
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -219,13 +300,23 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                await GetMoviesGenres();
+                var done = await GetMoviesGenres();
 
+                if (!done)
+                {
+                    Device.BeginInvokeOnMainThread(()=>
+                    {
+                        MsgVisible = true;
+                        MsgText = "No storage space left!";
+                    });
+                }
             }));
         }
 
         private async Task<bool> GetMoviesGenres()
         {
+            await Task.Yield();
+
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
@@ -236,11 +327,8 @@ namespace SSFR_Movies.ViewModels
                 });
                 return false;
             }
-
-            await Task.Yield();
-
-            //return ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
-            return await ServiceLocator.Current.GetInstance<ApiClient>().GetAndStoreMovieGenresAsync();
+            
+            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
 
         }
 
@@ -249,6 +337,7 @@ namespace SSFR_Movies.ViewModels
         {
             get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command( async () =>
             {
+
                 //Verify if internet connection is available
                 if (!CrossConnectivity.Current.IsConnected)
                 {
@@ -265,57 +354,61 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
-      
+        private Command fillUpMovies;
+        public Command FillUpMovies
+        {
+            get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
+            {
+                await FillMoviesList();
+            }));    
+        }
+
         public AllMoviesPageViewModel()
         {
-            
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            var realm = Realm.GetInstance();
+
+            var movies = realm.All<Movie>().ToList();
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ListVisible = false;
+                IsEnabled = true;
+                IsRunning = true;
+            });
 
             //Verify if internet connection is available
             if (!CrossConnectivity.Current.IsConnected)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has  an Internet connection");
                     return false;
                 });
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    MsgVisible = true;
+                });
+
                 return;
             }
 
-            //If the barrel cache doesn't exits or its expired.. Get the movies again and store them..
-            if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            if (movies.Count < 1)
             {
                 GetStoreMoviesCommand.Execute(null);
-
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
-                ListVisible = false;
-
-                ActivityIndicatorRunning = true;
-
-                Task.Run(async() => { await FillMoviesList(); });
+                FillUpMovies.Execute(null);
             }
-        }
-
-        private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
-        {
+            
             Device.BeginInvokeOnMainThread(() =>
             {
-                if (e.IsConnected)
-                {
-                    MsgVisible = false;
-                }
-                else
-                {
-                    MsgVisible = true;
-                }
+                ListVisible = true;
+                IsEnabled = false;
+                IsRunning = false;
             });
-
-            GetStoreMoviesCommand.Execute(null);
-
-            GetMoviesGenresCommand.Execute(null);
         }
     }
 }

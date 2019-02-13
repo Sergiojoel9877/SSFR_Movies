@@ -1,36 +1,47 @@
-﻿using CommonServiceLocator;
+﻿using MonkeyCache.FileStore;
+using Newtonsoft.Json;
+using Plugin.Connectivity;
+using SSFR_Movies.Helpers;
+using SSFR_Movies.Models;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using SSFR_Movies.Models;
+using System.Diagnostics;
+using System.IO;
+using System.Drawing;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.ObjectModel;
-using Newtonsoft.Json;
-using MonkeyCache;
-using MonkeyCache.FileStore;
-using SSFR_Movies.Helpers;
-using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using System.Net.Http;
+using Realms;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
-  
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
 
-        private const string LANG = "en-US";
+        private const string API_KEY_Streaming = "jw9HuWd8ChouvpUk";
 
-        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
+        private const string LANG = "en-US";
+               
+        Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
+
+        private readonly Realm realm = Realm.GetInstance();
+
+        #region MoviesCacheFunctionsEtcRegion
+
+        public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
             await Task.Yield();
-
+  
             try
             {
                 //Verify if internet connection is available
@@ -54,13 +65,20 @@ namespace SSFR_Movies.Services
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
 
                 var m = await App.httpClient.GetAsync(requestUri);
+               
+                m.EnsureSuccessStatusCode();
 
-                var results = await m.Content.ReadAsStringAsync();
-                
-                return StoreInCache(results);
+                using (var stream = await m.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                using (var json = new JsonTextReader(reader))
+                {
+                    return StoreInCache(json);
+                }
+                              
             }
             catch (Exception e)
             {
+                Debug.WriteLine("Error: " + e.InnerException);
                 return false;
             }
             
@@ -87,18 +105,19 @@ namespace SSFR_Movies.Services
                 var requestUri = $"/3/search/movie?api_key={API_KEY}&language={LANG}&query={name}&include_adult={include_adult.ToString().ToLower()}";
 
                 var m = await App.httpClient.GetAsync(requestUri);
+                m.EnsureSuccessStatusCode();
 
-                var results = await m.Content.ReadAsStringAsync();
-
-                var movie = JsonConvert.DeserializeObject<Movie>(results);
-                
-                return movie;
+                using (var stream = await m.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                using (var json = new JsonTextReader(reader))
+                {
+                    return serializer.Value.Deserialize<Movie>(json);
+                }
             }
             catch (Exception e)
             {
-
+                Debug.WriteLine("Error: " + e.InnerException);
             }
-
             return new Movie();
         }
         
@@ -126,20 +145,23 @@ namespace SSFR_Movies.Services
                 string _genres = valid == true ? Convert.ToString(genre) : null;
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={genre}";
-
+                
                 var m = await App.httpClient.GetAsync(requestUri);
+                m.EnsureSuccessStatusCode();
 
-                var results = await m.Content.ReadAsStringAsync();
-
-                return StoreMovieByGenresInCache(results);
-
+                using (var stream = await m.Content.ReadAsStreamAsync())
+                using (var reader = new StreamReader(stream))
+                using (var json = new JsonTextReader(reader))
+                {
+                    return StoreMovieByGenresInCache(json);
+                }
             }
             catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
 
@@ -147,27 +169,15 @@ namespace SSFR_Movies.Services
             }
 
         }
-
-        private bool StoreMovieByGenresInCache(string results)
+         
+        private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
-            var movies = JsonConvert.DeserializeObject<Movie>(results);
+            var movies = serializer.Value.Deserialize<Movie>(results);
 
-            var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
+            realm.Write(()=> realm.Add(movies, true));
 
-            var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
-
-            movies.Results.ForEach(r =>
-            {
-                r.PosterPath = PosterPath + r.PosterPath;
-            });
-
-            movies.Results.ForEach(e =>
-            {
-                e.BackdropPath = Backdroppath + e.BackdropPath;
-            });
-
-            //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
-            Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
+            ////Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
+            //Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
             return true;
         }
@@ -180,77 +190,162 @@ namespace SSFR_Movies.Services
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
 
             var m = await App.httpClient.GetAsync(requestUri);
+            m.EnsureSuccessStatusCode();
 
-            var results = await m.Content.ReadAsStringAsync();
-
-            return StoreGenresInCache(results);
-
+            using (var stream = await m.Content.ReadAsStreamAsync())
+            using (var reader = new StreamReader(stream))
+            using (var json = new JsonTextReader(reader))
+            {
+                return StoreGenresInCache(json);
+            }
         }
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
 
             await Task.Yield();
-
+           
             var requestUri = $"/3/movie/{id}/videos?api_key={API_KEY}&language={LANG}";
 
             var m = await App.httpClient.GetAsync(requestUri);
+            m.EnsureSuccessStatusCode();
 
-            var results = await m.Content.ReadAsStringAsync();
-
-            
-
-            return JsonConvert.DeserializeObject<MovieVideo>(results);
-
+            using (var stream = await m.Content.ReadAsStreamAsync())
+            using (var reader = new StreamReader(stream))
+            using (var json = new JsonTextReader(reader))
+            {
+                return serializer.Value.Deserialize<MovieVideo>(json);
+            }
         }
 
-        private bool StoreGenresInCache(string results)
+        private bool StoreGenresInCache(JsonTextReader results)
         {
-            var movies = JsonConvert.DeserializeObject<Genres>(results);
+            var movies = serializer.Value.Deserialize<Genres>(results);
 
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
-            Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+            try
+            {
+                realm.Write(()=> realm.Add(movies, true));
+
+                //Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+            }
+            catch (DirectoryNotFoundException er)
+            {
+                Debug.WriteLine("No storage left");
+                return false;
+            }
 
             return true;
         }
 
-        private bool StoreInCache(string results)
+        private bool StoreInCache(JsonTextReader results)
         {
             try
             {
-                var movies = JsonConvert.DeserializeObject<Movie>(results);
-
-                var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
-
-                var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
-
-                movies.Results.ForEach(r =>
+                var movies = serializer.Value.Deserialize<Movie>(results);
+                
+                try
                 {
-                    r.PosterPath = PosterPath + r.PosterPath;
-                });
-
-                movies.Results.ForEach(e =>
+                    realm.Write(()=> realm.Add(movies, true));
+                    //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
+                    //Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
+                }
+                catch (DirectoryNotFoundException e)
                 {
-                    e.BackdropPath = Backdroppath + e.BackdropPath;
-                });
-
-                //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
-                Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
-
+                    Debug.WriteLine("No storage left" + e.InnerException);
+                    return false;
+                }
                 return true;
             }
             catch (Exception e)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
+                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
 
                 return false;
             }
-
         }
+        #endregion
+
+
+        #region MovieStreammingFunctionsRegion
+
+        const string UserAgent = "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
+        const string NumbersJs = "https://openload.co/assets/js/obfuscator/n.js";
+
+        public string PlayMovieByNameAndYear(string Title, string Year)
+        {
+            string url = $"https://videospider.in/getvideo?key={API_KEY_Streaming}&title=+{Title.ToLower()}&year={Year}";
+            return url;
+        }
+
+        //public async Task<ResultDW> GetStreamURL(string URL)
+        //{
+        //    var obj1 = default(ResultOP);
+        //    var fileID = URL.Substring(URL.Length - 11);
+
+        //    System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
+        //    {
+        //        BaseAddress = new Uri("https://api.openload.co/1")
+        //    };
+        //    httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+
+        //    try
+        //    {
+        //        string request = $"/file/dlticket?file={fileID}";
+
+        //        var m = await httpClient.GetAsync(request);
+
+        //        var results = await m.Content.ReadAsStringAsync();
+
+        //        obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
+        //    }
+        //    catch (Exception E)
+        //    {
+        //        Debug.WriteLine($"ERROR: {E.InnerException}");
+        //    }
+        //    var downloadLink = await GetDownloadLink(fileID, obj1);
+
+        //    return downloadLink;
+        //}
+
+        //public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
+        //{
+        //    HttpClient httpClient = new HttpClient();
+        //    httpClient.BaseAddress = new Uri("https://api.openload.co/1");
+            
+        //    string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
+
+        //    try
+        //    {
+        //        var m = await httpClient.GetAsync(request);
+
+        //        var results = await m.Content.ReadAsStringAsync();
+
+        //        var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
+        //    }
+        //    catch (Exception ER)
+        //    {
+        //        Debug.WriteLine($"ERROR: {ER.InnerException}");
+        //    }
+        //    return null;
+        //}
+        
+        private static string HttpGet(string URL)
+        {
+            WebRequest Request = WebRequest.Create(URL);
+            ((HttpWebRequest)Request).UserAgent = UserAgent;
+
+            WebResponse Response = Request.GetResponse();
+            StreamReader Reader = new StreamReader(Response.GetResponseStream());
+
+            return Reader.ReadToEnd();
+        }
+
+        #endregion
     }
 }

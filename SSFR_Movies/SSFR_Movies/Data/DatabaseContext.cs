@@ -1,57 +1,56 @@
-﻿using SSFR_Movies.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Xamarin.Forms;
-using Xamarin.Forms.Internals;
+﻿//using SSFR_Movies.Models;
+////using Microsoft.EntityFrameworkCore;
+//using System;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Text;
+//using Xamarin.Forms;
+//using Xamarin.Forms.Internals;
 
-namespace SSFR_Movies.Data
-{
-    /// <summary>
-    /// The DatabaseContext for the Database.
-    /// </summary>
-    /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
-  
-    public class DatabaseContext<T> : DbContext where T : class
-    {
-        public DbSet<T> Entity { get; set; }
+//namespace SSFR_Movies.Data
+//{
+//    /// <summary>
+//    /// The DatabaseContext for the Database.
+//    /// </summary>
+//    /// <typeparam name="T">Any object that inherit from BaseEntity</typeparam>
+//    [Preserve(AllMembers = true)]
+//    public class DatabaseContext<T> : DbContext where T : class
+//    {
+//        public DbSet<T> Entity { get; set; }
 
-        string DbName = "GBH_Movies.db3";
+//        string DbName = "SSFR_Movies.db3";
         
-      
-        public DatabaseContext()
-        {
-            Database.EnsureCreated();
-        }
+//        public DatabaseContext()
+//        {
+//            Database.EnsureCreated();
+//        }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
-        {
-            string path = "";
+//        protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
+//        {
+//            string path = "";
 
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
+//            switch (Device.RuntimePlatform)
+//            {
+//                case Device.iOS:
 
-                    SQLitePCL.Batteries_V2.Init();
+//                    SQLitePCL.Batteries_V2.Init();
 
-                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", DbName);
+//                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", DbName);
 
-                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
+//                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
 
-                    break;
-                case Device.Android:
+//                    break;
+//                case Device.Android:
 
-                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), DbName);
+//                    path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), DbName);
 
-                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
+//                    dbContextOptionsBuilder.UseSqlite($"Filename={path}");
 
-                    break;
+//                    break;
 
-                default:
-                    throw new NotImplementedException("Platform not supported");
-            }
-        }
-    }
-}
+//                default:
+//                    throw new NotImplementedException("Platform not supported");
+//            }
+//        }
+//    }
+//}

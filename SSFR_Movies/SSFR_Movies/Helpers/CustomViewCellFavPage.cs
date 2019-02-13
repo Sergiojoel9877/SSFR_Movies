@@ -2,30 +2,31 @@
 using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
+using Realms;
+//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
+using SSFR_Movies.ViewModels;
 using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
-using Realms;
+using Xamarin.Forms.Internals;
+using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
 {
-    [Preserve(AllMembers = true)]
-    public class CustomViewCell : FlexLayout
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
+    public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
         private Lazy<Image> blurCachedImage = null;
         //private Image blurCachedImage = null;
         private Lazy<Image> cachedImage = null;
         //private Image cachedImage = null;
-        private Lazy<ActivityIndicator> imageLoading = null;
-        private Lazy<FlexLayout> FlexLayout = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -35,17 +36,14 @@ namespace SSFR_Movies.Helpers
         private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
-        private Lazy<Image> pin2FavList = null;
+        private Lazy<Image> unPinFromFavList = null;
         private Lazy<StackLayout> compat = null;
-        private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
-
         #endregion
 
-        public CustomViewCell()
+        public CustomViewCellFavPage()
         {
-      
             HeightRequest = 300;
             Direction = FlexDirection.Column;
             Margin = 16;
@@ -58,7 +56,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            SubContainer = new Lazy<StackLayout>(()=> new StackLayout()
+            SubContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
                 Margin = new Thickness(16, 0, 16, 0),
                 HeightRequest = 280,
@@ -67,7 +65,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            absoluteLayout = new Lazy<AbsoluteLayout>(()=> new AbsoluteLayout()
+            absoluteLayout = new Lazy<AbsoluteLayout>(() => new AbsoluteLayout()
             {
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
@@ -79,44 +77,54 @@ namespace SSFR_Movies.Helpers
 
             blurCachedImage = new Lazy<Image>(() => new Image()
             {
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
                 HeightRequest = 330,
+                Opacity = 0.6,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
+                //LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
+                //Transformations = Blur
             });
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, "BackdropPath", stringFormat: $"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{0}");
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
                 HeightRequest = 280,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280
+                WidthRequest = 280,
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            
-            imageLoading = new Lazy<ActivityIndicator>(() => new ActivityIndicator()
-            {
-                HeightRequest = 35,
-                Color = Color.White
-            });
+            cachedImage.Value.SetBinding(Image.SourceProperty, "PosterPath", stringFormat: $"https://image.tmdb.org/t/p/w370_and_h556_bestv2{0}");
 
-            imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, "IsLoading");
-            imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
-            imageLoading.Value.BindingContext = cachedImage;
-
-            panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
+            panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HeightRequest = 125,
                 HorizontalOptions = LayoutOptions.Center,
             });
 
-            FrameUnderImages = new Lazy<Frame>(()=> new Frame()
+            FrameUnderImages = new Lazy<Frame>(() => new Frame()
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
                 HorizontalOptions = LayoutOptions.Center
             });
-            FrameUnderImages.Value.On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6f);
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
             {
@@ -124,27 +132,27 @@ namespace SSFR_Movies.Helpers
                 new ColumnDefinition() { Width = GridLength.Star},
                 new ColumnDefinition() { Width = GridLength.Star}
             };
-            
+
             RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
             {
                 new RowDefinition() { Height = GridLength.Star},
                 new RowDefinition() { Height = GridLength.Star}
             };
 
-            gridInsideFrame = new Lazy<Grid>(()=> new Grid()
+            gridInsideFrame = new Lazy<Grid>(() => new Grid()
             {
                 ColumnDefinitions = columnDefinitions,
                 RowDefinitions = rowDefinitions
             });
 
-            scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
+            scrollTitle = new Lazy<ScrollView>(() => new ScrollView()
             {
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Never,
                 Orientation = ScrollOrientation.Horizontal
             });
 
-            title = new Lazy<Label>(()=> new Label()
+            title = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 TextColor = Color.White,
@@ -155,10 +163,10 @@ namespace SSFR_Movies.Helpers
             });
 
             title.Value.SetBinding(Label.TextProperty, "Title");
-            
+
             scrollTitle.Value.Content = title.Value;
 
-            releaseDate = new Lazy<Label>(()=> new Label()
+            releaseDate = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 TextColor = Color.FromHex("#65FFFFFF"),
@@ -169,24 +177,32 @@ namespace SSFR_Movies.Helpers
             });
             releaseDate.Value.SetBinding(Label.TextProperty, "ReleaseDate");
 
-            compat = new Lazy<StackLayout>(()=> new StackLayout()
+            compat = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<Image>(() => new Image()
+            unPinFromFavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
+                //BitmapOptimizations = true,
+                //DownsampleToViewSize = true,
+                //FadeAnimationEnabled = true,
+                //FadeAnimationForCachedImages = true,
+                //RetryCount = 5,
+                //RetryDelay = 2000,
+                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
             });
-            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
+            unPinFromFavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
-            compat.Value.Children.Add(pin2FavList.Value);
+            compat.Value.Children.Add(unPinFromFavList.Value);
 
             gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            Grid.SetColumnSpan(scrollTitle.Value, 3);
+            Grid.SetColumnSpan(scrollTitle.Value, 2);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
             gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
@@ -194,14 +210,11 @@ namespace SSFR_Movies.Helpers
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(imageLoading.Value, new Rectangle(.5, .5, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(imageLoading.Value, AbsoluteLayoutFlags.All);
 
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
             absoluteLayout.Value.Children.Add(cachedImage.Value);
-            absoluteLayout.Value.Children.Add(imageLoading.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
             panelContainer.Value.Children.Add(FrameUnderImages.Value);
@@ -210,33 +223,29 @@ namespace SSFR_Movies.Helpers
             CompressedLayout.SetIsHeadless(SubContainer.Value, true);
             Container.Value.Children.Add(SubContainer.Value);
             Container.Value.Children.Add(panelContainer.Value);
-           
+
             Children.Add(Container.Value);
-            
-            AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
-            
+
             tap = new TapGestureRecognizer();
 
+            tap.Tapped += QuitFromFavListTap;
+
             imageTapped = new TapGestureRecognizer();
-
-            tap.Tapped += AddToFavListTap;
-
+            
             imageTapped.Tapped += PosterTapped;
 
             absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
 
             compat.Value.GestureRecognizers.Add(tap);
+            
         }
-
+        
         private void PosterTapped(object sender, EventArgs e)
         {
             var movie = BindingContext as Result;
-
-            MessagingCenter.Send(this, "Hide", true);
-
-            MessagingCenter.Send(this, "PushAsync");
             
-            MessagingCenter.Send(this, "_PushAsync");
+            MessagingCenter.Send(this, "PushAsync");
+           
         }
 
         protected override void OnBindingContextChanged()
@@ -259,29 +268,24 @@ namespace SSFR_Movies.Helpers
             {
                 return;
             }
-            
-            blurCachedImage.Value.Source = new UriImageSource
-            {
-                Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
 
-            cachedImage.Value.Source = new UriImageSource
-            {
-                Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
-            
+            blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
+
+            cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
+
             base.OnBindingContextChanged();
         }
-
-        private async void AddToFavListTap(object sender, EventArgs e)
+        
+        void ExecuteAction(Func<Task> exe)
+        {
+            Task.Run(async () => { await exe(); });
+        }
+        
+        private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
 
-            await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+            await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
 
             if (sender != null)
             {
@@ -303,43 +307,35 @@ namespace SSFR_Movies.Helpers
                 {
                     var realm = await Realm.GetInstanceAsync();
 
-                    var movieExists = realm.Find<Result>(movie.Id);
+                    var deleteMovie = realm.Find<Result>(movie.Id);
 
-                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
+                    if (deleteMovie != null)
                     {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
+                        realm.Write(()=>
+                        {
+                            movie.FavoriteMovie = "StarEmpty.png";
 
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        
-                        return;
+                            realm.Add(movie, true);
+                        });
+
+                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+
+                        MessagingCenter.Send(this, "Refresh", true);
+
+                        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
                     }
-                    
-                    realm.Write(() =>
-                    {
-                        movie.FavoriteMovie = "Star.png";
 
-                        realm.Add(movie, true);
-                    });
-
-                    MessagingCenter.Send(this, "Refresh", true);
-
-                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-                    
-                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-
-                    await SpeakNow("Added Successfully");
-                    
                 }
                 catch (Exception e15)
                 {
-                    Debug.WriteLine("Error: " + e15.InnerException);
+                    Debug.Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
+        private async void QuitFromFavList(object sender, EventArgs e)
         {
-            
+
             if (sender is MenuItem opt)
             {
                 var movie = opt.BindingContext as Result;
@@ -357,33 +353,34 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var realm = await Realm.GetInstanceAsync();
-                    
-                    var movieExists = realm.Find<Result>(movie.Id);
-                    
-                    if (movieExists != null)
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-                        return;
-                    }
 
-                    await realm.WriteAsync((r) => realm.Add(movie));
+                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
 
-                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
+                    //if (deleteMovie)
+                    //{
+                    //    ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
 
-                    await SpeakNow("Added Successfully");
+                    //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
-                    Vibration.Vibrate(0.5);
+                    //    MessagingCenter.Send(this, "RefreshList", true);
+
+                    //    DependencyService.Get<IToast>().LongAlert("Removed Successfully, The movie " + movie.Title + " was removed from your favorite list!");
+
+                    //    await SpeakNow("Removed Successfully");
+
+                    //    Vibration.Vibrate(0.5);
+
+                    //}
                 }
                 catch (Exception err)
                 {
-                    Debug.WriteLine(err.InnerException);
+                    Debug.Debug.WriteLine($"Error: {err}");
                 }
             }
         }
         public async Task SpeakNow(string msg)
         {
-            var settings = new SpeechOptions
+            var settings = new SpeechOptions()
             {
                 Volume = 1f,
                 Pitch = 1.0f
