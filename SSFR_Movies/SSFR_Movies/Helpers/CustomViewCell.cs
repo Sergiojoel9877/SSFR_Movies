@@ -13,6 +13,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
 using Realms;
+using SSFR_Movies.Converters;
 
 namespace SSFR_Movies.Helpers
 {
@@ -85,6 +86,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
             });
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
@@ -93,7 +95,9 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280
             });
-            
+            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+
+
             imageLoading = new Lazy<ActivityIndicator>(() => new ActivityIndicator()
             {
                 HeightRequest = 35,
@@ -241,11 +245,16 @@ namespace SSFR_Movies.Helpers
 
         protected override void OnBindingContextChanged()
         {
-            blurCachedImage.Value.Source = null;
+            //blurCachedImage.Value.Source = null;
 
-            cachedImage.Value.Source = null;
+            //cachedImage.Value.Source = null;
 
             var item = BindingContext as Result;
+
+            if (item == null)
+            {
+                return;
+            }
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -255,24 +264,19 @@ namespace SSFR_Movies.Helpers
                 }
             });
 
-            if (item == null)
-            {
-                return;
-            }
-            
-            blurCachedImage.Value.Source = new UriImageSource
-            {
-                Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
+            //blurCachedImage.Value.Source = new UriImageSource
+            //{
+            //    Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
+            //    CachingEnabled = true,
+            //    CacheValidity = new TimeSpan(5, 60, 60)
+            //};
 
-            cachedImage.Value.Source = new UriImageSource
-            {
-                Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
-                CachingEnabled = true,
-                CacheValidity = new TimeSpan(5, 60, 60)
-            };
+            //cachedImage.Value.Source = new UriImageSource
+            //{
+            //    Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
+            //    CachingEnabled = true,
+            //    CacheValidity = new TimeSpan(5, 60, 60)
+            //};
             
             base.OnBindingContextChanged();
         }
