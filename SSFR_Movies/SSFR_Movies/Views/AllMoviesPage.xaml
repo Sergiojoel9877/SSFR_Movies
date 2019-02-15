@@ -17,10 +17,6 @@
 
     <ContentPage.Content>
         <StackLayout x:Name="stack">
-            <StackLayout.GestureRecognizers>
-                <SwipeGestureRecognizer  Direction="Right" Swiped="StackSwiped"/>
-            </StackLayout.GestureRecognizers>
-            
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout

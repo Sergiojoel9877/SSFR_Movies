@@ -416,18 +416,7 @@ namespace SSFR_Movies.Views
             });
             
         }
-
-        private void StackSwiped(object sender, SwipedEventArgs e)
-        {
-            switch (e.Direction)
-            {
-                case SwipeDirection.Left:
-                    (App.Current.MainPage as Shell).GoToAsync("app:///ssfr/favorites", true);
-                    break;
-            }    
-          
-        }
-
+        
         #region searchfunction
         public async void SearchBar_SearchButtonPressed(string sender)
         {
