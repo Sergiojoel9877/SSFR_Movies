@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SSFR_Movies.Helpers
 {
-    public class ContentPageBase<TViewModel> : ReactiveContentPage<TViewModel> where TViewModel : class  
+    public class ContentPageBase<TViewModel> : ReactiveContentPage<TViewModel> where TViewModel : class
     {
     }
 }
