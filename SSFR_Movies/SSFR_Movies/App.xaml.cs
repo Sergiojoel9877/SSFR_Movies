@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Xamarin.Forms.Internals;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Models;
+using ReactiveUI;
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace SSFR_Movies
@@ -23,13 +24,17 @@ namespace SSFR_Movies
     /// The main class of a Xamarin Forms App.
     /// </summary>
     [Preserve(AllMembers = true)]
-    public partial class App : Application
+    public partial class App : Application, IScreen
 	{
         public static HttpClient httpClient { get; set; }
-        
+
+        public RoutingState Router { get; set; }
+
         public App ()
 		{
             InitializeComponent();
+
+            Router = new RoutingState();
             
             var mainPage = new StartPagexaml();
 
