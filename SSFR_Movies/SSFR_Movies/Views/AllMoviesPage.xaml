@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage
+<ui:ContentPageBase
     x:Class="SSFR_Movies.Views.AllMoviesPage"
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
+    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
     Title="SSFR Movies"
-    BackgroundColor="#161513">
+    BackgroundColor="#161513"
+    xmlns:rxui="clr-namespace:ReactiveUI.XamForms;assembly=ReactiveUI.XamForms" 
+    xmlns:ui="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:vms="clr-namespace:SSFR_Movies.ViewModels"
+    x:TypeArguments="vms">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -320,4 +324,4 @@
             </ScrollView>
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>
+</ui:ContentPageBase>
