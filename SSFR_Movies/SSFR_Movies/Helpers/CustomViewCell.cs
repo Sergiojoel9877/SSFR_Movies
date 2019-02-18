@@ -100,16 +100,6 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 35,
                 Color = Color.White
             });
-
-            //cachedImage.Value.PropertyChanged += (s, e) =>
-            //{
-            //    if (e.PropertyName == "IsLoading")
-            //    {
-            //        imageLoading.Value.BindingContext = cachedImage;
-            //        imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, new Binding("IsLoading", BindingMode.Default));
-            //        imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
-            //    }
-            //};
             
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
@@ -143,14 +133,7 @@ namespace SSFR_Movies.Helpers
                 ColumnDefinitions = columnDefinitions,
                 RowDefinitions = rowDefinitions
             });
-
-            //scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
-            //{
-            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-            //    VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-            //    Orientation = ScrollOrientation.Horizontal
-            //});
-
+            
             title = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
@@ -163,8 +146,6 @@ namespace SSFR_Movies.Helpers
 
             title.Value.SetBinding(Label.TextProperty, "Title");
             
-            //scrollTitle.Value.Content = title.Value;
-
             releaseDate = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
@@ -191,9 +172,7 @@ namespace SSFR_Movies.Helpers
             pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
-
-            //gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            //Grid.SetColumnSpan(scrollTitle.Value, 3);
+            
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
             Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
