@@ -18,7 +18,10 @@ namespace SSFR_Movies.Services
         public void Initialize()
         {
             Locator.CurrentMutable.RegisterLazySingleton(() => new ApiClient(), typeof(ApiClient));
-            Locator.CurrentMutable.RegisterLazySingleton(() => new AllMoviesPageViewModel(), typeof(AllMoviesPageViewModel));
+            #region Fixes Duplication
+            //Fixes a weird duplication between the SearchPage and AllMoviesPage [cause they share the Same ViewModel => AllMoviesPageViewModel]
+            Locator.CurrentMutable.Register(() => new AllMoviesPageViewModel(), typeof(AllMoviesPageViewModel));
+            #endregion
             Locator.CurrentMutable.RegisterLazySingleton(() => new FavoriteMoviesPageViewModel(), typeof(FavoriteMoviesPageViewModel));
         }
 #pragma warning disable 0219, 0649
