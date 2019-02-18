@@ -4,7 +4,6 @@ using Xamarin.Forms.Xaml;
 using SSFR_Movies.Views;
 using SSFR_Movies.Services;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using System.Net.Http;
 using MonkeyCache.FileStore;
 using SSFR_Movies.Helpers;

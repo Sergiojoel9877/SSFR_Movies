@@ -1,9 +1,8 @@
-﻿using CommonServiceLocator;
-using FFImageLoading.Forms;
+﻿using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
 using Realms;
-//using SSFR_Movies.Data;
+using Splat;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -318,7 +317,7 @@ namespace SSFR_Movies.Helpers
                             realm.Add(movie, true);
                         });
 
-                        ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
+                        Locator.CurrentMutable.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "Refresh", true);
 
@@ -333,51 +332,6 @@ namespace SSFR_Movies.Helpers
             }
         }
 
-        private async void QuitFromFavList(object sender, EventArgs e)
-        {
-
-            if (sender is MenuItem opt)
-            {
-                var movie = opt.BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                try
-                {
-
-                    //var deleteMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().DeleteEntity(movie).ConfigureAwait(false);
-
-                    //if (deleteMovie)
-                    //{
-                    //    ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value.FavMoviesList.Value.Remove(movie);
-
-                    //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-
-                    //    MessagingCenter.Send(this, "RefreshList", true);
-
-                    //    DependencyService.Get<IToast>().LongAlert("Removed Successfully, The movie " + movie.Title + " was removed from your favorite list!");
-
-                    //    await SpeakNow("Removed Successfully");
-
-                    //    Vibration.Vibrate(0.5);
-
-                    //}
-                }
-                catch (Exception err)
-                {
-                    Debug.Debug.WriteLine($"Error: {err}");
-                }
-            }
-        }
         public async Task SpeakNow(string msg)
         {
             var settings = new SpeechOptions()

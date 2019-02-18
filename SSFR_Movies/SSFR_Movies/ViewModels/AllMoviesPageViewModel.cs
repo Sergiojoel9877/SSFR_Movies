@@ -8,7 +8,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Linq;
 using System.Threading.Tasks;
-using CommonServiceLocator;
+//using CommonServiceLocator;
+using Splat;
 using SSFR_Movies.Services;
 using SSFR_Movies.Helpers;
 using Plugin.Connectivity;
@@ -195,8 +196,9 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
-
+            //var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
+            var done = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
+            
             if (done)
             {
                 return true;
@@ -328,7 +330,7 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
             
-            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
+            return await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
 
         }
 

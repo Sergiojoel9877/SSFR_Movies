@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-//using SSFR_Movies.Data;
+﻿//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using System;
 using System.Threading.Tasks;

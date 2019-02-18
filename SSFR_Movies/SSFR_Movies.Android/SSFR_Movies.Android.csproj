@@ -37,16 +37,15 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidSupportedAbis>armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AndroidLinkSkip>
-    </AndroidLinkSkip>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <EnableProguard>false</EnableProguard>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
+    <AndroidLinkSkip>Xamarin.Forms.Core;Unity.Container</AndroidLinkSkip>
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
@@ -68,13 +67,12 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidSupportedAbis>x86</AndroidSupportedAbis>
+    <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidLinkSkip>
-    </AndroidLinkSkip>
+    <AndroidLinkSkip>Xamarin.Forms.Core;</AndroidLinkSkip>
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
     <EnableProguard>true</EnableProguard>
@@ -88,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="glidex.forms">
-      <Version>1.0.3</Version>
+      <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="MonkeyCache">
       <Version>1.2.0-beta</Version>
@@ -104,6 +102,9 @@
     </PackageReference>
     <PackageReference Include="Refractored.XamForms.PullToRefresh">
       <Version>2.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Splat">
+      <Version>6.1.7</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>4.6.0-preview.19073.11</Version>

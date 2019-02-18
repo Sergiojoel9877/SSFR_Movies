@@ -7,16 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
     <PackageReference Include="MonkeyCache" Version="1.2.0-beta" />
     <PackageReference Include="MonkeyCache.FileStore" Version="1.2.0-beta" />
     <PackageReference Include="Realm" Version="3.4.0" />
     <PackageReference Include="Realm.Database" Version="3.4.0" />
     <PackageReference Include="Realm.DataBinding" Version="1.2.0" />
     <PackageReference Include="Refractored.XamForms.PullToRefresh" Version="2.2.3" />
-    <PackageReference Include="Unity" Version="5.9.4" />
-    <PackageReference Include="Unity.Abstractions" Version="4.0.3" />
-    <PackageReference Include="Unity.ServiceLocation" Version="5.9.1" />
+    <PackageReference Include="Splat" Version="6.1.7" />
     <PackageReference Include="Xam.Plugin.Connectivity" Version="4.0.0.190-beta" />
     <PackageReference Include="Xam.Plugins.Settings" Version="4.0.0.10-beta" />
     <PackageReference Include="Xamarin.Essentials" Version="1.0.1" />

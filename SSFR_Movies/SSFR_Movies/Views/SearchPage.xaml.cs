@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using Plugin.Connectivity;
+using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -27,7 +27,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
+            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             activityIndicator.IsVisible = false;
 
@@ -114,8 +114,8 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
-
+                        var movie_results = await Locator.CurrentMutable.GetService<ApiClient>().SearchMovieByName(key);
+                        
                         if (movie_results.Results.Count != 0)
                         {
 

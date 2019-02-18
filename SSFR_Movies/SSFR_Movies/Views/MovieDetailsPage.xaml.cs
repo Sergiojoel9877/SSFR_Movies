@@ -1,6 +1,6 @@
-﻿using CommonServiceLocator;
-using Plugin.Connectivity;
+﻿using Plugin.Connectivity;
 using Realms;
+using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
@@ -226,7 +226,7 @@ namespace SSFR_Movies.Views
             
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.CurrentMutable.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -255,7 +255,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.CurrentMutable.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() > 0)
             {
@@ -276,11 +276,11 @@ namespace SSFR_Movies.Views
 
             await Scroll.ScrollToAsync(0, 500, true);
             
-            var URI = ServiceLocator.Current
-                                .GetInstance<Lazy<ApiClient>>()
-                                    .Value
-                                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
-                                            item.ReleaseDate.Substring(0, 4));
+            var URI = Locator
+                        .Current
+                            .GetService<ApiClient>()
+                                .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+                                    item.ReleaseDate.Substring(0, 4));
             streamWV.Source = URI;
 
             streamWV.Navigated += StreamWV_Navigated;

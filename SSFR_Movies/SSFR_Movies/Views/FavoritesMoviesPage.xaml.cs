@@ -1,4 +1,5 @@
-﻿using CommonServiceLocator;
+﻿//using CommonServiceLocator;
+using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -34,7 +35,7 @@ namespace SSFR_Movies.Views
 		{
 			InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<Lazy<FavoriteMoviesPageViewModel>>().Value;
+            vm = Locator.CurrentMutable.GetService<FavoriteMoviesPageViewModel>();
 
             BindingContext = vm;
 

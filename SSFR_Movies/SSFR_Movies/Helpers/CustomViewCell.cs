@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using FFImageLoading.Forms;
+﻿using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
 using Plugin.Connectivity;
 using SSFR_Movies.Models;
@@ -33,12 +32,10 @@ namespace SSFR_Movies.Helpers
         private Lazy<StackLayout> panelContainer = null;
         private Lazy<Frame> FrameUnderImages = null;
         private Lazy<Grid> gridInsideFrame = null;
-        private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
         private Lazy<Image> pin2FavList = null;
         private Lazy<StackLayout> compat = null;
-        private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
 
@@ -147,12 +144,12 @@ namespace SSFR_Movies.Helpers
                 RowDefinitions = rowDefinitions
             });
 
-            scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
-            {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-                Orientation = ScrollOrientation.Horizontal
-            });
+            //scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
+            //{
+            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
+            //    VerticalScrollBarVisibility = ScrollBarVisibility.Never,
+            //    Orientation = ScrollOrientation.Horizontal
+            //});
 
             title = new Lazy<Label>(()=> new Label()
             {
@@ -166,7 +163,7 @@ namespace SSFR_Movies.Helpers
 
             title.Value.SetBinding(Label.TextProperty, "Title");
             
-            scrollTitle.Value.Content = title.Value;
+            //scrollTitle.Value.Content = title.Value;
 
             releaseDate = new Lazy<Label>(()=> new Label()
             {
@@ -195,8 +192,10 @@ namespace SSFR_Movies.Helpers
 
             compat.Value.Children.Add(pin2FavList.Value);
 
-            gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            Grid.SetColumnSpan(scrollTitle.Value, 3);
+            //gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
+            //Grid.SetColumnSpan(scrollTitle.Value, 3);
+            gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
+            Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
             gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
@@ -204,14 +203,11 @@ namespace SSFR_Movies.Helpers
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(imageLoading.Value, new Rectangle(.5, .5, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(imageLoading.Value, AbsoluteLayoutFlags.All);
 
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
             absoluteLayout.Value.Children.Add(cachedImage.Value);
-            absoluteLayout.Value.Children.Add(imageLoading.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
             panelContainer.Value.Children.Add(FrameUnderImages.Value);
@@ -222,8 +218,6 @@ namespace SSFR_Movies.Helpers
             Container.Value.Children.Add(panelContainer.Value);
            
             Children.Add(Container.Value);
-            
-            AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
             
             tap = new TapGestureRecognizer();
 
@@ -240,8 +234,6 @@ namespace SSFR_Movies.Helpers
 
         private void PosterTapped(object sender, EventArgs e)
         {
-            var movie = BindingContext as Result;
-
             MessagingCenter.Send(this, "Hide", true);
 
             MessagingCenter.Send(this, "PushAsync");
@@ -249,44 +241,44 @@ namespace SSFR_Movies.Helpers
             MessagingCenter.Send(this, "_PushAsync");
         }
 
-        protected override void OnBindingContextChanged()
-        {
+        //protected override void OnBindingContextChanged()
+        //{
 
-            base.OnBindingContextChanged();
-            //blurCachedImage.Value.Source = null;
+        //    base.OnBindingContextChanged();
+        //    //blurCachedImage.Value.Source = null;
 
-            //cachedImage.Value.Source = null;
+        //    //cachedImage.Value.Source = null;
 
-            var item = BindingContext as Result;
+        //    //var item = BindingContext as Result;
 
-            if (item == null)
-            {
-                return;
-            }
+        //    //if (item == null)
+        //    //{
+        //    //    return;
+        //    //}
 
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                if (title.Value.Text.Length >= 15)
-                {
-                    title.Value.SetAnimation();
-                }
-            });
+        //    //Device.BeginInvokeOnMainThread(() =>
+        //    //{
+        //    //    if (title.Value.Text.Length >= 15)
+        //    //    {
+        //    //        title.Value.SetAnimation();
+        //    //    }
+        //    //});
 
-            //blurCachedImage.Value.Source = new UriImageSource
-            //{
-            //    Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
-            //    CachingEnabled = true,
-            //    CacheValidity = new TimeSpan(5, 60, 60)
-            //};
+        //    //blurCachedImage.Value.Source = new UriImageSource
+        //    //{
+        //    //    Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
+        //    //    CachingEnabled = true,
+        //    //    CacheValidity = new TimeSpan(5, 60, 60)
+        //    //};
 
-            //cachedImage.Value.Source = new UriImageSource
-            //{
-            //    Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
-            //    CachingEnabled = true,
-            //    CacheValidity = new TimeSpan(5, 60, 60)
-            //};
+        //    //cachedImage.Value.Source = new UriImageSource
+        //    //{
+        //    //    Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
+        //    //    CachingEnabled = true,
+        //    //    CacheValidity = new TimeSpan(5, 60, 60)
+        //    //};
             
-        }
+        //}
 
         private async void AddToFavListTap(object sender, EventArgs e)
         {

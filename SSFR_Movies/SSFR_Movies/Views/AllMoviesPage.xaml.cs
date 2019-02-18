@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CommonServiceLocator;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -14,10 +13,10 @@ using Xamarin.Essentials;
 using Xamarin.Forms.Internals;
 using System.Threading;
 using System.Diagnostics;
-using Unity;
 using Refractored.XamForms.PullToRefresh;
 using static SSFR_Movies.Views.SearchPage;
 using Realms;
+using Splat;
 
 namespace SSFR_Movies.Views
 {
@@ -43,7 +42,8 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
+            //vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
+            vm = Locator.CurrentMutable.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
 
@@ -256,8 +256,9 @@ namespace SSFR_Movies.Views
 
                 token.CancelAfter(4000);
 
-                var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-
+                //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                var MoviesDownloaded = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                
                 if (MoviesDownloaded)
                 {
                     BindingContext = null;
@@ -320,13 +321,13 @@ namespace SSFR_Movies.Views
 
                 var genreType = ((Label)sender).Text;
 
-                //var genres = Barrel.Current.Get<Genres>("Genres.Cached");
                 var genres = realm.All<Genres>().FirstOrDefault();
 
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
-                var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
-
+                //var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
+                var stored = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+    
                 if (stored)
                 {
                     await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
@@ -384,22 +385,12 @@ namespace SSFR_Movies.Views
 
         private void SearchClicked(object sender, EventArgs e)
         {
-            InitializeAsync( async () =>
+            Device.BeginInvokeOnMainThread(async ()=>
             {
                 await Navigation.PushAsync(new SearchPage(), true);
             });
            
         }
-        
-        //protected override void OnParentSet()
-        //{
-        //    base.OnParentSet();
-
-        //    if (Parent == null)
-        //    {
-        //        BindingContext = null;
-        //    }
-        //}
         
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
@@ -416,114 +407,5 @@ namespace SSFR_Movies.Views
             });
             
         }
-        
-        #region searchfunction
-        public async void SearchBar_SearchButtonPressed(string sender)
-        {
-
-            await Task.Yield();
-
-            activityIndicator.IsVisible = true;
-
-            activityIndicator.IsRunning = true;
-
-            MoviesList.IsVisible = false;
-
-            //var key = ((SearchBar)sender).Text;
-            var key = sender;
-
-            if (key == "")
-            {
-                DependencyService.Get<IToast>().LongAlert("The name can't be empty");
-
-                await SpeakNow("The name can't be empty");
-
-                return;
-            }
-
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-
-                try
-                {
-
-                    if (key != "")
-                    {
-
-                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
-
-                        if (movie_results.Results.Count != 0)
-                        {
-
-                            vm.AllMoviesList.Value.Clear();
-
-                            foreach (var MovieResult in movie_results.Results)
-                            {
-                                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                                //MovieResult.PosterPath = PosterPath;
-
-                                //MovieResult.BackdropPath = Backdroppath;
-
-                                vm.AllMoviesList.Value.Add(MovieResult);
-                            }
-
-                            BindingContext = vm;
-
-                            MoviesList.IsVisible = true;
-
-                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
-
-                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-
-                            activityIndicator.IsVisible = false;
-
-                            activityIndicator.IsRunning = false;
-
-                            await SpeakNow("Search completed");
-
-                        }
-                        else
-                        {
-
-                            MoviesList.ItemsSource = null;
-
-                            activityIndicator.IsVisible = false;
-
-                            activityIndicator.IsRunning = false;
-
-                            MoviesList.IsVisible = true;
-
-                            DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
-
-                            await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
-
-                            Vibration.Vibrate();
-
-                        }
-                    }
-                }
-                catch (Exception e3)
-                {
-                    Debug.WriteLine("Error: " + e3.InnerException);
-                    //MoviesList.EndRefresh();
-                }
-            });
-        }
-
-        #endregion
     }
 }

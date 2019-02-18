@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using MonkeyCache.FileStore;
+﻿using MonkeyCache.FileStore;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using System;
@@ -38,11 +37,9 @@ namespace SSFR_Movies.Views
 
                 await ProBar.ProgressTo(.5, 200, Easing.Linear);
 
-                await Task.Factory.StartNew(()=>
-                {
-                    ContainerInitializer.Initialize();
-                },TaskCreationOptions.RunContinuationsAsynchronously);
-                
+                var cont = new ContainerInitializer();
+                cont.Initialize();
+
                 var mainPage = new Lazy<AppShell>(() => new AppShell());
                 
                 Device.BeginInvokeOnMainThread(async () =>
