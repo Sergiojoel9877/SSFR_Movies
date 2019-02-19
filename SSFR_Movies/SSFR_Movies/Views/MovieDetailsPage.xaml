@@ -122,7 +122,7 @@
                                             FontAttributes="Bold"
                                             HorizontalTextAlignment="End"
                                             Style="{StaticResource LabelsStyle}"
-                                            Text="{Binding ReleaseDate, StringFormat='{0}'}" />
+                                            Text="{Binding ReleaseDate}" />
                                     </StackLayout>
 
                                     <StackLayout

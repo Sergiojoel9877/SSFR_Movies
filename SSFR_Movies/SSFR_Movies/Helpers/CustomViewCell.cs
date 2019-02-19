@@ -18,11 +18,7 @@ namespace SSFR_Movies.Helpers
     {
         #region Controls
         private Lazy<Image> blurCachedImage = null;
-        //private Image blurCachedImage = null;
         private Lazy<Image> cachedImage = null;
-        //private Image cachedImage = null;
-        private Lazy<ActivityIndicator> imageLoading = null;
-        private Lazy<FlexLayout> FlexLayout = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -90,23 +86,6 @@ namespace SSFR_Movies.Helpers
                 WidthRequest = 280
             });
             cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
-
-
-            imageLoading = new Lazy<ActivityIndicator>(() => new ActivityIndicator()
-            {
-                HeightRequest = 35,
-                Color = Color.White
-            });
-
-            //cachedImage.Value.PropertyChanged += (s, e) =>
-            //{
-            //    if (e.PropertyName == "IsLoading")
-            //    {
-            //        imageLoading.Value.BindingContext = cachedImage;
-            //        imageLoading.Value.SetBinding(ActivityIndicator.IsRunningProperty, new Binding("IsLoading", BindingMode.Default));
-            //        imageLoading.Value.SetBinding(ActivityIndicator.IsVisibleProperty, "IsLoading");
-            //    }
-            //};
             
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
@@ -141,13 +120,6 @@ namespace SSFR_Movies.Helpers
                 RowDefinitions = rowDefinitions
             });
 
-            //scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
-            //{
-            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-            //    VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-            //    Orientation = ScrollOrientation.Horizontal
-            //});
-
             title = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
@@ -160,8 +132,6 @@ namespace SSFR_Movies.Helpers
 
             title.Value.SetBinding(Label.TextProperty, "Title");
             
-            //scrollTitle.Value.Content = title.Value;
-
             releaseDate = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
@@ -188,9 +158,7 @@ namespace SSFR_Movies.Helpers
             pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
-
-            //gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            //Grid.SetColumnSpan(scrollTitle.Value, 3);
+            
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
             Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
@@ -237,45 +205,6 @@ namespace SSFR_Movies.Helpers
             
             MessagingCenter.Send(this, "_PushAsync");
         }
-
-        //protected override void OnBindingContextChanged()
-        //{
-
-        //    base.OnBindingContextChanged();
-        //    //blurCachedImage.Value.Source = null;
-
-        //    //cachedImage.Value.Source = null;
-
-        //    //var item = BindingContext as Result;
-
-        //    //if (item == null)
-        //    //{
-        //    //    return;
-        //    //}
-
-        //    //Device.BeginInvokeOnMainThread(() =>
-        //    //{
-        //    //    if (title.Value.Text.Length >= 15)
-        //    //    {
-        //    //        title.Value.SetAnimation();
-        //    //    }
-        //    //});
-
-        //    //blurCachedImage.Value.Source = new UriImageSource
-        //    //{
-        //    //    Uri = new Uri($"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{item.BackdropPath}"),
-        //    //    CachingEnabled = true,
-        //    //    CacheValidity = new TimeSpan(5, 60, 60)
-        //    //};
-
-        //    //cachedImage.Value.Source = new UriImageSource
-        //    //{
-        //    //    Uri = new Uri($"https://image.tmdb.org/t/p/w370_and_h556_bestv2{item.PosterPath}"),
-        //    //    CachingEnabled = true,
-        //    //    CacheValidity = new TimeSpan(5, 60, 60)
-        //    //};
-            
-        //}
 
         private async void AddToFavListTap(object sender, EventArgs e)
         {
@@ -337,50 +266,6 @@ namespace SSFR_Movies.Helpers
             }
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
-        {
-            
-            if (sender is MenuItem opt)
-            {
-                var movie = opt.BindingContext as Result;
-
-                //Verify if internet connection is available
-                if(Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                try
-                {
-                    var realm = await Realm.GetInstanceAsync();
-                    
-                    var movieExists = realm.Find<Result>(movie.Id);
-                    
-                    if (movieExists != null)
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-                        return;
-                    }
-
-                    await realm.WriteAsync((r) => realm.Add(movie));
-
-                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-
-                    await SpeakNow("Added Successfully");
-
-                    Vibration.Vibrate(0.5);
-                }
-                catch (Exception err)
-                {
-                    Debug.WriteLine(err.InnerException);
-                }
-            }
-        }
         public async Task SpeakNow(string msg)
         {
             var settings = new SpeechOptions

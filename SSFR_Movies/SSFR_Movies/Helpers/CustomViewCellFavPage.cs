@@ -2,6 +2,7 @@
 using FFImageLoading.Transformations;
 using Realms;
 using Splat;
+using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -22,9 +23,7 @@ namespace SSFR_Movies.Helpers
     {
         #region Controls
         private Lazy<Image> blurCachedImage = null;
-        //private Image blurCachedImage = null;
         private Lazy<Image> cachedImage = null;
-        //private Image cachedImage = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -75,41 +74,23 @@ namespace SSFR_Movies.Helpers
 
             blurCachedImage = new Lazy<Image>(() => new Image()
             {
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
                 HeightRequest = 330,
                 Opacity = 0.6,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                //LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
-                //Transformations = Blur
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, "BackdropPath", stringFormat: $"https://image.tmdb.org/t/p/w1066_and_h600_bestv2{0}");
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
                 HeightRequest = 280,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280,
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                WidthRequest = 280
             });
-            cachedImage.Value.SetBinding(Image.SourceProperty, "PosterPath", stringFormat: $"https://image.tmdb.org/t/p/w370_and_h556_bestv2{0}");
+            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
 
             panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
@@ -143,13 +124,6 @@ namespace SSFR_Movies.Helpers
                 RowDefinitions = rowDefinitions
             });
 
-            scrollTitle = new Lazy<ScrollView>(() => new ScrollView()
-            {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-                Orientation = ScrollOrientation.Horizontal
-            });
-
             title = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
@@ -161,9 +135,7 @@ namespace SSFR_Movies.Helpers
             });
 
             title.Value.SetBinding(Label.TextProperty, "Title");
-
-            scrollTitle.Value.Content = title.Value;
-
+           
             releaseDate = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
@@ -184,23 +156,15 @@ namespace SSFR_Movies.Helpers
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
-                //BitmapOptimizations = true,
-                //DownsampleToViewSize = true,
-                //FadeAnimationEnabled = true,
-                //FadeAnimationForCachedImages = true,
-                //RetryCount = 5,
-                //RetryDelay = 2000,
-                //CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                //LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
             unPinFromFavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(unPinFromFavList.Value);
 
-            gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            Grid.SetColumnSpan(scrollTitle.Value, 2);
+            gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
+            Grid.SetColumnSpan(title.Value, 2);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
             gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
@@ -240,40 +204,9 @@ namespace SSFR_Movies.Helpers
         
         private void PosterTapped(object sender, EventArgs e)
         {
-            var movie = BindingContext as Result;
-            
             MessagingCenter.Send(this, "PushAsync");
-           
         }
-
-        protected override void OnBindingContextChanged()
-        {
-            blurCachedImage.Value.Source = null;
-
-            cachedImage.Value.Source = null;
-
-            var item = BindingContext as Result;
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                if (title.Value.Text.Length >= 15)
-                {
-                    title.Value.SetAnimation();
-                }
-            });
-
-            if (item == null)
-            {
-                return;
-            }
-
-            blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
-
-            cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
-
-            base.OnBindingContextChanged();
-        }
-        
+                
         void ExecuteAction(Func<Task> exe)
         {
             Task.Run(async () => { await exe(); });

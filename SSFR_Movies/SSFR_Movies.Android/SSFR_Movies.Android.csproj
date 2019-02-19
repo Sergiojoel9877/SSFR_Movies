@@ -72,7 +72,8 @@
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidLinkSkip>Xamarin.Forms.Core;</AndroidLinkSkip>
+    <AndroidLinkSkip>
+    </AndroidLinkSkip>
     <AndroidUseAapt2>false</AndroidUseAapt2>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
     <EnableProguard>true</EnableProguard>
@@ -133,7 +134,7 @@
     <PackageReference Include="Xamarin.Essentials">
       <Version>1.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.0.1.102444-nightly" />
+    <PackageReference Include="Xamarin.Forms" Version="4.0.0.62955-pre2" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1" />
