@@ -109,7 +109,7 @@ namespace SSFR_Movies.Views
                 Icon = "Search.png",
                 Priority = 0,
 
-                Command = new Command(async () =>
+                Command = new Command(() =>
                 {
                     MainThread.BeginInvokeOnMainThread(async ()=>
                     {
@@ -125,7 +125,7 @@ namespace SSFR_Movies.Views
             Scrollview.Orientation = ScrollOrientation.Horizontal;
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {

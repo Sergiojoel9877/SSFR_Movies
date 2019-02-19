@@ -1,22 +1,15 @@
-﻿using MonkeyCache.FileStore;
-using Newtonsoft.Json;
-using Plugin.Connectivity;
+﻿using Newtonsoft.Json;
+using Realms;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Drawing;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using System.Net.Http;
-using Realms;
 
 namespace SSFR_Movies.Services
 {
@@ -45,7 +38,7 @@ namespace SSFR_Movies.Services
             try
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -92,7 +85,7 @@ namespace SSFR_Movies.Services
             try
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -128,7 +121,7 @@ namespace SSFR_Movies.Services
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -226,10 +219,8 @@ namespace SSFR_Movies.Services
             try
             {
                 realm.Write(()=> realm.Add(movies, true));
-
-                //Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
             }
-            catch (DirectoryNotFoundException er)
+            catch (DirectoryNotFoundException)
             {
                 Debug.WriteLine("No storage left");
                 return false;

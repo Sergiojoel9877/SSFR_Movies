@@ -1,18 +1,15 @@
-﻿using FFImageLoading.Forms;
-using FFImageLoading.Transformations;
-using Plugin.Connectivity;
+﻿using FFImageLoading.Transformations;
+using Realms;
+using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
-using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
-using Realms;
-using SSFR_Movies.Converters;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace SSFR_Movies.Helpers
 {
@@ -292,7 +289,7 @@ namespace SSFR_Movies.Helpers
                 var movie = BindingContext as Result;
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
@@ -348,7 +345,7 @@ namespace SSFR_Movies.Helpers
                 var movie = opt.BindingContext as Result;
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if(Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {

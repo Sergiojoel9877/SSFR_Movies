@@ -1,18 +1,13 @@
 ﻿//using CommonServiceLocator;
 //using SSFR_Movies.Data;
+using Realms;
 using SSFR_Movies.Models;
-using MonkeyCache.FileStore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using SSFR_Movies.Helpers;
-using SSFR_Movies.Services;
-using System.Linq;
-using Realms;
 
 namespace SSFR_Movies.ViewModels
 {

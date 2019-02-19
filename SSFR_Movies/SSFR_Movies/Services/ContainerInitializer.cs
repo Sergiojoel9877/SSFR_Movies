@@ -1,11 +1,7 @@
-﻿using MonkeyCache.FileStore;
-using Plugin.Connectivity;
-//using SSFR_Movies.Data;
+﻿using Splat;
 using SSFR_Movies.ViewModels;
 using System;
-using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using Splat;
 
 namespace SSFR_Movies.Services
 {
@@ -34,6 +30,4 @@ namespace SSFR_Movies.Services
         }
 #pragma warning restore 0219, 0649
     }
-
-
 }
