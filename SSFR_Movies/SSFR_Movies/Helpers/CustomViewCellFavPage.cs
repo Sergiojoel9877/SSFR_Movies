@@ -164,7 +164,7 @@ namespace SSFR_Movies.Helpers
             compat.Value.Children.Add(unPinFromFavList.Value);
 
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
-            Grid.SetColumnSpan(title.Value, 2);
+            Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
             gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
