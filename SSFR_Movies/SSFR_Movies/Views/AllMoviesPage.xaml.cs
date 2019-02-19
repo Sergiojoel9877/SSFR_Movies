@@ -41,8 +41,7 @@ namespace SSFR_Movies.Views
         public AllMoviesPage()
         {
             InitializeComponent();
-
-            //vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
+            
             vm = Locator.CurrentMutable.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
@@ -111,9 +110,12 @@ namespace SSFR_Movies.Views
                 Icon = "Search.png",
                 Priority = 0,
 
-                Command = new Command(async () =>
+                Command = new Command(() =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    Device.BeginInvokeOnMainThread(async ()=>
+                    {
+                        await Navigation.PushAsync(new SearchPage(), true);
+                    });
                 })
             };
             
@@ -124,12 +126,16 @@ namespace SSFR_Movies.Views
             Scrollview.Orientation = ScrollOrientation.Horizontal;
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+
+                Device.BeginInvokeOnMainThread(async ()=> 
+                {
+                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                });
             }
         }
         
