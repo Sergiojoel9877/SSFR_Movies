@@ -5,8 +5,6 @@ using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
-using MonkeyCache.FileStore;
-using Plugin.Connectivity;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
@@ -67,7 +65,7 @@ namespace SSFR_Movies.Views
             
             genresContainer = this.FindByName<FlexLayout>("GenresContainer");
 
-            Device.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
                 genresContainer.IsVisible = false;
                 await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
@@ -86,7 +84,7 @@ namespace SSFR_Movies.Views
 
                     if (updownList.Icon == "ListDown.png")
                     {
-                        Device.BeginInvokeOnMainThread(async () => { 
+                        MainThread.BeginInvokeOnMainThread(async () => { 
 
                             genresContainer.IsVisible = false;
 
@@ -95,7 +93,7 @@ namespace SSFR_Movies.Views
                     }
                     else
                     {
-                        Device.BeginInvokeOnMainThread(async ()=>
+                        MainThread.BeginInvokeOnMainThread(async ()=>
                         {
                             genresContainer.IsVisible = true;
 
@@ -113,7 +111,10 @@ namespace SSFR_Movies.Views
 
                 Command = new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    MainThread.BeginInvokeOnMainThread(async ()=>
+                    {
+                        await Navigation.PushAsync(new SearchPage(), true);
+                    });
                 })
             };
             
@@ -129,7 +130,11 @@ namespace SSFR_Movies.Views
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+
+                MainThread.BeginInvokeOnMainThread(async ()=> 
+                {
+                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                });
             }
         }
         
@@ -167,7 +172,7 @@ namespace SSFR_Movies.Views
 
             SuscribeToMessages();
             
-            CrossConnectivity.Current.ConnectivityChanged += Current_ConnectivityChanged;
+            Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
         }
 
         private async Task SpeakNow(string msg)
@@ -184,15 +189,15 @@ namespace SSFR_Movies.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            
-            CrossConnectivity.Current.ConnectivityChanged -= Current_ConnectivityChanged;
+
+            Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
         }
 
-        private void Current_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
+        private void Current_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            if(e.IsConnected)
+            if(e.NetworkAccess == NetworkAccess.Internet)
             {
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
@@ -204,7 +209,7 @@ namespace SSFR_Movies.Views
           
                 BindingContext = vm;
 
-                Device.BeginInvokeOnMainThread(()=>
+                MainThread.BeginInvokeOnMainThread(()=>
                 {
                     MoviesList.ItemsSource = null;
                     MoviesList.ItemsSource = vm.AllMoviesList.Value;
@@ -212,7 +217,7 @@ namespace SSFR_Movies.Views
             }
             else
             {
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     vm.MsgVisible = true;
                     vm.MsgText = "It seems like you don't have an internet connection!";
@@ -229,18 +234,18 @@ namespace SSFR_Movies.Views
 
             try
             {
+
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
                         DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                         return false;
                     });
-                    return;
                 }
-
-                Device.BeginInvokeOnMainThread(() =>
+                
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     activityIndicator.IsRunning = true;
                     activityIndicator.IsVisible = true;
@@ -269,7 +274,7 @@ namespace SSFR_Movies.Views
                     {
                         BindingContext = vm;
 
-                        Device.BeginInvokeOnMainThread( () =>
+                        MainThread.BeginInvokeOnMainThread( () =>
                         {
                             pull2refreshlyt.IsRefreshing = false;
                             activityIndicator.IsRunning = false;
@@ -295,7 +300,7 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 vm.ListVisible = false;
                 vm.IsEnabled = true;
@@ -304,8 +309,9 @@ namespace SSFR_Movies.Views
 
             MoviesList.ItemsSource = null;
 
+
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -336,7 +342,7 @@ namespace SSFR_Movies.Views
                     
                     BindingContext = vm;
 
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
@@ -354,7 +360,7 @@ namespace SSFR_Movies.Views
                  
                     MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         vm.ListVisible = true;
                         vm.IsRunning = false;
@@ -371,7 +377,7 @@ namespace SSFR_Movies.Views
                     return false;
                 });
 
-                Device.BeginInvokeOnMainThread(()=>
+                MainThread.BeginInvokeOnMainThread(()=>
                 {
                     vm.ListVisible = false;
                     vm.IsEnabled = false;
@@ -385,7 +391,7 @@ namespace SSFR_Movies.Views
 
         private void SearchClicked(object sender, EventArgs e)
         {
-            Device.BeginInvokeOnMainThread(async ()=>
+            MainThread.BeginInvokeOnMainThread(async ()=>
             {
                 await Navigation.PushAsync(new SearchPage(), true);
             });

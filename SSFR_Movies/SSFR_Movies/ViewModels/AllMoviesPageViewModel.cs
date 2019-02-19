@@ -3,19 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using MonkeyCache.FileStore;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Linq;
 using System.Threading.Tasks;
-//using CommonServiceLocator;
 using Splat;
 using SSFR_Movies.Services;
 using SSFR_Movies.Helpers;
-using Plugin.Connectivity;
 using System.Threading;
 using Xamarin.Essentials;
 using Realms;
+using ReactiveUI.Legacy;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -26,7 +24,7 @@ namespace SSFR_Movies.ViewModels
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
-
+        
         private bool listVisible = true;
         public bool ListVisible
         {
@@ -102,7 +100,7 @@ namespace SSFR_Movies.ViewModels
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -112,7 +110,7 @@ namespace SSFR_Movies.ViewModels
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = false;
                 IsEnabled = true;
@@ -133,7 +131,7 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Value.Add(r);
             });
 
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = true;
                 MsgVisible = false;
@@ -146,7 +144,7 @@ namespace SSFR_Movies.ViewModels
         {
                 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -166,7 +164,7 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Value.Add(r);
             });
 
-            Device.BeginInvokeOnMainThread(()=>
+            MainThread.BeginInvokeOnMainThread(()=>
             {
                 ListVisible = true;
                 IsRunning = false;
@@ -182,7 +180,7 @@ namespace SSFR_Movies.ViewModels
         {
             
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -217,7 +215,7 @@ namespace SSFR_Movies.ViewModels
                 await Task.Yield();
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -227,7 +225,7 @@ namespace SSFR_Movies.ViewModels
                     return;
                 }
 
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ListVisible = false;
                     IsRunning = true;
@@ -238,7 +236,7 @@ namespace SSFR_Movies.ViewModels
 
                 if (!stored) 
                 {
-                    Device.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(()=>
                     {
                         MsgVisible = true;
                         MsgText = "Low storage left!";
@@ -247,7 +245,7 @@ namespace SSFR_Movies.ViewModels
                     });
                 }
 
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ListVisible = true;
                     IsEnabled = false;
@@ -270,7 +268,7 @@ namespace SSFR_Movies.ViewModels
             get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -292,7 +290,7 @@ namespace SSFR_Movies.ViewModels
             {
                 await Task.Yield();
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -306,7 +304,7 @@ namespace SSFR_Movies.ViewModels
 
                 if (!done)
                 {
-                    Device.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(()=>
                     {
                         MsgVisible = true;
                         MsgText = "No storage space left!";
@@ -320,7 +318,7 @@ namespace SSFR_Movies.ViewModels
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -341,7 +339,7 @@ namespace SSFR_Movies.ViewModels
             {
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                     {
@@ -357,7 +355,7 @@ namespace SSFR_Movies.ViewModels
         }
 
         private Command fillUpMovies;
-        public Command FillUpMovies
+        public Command FillUpMovies 
         {
             get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
             {
@@ -371,7 +369,7 @@ namespace SSFR_Movies.ViewModels
 
             var movies = realm.All<Movie>().ToList();
 
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = false;
                 IsEnabled = true;
@@ -379,7 +377,7 @@ namespace SSFR_Movies.ViewModels
             });
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -387,7 +385,7 @@ namespace SSFR_Movies.ViewModels
                     return false;
                 });
 
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     MsgVisible = true;
                 });
@@ -405,7 +403,7 @@ namespace SSFR_Movies.ViewModels
                 FillUpMovies.Execute(null);
             }
             
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = true;
                 IsEnabled = false;

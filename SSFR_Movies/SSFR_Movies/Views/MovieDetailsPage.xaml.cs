@@ -1,5 +1,4 @@
-﻿using Plugin.Connectivity;
-using Realms;
+﻿using Realms;
 using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
@@ -56,7 +55,7 @@ namespace SSFR_Movies.Views
             
             if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
             {
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     AddToFav.Source = "Star.png";
 
@@ -67,7 +66,7 @@ namespace SSFR_Movies.Views
             }
             else
             {
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     AddToFavLayout.IsVisible = true;
 
@@ -96,9 +95,9 @@ namespace SSFR_Movies.Views
             var realm = await Realm.GetInstanceAsync();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                     return false;
@@ -135,7 +134,7 @@ namespace SSFR_Movies.Views
                             
                         MessagingCenter.Send(this, "ClearSelection");
 
-                        Device.BeginInvokeOnMainThread(()=>
+                        MainThread.BeginInvokeOnMainThread(()=>
                         {
                             AddToFav.Source = "Star.png";
 
@@ -161,9 +160,9 @@ namespace SSFR_Movies.Views
             var movie = (Result)BindingContext;
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                     return false;
@@ -218,7 +217,7 @@ namespace SSFR_Movies.Views
 
             MessagingCenter.Send(this, "ClearSelection");
 
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
                 return;

@@ -1,6 +1,5 @@
 ﻿using FFImageLoading.Forms;
 using FFImageLoading.Transformations;
-using Plugin.Connectivity;
 using Realms;
 using Splat;
 using SSFR_Movies.Models;
@@ -255,7 +254,7 @@ namespace SSFR_Movies.Helpers
 
             var item = BindingContext as Result;
 
-            Device.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
             {
                 if (title.Value.Text.Length >= 15)
                 {
@@ -292,7 +291,7 @@ namespace SSFR_Movies.Helpers
                 var movie = BindingContext as Result;
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
