@@ -53,7 +53,7 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {

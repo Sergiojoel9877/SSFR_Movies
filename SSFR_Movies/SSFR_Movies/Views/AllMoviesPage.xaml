@@ -7,7 +7,8 @@
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
-    BackgroundColor="#161513">
+    BackgroundColor="#161513"
+    >
 
     <ContentPage.Resources>
         <ResourceDictionary>
