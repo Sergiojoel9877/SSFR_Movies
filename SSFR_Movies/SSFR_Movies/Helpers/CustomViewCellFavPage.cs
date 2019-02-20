@@ -30,7 +30,6 @@ namespace SSFR_Movies.Helpers
         private Lazy<StackLayout> panelContainer = null;
         private Lazy<Frame> FrameUnderImages = null;
         private Lazy<Grid> gridInsideFrame = null;
-        private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
         private Lazy<Image> unPinFromFavList = null;
@@ -192,26 +191,10 @@ namespace SSFR_Movies.Helpers
 
             tap.Tapped += QuitFromFavListTap;
 
-            imageTapped = new TapGestureRecognizer();
-            
-            imageTapped.Tapped += PosterTapped;
-
-            absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
-
             compat.Value.GestureRecognizers.Add(tap);
             
         }
-        
-        private void PosterTapped(object sender, EventArgs e)
-        {
-            MessagingCenter.Send(this, "PushAsync");
-        }
-                
-        void ExecuteAction(Func<Task> exe)
-        {
-            Task.Run(async () => { await exe(); });
-        }
-        
+       
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();

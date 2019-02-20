@@ -81,10 +81,10 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            MessagingCenter.Subscribe<CustomViewCellFavPage>(this, "PushAsync", (e) =>
-            {
-                MovieSelected();
-            });
+            //MessagingCenter.Subscribe<CustomViewCellFavPage>(this, "PushAsync", (e) =>
+            //{
+            //    MovieSelected();
+            //});
             
             MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
             {

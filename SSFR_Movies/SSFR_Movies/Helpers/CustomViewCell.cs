@@ -200,10 +200,6 @@ namespace SSFR_Movies.Helpers
         private void PosterTapped(object sender, EventArgs e)
         {
             MessagingCenter.Send(this, "Hide", true);
-
-            MessagingCenter.Send(this, "PushAsync");
-            
-            MessagingCenter.Send(this, "_PushAsync");
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)

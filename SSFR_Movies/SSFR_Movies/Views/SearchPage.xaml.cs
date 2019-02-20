@@ -42,10 +42,10 @@ namespace SSFR_Movies.Views
         private void SuscribeToMessages()
         {
        
-            MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
-            {
-                MovieSelected();
-            });
+            //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
+            //{
+            //    MovieSelected();
+            //});
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {

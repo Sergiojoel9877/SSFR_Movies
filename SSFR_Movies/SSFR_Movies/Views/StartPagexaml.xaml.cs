@@ -26,7 +26,7 @@ namespace SSFR_Movies.Views
         {
             get => fireContainerCommand ?? (new Command(async ()=>
             {
-                await Task.Delay(2200);
+                await Task.Delay(2000);
 
                 ActIndicator.IsVisible = false;
 

@@ -117,6 +117,8 @@ namespace SSFR_Movies.Views
                     });
                 })
             };
+
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
             
             ToolbarItems.Add(updownList);
 
@@ -150,10 +152,10 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
-            {
-                MovieSelected();
-            });
+            //MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
+            //{
+            //    MovieSelected();
+            //});
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
