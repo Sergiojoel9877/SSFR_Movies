@@ -7,8 +7,6 @@ using Android.OS;
 using Xamarin.Forms;
 using Android.Gms.Ads;
 using Android.Content;
-using SSFR_Movies.Services;
-using FFImageLoading;
 using Refractored.XamForms.PullToRefresh.Droid;
 using Android.Widget;
 

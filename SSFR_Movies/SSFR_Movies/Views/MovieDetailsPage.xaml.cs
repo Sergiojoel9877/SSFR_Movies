@@ -7,6 +7,7 @@ using SSFR_Movies.Services;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -19,6 +20,8 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
+        string RegexOpenLoad = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
+
         public MovieDetailsPage(Result movie)
         {
             InitializeComponent();
@@ -44,6 +47,13 @@ namespace SSFR_Movies.Views
                 MovieTitle.SetAnimation();
             }
             
+        }
+
+        string Check(string regexpttrn, string uri)
+        {
+            var regex = new Regex(@regexpttrn, RegexOptions.Compiled);
+            Match match = regex.Match(uri);
+            return match.Success ? match.Value : "";
         }
 
         private async void IsPresentInFavList(Result m)
@@ -280,6 +290,9 @@ namespace SSFR_Movies.Views
                             .GetService<ApiClient>()
                                 .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
                                     item.ReleaseDate.Substring(0, 4));
+
+          
+
             streamWV.Source = URI;
 
             streamWV.Navigated += StreamWV_Navigated;
@@ -319,6 +332,7 @@ namespace SSFR_Movies.Views
                     if (e.Url.StartsWith("https://openload.co"))
                     {
                         streamWV.IsVisible = false;
+                        var stream = Check(RegexOpenLoad, e.Url);
                         Device.OpenUri(new Uri(e.Url));
                     }
                 }
