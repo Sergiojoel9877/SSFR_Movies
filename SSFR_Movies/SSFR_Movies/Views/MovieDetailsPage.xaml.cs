@@ -310,10 +310,6 @@ namespace SSFR_Movies.Views
                 {
                     nav.GoBack();
                 }
-                else
-                {
-                    
-                }
             }
             catch (Exception err)
             {
