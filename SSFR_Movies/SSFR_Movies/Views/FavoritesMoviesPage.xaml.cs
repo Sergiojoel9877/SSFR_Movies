@@ -80,11 +80,6 @@ namespace SSFR_Movies.Views
                     });
                 }
             });
-
-            //MessagingCenter.Subscribe<CustomViewCellFavPage>(this, "PushAsync", (e) =>
-            //{
-            //    MovieSelected();
-            //});
             
             MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
             {
@@ -175,22 +170,6 @@ namespace SSFR_Movies.Views
             Message.IsVisible = UnPin.IsVisible == true ? true : false;
 
             MoviesList.IsVisible = Message.IsVisible == true ? false : true;
-
-        }
-
-        private async void ItemSelected(object sender, ItemTappedEventArgs e)
-        {
-            
-            if (e.Item == null)
-            {
-                return;
-            }
-
-            var movie = (Result)e.Item;
-
-            ((ListView)sender).SelectedItem = null;
-
-            await Navigation.PushAsync(new MovieDetailsPage(movie));
 
         }
     

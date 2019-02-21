@@ -40,7 +40,6 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            //vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
             vm = Locator.CurrentMutable.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
@@ -51,8 +50,8 @@ namespace SSFR_Movies.Views
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
                 RefreshColor = Color.FromHex("#006FDE")
             };
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+            //pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+            //pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
 
             pull2refreshlyt.RefreshCommand = new Command(async () =>
             {
@@ -249,8 +248,8 @@ namespace SSFR_Movies.Views
                 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    activityIndicator.IsRunning = true;
-                    activityIndicator.IsVisible = true;
+                    //activityIndicator.IsRunning = true;
+                    //activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
                     RefreshBtn.IsEnabled = false;
                 });
@@ -278,8 +277,8 @@ namespace SSFR_Movies.Views
 
                         MainThread.BeginInvokeOnMainThread( () =>
                         {
-                            pull2refreshlyt.IsRefreshing = false;
-                            activityIndicator.IsRunning = false;
+                            //pull2refreshlyt.IsRefreshing = false;
+                            //activityIndicator.IsRunning = false;
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
                             RefreshBtn.IsEnabled = true;
@@ -289,6 +288,15 @@ namespace SSFR_Movies.Views
             }
             catch (Exception e)
             {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    pull2refreshlyt.IsRefreshing = false;
+                    //activityIndicator.IsRunning = false;
+                    MoviesList.IsVisible = true;
+                    activityIndicator.IsVisible = false;
+                    RefreshBtn.IsEnabled = true;
+                });
+
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("An error has ocurred!");

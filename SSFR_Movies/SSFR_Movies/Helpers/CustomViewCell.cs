@@ -252,7 +252,7 @@ namespace SSFR_Movies.Helpers
                     
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
-                    await SpeakNow("Added Successfully");
+                    await SpeakNow("Added Successfully").ConfigureAwait(false);
                     
                 }
                 catch (Exception e15)

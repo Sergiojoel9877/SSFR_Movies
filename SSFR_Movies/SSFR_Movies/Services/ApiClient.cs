@@ -33,8 +33,10 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
-  
+
             try
             {
                 //Verify if internet connection is available
@@ -79,6 +81,7 @@ namespace SSFR_Movies.Services
 
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
@@ -117,6 +120,7 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
@@ -177,7 +181,8 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMovieGenresAsync()
         {
-            
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
@@ -195,6 +200,7 @@ namespace SSFR_Movies.Services
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
+            await new SynchronizationContextRemover();
 
             await Task.Yield();
            
