@@ -293,11 +293,11 @@ namespace SSFR_Movies.Views
 
           
 
-            streamWV.Source = URI;
+            streamWV.Uri = URI;
 
-            streamWV.Navigated += StreamWV_Navigated;
+            //streamWV.Navigated += StreamWV_Navigated;
 
-            streamWVswap.Navigated += StreamWVswap_Navigated;
+            //streamWVswap.Navigated += StreamWVswap_Navigated;
         }
 
         private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
@@ -344,22 +344,6 @@ namespace SSFR_Movies.Views
            await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
 
            await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
-        }
-
-        private void BackButton_Clicked(object sender, EventArgs e)
-        {
-            if (streamWV.CanGoBack)
-            {
-                streamWV.GoBack();
-            }
-        }
-
-        private void FWButton_Clicked(object sender, EventArgs e)
-        {
-            if (streamWV.CanGoForward)
-            {
-                streamWV.GoForward();
-            }
         }
     }
 }

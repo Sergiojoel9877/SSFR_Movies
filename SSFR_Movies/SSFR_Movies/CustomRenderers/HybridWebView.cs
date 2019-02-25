@@ -7,28 +7,28 @@ namespace SSFR_Movies.CustomRenderers
 {
     public class HybridWebView : View
     {
-        Action<string> action;
-
         public static readonly BindableProperty UriProperty = BindableProperty.Create(
             propertyName: "Uri",
             returnType: typeof(string),
             declaringType: typeof(HybridWebView),
             defaultValue: default(string));
 
+        public EventHandler OnFinishEH;
+        public Action<string> Find;
         public string Uri
         {
             get => (string)GetValue(UriProperty);
             set => SetValue(UriProperty, value);
         }
 
-        public void RegisterAction(Action<string> callback)
+        private bool FindLink(string url)
         {
-            action = callback;
+            return false;
         }
 
-        public void CleanUp()
+        public void OnFinish()
         {
-            action = null;
+            OnFinishEH?.Invoke(this, EventArgs.Empty);
         }
     }
 }
