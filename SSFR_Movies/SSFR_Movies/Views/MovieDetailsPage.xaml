@@ -199,10 +199,6 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <!--<ffimage:CachedImage
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />-->
                                     <Image
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
@@ -252,9 +248,12 @@
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
-                        <HybridWebview:HybridWebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="True" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
-                        <!--<WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
-                        <WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>-->
+                        
+                        <HybridWebview:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+
+                        <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                        
+                        <!--<WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>-->
                     </StackLayout>
                 </StackLayout>
             </ScrollView>
