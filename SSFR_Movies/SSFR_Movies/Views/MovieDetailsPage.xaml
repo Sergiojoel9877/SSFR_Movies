@@ -225,6 +225,7 @@
                         <Button
                             x:Name="AddToFavLayout"
                             Margin="16"
+                            Visual="Material"
                             BackgroundColor="#44FFFFFF"
                             HorizontalOptions="FillAndExpand"
                             CornerRadius="30"
@@ -236,6 +237,7 @@
                         <Button 
                             x:Name="QuitFromFavLayout"
                             Margin="16"
+                            Visual="Material"
                             BackgroundColor="#FF0000"
                             FontAttributes="Bold"
                             FontSize="Medium"

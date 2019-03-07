@@ -48,9 +48,12 @@ namespace SSFR_Movies.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
+            global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
+
             Android.Glide.Forms.Init();
 
             LoadApplication(LazyApp.Value);
+
         }
 
         public async override void OnTrimMemory([GeneratedEnum] TrimMemory level)
