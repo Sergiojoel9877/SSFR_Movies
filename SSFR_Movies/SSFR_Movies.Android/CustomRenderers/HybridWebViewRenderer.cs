@@ -18,6 +18,7 @@ using SSFR_Movies.CustomRenderers;
 using Android.Webkit;
 using System.Threading.Tasks;
 using Java.Lang;
+using SSFR_Movies.Droid.Services;
 
 [assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
@@ -25,12 +26,20 @@ namespace SSFR_Movies.Droid.CustomRenderers
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
     {
         private Context _context;
-        private static OnTaskCompleted onComplete;
+        private XGetter xGetter;
+        private string org;
+        private static OnTaskComplete onComplete;
         private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
         public HybridWebViewRenderer(Context context) : base(context)
         {
             _context = context;
+            xGetter = new XGetter(Context);
+        }
+
+        protected override Android.Webkit.WebView CreateNativeControl()
+        {
+            return new Android.Webkit.WebView(Context);
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<HybridWebView> e)
@@ -39,8 +48,9 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
             if (Control == null)
             {
-                var webView = new Android.Webkit.WebView(_context);
-#pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory, perhaps..
+                var webView = CreateNativeControl();
+                xGetter.onFinish(new OnTaskCompleted());
+#pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory
                 webView.LayoutParameters = new global::Android.Widget.AbsoluteLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent, 0, 0);
 #pragma warning restore 618
                 webView.Settings.JavaScriptEnabled = true;
@@ -48,19 +58,29 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 webView.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
                 webView.Settings.DomStorageEnabled = true;
                 webView.SetWebViewClient(new SSFRWebClient());
+                webView.Visibility = ViewStates.Visible;
                 SetNativeControl(webView);
             }
 
             if (e.OldElement != null)
             {
                 Control.RemoveJavascriptInterface("xGetter");
-                var webView = e.OldElement as HybridWebView;
+                var olE = e.OldElement as HybridWebView;
+                olE.LoadRequest -= OlE_LoadRequest;
             }
             if (e.NewElement != null)
             {
                 Control.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
+                var nwE = e.NewElement as HybridWebView;
+                nwE.LoadRequest += OlE_LoadRequest;
             }
         }
+
+        private void OlE_LoadRequest(object sender, HybridWebView.LoadUrlRequested e)
+        {
+            Control.LoadUrl(e.Url);
+        }
+
         public class SSFRJavaScriptInterface : Java.Lang.Object
         {
             [JavascriptInterface]
@@ -70,6 +90,32 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 {
                     onComplete.onTaskCompleted(url);
                 });
+            }
+        }
+
+        public class OnTaskCompleted : OnTaskComplete
+        {
+            public void onError()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void onFbTaskCompleted(string sd, string hd)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void onTaskCompleted(string vidURL)
+            {
+                if (vidURL != null)
+                {
+                    Done(vidURL);
+                }
+            }
+
+            public void Done(string url)
+            {
+                MessagingCenter.Send(this, "URL", url);
             }
         }
 
@@ -165,15 +211,9 @@ namespace SSFR_Movies.Droid.CustomRenderers
             return matcher.Find();
         }
 
-        public void OnFinish(OnTaskCompleted onTaskCompleted)
+        public void OnFinish(OnTaskComplete onTaskCompleted)
         {
             onComplete = onTaskCompleted;
-        }
-
-        public interface OnTaskCompleted
-        {
-            void onTaskCompleted(string vidUrl);
-            void onError();
         }
     }
 }
