@@ -40,7 +40,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
             if (Control == null)
             {
                 var webView = new Android.Webkit.WebView(_context);
-#pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory
+#pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory, perhaps..
                 webView.LayoutParameters = new global::Android.Widget.AbsoluteLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent, 0, 0);
 #pragma warning restore 618
                 webView.Settings.JavaScriptEnabled = true;

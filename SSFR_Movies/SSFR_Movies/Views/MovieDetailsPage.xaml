@@ -32,7 +32,7 @@
                     VerticalOptions="FillAndExpand">
                     <Frame 
                         x:Name="frame"
-                        Visual="Material"
+                        
                         BackgroundColor="#00103B"
                         HeightRequest="300"
                         CornerRadius="5"
