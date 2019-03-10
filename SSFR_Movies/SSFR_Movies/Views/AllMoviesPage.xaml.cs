@@ -41,7 +41,7 @@ namespace SSFR_Movies.Views
             InitializeComponent();
 
             //vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
-            vm = Locator.CurrentMutable.GetService<AllMoviesPageViewModel>();
+            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
 
@@ -264,7 +264,7 @@ namespace SSFR_Movies.Views
                 token.CancelAfter(4000);
 
                 //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-                var MoviesDownloaded = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
                 
                 if (MoviesDownloaded)
                 {
@@ -334,7 +334,7 @@ namespace SSFR_Movies.Views
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
                 //var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
-                var stored = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                var stored = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
     
                 if (stored)
                 {

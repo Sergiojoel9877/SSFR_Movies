@@ -235,7 +235,7 @@ namespace SSFR_Movies.Views
             
             var movie = (Result)BindingContext;
 
-            var video = await Locator.CurrentMutable.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -264,7 +264,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await Locator.CurrentMutable.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
 
             if (video.Results.Count() > 0)
             {

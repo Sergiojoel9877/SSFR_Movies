@@ -232,7 +232,7 @@ namespace SSFR_Movies.Helpers
                             realm.Add(movie, true);
                         });
 
-                        Locator.CurrentMutable.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
+                        Locator.Current.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "Refresh", true);
 
