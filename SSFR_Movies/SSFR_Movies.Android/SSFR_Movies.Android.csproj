@@ -21,7 +21,7 @@
     </NuGetPackageImportStamp>
     <AndroidExplicitCrunch>true</AndroidExplicitCrunch>
     <!--<AndroidUseAapt2 Condition="'$(AndroidUseAapt2)' == ''">True</AndroidUseAapt2>-->
-    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>C:\Users\Sergio Ferreras B\AppData\Local\Xamarin\Mono for Android\Keystore\SSFR\SSFR.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>123456123456jug</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SSFR</AndroidSigningKeyAlias>

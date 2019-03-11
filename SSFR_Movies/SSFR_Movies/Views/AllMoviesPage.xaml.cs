@@ -50,6 +50,14 @@ namespace SSFR_Movies.Views
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
                 RefreshColor = Color.FromHex("#006FDE")
             };
+
+            var swipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Left
+            };
+            swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
+            Content.Content.GestureRecognizers.Add(swipeGesture);
+            
             //pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
             //pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
 
@@ -124,6 +132,11 @@ namespace SSFR_Movies.Views
             ToolbarItems.Add(searchToolbarItem);
             
             Scrollview.Orientation = ScrollOrientation.Horizontal;
+        }
+
+        private void AllMoviesPage_Swiped(object sender, SwipedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void MovieSelected()
@@ -422,6 +435,11 @@ namespace SSFR_Movies.Views
                 await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
             });
             
+        }
+
+        private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+        {
+            await Navigation.PushAsync(new FavoritesMoviesPage(), true);
         }
     }
 }
