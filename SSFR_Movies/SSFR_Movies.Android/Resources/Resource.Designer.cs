@@ -4425,8 +4425,6 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense = global::SSFR_Movies.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense;
 			global::Xamarin.Forms.Platform.Android.Resource.Style.Widget_MaterialComponents_Toolbar = global::SSFR_Movies.Droid.Resource.Style.Widget_MaterialComponents_Toolbar;
 			global::Xamarin.Forms.Platform.Android.Resource.Style.Widget_Support_CoordinatorLayout = global::SSFR_Movies.Droid.Resource.Style.Widget_Support_CoordinatorLayout;
-			global::Xamarin.Forms.Platform.Android.Resource.Style.XamarinFormsMaterialProgressBarHorizontal = global::SSFR_Movies.Droid.Resource.Style.XamarinFormsMaterialProgressBarHorizontal;
-			global::Xamarin.Forms.Platform.Android.Resource.Style.XamarinFormsMaterialTheme = global::SSFR_Movies.Droid.Resource.Style.XamarinFormsMaterialTheme;
 			global::Xamarin.Forms.Platform.Android.Resource.Styleable.ActionBar = global::SSFR_Movies.Droid.Resource.Styleable.ActionBar;
 			global::Xamarin.Forms.Platform.Android.Resource.Styleable.ActionBar_background = global::SSFR_Movies.Droid.Resource.Styleable.ActionBar_background;
 			global::Xamarin.Forms.Platform.Android.Resource.Styleable.ActionBar_backgroundSplit = global::SSFR_Movies.Droid.Resource.Styleable.ActionBar_backgroundSplit;
@@ -11958,11 +11956,11 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0a0004
 			public const int XamarinFormsMaterialProgressBarCircular = 2131361796;
 			
-			// aapt resource value: 0x7f0a0002
-			public const int XamarinFormsMaterialProgressBarHorizontal = 2131361794;
-			
 			// aapt resource value: 0x7f0a0003
-			public const int XamarinFormsMaterialSlider = 2131361795;
+			public const int XamarinFormsMaterialProgressBarHorizontal = 2131361795;
+			
+			// aapt resource value: 0x7f0a0002
+			public const int XamarinFormsMaterialSlider = 2131361794;
 			
 			// aapt resource value: 0x7f0a0001
 			public const int XamarinFormsMaterialTheme = 2131361793;
