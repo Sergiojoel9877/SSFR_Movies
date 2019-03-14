@@ -27,7 +27,7 @@ namespace SSFR_Movies.Views
 		{
 			InitializeComponent();
 
-            vm = Locator.CurrentMutable.GetService<FavoriteMoviesPageViewModel>();
+            vm = Locator.Current.GetService<FavoriteMoviesPageViewModel>();
 
             BindingContext = vm;
 

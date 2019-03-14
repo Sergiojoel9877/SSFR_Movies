@@ -21,7 +21,7 @@
     </NuGetPackageImportStamp>
     <AndroidExplicitCrunch>true</AndroidExplicitCrunch>
     <!--<AndroidUseAapt2 Condition="'$(AndroidUseAapt2)' == ''">True</AndroidUseAapt2>-->
-    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>C:\Users\Sergio Ferreras B\AppData\Local\Xamarin\Mono for Android\Keystore\SSFR\SSFR.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>123456123456jug</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SSFR</AndroidSigningKeyAlias>
@@ -105,7 +105,7 @@
       <Version>2.2.3</Version>
     </PackageReference>
     <PackageReference Include="Splat">
-      <Version>6.1.7</Version>
+      <Version>8.0.0-dotnet3-preview.5</Version>
     </PackageReference>
     <PackageReference Include="Xam.Plugins.Settings">
       <Version>4.0.0.10-beta</Version>

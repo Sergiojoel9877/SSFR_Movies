@@ -195,7 +195,7 @@ namespace SSFR_Movies.ViewModels
             token.CancelAfter(4000);
 
             //var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
-            var done = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
+            var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
             
             if (done)
             {
@@ -328,7 +328,7 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
             
-            return await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
+            return await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
 
         }
 
