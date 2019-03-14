@@ -44,7 +44,7 @@ namespace SSFR_Movies.Droid
             
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental" });
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
@@ -55,6 +55,18 @@ namespace SSFR_Movies.Droid
             LoadApplication(LazyApp.Value);
 
         }
+#pragma warning disable 0219, 0649
+        static MainActivity()
+        {
+            bool flasg = false;
+
+            if (flasg)
+            {
+                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+                var dummy1 = typeof(PullToRefreshLayoutRenderer);
+            }
+        }
+#pragma warning restore
 
         public async override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
