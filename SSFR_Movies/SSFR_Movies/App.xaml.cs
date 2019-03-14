@@ -23,7 +23,10 @@ namespace SSFR_Movies
         public App ()
 		{
             InitializeComponent();
-            
+
+#if DEBUG
+            HotReloader.Current.Start(this);
+#endif
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;

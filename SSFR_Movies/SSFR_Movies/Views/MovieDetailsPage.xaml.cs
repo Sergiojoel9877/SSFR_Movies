@@ -116,7 +116,7 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "No"))
+            if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "no"))
             {
                 try
                 {
@@ -159,10 +159,6 @@ namespace SSFR_Movies.Views
                 {
                     Debug.WriteLine("Error: " + e.InnerException);
                 }
-            }
-            else
-            {
-                Settings.UpdateList = false;
             }
         }
 

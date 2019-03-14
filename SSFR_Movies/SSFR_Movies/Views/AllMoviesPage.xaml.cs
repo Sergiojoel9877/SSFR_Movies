@@ -51,7 +51,7 @@ namespace SSFR_Movies.Views
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
                 RefreshColor = Color.FromHex("#006FDE")
             };
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing"); 
             pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
 
             pull2refreshlyt.RefreshCommand = new Command(async () =>
@@ -71,8 +71,6 @@ namespace SSFR_Movies.Views
                 await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
             });
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            
             updownList = new ToolbarItem()
             {
                 Text = "Up",
@@ -118,8 +116,6 @@ namespace SSFR_Movies.Views
                 })
             };
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            
             ToolbarItems.Add(updownList);
 
             ToolbarItems.Add(searchToolbarItem);
@@ -127,13 +123,12 @@ namespace SSFR_Movies.Views
             Scrollview.Orientation = ScrollOrientation.Horizontal;
         }
 
-        private void MovieSelected()
+        private void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-
-                MainThread.BeginInvokeOnMainThread(async ()=> 
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Navigation.PushAsync(new MovieDetailsPage(movie));
                 });

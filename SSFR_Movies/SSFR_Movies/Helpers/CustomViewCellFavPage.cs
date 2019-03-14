@@ -101,6 +101,7 @@ namespace SSFR_Movies.Helpers
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
+                HasShadow = true,
                 HorizontalOptions = LayoutOptions.Center
             });
 
