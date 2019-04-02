@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Visual="Material"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
-    xmlns:HybridWebview="clr-namespace:SSFR_Movies.CustomRenderers"
+    xmlns:hybridWebview="clr-namespace:SSFR_Movies.CustomRenderers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
@@ -248,10 +248,10 @@
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
-                        
-                        <HybridWebview:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
 
-                        <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                        <hybridWebview:HybridWebView x:Name="streamWVswap" WidthRequest="300" HeightRequest="500" IsVisible="False" />
+
+                        <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False"/>
                         
                         <!--<WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>-->
                     </StackLayout>

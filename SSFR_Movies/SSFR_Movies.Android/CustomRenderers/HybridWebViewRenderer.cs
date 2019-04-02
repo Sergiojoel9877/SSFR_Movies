@@ -19,17 +19,22 @@ using Android.Webkit;
 using System.Threading.Tasks;
 using Java.Lang;
 using SSFR_Movies.Droid.Services;
+using System.ComponentModel;
 
 [assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
-    public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
+    public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>, IWebViewDelegate
     {
+        public const string AssetBaseUrl = "file:///android_asset/";
         private Context _context;
         private XGetter xGetter;
         private string org;
         private static OnTaskComplete onComplete;
+        protected internal bool IgnoreSourceChanges { get; set; }
         private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
+        protected internal IWebViewController ElementController => Element;
+        protected internal string UrlCanceled { get; set; }
 
         public HybridWebViewRenderer(Context context) : base(context)
         {
@@ -49,6 +54,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
             if (Control == null)
             {
                 var webView = CreateNativeControl();
+                webView.SetMinimumHeight(300);
                 xGetter.onFinish(new OnTaskCompleted());
 #pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory
                 webView.LayoutParameters = new global::Android.Widget.AbsoluteLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent, 0, 0);
@@ -57,6 +63,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 webView.SetWillNotDraw(true);
                 webView.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
                 webView.Settings.DomStorageEnabled = true;
+                webView.SetWebChromeClient(new WebChromeClient());
                 webView.SetWebViewClient(new SSFRWebClient());
                 webView.Visibility = ViewStates.Visible;
                 SetNativeControl(webView);
@@ -74,6 +81,30 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 var nwE = e.NewElement as HybridWebView;
                 nwE.LoadRequest += OlE_LoadRequest;
             }
+
+            Load();
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+
+            switch (e.PropertyName)
+            {
+                case "Source":
+                    Load();
+                    break;
+            }
+        }
+
+        private void Load()
+        {
+            if (IgnoreSourceChanges)
+                return;
+
+            Element.Source?.Load(this);
+
+            UpdateCanGoBackForward();
         }
 
         private void OlE_LoadRequest(object sender, HybridWebView.LoadUrlRequested e)
@@ -121,7 +152,6 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
         class SSFRWebClient : WebViewClient
         {
-
             public override void OnLoadResource(Android.Webkit.WebView view, string url)
             {
                 base.OnLoadResource(view, url);
@@ -214,6 +244,61 @@ namespace SSFR_Movies.Droid.CustomRenderers
         public void OnFinish(OnTaskComplete onTaskCompleted)
         {
             onComplete = onTaskCompleted;
+        }
+
+        public void LoadHtml(string html, string baseUrl)
+        {
+            Control.LoadDataWithBaseURL(baseUrl ?? AssetBaseUrl, html, "text/html", "UTF-8", null);
+        }
+
+        public void LoadUrl(string url)
+        {
+            if (!SendNavigatingCanceled(url))
+                Control.LoadUrl(url);
+        }
+
+        protected internal bool SendNavigatingCanceled(string url)
+        {
+            if (Element == null || string.IsNullOrWhiteSpace(url))
+                return true;
+
+            if (url == AssetBaseUrl)
+                return false;
+
+            var args = new WebNavigatingEventArgs(WebNavigationEvent.NewPage, new UrlWebViewSource { Url = url }, url);
+            ElementController.SendNavigating(args);
+            UpdateCanGoBackForward();
+            UrlCanceled = args.Cancel ? null : url;
+            return args.Cancel;
+        }
+
+        protected internal void UpdateCanGoBackForward()
+        {
+            if (Element == null || Control == null)
+                return;
+            ElementController.CanGoBack = Control.CanGoBack();
+            ElementController.CanGoForward = Control.CanGoForward();
+        }
+
+        void OnGoBackRequested(object sender, EventArgs eventArgs)
+        {
+            if (Control.CanGoBack())
+                Control.GoBack();
+
+            UpdateCanGoBackForward();
+        }
+
+        void OnGoForwardRequested(object sender, EventArgs eventArgs)
+        {
+            if (Control.CanGoForward())
+                Control.GoForward();
+
+            UpdateCanGoBackForward();
+        }
+
+        void OnReloadRequested(object sender, EventArgs eventArgs)
+        {
+            Control.Reload();
         }
     }
 }

@@ -316,7 +316,6 @@ namespace SSFR_Movies.Views
         {
             try
             {
-
                 var nav = (WebView)sender;
 
                 if (!e.Url.StartsWith("https://videospider.in"))
@@ -377,7 +376,8 @@ namespace SSFR_Movies.Views
                         //        "script.innerHTML = window.atob('" + encoded + "');" +
                         //        "parent.appendChild(script)" +
                         //        "})()");
-                        streamWVswap.LoadUrl(e.Url);
+                        //streamWVswap.LoadUrl(e.Url);
+                        streamWVswap.Source = e.Url;
                         //var stream = Check(RegexOpenLoad, e.Url);
                         //Device.OpenUri(new Uri(e.Url));
                     }
