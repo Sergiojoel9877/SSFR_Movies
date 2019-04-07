@@ -40,19 +40,30 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
+            PullToRefreshLayoutRenderer.Init();
+
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
-            PullToRefreshLayoutRenderer.Init();
-            
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
+            XF.Material.Droid.Material.Init(this, bundle);
+
             Android.Glide.Forms.Init();
 
             LoadApplication(LazyApp.Value);
+        }
+
+        static bool _flag = false;
+        static MainActivity()
+        {
+            if (_flag)
+            {
+                var ignore = new Refractored.XamForms.PullToRefresh.Droid.PullToRefreshLayoutRenderer();
+            }
         }
 
         public async override void OnTrimMemory([GeneratedEnum] TrimMemory level)

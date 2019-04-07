@@ -23,6 +23,8 @@ namespace SSFR_Movies
         public App ()
 		{
             InitializeComponent();
+
+            XF.Material.Forms.Material.Init(this);
             
             var mainPage = new StartPagexaml();
 

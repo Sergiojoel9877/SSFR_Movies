@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using XF.Material.Forms.UI.Dialogs;
 
 namespace SSFR_Movies.Services
 {
@@ -42,11 +43,12 @@ namespace SSFR_Movies.Services
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
 
                     return false;
                 }
@@ -90,11 +92,13 @@ namespace SSFR_Movies.Services
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                     return null;
                 }
 
@@ -127,11 +131,13 @@ namespace SSFR_Movies.Services
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                //{
+                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                //    return false;
+                //});
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                 return false;
             }
             try
