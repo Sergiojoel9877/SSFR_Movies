@@ -16,6 +16,7 @@ using static SSFR_Movies.Views.SearchPage;
 using Realms;
 using Splat;
 using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Views
 {
@@ -36,12 +37,17 @@ namespace SSFR_Movies.Views
         ToolbarItem searchToolbarItem = null;
 
         PullToRefreshLayout pull2refreshlyt = null;
-        
+
+        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        };
+
         public AllMoviesPage()
         {
             InitializeComponent();
 
-            //vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
@@ -155,11 +161,6 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            //MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
-            //{
-            //    MovieSelected();
-            //});
-
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
                 MoviesList.SelectedItem = null;
@@ -229,7 +230,7 @@ namespace SSFR_Movies.Views
                     //vm.ListVisible = false;
                     //vm.IsRunning = false;
                     //vm.IsEnabled = false;
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
 
             }
@@ -245,13 +246,8 @@ namespace SSFR_Movies.Views
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
                     pull2refreshlyt.IsRefreshing = false;
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
@@ -309,7 +305,11 @@ namespace SSFR_Movies.Views
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Task.Run(async()=>
+                    {
+                        await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    });
+                   
                     Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
@@ -323,13 +323,8 @@ namespace SSFR_Movies.Views
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
-                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
-
+                await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+            
                 return;
             }
 
@@ -416,9 +411,8 @@ namespace SSFR_Movies.Views
             {
                 await Navigation.PushAsync(new SearchPage(), true);
             });
-           
         }
-        
+
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
 

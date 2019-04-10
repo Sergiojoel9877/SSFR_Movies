@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Helpers
 {
@@ -218,7 +220,16 @@ namespace SSFR_Movies.Helpers
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        Task.Run(async ()=>
+                        {
+                            var conf = new MaterialSnackbarConfiguration()
+                            {
+                                TintColor = Color.FromHex("#0066cc"),
+                                BackgroundColor = Color.FromHex("#272B2E")
+                            };
+                            await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
+                        });
+                        
                         return false;
                     });
                     return;
@@ -232,8 +243,13 @@ namespace SSFR_Movies.Helpers
 
                     if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
                     {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-
+                        var _conf = new MaterialSnackbarConfiguration()
+                        {
+                            TintColor = Color.FromHex("#0066cc"),
+                            BackgroundColor = Color.FromHex("#272B2E")
+                        };
+                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+            
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
                         
                         return;
@@ -248,12 +264,15 @@ namespace SSFR_Movies.Helpers
 
                     MessagingCenter.Send(this, "Refresh", true);
 
-                    DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-                    
+                    var conf = new MaterialSnackbarConfiguration()
+                    {
+                        TintColor = Color.FromHex("#0066cc"),
+                        BackgroundColor = Color.FromHex("#272B2E")
+                    };
+                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+                                        
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
-                    await SpeakNow("Added Successfully").ConfigureAwait(false);
-                    
                 }
                 catch (Exception e15)
                 {

@@ -15,6 +15,7 @@ using Xamarin.Essentials;
 using Realms;
 using ReactiveUI.Legacy;
 using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -25,7 +26,13 @@ namespace SSFR_Movies.ViewModels
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
-        
+
+        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        };
+
         private bool listVisible = true;
         public bool ListVisible
         {
@@ -103,12 +110,7 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
-                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                 return;
             }
@@ -149,14 +151,9 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
                 MainThread.BeginInvokeOnMainThread(async ()=>
                 {
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
                
                 return;
@@ -190,12 +187,13 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
-                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                var _conf = new MaterialSnackbarConfiguration()
+                {
+                    TintColor = Color.FromHex("#0066cc"),
+                    BackgroundColor = Color.FromHex("#272B2E")
+                };
+
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                 return false;
             }
@@ -227,12 +225,7 @@ namespace SSFR_Movies.ViewModels
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                     return;
                 }
@@ -282,12 +275,7 @@ namespace SSFR_Movies.ViewModels
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                     return;
                 }
@@ -306,12 +294,7 @@ namespace SSFR_Movies.ViewModels
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
@@ -335,12 +318,7 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
-                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 return false;
             }
             
@@ -357,12 +335,7 @@ namespace SSFR_Movies.ViewModels
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
                 
@@ -396,14 +369,9 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has  an Internet connection");
-                //    return false;
-                //});
                 Task.Run(async ()=>
                 {
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
                 
                 MainThread.BeginInvokeOnMainThread(() =>

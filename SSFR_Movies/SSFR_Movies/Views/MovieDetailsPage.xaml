@@ -62,7 +62,7 @@
                                 WidthRequest="500"/>
 
                             <StackLayout
-                                AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
+                                AbsoluteLayout.LayoutBounds="0, 1, 1, 0.5"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BackgroundColor="#44312D2D"
                                 HeightRequest="230"
