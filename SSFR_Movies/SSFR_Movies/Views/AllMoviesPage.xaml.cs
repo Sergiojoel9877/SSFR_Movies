@@ -15,6 +15,7 @@ using Refractored.XamForms.PullToRefresh;
 using static SSFR_Movies.Views.SearchPage;
 using Realms;
 using Splat;
+using XF.Material.Forms.UI.Dialogs;
 
 namespace SSFR_Movies.Views
 {
@@ -51,9 +52,16 @@ namespace SSFR_Movies.Views
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
                 RefreshColor = Color.FromHex("#006FDE")
             };
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing"); 
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
             pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
 
+            var swipeGesture = new SwipeGestureRecognizer
+            {
+                Direction = SwipeDirection.Left
+            };
+            swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
+            Content.Content.GestureRecognizers.Add(swipeGesture);
+           
             pull2refreshlyt.RefreshCommand = new Command(async () =>
             {
                 await LoadMoreMovies();
@@ -198,7 +206,7 @@ namespace SSFR_Movies.Views
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
-                    MessageImg.Source = ImageSource.FromFile("NoInternet.png");
+                    //MessageImg.Source = ImageSource.FromFile("NoInternet.png");
                     MessageImg.TranslateTo(0, 0, 2);
                 });
 
@@ -214,14 +222,16 @@ namespace SSFR_Movies.Views
             }
             else
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    vm.MsgVisible = true;
-                    vm.MsgText = "It seems like you don't have an internet connection!";
-                    vm.ListVisible = false;
-                    vm.IsRunning = false;
-                    vm.IsEnabled = false;
+                    ////vm.MsgVisible = true;
+                    //vm.MsgText = "It seems like you don't have an internet connection!";
+                    //vm.ListVisible = false;
+                    //vm.IsRunning = false;
+                    //vm.IsEnabled = false;
+                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
                 });
+
             }
         }
 
@@ -235,17 +245,20 @@ namespace SSFR_Movies.Views
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    pull2refreshlyt.IsRefreshing = false;
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    return;
                 }
-                
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    activityIndicator.IsRunning = true;
-                    activityIndicator.IsVisible = true;
+                    //activityIndicator.IsRunning = true;
+                    //activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
                     RefreshBtn.IsEnabled = false;
                 });
@@ -273,17 +286,27 @@ namespace SSFR_Movies.Views
 
                         MainThread.BeginInvokeOnMainThread( () =>
                         {
-                            pull2refreshlyt.IsRefreshing = false;
-                            activityIndicator.IsRunning = false;
+                            //pull2refreshlyt.IsRefreshing = false;
+                            //activityIndicator.IsRunning = false;
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
                             RefreshBtn.IsEnabled = true;
+                            pull2refreshlyt.IsRefreshing = false;
                         });
                     }
                 }
             }
             catch (Exception e)
             {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    pull2refreshlyt.IsRefreshing = false;
+                    //activityIndicator.IsRunning = false;
+                    MoviesList.IsVisible = true;
+                    activityIndicator.IsVisible = false;
+                    RefreshBtn.IsEnabled = true;
+                });
+
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
@@ -297,6 +320,19 @@ namespace SSFR_Movies.Views
         {
             await Task.Yield();
 
+            //Verify if internet connection is available
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+            {
+                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                //{
+                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                //    return false;
+                //});
+                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+
+                return;
+            }
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 vm.ListVisible = false;
@@ -305,18 +341,6 @@ namespace SSFR_Movies.Views
             });
 
             MoviesList.ItemsSource = null;
-
-
-            //Verify if internet connection is available
-            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
 
             try
             {
@@ -409,6 +433,11 @@ namespace SSFR_Movies.Views
                 await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
             });
             
+        }
+
+        private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+        {
+            await Navigation.PushAsync(new FavoritesMoviesPage(), true);
         }
     }
 }

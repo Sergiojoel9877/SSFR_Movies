@@ -8,15 +8,14 @@
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
-    BackgroundColor="#161513"
-    >
+    BackgroundColor="#161513">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
         </ResourceDictionary>
     </ContentPage.Resources>
-
+    
     <ContentPage.Content>
         <StackLayout x:Name="stack">
             <ScrollView x:Name="scroll">

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using XF.Material.Forms.UI.Dialogs;
 
 namespace SSFR_Movies.Services
 {
@@ -33,18 +34,21 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
-  
+
             try
             {
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
 
                     return false;
                 }
@@ -79,6 +83,7 @@ namespace SSFR_Movies.Services
 
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
@@ -87,11 +92,13 @@ namespace SSFR_Movies.Services
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                     return null;
                 }
 
@@ -117,17 +124,20 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                //{
+                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                //    return false;
+                //});
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                 return false;
             }
             try
@@ -177,7 +187,8 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMovieGenresAsync()
         {
-            
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
@@ -195,6 +206,7 @@ namespace SSFR_Movies.Services
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
+            await new SynchronizationContextRemover();
 
             await Task.Yield();
            
