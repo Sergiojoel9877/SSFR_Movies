@@ -114,7 +114,7 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await Locator.CurrentMutable.GetService<ApiClient>().SearchMovieByName(key);
+                        var movie_results = await Locator.Current.GetService<ApiClient>().SearchMovieByName(key);
                         
                         if (movie_results.Results.Count != 0)
                         {

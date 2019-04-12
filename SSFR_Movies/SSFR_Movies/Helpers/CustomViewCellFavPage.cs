@@ -101,6 +101,7 @@ namespace SSFR_Movies.Helpers
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
+                HasShadow = true,
                 HorizontalOptions = LayoutOptions.Center
             });
 
@@ -232,7 +233,7 @@ namespace SSFR_Movies.Helpers
                             realm.Add(movie, true);
                         });
 
-                        Locator.CurrentMutable.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
+                        Locator.Current.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "Refresh", true);
 

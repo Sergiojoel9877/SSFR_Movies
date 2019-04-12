@@ -16,6 +16,7 @@ using static SSFR_Movies.Views.SearchPage;
 using Realms;
 using Splat;
 using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Views
 {
@@ -35,13 +36,19 @@ namespace SSFR_Movies.Views
 
         ToolbarItem searchToolbarItem = null;
 
-        readonly PullToRefreshLayout pull2refreshlyt = new PullToRefreshLayout();
-        
+        PullToRefreshLayout pull2refreshlyt = null;
+
+        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        };
+
         public AllMoviesPage()
         {
             InitializeComponent();
 
-            vm = Locator.CurrentMutable.GetService<AllMoviesPageViewModel>();
+            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
 
@@ -51,6 +58,8 @@ namespace SSFR_Movies.Views
                 RefreshBackgroundColor = Color.FromHex("#272B2E"),
                 RefreshColor = Color.FromHex("#006FDE")
             };
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+            pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
 
             var swipeGesture = new SwipeGestureRecognizer
             {
@@ -76,8 +85,6 @@ namespace SSFR_Movies.Views
                 await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
             });
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            
             updownList = new ToolbarItem()
             {
                 Text = "Up",
@@ -123,8 +130,6 @@ namespace SSFR_Movies.Views
                 })
             };
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            
             ToolbarItems.Add(updownList);
 
             ToolbarItems.Add(searchToolbarItem);
@@ -132,18 +137,12 @@ namespace SSFR_Movies.Views
             Scrollview.Orientation = ScrollOrientation.Horizontal;
         }
 
-        private void AllMoviesPage_Swiped(object sender, SwipedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void MovieSelected()
+        private void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-
-                MainThread.BeginInvokeOnMainThread(async ()=> 
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Navigation.PushAsync(new MovieDetailsPage(movie));
                 });
@@ -264,13 +263,8 @@ namespace SSFR_Movies.Views
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    //{
-                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    //    return false;
-                    //});
                     pull2refreshlyt.IsRefreshing = false;
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
@@ -291,7 +285,7 @@ namespace SSFR_Movies.Views
                 token.CancelAfter(4000);
 
                 //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-                var MoviesDownloaded = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+                var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
                 
                 if (MoviesDownloaded)
                 {
@@ -328,7 +322,11 @@ namespace SSFR_Movies.Views
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
+                    Task.Run(async()=>
+                    {
+                        await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    });
+                   
                     Debug.WriteLine("Error: " + e.InnerException);
                     return false;
                 });
@@ -342,13 +340,8 @@ namespace SSFR_Movies.Views
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                //    return false;
-                //});
-                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
-
+                await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+            
                 return;
             }
 
@@ -372,7 +365,7 @@ namespace SSFR_Movies.Views
                 var generId = genres.GenresGenres.Where(q => q.Name == genreType).FirstOrDefault().Id;
 
                 //var stored = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesByGenreAsync((int)generId, false);
-                var stored = await Locator.CurrentMutable.GetService<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
+                var stored = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesByGenreAsync((int)generId, false);
     
                 if (stored)
                 {
@@ -435,9 +428,8 @@ namespace SSFR_Movies.Views
             {
                 await Navigation.PushAsync(new SearchPage(), true);
             });
-           
         }
-        
+
         private void RefreshBtnClicked(object sender, EventArgs e)
         {
 

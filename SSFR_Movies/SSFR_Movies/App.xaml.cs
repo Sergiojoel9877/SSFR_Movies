@@ -26,6 +26,10 @@ namespace SSFR_Movies
 
             XF.Material.Forms.Material.Init(this);
             
+
+#if DEBUG
+            HotReloader.Current.Start(this);
+#endif
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;

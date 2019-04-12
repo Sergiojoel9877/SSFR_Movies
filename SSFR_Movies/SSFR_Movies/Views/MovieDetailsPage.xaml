@@ -3,11 +3,13 @@
     x:Class="SSFR_Movies.Views.MovieDetailsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Visual="Material"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
+    xmlns:HybridWebview="clr-namespace:SSFR_Movies.CustomRenderers"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
-    BackgroundColor="#006FDE">
+    BackgroundColor="#0066cc">
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -31,7 +33,6 @@
                     VerticalOptions="FillAndExpand">
                     <Frame 
                         x:Name="frame"
-                        Visual="Material"
                         BackgroundColor="#00103B"
                         HeightRequest="300"
                         CornerRadius="5"
@@ -61,10 +62,10 @@
                                 WidthRequest="500"/>
 
                             <StackLayout
-                                AbsoluteLayout.LayoutBounds="0, 1, 1, 0.4"
+                                AbsoluteLayout.LayoutBounds="0, 1, 1, 0.5"
                                 AbsoluteLayout.LayoutFlags="All"
                                 BackgroundColor="#44312D2D"
-                                HeightRequest="200"
+                                HeightRequest="230"
                                 HorizontalOptions="FillAndExpand"
                                 WidthRequest="{Binding Source={x:Reference frame}, Path=WidthRequest}">
                                 <Grid>
@@ -173,7 +174,7 @@
                  
                         </AbsoluteLayout>
                     </Frame>
-                    <StackLayout BackgroundColor="#006FDE" HorizontalOptions="FillAndExpand">
+                    <StackLayout BackgroundColor="#0066cc" HorizontalOptions="FillAndExpand">
                         <StackLayout Orientation="Horizontal">
                             <Label
                                 Margin="16,5,16,0"
@@ -198,10 +199,6 @@
                                     <StackLayout.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
                                     </StackLayout.GestureRecognizers>
-                                    <!--<ffimage:CachedImage
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />-->
                                     <Image
                                         HeightRequest="35"
                                         Source="YoutubeBtn.png"
@@ -228,8 +225,7 @@
                         <Button
                             x:Name="AddToFavLayout"
                             Margin="16"
-                            Visual="Material"
-                            BackgroundColor="#44FFFFFF"
+                            BackgroundColor="#006FDE"
                             HorizontalOptions="FillAndExpand"
                             CornerRadius="30"
                             FontAttributes="Bold"
@@ -253,8 +249,12 @@
                     <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
+                        
+                        <HybridWebview:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+
                         <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
-                        <WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+                        
+                        <!--<WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>-->
                     </StackLayout>
                 </StackLayout>
             </ScrollView>
