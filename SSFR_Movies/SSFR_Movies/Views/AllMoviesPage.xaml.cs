@@ -162,15 +162,15 @@ namespace SSFR_Movies.Views
                 }
             });
 
-            //MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
-            //{
-            //    MovieSelected();
-            //});
-
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
                 MoviesList.SelectedItem = null;
             });
+
+            //MessagingCenter.Subscribe<AllMoviesPageViewModel>(this, "HIDE", (p)=>
+            //{
+            //    Shell.SetTabBarIsVisible(this, false);
+            //});
         }
 
         private async void InitializeAsync(Func<Task> action)
@@ -181,6 +181,18 @@ namespace SSFR_Movies.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    vm.NoNetWorkHideTabs.Execute(null);
+                    Shell.SetTitleView(this, null);
+                    Shell.SetTitleView(this, new Label() { Text = "Connecting...", TextColor = Color.White, FontAttributes = FontAttributes.Bold, FontSize = 20, VerticalTextAlignment = TextAlignment.Center });
+                    Shell.SetTabBarIsVisible(this, false);
+                });
+                return;
+            }
 
             SuscribeToMessages();
             
@@ -209,11 +221,14 @@ namespace SSFR_Movies.Views
         {
             if(e.NetworkAccess == NetworkAccess.Internet)
             {
+                Shell.SetTitleView(this, null);
+                Shell.SetTitleView(this, new Label() { Text = "SSFR Movies", TextColor = Color.White, FontAttributes = FontAttributes.Bold, FontSize = 20, VerticalTextAlignment = TextAlignment.Center });
+                Shell.SetTabBarIsVisible(this, true);
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
-                    //MessageImg.Source = ImageSource.FromFile("NoInternet.png");
                     MessageImg.TranslateTo(0, 0, 2);
                 });
 
@@ -229,16 +244,13 @@ namespace SSFR_Movies.Views
             }
             else
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    ////vm.MsgVisible = true;
-                    //vm.MsgText = "It seems like you don't have an internet connection!";
-                    //vm.ListVisible = false;
-                    //vm.IsRunning = false;
-                    //vm.IsEnabled = false;
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    vm.NoNetWorkHideTabs.Execute(null);
+                    Shell.SetTitleView(this, null);
+                    Shell.SetTitleView(this, new Label() { Text = "Connecting...", TextColor = Color.White, FontAttributes = FontAttributes.Bold, FontSize = 20, VerticalTextAlignment = TextAlignment.Center });
+                    Shell.SetTabBarIsVisible(this, false);
                 });
-
             }
         }
 
