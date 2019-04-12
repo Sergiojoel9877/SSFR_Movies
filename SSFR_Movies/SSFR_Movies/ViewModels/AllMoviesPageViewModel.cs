@@ -375,21 +375,6 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                //{
-                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has  an Internet connection");
-                //    return false;
-                //});
-                Task.Run(async ()=>
-                {
-                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite);
-                });
-                
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MsgVisible = true;
-                });
-
                 return;
             }
 

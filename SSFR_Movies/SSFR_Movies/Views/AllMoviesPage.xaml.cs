@@ -181,6 +181,10 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
 
+            SuscribeToMessages();
+            
+            Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
+
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 MainThread.BeginInvokeOnMainThread(() =>
@@ -192,10 +196,6 @@ namespace SSFR_Movies.Views
                 });
                 return;
             }
-
-            SuscribeToMessages();
-            
-            Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
         }
 
         private async Task SpeakNow(string msg)
@@ -221,7 +221,14 @@ namespace SSFR_Movies.Views
             if(e.NetworkAccess == NetworkAccess.Internet)
             {
                 Shell.SetTitleView(this, null);
-                Shell.SetTitleView(this, new Label() { Text = "SSFR Movies", TextColor = Color.White, FontAttributes = FontAttributes.Bold, FontSize = 20, VerticalTextAlignment = TextAlignment.Center });
+                Shell.SetTitleView(this, new Label()
+                {
+                    Text = "SSFR Movies",
+                    TextColor = Color.White,
+                    FontAttributes = FontAttributes.Bold,
+                    FontSize = 20,
+                    VerticalTextAlignment = TextAlignment.Center
+                });
                 Shell.SetTabBarIsVisible(this, true);
 
                 MainThread.BeginInvokeOnMainThread(() =>
@@ -247,7 +254,31 @@ namespace SSFR_Movies.Views
                 {
                     vm.NoNetWorkHideTabs.Execute(null);
                     Shell.SetTitleView(this, null);
-                    Shell.SetTitleView(this, new Label() { Text = "Connecting...", TextColor = Color.White, FontAttributes = FontAttributes.Bold, FontSize = 20, VerticalTextAlignment = TextAlignment.Center });
+
+                    var titleView = new StackLayout()
+                    {
+                        HorizontalOptions = LayoutOptions.Start,
+                        Orientation = StackOrientation.Horizontal
+                    };
+
+                    titleView.Children.Add(new Label()
+                    {
+                        Text = "Connecting...",
+                        TextColor = Color.White,
+                        FontAttributes = FontAttributes.Bold,
+                        FontSize = 20,
+                        VerticalTextAlignment = TextAlignment.Center
+                    });
+
+                    titleView.Children.Add(new ActivityIndicator()
+                    {
+                        Color = Color.White,
+                        HeightRequest = 25,
+                        WidthRequest = 25,
+                        VerticalOptions = LayoutOptions.Center,
+                        IsRunning = true
+                    });
+                    Shell.SetTitleView(this, titleView);
                     Shell.SetTabBarIsVisible(this, false);
                 });
             }
