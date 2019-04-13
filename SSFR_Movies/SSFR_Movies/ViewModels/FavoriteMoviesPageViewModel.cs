@@ -1,24 +1,20 @@
-﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+﻿//using CommonServiceLocator;
+//using SSFR_Movies.Data;
+using Realms;
 using SSFR_Movies.Models;
-using MonkeyCache.FileStore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using SSFR_Movies.Helpers;
-using SSFR_Movies.Services;
-using System.Linq;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// FavoriteMoviesPage View Model
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
        
@@ -48,16 +44,19 @@ namespace SSFR_Movies.ViewModels
         public async Task<char> FillMoviesList()
         {
             await Task.Yield();
-            
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
 
-            foreach (var MovieResult in movies)
-            {
-                if (!FavMoviesList.Value.Contains(MovieResult))
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
+
+            if (movies != null)
+                foreach (var MovieResult in movies)
                 {
-                    FavMoviesList.Value.Add(MovieResult);
+                    if (!FavMoviesList.Value.Contains(MovieResult))
+                    {
+                        FavMoviesList.Value.Add(MovieResult);
+                    }
                 }
-            }
 
             if (FavMoviesList.Value.Count == 0)
             {
@@ -71,15 +70,17 @@ namespace SSFR_Movies.ViewModels
         {
             await Task.Yield();
 
-            var movies = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().GetEntities().ConfigureAwait(false);
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
 
             if (movies.ToList().Count > 0)
             {
-                return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>> ('r', movies); //Indica que la lista contiene elementos
             }
             else
             {
-                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>> ('v', movies); //Indica que la lista NO contiene elementos
             }
         }
 

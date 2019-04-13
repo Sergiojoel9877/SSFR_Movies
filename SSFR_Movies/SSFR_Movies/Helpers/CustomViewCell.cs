@@ -1,19 +1,17 @@
-﻿using CommonServiceLocator;
-using FFImageLoading.Forms;
-using FFImageLoading.Transformations;
-using Plugin.Connectivity;
-using SSFR_Movies.Data;
+﻿using FFImageLoading.Transformations;
+using Realms;
+using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
-using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Helpers
 {
@@ -21,23 +19,18 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCell : FlexLayout
     {
         #region Controls
-        private Lazy<CachedImage> blurCachedImage = null;
-        //private Image blurCachedImage = null;
-        private Lazy<CachedImage> cachedImage = null;
-        //private Image cachedImage = null;
-        private Lazy<FlexLayout> FlexLayout = null;
+        private Lazy<Image> blurCachedImage = null;
+        private Lazy<Image> cachedImage = null;
         private Lazy<StackLayout> Container = null;
         private Lazy<StackLayout> SubContainer = null;
         private Lazy<AbsoluteLayout> absoluteLayout = null;
         private Lazy<StackLayout> panelContainer = null;
         private Lazy<Frame> FrameUnderImages = null;
         private Lazy<Grid> gridInsideFrame = null;
-        private Lazy<ScrollView> scrollTitle = null;
         private Lazy<Label> releaseDate = null;
         public Lazy<Label> title = null;
-        private Lazy<CachedImage> pin2FavList = null;
+        private Lazy<Image> pin2FavList = null;
         private Lazy<StackLayout> compat = null;
-        private MenuItem AddToFavListCtxAct = null;
         private TapGestureRecognizer tap = null;
         private TapGestureRecognizer imageTapped = null;
 
@@ -77,43 +70,25 @@ namespace SSFR_Movies.Helpers
                 new BlurredTransformation(15)
             };
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
                 HeightRequest = 330,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                LoadingPlaceholder = "Loading.png",
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 330,
-                Transformations = Blur
+                WidthRequest = 330
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, "BackdropPath");
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
-            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            cachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
                 HeightRequest = 280,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                WidthRequest = 280
             });
-            cachedImage.Value.SetBinding(CachedImage.SourceProperty, "PosterPath");
-
+            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+            
             panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
             {
                 HeightRequest = 125,
@@ -124,9 +99,9 @@ namespace SSFR_Movies.Helpers
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
+                HasShadow = true,
                 HorizontalOptions = LayoutOptions.Center
             });
-            FrameUnderImages.Value.On<Xamarin.Forms.PlatformConfiguration.Android>().SetElevation(6f);
 
             ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
             {
@@ -147,13 +122,6 @@ namespace SSFR_Movies.Helpers
                 RowDefinitions = rowDefinitions
             });
 
-            scrollTitle = new Lazy<ScrollView>(()=> new ScrollView()
-            {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Never,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Never,
-                Orientation = ScrollOrientation.Horizontal
-            });
-
             title = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
@@ -166,8 +134,6 @@ namespace SSFR_Movies.Helpers
 
             title.Value.SetBinding(Label.TextProperty, "Title");
             
-            scrollTitle.Value.Content = title.Value;
-
             releaseDate = new Lazy<Label>(()=> new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
@@ -184,34 +150,27 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<CachedImage>(() => new CachedImage()
+            pin2FavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
-                FadeAnimationEnabled = true,
-                FadeAnimationForCachedImages = true,
-                RetryCount = 5,
-                RetryDelay = 2000,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
+            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
-
-            gridInsideFrame.Value.Children.Add(scrollTitle.Value, 0, 0);
-            Grid.SetColumnSpan(scrollTitle.Value, 3);
+            
+            gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
+            Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
-            //gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
+            gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
             AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
-            
+
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
@@ -226,10 +185,6 @@ namespace SSFR_Movies.Helpers
             Container.Value.Children.Add(panelContainer.Value);
            
             Children.Add(Container.Value);
-            
-            AddToFavListCtxAct = new MenuItem { Text = "Add To Favorites", Icon = "Star.png" };
-
-            AddToFavListCtxAct.Clicked += AddToFavList;
             
             tap = new TapGestureRecognizer();
 
@@ -246,49 +201,9 @@ namespace SSFR_Movies.Helpers
 
         private void PosterTapped(object sender, EventArgs e)
         {
-            var movie = BindingContext as Result;
-
             MessagingCenter.Send(this, "Hide", true);
-
-            MessagingCenter.Send(this, "PushAsync");
-            
-            MessagingCenter.Send(this, "_PushAsync");
         }
-        
-        protected override void OnBindingContextChanged()
-        {
-            
-            blurCachedImage.Value.Source = null;
 
-            cachedImage.Value.Source = null;
-            
-            var item = BindingContext as Result;
-
-            Device.BeginInvokeOnMainThread(()=>
-            {
-                if (title.Value.Text.Length >= 15)
-                {
-                    title.Value.SetAnimation();
-                }
-            });
-               
-            if (item == null)
-            {
-                return;
-            }
-            
-            blurCachedImage.Value.Source = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + item.BackdropPath;
-
-            cachedImage.Value.Source = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + item.PosterPath;
-
-            base.OnBindingContextChanged();
-        }
-        
-        void ExecuteAction(Action exe)
-        {
-            exe();
-        }
-        
         private async void AddToFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
@@ -301,11 +216,20 @@ namespace SSFR_Movies.Helpers
                 var movie = BindingContext as Result;
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                        Task.Run(async ()=>
+                        {
+                            var conf = new MaterialSnackbarConfiguration()
+                            {
+                                TintColor = Color.FromHex("#0066cc"),
+                                BackgroundColor = Color.FromHex("#272B2E")
+                            };
+                            await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
+                        });
+                        
                         return false;
                     });
                     return;
@@ -313,33 +237,42 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
+                    var realm = await Realm.GetInstanceAsync();
 
-                    if (movieExists)
+                    var movieExists = realm.Find<Result>(movie.Id);
+
+                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
                     {
-
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    }
-
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                    if (addMovie)
-                    {
-
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-
-                        Device.BeginInvokeOnMainThread(() =>
+                        var _conf = new MaterialSnackbarConfiguration()
                         {
-                            pin2FavList.Value.Source = "Star.png";
-                        });
-
+                            TintColor = Color.FromHex("#0066cc"),
+                            BackgroundColor = Color.FromHex("#272B2E")
+                        };
+                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+            
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-
-                        await SpeakNow("Added Successfully");
-
+                        
+                        return;
                     }
+                    
+                    realm.Write(() =>
+                    {
+                        movie.FavoriteMovie = "Star.png";
+
+                        realm.Add(movie, true);
+                    });
+
+                    MessagingCenter.Send(this, "Refresh", true);
+
+                    var conf = new MaterialSnackbarConfiguration()
+                    {
+                        TintColor = Color.FromHex("#0066cc"),
+                        BackgroundColor = Color.FromHex("#272B2E")
+                    };
+                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+                                        
+                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+
                 }
                 catch (Exception e15)
                 {
@@ -348,52 +281,6 @@ namespace SSFR_Movies.Helpers
             }
         }
 
-        private async void AddToFavList(object sender, EventArgs e)
-        {
-            
-            if (sender is MenuItem opt)
-            {
-                var movie = opt.BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                try
-                {
-                    var movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits(movie.Id);
-
-                    if (movieExists)
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Oh no It looks like " + movie.Title + " already exits in your favorite list!");
-                    }
-
-                    var addMovie = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().AddEntity(movie);
-
-                    if (addMovie)
-                    {
-
-                        DependencyService.Get<IToast>().LongAlert("Added Successfully, The movie " + movie.Title + " was added to your favorite list!");
-
-                        await SpeakNow("Added Successfully");
-
-                        Vibration.Vibrate(0.5);
-
-                    }
-                }
-                catch (Exception err)
-                {
-                    Debug.WriteLine(err.InnerException);
-                }
-            }
-        }
         public async Task SpeakNow(string msg)
         {
             var settings = new SpeechOptions

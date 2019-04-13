@@ -1,23 +1,15 @@
-using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SSFR_Movies.Views;
-using SSFR_Movies.Services;
-using System.Threading.Tasks;
-using CommonServiceLocator;
+using System;
 using System.Net.Http;
-using MonkeyCache.FileStore;
-using SSFR_Movies.Helpers;
-using System.Collections;
+using Xamarin.Forms;
 //using Microsoft.AppCenter;
 //using Microsoft.AppCenter.Analytics;
 //using Microsoft.AppCenter.Crashes;
-using System.Collections.Generic;
 using Xamarin.Forms.Internals;
-using SSFR_Movies.Data;
-using SSFR_Movies.Models;
+using Xamarin.Forms.Xaml;
+//using SSFR_Movies.Data;
 
-[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSFR_Movies
 {
     /// <summary>
@@ -31,7 +23,13 @@ namespace SSFR_Movies
         public App ()
 		{
             InitializeComponent();
+
+            XF.Material.Forms.Material.Init(this);
             
+
+#if DEBUG
+            HotReloader.Current.Start(this);
+#endif
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;

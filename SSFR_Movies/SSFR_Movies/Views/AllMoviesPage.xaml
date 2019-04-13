@@ -4,6 +4,7 @@
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Visual="Material"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
@@ -14,13 +15,9 @@
             <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
         </ResourceDictionary>
     </ContentPage.Resources>
-
+    
     <ContentPage.Content>
         <StackLayout x:Name="stack">
-            <StackLayout.GestureRecognizers>
-                <SwipeGestureRecognizer  Direction="Right" Swiped="StackSwiped"/>
-            </StackLayout.GestureRecognizers>
-            
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout
@@ -298,9 +295,10 @@
                         IsRunning="{Binding IsRunning}"
                         IsVisible="{Binding IsEnabled}"
                         WidthRequest="40"
+                        BackgroundColor="#004b96"
                         Color="#FFF" />
 
-                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" SelectionChanged="MovieSelected" ItemsSource="{Binding AllMoviesList.Value}" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout CompressedLayout.IsHeadless="True">

@@ -55,7 +55,7 @@ namespace SSFR_Movies.Droid
             var pendingIntent = PendingIntent.GetActivity(MainApplication.instance, 0, intent, PendingIntentFlags.OneShot);
 
             var mgr = (AlarmManager)MainApplication.instance.GetSystemService(Context.AlarmService);
-            mgr.Set(AlarmType.Rtc, DateTime.Now.Millisecond + 20, pendingIntent);
+            mgr.Set(AlarmType.Rtc, DateTime.Now.Millisecond + 5, pendingIntent);
 
             activity.Finish();
             JavaSystem.Exit(2);
