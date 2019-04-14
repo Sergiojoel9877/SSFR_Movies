@@ -95,8 +95,6 @@ namespace SSFR_Movies.Services
                     //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
                     //    return false;
                     //});
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
-
                     return null;
                 }
 

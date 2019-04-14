@@ -27,6 +27,9 @@
     <AndroidSigningKeyAlias>SSFR</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>123456123456jug</AndroidSigningKeyPass>
   </PropertyGroup>
+  <PropertyGroup>
+    <SolutionDir>..\</SolutionDir>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -133,14 +136,14 @@
     <PackageReference Include="Xamarin.Essentials">
       <Version>1.0.1</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.0.0.232914-pre6" />
+    <PackageReference Include="Xamarin.Forms" Version="4.0.0.304370-pre8" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Forms.Visual.Material">
-      <Version>4.0.0.232914-pre6</Version>
+      <Version>3.6.0.293080</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
       <Version>71.1501.0-preview2</Version>

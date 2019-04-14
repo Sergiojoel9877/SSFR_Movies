@@ -1,4 +1,5 @@
-﻿using Splat;
+﻿using Refractored.XamForms.PullToRefresh;
+using Splat;
 using SSFR_Movies.ViewModels;
 using System;
 using Xamarin.Forms.Internals;
@@ -16,6 +17,7 @@ namespace SSFR_Movies.Services
             Locator.CurrentMutable.RegisterLazySingleton(() => new ApiClient(), typeof(ApiClient));
             Locator.CurrentMutable.Register(() => new AllMoviesPageViewModel(), typeof(AllMoviesPageViewModel));
             Locator.CurrentMutable.RegisterLazySingleton(() => new FavoriteMoviesPageViewModel(), typeof(FavoriteMoviesPageViewModel));
+            Locator.CurrentMutable.RegisterLazySingleton(()=> new PullToRefreshLayout(), typeof(PullToRefreshLayout));
         }
 #pragma warning disable 0219, 0649
         static bool falseflag = false;
