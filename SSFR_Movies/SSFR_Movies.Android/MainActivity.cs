@@ -38,13 +38,13 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            PullToRefreshLayoutRenderer.Init();
-
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental" });
+
+            PullToRefreshLayoutRenderer.Init();
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 

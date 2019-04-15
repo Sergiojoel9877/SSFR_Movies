@@ -29,9 +29,9 @@
     </Shell.Resources>
     <ShellItem>
         <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <ShellContent>
-                <local:AllMoviesPage/>
-            </ShellContent>
+            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
+            <!--<local:AllMoviesPage/>-->
+
         </ShellSection>
         <ShellSection IsEnabled="{Binding Enabled}" Title="Favorites" Route="favorites" Icon="Heart.png" >
             <ShellContent>

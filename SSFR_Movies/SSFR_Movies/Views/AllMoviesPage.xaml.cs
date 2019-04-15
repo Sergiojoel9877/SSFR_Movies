@@ -36,7 +36,7 @@ namespace SSFR_Movies.Views
 
         ToolbarItem searchToolbarItem = null;
 
-        PullToRefreshLayout pull2refreshlyt { get; set; }
+        PullToRefreshLayout pull2refreshlyt = null;
 
         readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
         {
@@ -46,94 +46,104 @@ namespace SSFR_Movies.Views
 
         public AllMoviesPage()
         {
-            InitializeComponent();
-
-            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
-
-            BindingContext = vm;
-
-            pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
-            pull2refreshlyt.Content = scroll;
-            pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
-            pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
-
-            var swipeGesture = new SwipeGestureRecognizer
+            try
             {
-                Direction = SwipeDirection.Left
-            };
-            swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
-            Content.Content.GestureRecognizers.Add(swipeGesture);
-           
-            pull2refreshlyt.RefreshCommand = new Command(async () =>
-            {
-                await LoadMoreMovies();
-            });
+                InitializeComponent();
 
-            stack.Children.Add(pull2refreshlyt);
-            
-            SuscribeToMessages();
-            
-            genresContainer = this.FindByName<FlexLayout>("GenresContainer");
+                vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                genresContainer.IsVisible = false;
-                await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
-            });
+                BindingContext = vm;
 
-            updownList = new ToolbarItem()
-            {
-                Text = "Up",
-                Icon = "ListDown.png",
-                Priority = 1,
-                Command = new Command(() =>
+                pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
+                pull2refreshlyt.Content = scroll;
+                pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
+                pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
+                pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+                pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+                pull2refreshlyt.RefreshCommand = new Command(async () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
-                    });
-                   
-                    if (updownList.Icon == "ListDown.png")
-                    {
-                        MainThread.BeginInvokeOnMainThread(async () => { 
+                    await LoadMoreMovies();
+                });
 
-                            genresContainer.IsVisible = false;
+                var swipeGesture = new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Left
+                };
+                swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
 
-                            await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
-                        });
-                    }
-                    else
+                Content.Content.GestureRecognizers.Add(swipeGesture);
+
+                stack.Children.Add(pull2refreshlyt);
+
+                SuscribeToMessages();
+
+                genresContainer = this.FindByName<FlexLayout>("GenresContainer");
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    genresContainer.IsVisible = false;
+                    await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
+                });
+
+                updownList = new ToolbarItem()
+                {
+                    Text = "Up",
+                    Icon = "ListDown.png",
+                    Priority = 1,
+                    Command = new Command(() =>
                     {
-                        MainThread.BeginInvokeOnMainThread(async ()=>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
-                            genresContainer.IsVisible = true;
-
-                            await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                            updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
                         });
-                    }
-                })
-            };
-            
-            searchToolbarItem = new ToolbarItem()
-            {
-                Text = "Search",
-                Icon = "Search.png",
-                Priority = 0,
 
-                Command = new Command(() =>
+                        if (updownList.Icon == "ListDown.png")
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+
+                                genresContainer.IsVisible = false;
+
+                                await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                            });
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                genresContainer.IsVisible = true;
+
+                                await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                            });
+                        }
+                    })
+                };
+
+                searchToolbarItem = new ToolbarItem()
                 {
-                    MainThread.BeginInvokeOnMainThread(async ()=>
+                    Text = "Search",
+                    Icon = "Search.png",
+                    Priority = 0,
+
+                    Command = new Command(() =>
                     {
-                        await Navigation.PushAsync(new SearchPage(), true);
-                    });
-                })
-            };
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await Navigation.PushAsync(new SearchPage(), true);
+                        });
+                    })
+                };
 
-            ToolbarItems.Add(updownList);
+                ToolbarItems.Add(updownList);
 
-            ToolbarItems.Add(searchToolbarItem);
-            
-            Scrollview.Orientation = ScrollOrientation.Horizontal;
+                ToolbarItems.Add(searchToolbarItem);
+
+                Scrollview.Orientation = ScrollOrientation.Horizontal;
+            }
+            catch (ObjectDisposedException e)
+            {
+
+            }
         }
 
         private void MovieSelected(object sender, SelectionChangedEventArgs e)
