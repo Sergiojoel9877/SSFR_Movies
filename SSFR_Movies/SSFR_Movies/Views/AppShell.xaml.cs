@@ -30,6 +30,12 @@ namespace SSFR_Movies.Views
             InitializeComponent();
 
             //RegisterMessage();
+            RegisterRoutes();
+        }
+
+        void RegisterRoutes()
+        {
+            Routing.RegisterRoute("Search", typeof(SearchPage));
         }
 
         private void RegisterMessage()

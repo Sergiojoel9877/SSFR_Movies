@@ -13,7 +13,7 @@ using SSFR_Movies.Helpers;
 using System.Threading;
 using Xamarin.Essentials;
 using Realms;
-using ReactiveUI.Legacy;
+//using ReactiveUI.Legacy;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SSFR_Movies.Views;

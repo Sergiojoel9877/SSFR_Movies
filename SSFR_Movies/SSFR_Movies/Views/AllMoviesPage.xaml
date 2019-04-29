@@ -4,8 +4,8 @@
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
     BackgroundColor="#161513">
 
@@ -26,7 +26,7 @@
                         Direction="Column"
                         CompressedLayout.IsHeadless="True">
 
-                        <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
+                        <Grid CompressedLayout.IsHeadless="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>

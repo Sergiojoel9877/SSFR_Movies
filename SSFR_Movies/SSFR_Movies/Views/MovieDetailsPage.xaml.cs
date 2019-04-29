@@ -47,7 +47,7 @@ namespace SSFR_Movies.Views
             {
                 MovieTitle.SetAnimation();
             }
-            
+
         }
 
         string Check(string regexpttrn, string uri)

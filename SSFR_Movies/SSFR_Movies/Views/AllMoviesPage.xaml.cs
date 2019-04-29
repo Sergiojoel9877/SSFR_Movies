@@ -11,7 +11,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms.Internals;
 using System.Threading;
 using System.Diagnostics;
-using Refractored.XamForms.PullToRefresh;
+using SSFR_Movies.CustomRenderers;
 using static SSFR_Movies.Views.SearchPage;
 using Realms;
 using Splat;
@@ -53,18 +53,25 @@ namespace SSFR_Movies.Views
                 vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
                 BindingContext = vm;
-
-                pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
-                pull2refreshlyt.Content = scroll;
-                pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
-                pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
-                pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
-                pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
-                pull2refreshlyt.RefreshCommand = new Command(async () =>
+                try
                 {
-                    await LoadMoreMovies();
-                });
 
+                    pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
+                    pull2refreshlyt.Content = scroll;
+                    pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
+                    pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
+                    //pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+                    pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+                    pull2refreshlyt.RefreshCommand = new Command(async () =>
+                    {
+                        await LoadMoreMovies();
+                    });
+
+                }
+                catch (Exception e)
+                {
+
+                }
                 var swipeGesture = new SwipeGestureRecognizer
                 {
                     Direction = SwipeDirection.Left
@@ -129,7 +136,8 @@ namespace SSFR_Movies.Views
                     {
                         MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            await Navigation.PushAsync(new SearchPage(), true);
+                            //await Navigation.PushAsync(new SearchPage(), true);
+                            await Shell.Current.GoToAsync("app://ssfr.com/Search", true);
                         });
                     })
                 };
@@ -319,11 +327,11 @@ namespace SSFR_Movies.Views
 
             try
             {
-
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    //pull2refreshlyt.IsRefreshing = false;
+                    //TODO UNCOMMENT
+                    pull2refreshlyt.IsRefreshing = false;
                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
@@ -333,7 +341,7 @@ namespace SSFR_Movies.Views
                     //activityIndicator.IsRunning = true;
                     //activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
-                    RefreshBtn.IsEnabled = false;
+                    RefreshBtn.IsVisible = false;
                 });
 
                 Settings.NextPage++;
@@ -363,8 +371,8 @@ namespace SSFR_Movies.Views
                             //activityIndicator.IsRunning = false;
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
-                            RefreshBtn.IsEnabled = true;
-                            //pull2refreshlyt.IsRefreshing = false;
+                            RefreshBtn.IsVisible = true;
+                            pull2refreshlyt.IsRefreshing = false;
                         });
                     }
                 }
@@ -373,11 +381,11 @@ namespace SSFR_Movies.Views
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    //pull2refreshlyt.IsRefreshing = false;
+                    pull2refreshlyt.IsRefreshing = false;
                     //activityIndicator.IsRunning = false;
                     MoviesList.IsVisible = true;
                     activityIndicator.IsVisible = false;
-                    RefreshBtn.IsEnabled = true;
+                    RefreshBtn.IsVisible = true;
                 });
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
