@@ -13,9 +13,10 @@ using SSFR_Movies.Helpers;
 using System.Threading;
 using Xamarin.Essentials;
 using Realms;
-using ReactiveUI.Legacy;
+//using ReactiveUI.Legacy;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
+using SSFR_Movies.Views;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -241,10 +242,11 @@ namespace SSFR_Movies.ViewModels
 
                 if (!stored) 
                 {
-                    MainThread.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(async ()=>
                     {
-                        MsgVisible = true;
-                        MsgText = "Low storage left!";
+                        //MsgVisible = true;
+                        //MsgText = "Low storage left!";
+                        await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
                         IsRunning = false;
                         IsEnabled = false;
                     });
@@ -353,32 +355,26 @@ namespace SSFR_Movies.ViewModels
             }));    
         }
 
+        private Command noNetWorkHideTabs;
+        public Command NoNetWorkHideTabs
+        {
+            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Command(async () =>
+            {
+                //MessagingCenter.Send(this, "HIDE");
+                await FillMoviesList();
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+             }));
+        }
+
         public AllMoviesPageViewModel()
         {
             var realm = Realm.GetInstance();
 
             var movies = realm.All<Movie>().ToList();
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ListVisible = false;
-                IsEnabled = true;
-                IsRunning = true;
-            });
-
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Task.Run(async ()=>
-                {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-                });
-                
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MsgVisible = true;
-                });
-
                 return;
             }
 
@@ -392,12 +388,6 @@ namespace SSFR_Movies.ViewModels
                 FillUpMovies.Execute(null);
             }
             
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                ListVisible = true;
-                IsEnabled = false;
-                IsRunning = false;
-            });
         }
     }
 }

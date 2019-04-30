@@ -1,2 +1,2 @@
 # SSFR_Movies
-SSFR Movies Repo
+SSFR Movies APP Repo

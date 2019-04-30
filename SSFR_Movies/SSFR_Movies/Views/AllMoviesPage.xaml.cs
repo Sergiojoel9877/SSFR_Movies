@@ -11,12 +11,13 @@ using Xamarin.Essentials;
 using Xamarin.Forms.Internals;
 using System.Threading;
 using System.Diagnostics;
-using Refractored.XamForms.PullToRefresh;
+using SSFR_Movies.CustomRenderers;
 using static SSFR_Movies.Views.SearchPage;
 using Realms;
 using Splat;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
+using SSFR_Movies.Effects;
 
 namespace SSFR_Movies.Views
 {
@@ -46,95 +47,113 @@ namespace SSFR_Movies.Views
 
         public AllMoviesPage()
         {
-            InitializeComponent();
-
-            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
-
-            BindingContext = vm;
-
-            pull2refreshlyt = new PullToRefreshLayout()
+            try
             {
-                Content = scroll,
-                RefreshBackgroundColor = Color.FromHex("#272B2E"),
-                RefreshColor = Color.FromHex("#006FDE")
-            };
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
-            pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+                InitializeComponent();
 
-            var swipeGesture = new SwipeGestureRecognizer
-            {
-                Direction = SwipeDirection.Left
-            };
-            swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
-            Content.Content.GestureRecognizers.Add(swipeGesture);
-           
-            pull2refreshlyt.RefreshCommand = new Command(async () =>
-            {
-                await LoadMoreMovies();
-            });
+                vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
-            stack.Children.Add(pull2refreshlyt);
-            
-            SuscribeToMessages();
-            
-            genresContainer = this.FindByName<FlexLayout>("GenresContainer");
-
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                genresContainer.IsVisible = false;
-                await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
-            });
-
-            updownList = new ToolbarItem()
-            {
-                Text = "Up",
-                Icon = "ListDown.png",
-                Priority = 1,
-                Command = new Command(() =>
+                BindingContext = vm;
+                
+                try
                 {
-                    updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
 
-                    if (updownList.Icon == "ListDown.png")
+                    pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
+                    pull2refreshlyt.Content = scroll;
+                    pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
+                    pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
+                    //pull2refreshlyt.SetBinding(PullToRefreshLayout.IsRefreshingProperty, "IsRefreshing");
+                    pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
+                    pull2refreshlyt.RefreshCommand = new Command(async () =>
                     {
-                        MainThread.BeginInvokeOnMainThread(async () => { 
-
-                            genresContainer.IsVisible = false;
-
-                            await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
-                        });
-                    }
-                    else
-                    {
-                        MainThread.BeginInvokeOnMainThread(async ()=>
-                        {
-                            genresContainer.IsVisible = true;
-
-                            await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-                        });
-                    }
-                })
-            };
-            
-            searchToolbarItem = new ToolbarItem()
-            {
-                Text = "Search",
-                Icon = "Search.png",
-                Priority = 0,
-
-                Command = new Command(() =>
-                {
-                    MainThread.BeginInvokeOnMainThread(async ()=>
-                    {
-                        await Navigation.PushAsync(new SearchPage(), true);
+                        await LoadMoreMovies();
                     });
-                })
-            };
 
-            ToolbarItems.Add(updownList);
+                }
+                catch (Exception e)
+                {
 
-            ToolbarItems.Add(searchToolbarItem);
-            
-            Scrollview.Orientation = ScrollOrientation.Horizontal;
+                }
+                var swipeGesture = new SwipeGestureRecognizer
+                {
+                    Direction = SwipeDirection.Left
+                };
+                swipeGesture.Swiped += SwipeGestureRecognizer_Swiped;
+
+                Content.Content.GestureRecognizers.Add(swipeGesture);
+
+                stack.Children.Add(pull2refreshlyt);
+
+                SuscribeToMessages();
+
+                genresContainer = this.FindByName<FlexLayout>("GenresContainer");
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    genresContainer.IsVisible = false;
+                    await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
+                });
+
+                updownList = new ToolbarItem()
+                {
+                    Text = "Up",
+                    Icon = "ListDown.png",
+                    Priority = 1,
+                    Command = new Command(() =>
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+                        });
+
+                        if (updownList.Icon == "ListDown.png")
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+
+                                genresContainer.IsVisible = false;
+
+                                await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                            });
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                genresContainer.IsVisible = true;
+
+                                await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                            });
+                        }
+                    })
+                };
+
+                searchToolbarItem = new ToolbarItem()
+                {
+                    Text = "Search",
+                    Icon = "Search.png",
+                    Priority = 0,
+
+                    Command = new Command(() =>
+                    {
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            //await Navigation.PushAsync(new SearchPage(), true);
+                            await Shell.Current.GoToAsync("app://ssfr.com/Search", true);
+                        });
+                    })
+                };
+
+                ToolbarItems.Add(updownList);
+
+                ToolbarItems.Add(searchToolbarItem);
+
+                Scrollview.Orientation = ScrollOrientation.Horizontal;
+            }
+            catch (ObjectDisposedException e)
+            {
+
+            }
         }
 
         private void MovieSelected(object sender, SelectionChangedEventArgs e)
@@ -179,6 +198,43 @@ namespace SSFR_Movies.Views
             SuscribeToMessages();
             
             Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
+
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    vm.NoNetWorkHideTabs.Execute(null);
+
+                    Shell.SetTitleView(this, null);
+
+                    var titleView = new StackLayout()
+                    {
+                        HorizontalOptions = LayoutOptions.Start,
+                        Orientation = StackOrientation.Horizontal
+                    };
+
+                    titleView.Children.Add(new Label()
+                    {
+                        Text = "Connecting...",
+                        TextColor = Color.White,
+                        FontAttributes = FontAttributes.Bold,
+                        FontSize = 20,
+                        VerticalTextAlignment = TextAlignment.Center
+                    });
+
+                    titleView.Children.Add(new ActivityIndicator()
+                    {
+                        Color = Color.White,
+                        HeightRequest = 25,
+                        WidthRequest = 25,
+                        VerticalOptions = LayoutOptions.Center,
+                        IsRunning = true
+                    });
+                    Shell.SetTitleView(this, titleView);
+                    Shell.SetTabBarIsVisible(this, false);
+                });
+                return;
+            }
         }
 
         private async Task SpeakNow(string msg)
@@ -203,11 +259,21 @@ namespace SSFR_Movies.Views
         {
             if(e.NetworkAccess == NetworkAccess.Internet)
             {
+                Shell.SetTitleView(this, null);
+                Shell.SetTitleView(this, new Label()
+                {
+                    Text = "SSFR Movies",
+                    TextColor = Color.White,
+                    FontAttributes = FontAttributes.Bold,
+                    FontSize = 20,
+                    VerticalTextAlignment = TextAlignment.Center
+                });
+                Shell.SetTabBarIsVisible(this, true);
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     vm.MsgVisible = false;
                     vm.ListVisible = true;
-                    //MessageImg.Source = ImageSource.FromFile("NoInternet.png");
                     MessageImg.TranslateTo(0, 0, 2);
                 });
 
@@ -223,16 +289,37 @@ namespace SSFR_Movies.Views
             }
             else
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    ////vm.MsgVisible = true;
-                    //vm.MsgText = "It seems like you don't have an internet connection!";
-                    //vm.ListVisible = false;
-                    //vm.IsRunning = false;
-                    //vm.IsEnabled = false;
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-                });
+                    vm.NoNetWorkHideTabs.Execute(null);
+                    Shell.SetTitleView(this, null);
 
+                    var titleView = new StackLayout()
+                    {
+                        HorizontalOptions = LayoutOptions.Start,
+                        Orientation = StackOrientation.Horizontal
+                    };
+
+                    titleView.Children.Add(new Label()
+                    {
+                        Text = "Connecting...",
+                        TextColor = Color.White,
+                        FontAttributes = FontAttributes.Bold,
+                        FontSize = 20,
+                        VerticalTextAlignment = TextAlignment.Center
+                    });
+
+                    titleView.Children.Add(new ActivityIndicator()
+                    {
+                        Color = Color.White,
+                        HeightRequest = 25,
+                        WidthRequest = 25,
+                        VerticalOptions = LayoutOptions.Center,
+                        IsRunning = true
+                    });
+                    Shell.SetTitleView(this, titleView);
+                    Shell.SetTabBarIsVisible(this, false);
+                });
             }
         }
 
@@ -242,10 +329,10 @@ namespace SSFR_Movies.Views
 
             try
             {
-
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
+                    //TODO UNCOMMENT
                     pull2refreshlyt.IsRefreshing = false;
                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
@@ -256,7 +343,7 @@ namespace SSFR_Movies.Views
                     //activityIndicator.IsRunning = true;
                     //activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
-                    RefreshBtn.IsEnabled = false;
+                    RefreshBtn.IsVisible = false;
                 });
 
                 Settings.NextPage++;
@@ -286,7 +373,7 @@ namespace SSFR_Movies.Views
                             //activityIndicator.IsRunning = false;
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
-                            RefreshBtn.IsEnabled = true;
+                            RefreshBtn.IsVisible = true;
                             pull2refreshlyt.IsRefreshing = false;
                         });
                     }
@@ -300,7 +387,7 @@ namespace SSFR_Movies.Views
                     //activityIndicator.IsRunning = false;
                     MoviesList.IsVisible = true;
                     activityIndicator.IsVisible = false;
-                    RefreshBtn.IsEnabled = true;
+                    RefreshBtn.IsVisible = true;
                 });
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>

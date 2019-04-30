@@ -4,9 +4,7 @@
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Visual="Material"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
     BackgroundColor="#161513">
 
@@ -27,7 +25,7 @@
                         Direction="Column"
                         CompressedLayout.IsHeadless="True">
 
-                        <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
+                        <Grid CompressedLayout.IsHeadless="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
@@ -290,6 +288,7 @@
                     <ActivityIndicator
                         x:Name="activityIndicator"
                         HeightRequest="40"
+                        Visual="Material"
                         VerticalOptions="CenterAndExpand"
                         HorizontalOptions="CenterAndExpand"
                         IsRunning="{Binding IsRunning}"
@@ -310,7 +309,6 @@
 
                     <Button 
                         x:Name="RefreshBtn"
-                        x:DataType="vm:AllMoviesPageViewModel"
                         IsVisible="{Binding ListVisible}"
                         BackgroundColor="#272B2E"
                         TextColor="#006FDE"
