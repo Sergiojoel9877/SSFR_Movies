@@ -7,8 +7,8 @@ using Android.OS;
 using Xamarin.Forms;
 using Android.Gms.Ads;
 using Android.Content;
-using Refractored.XamForms.PullToRefresh.Droid;
 using Android.Widget;
+using SSFR_Movies.Droid.CustomRenderers;
 
 namespace SSFR_Movies.Droid
 {
@@ -38,15 +38,19 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            PullToRefreshLayoutRenderer.Init();
-
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental" });
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            SSFR_Movies.Droid.Effects.TouchEffectPlatform.Init();
+
+            PullToRefreshLayoutRenderer.Init();
+
+            //FFImageLoading.ImageSourceHandler();
 
             global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
 
@@ -65,7 +69,8 @@ namespace SSFR_Movies.Droid
             if (flasg)
             {
                 var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
-                var dummy1 = typeof(PullToRefreshLayoutRenderer);
+                //var dummy1 = typeof(PullToRefreshLayoutRenderer);
+                var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore

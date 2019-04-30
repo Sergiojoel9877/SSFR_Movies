@@ -2,14 +2,12 @@
 using Realms;
 using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
-using SSFR_Movies.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 
@@ -197,6 +195,7 @@ namespace SSFR_Movies.Helpers
             absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
 
             compat.Value.GestureRecognizers.Add(tap);
+
         }
 
         private void PosterTapped(object sender, EventArgs e)
