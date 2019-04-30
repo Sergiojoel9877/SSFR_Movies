@@ -27,6 +27,9 @@
     <AndroidSigningKeyAlias>SSFR</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>123456123456jug</AndroidSigningKeyPass>
   </PropertyGroup>
+  <!--<PropertyGroup>
+    <AndroidFastDeploymentType>Assemblies:Dexes</AndroidFastDeploymentType>
+  </PropertyGroup>-->
   <PropertyGroup>
     <SolutionDir>..\</SolutionDir>
   </PropertyGroup>
@@ -39,11 +42,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>Full</AndroidLinkMode>
-    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
-    <EnableProguard>false</EnableProguard>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidDexTool>d8</AndroidDexTool>
@@ -51,9 +53,9 @@
     <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-    <AndroidHttpClientHandlerType>Managed</AndroidHttpClientHandlerType>
-    <AndroidLinkSkip>
-    </AndroidLinkSkip>
+    <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
+    <AndroidLinkSkip>Xamarin.Essentials</AndroidLinkSkip>
+    <AndroidLinkTool>proguard</AndroidLinkTool>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -72,14 +74,15 @@
     <AndroidEnableDesugar>True</AndroidEnableDesugar>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>x86</AndroidSupportedAbis>
+    <AndroidSupportedAbis>
+    </AndroidSupportedAbis>
     <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
-    <EnableProguard>true</EnableProguard>
     <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidLinkTool>r8</AndroidLinkTool>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -155,6 +158,7 @@
     <Compile Include="CustomRenderers\HybridWebViewRenderer.cs" />
     <Compile Include="CustomRenderers\PullToRefreshLayoutRenderer.cs" />
     <Compile Include="CustomRenderers\TransparentEntryRenderer.cs" />
+    <Compile Include="Effects\TouchEffectPlatform.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

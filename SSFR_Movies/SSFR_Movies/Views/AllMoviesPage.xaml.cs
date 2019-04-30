@@ -17,6 +17,7 @@ using Realms;
 using Splat;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
+using SSFR_Movies.Effects;
 
 namespace SSFR_Movies.Views
 {
@@ -53,6 +54,7 @@ namespace SSFR_Movies.Views
                 vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
                 BindingContext = vm;
+                
                 try
                 {
 

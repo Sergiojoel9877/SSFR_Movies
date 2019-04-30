@@ -46,6 +46,8 @@ namespace SSFR_Movies.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
+            SSFR_Movies.Droid.Effects.TouchEffectPlatform.Init();
+
             PullToRefreshLayoutRenderer.Init();
 
             //FFImageLoading.ImageSourceHandler();
@@ -68,6 +70,7 @@ namespace SSFR_Movies.Droid
             {
                 var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
                 //var dummy1 = typeof(PullToRefreshLayoutRenderer);
+                var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore

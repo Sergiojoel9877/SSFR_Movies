@@ -10,7 +10,6 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
-using Plugin.SharedTransitions;
 
 namespace SSFR_Movies.Helpers
 {

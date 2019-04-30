@@ -292,7 +292,7 @@ namespace SSFR_Movies.Views
 
             streamWV.Navigated += StreamWV_Navigated;
 
-            //streamWVswap.Navigated += StreamWVswap_Navigated;
+            streamWVswap.Navigated += StreamWVswap_Navigated;
         }
 
         private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
@@ -301,7 +301,7 @@ namespace SSFR_Movies.Views
             {
                 var nav = (WebView)sender;
 
-                if (!e.Url.StartsWith("https://openload.co"))
+                if (!e.Url.StartsWith("https://openloed.co"))
                 {
                     nav.GoBack();
                 }
@@ -316,12 +316,11 @@ namespace SSFR_Movies.Views
         {
             try
             {
-
                 var nav = (WebView)sender;
 
                 if (!e.Url.StartsWith("https://videospider.in"))
                 {
-                    if (e.Url.StartsWith("https://openload.co"))
+                    if (e.Url.StartsWith("https://openloed.co"))
                     {
                         streamWV.IsVisible = false;
                         streamWVswap.IsVisible = true;
@@ -377,9 +376,18 @@ namespace SSFR_Movies.Views
                         //        "script.innerHTML = window.atob('" + encoded + "');" +
                         //        "parent.appendChild(script)" +
                         //        "})()");
-                        streamWVswap.LoadUrl(e.Url);
+                        //streamWVswap.Source = new HtmlWebViewSource()
+                        //{
+                        //    Html =  $@"<html><body>
+                        //            <frame src='{e.Url}'>
+                        //            </body></html>"
+                        //};
+                        //Task.Run(async ()=>
+                        //{
+                        //    await Browser.OpenAsync(new Uri(e.Url));
+                        //});
                         //var stream = Check(RegexOpenLoad, e.Url);
-                        //Device.OpenUri(new Uri(e.Url));
+                        Device.OpenUri(new Uri(e.Url));
                     }
                 }
             }

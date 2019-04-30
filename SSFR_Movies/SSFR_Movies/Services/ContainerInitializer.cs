@@ -28,6 +28,7 @@ namespace SSFR_Movies.Services
                 var ignore = new Lazy<ApiClient>(() => new ApiClient());
                 var ignore2 = new Lazy<AllMoviesPageViewModel>(() => new AllMoviesPageViewModel());
                 var ignore3 = new Lazy<FavoriteMoviesPageViewModel>(() => new FavoriteMoviesPageViewModel());
+                var ignore4 = typeof(SSFR_Movies.Effects.TouchEffect);
             }
         }
 #pragma warning restore 0219, 0649

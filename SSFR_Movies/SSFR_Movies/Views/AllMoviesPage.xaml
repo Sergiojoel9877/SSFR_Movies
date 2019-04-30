@@ -4,7 +4,6 @@
     x:Name="Content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="SSFR Movies"
     BackgroundColor="#161513">
@@ -289,6 +288,7 @@
                     <ActivityIndicator
                         x:Name="activityIndicator"
                         HeightRequest="40"
+                        Visual="Material"
                         VerticalOptions="CenterAndExpand"
                         HorizontalOptions="CenterAndExpand"
                         IsRunning="{Binding IsRunning}"
