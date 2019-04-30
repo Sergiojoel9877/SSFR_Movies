@@ -5,7 +5,6 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
     Title="SSFR Movies"
     BackgroundColor="#161513">
 
@@ -14,13 +13,9 @@
             <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
         </ResourceDictionary>
     </ContentPage.Resources>
-
+    
     <ContentPage.Content>
         <StackLayout x:Name="stack">
-            <StackLayout.GestureRecognizers>
-                <SwipeGestureRecognizer  Direction="Right" Swiped="StackSwiped"/>
-            </StackLayout.GestureRecognizers>
-            
             <ScrollView x:Name="scroll">
                 <StackLayout CompressedLayout.IsHeadless="True">
                     <FlexLayout
@@ -30,7 +25,7 @@
                         Direction="Column"
                         CompressedLayout.IsHeadless="True">
 
-                        <Grid CompressedLayout.IsHeadless="True" FlexLayout.AlignSelf="Start">
+                        <Grid CompressedLayout.IsHeadless="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
@@ -293,14 +288,16 @@
                     <ActivityIndicator
                         x:Name="activityIndicator"
                         HeightRequest="40"
+                        Visual="Material"
                         VerticalOptions="CenterAndExpand"
                         HorizontalOptions="CenterAndExpand"
                         IsRunning="{Binding IsRunning}"
                         IsVisible="{Binding IsEnabled}"
                         WidthRequest="40"
+                        BackgroundColor="#004b96"
                         Color="#FFF" />
 
-                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" ItemsSource="{Binding AllMoviesList.Value}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" SelectionChanged="MovieSelected" ItemsSource="{Binding AllMoviesList.Value}" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout CompressedLayout.IsHeadless="True">
@@ -312,7 +309,6 @@
 
                     <Button 
                         x:Name="RefreshBtn"
-                        x:DataType="vm:AllMoviesPageViewModel"
                         IsVisible="{Binding ListVisible}"
                         BackgroundColor="#272B2E"
                         TextColor="#006FDE"

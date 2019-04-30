@@ -1,6 +1,6 @@
-﻿using CommonServiceLocator;
-using SSFR_Movies.Data;
+﻿//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
+using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -25,19 +25,21 @@ namespace SSFR_Movies.Helpers
             });
         }
 
-        public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
-        {
-            await Task.Yield();
+        public static OriginalLanguage ToEnum(this string value) => (OriginalLanguage)Enum.Parse(typeof(OriginalLanguage), value, true);
 
-            bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id).ConfigureAwait(false);
+        //public static async Task IsPresentInFavList(this Result m, Image pin2FavList, long Id)
+        //{
+        //    await Task.Yield();
 
-            if (movieExists)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    pin2FavList.Source = "Star.png";
-                });
-            }
-        }
+        //    //bool movieExists = await ServiceLocator.Current.GetInstance<DBRepository<Result>>().EntityExits((int)Id).ConfigureAwait(false);
+
+        //    //if (movieExists)
+        //    //{
+        //    //    Device.BeginInvokeOnMainThread(() =>
+        //    //    {
+        //    //        pin2FavList.Source = "Star.png";
+        //    //    });
+        //    //}
+        //}
     }
 }

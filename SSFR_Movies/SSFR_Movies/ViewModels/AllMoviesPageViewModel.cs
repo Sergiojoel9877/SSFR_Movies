@@ -3,27 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using MonkeyCache.FileStore;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Linq;
 using System.Threading.Tasks;
-using CommonServiceLocator;
+using Splat;
 using SSFR_Movies.Services;
 using SSFR_Movies.Helpers;
-using Plugin.Connectivity;
 using System.Threading;
 using Xamarin.Essentials;
+using Realms;
+//using ReactiveUI.Legacy;
+using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
+using SSFR_Movies.Views;
 
 namespace SSFR_Movies.ViewModels
 {
     /// <summary>
     /// AllMoviesPage View Model
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
         public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
+
+        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        };
 
         private bool listVisible = true;
         public bool ListVisible
@@ -100,13 +109,10 @@ namespace SSFR_Movies.ViewModels
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+
                 return;
             }
 
@@ -117,7 +123,9 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var movies = Barrel.Current.Get<Movie>("Movies.Cached"); 
+            var realm = await Realm.GetInstanceAsync();
+
+            var movies = realm.All<Movie>().SingleOrDefault();
 
             if (movies == null)
             {
@@ -142,17 +150,18 @@ namespace SSFR_Movies.ViewModels
         {
                 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                MainThread.BeginInvokeOnMainThread(async ()=>
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
+               
                 return;
             }
+            var realm = Realm.GetInstance();
 
-            var movies = Barrel.Current.Get<Movie>("MoviesByXGenre.Cached");
+            var movies = realm.All<Movie>().SingleOrDefault();
 
             AllMoviesList.Value.Clear();
 
@@ -161,13 +170,12 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Value.Add(r);
             });
 
-            Device.BeginInvokeOnMainThread(()=>
+            MainThread.BeginInvokeOnMainThread(()=>
             {
                 ListVisible = true;
                 IsRunning = false;
                 IsEnabled = false;
             });
- 
         }
 
         /// <summary>
@@ -178,13 +186,16 @@ namespace SSFR_Movies.ViewModels
         {
             
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                var _conf = new MaterialSnackbarConfiguration()
                 {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                    TintColor = Color.FromHex("#0066cc"),
+                    BackgroundColor = Color.FromHex("#272B2E")
+                };
+
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+
                 return false;
             }
 
@@ -192,8 +203,9 @@ namespace SSFR_Movies.ViewModels
 
             token.CancelAfter(4000);
 
-            var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
-
+            //var done = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false);
+            var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
+            
             if (done)
             {
                 return true;
@@ -212,17 +224,14 @@ namespace SSFR_Movies.ViewModels
                 await Task.Yield();
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+
                     return;
                 }
 
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ListVisible = false;
                     IsRunning = true;
@@ -233,16 +242,17 @@ namespace SSFR_Movies.ViewModels
 
                 if (!stored) 
                 {
-                    Device.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(async ()=>
                     {
-                        MsgVisible = true;
-                        MsgText = "Low storage left!";
+                        //MsgVisible = true;
+                        //MsgText = "Low storage left!";
+                        await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
                         IsRunning = false;
                         IsEnabled = false;
                     });
                 }
 
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ListVisible = true;
                     IsEnabled = false;
@@ -262,16 +272,13 @@ namespace SSFR_Movies.ViewModels
         private Command getStoreMoviesByGenresCommand;
         public Command GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command( async () =>
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+
                     return;
                 }
 
@@ -287,13 +294,9 @@ namespace SSFR_Movies.ViewModels
             {
                 await Task.Yield();
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
@@ -301,7 +304,7 @@ namespace SSFR_Movies.ViewModels
 
                 if (!done)
                 {
-                    Device.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(()=>
                     {
                         MsgVisible = true;
                         MsgText = "No storage space left!";
@@ -315,17 +318,13 @@ namespace SSFR_Movies.ViewModels
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 return false;
             }
             
-            return await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMovieGenresAsync();
+            return await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
 
         }
 
@@ -336,13 +335,9 @@ namespace SSFR_Movies.ViewModels
             {
 
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
                 
@@ -352,7 +347,7 @@ namespace SSFR_Movies.ViewModels
         }
 
         private Command fillUpMovies;
-        public Command FillUpMovies
+        public Command FillUpMovies 
         {
             get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
             {
@@ -360,48 +355,39 @@ namespace SSFR_Movies.ViewModels
             }));    
         }
 
+        private Command noNetWorkHideTabs;
+        public Command NoNetWorkHideTabs
+        {
+            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Command(async () =>
+            {
+                //MessagingCenter.Send(this, "HIDE");
+                await FillMoviesList();
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+             }));
+        }
+
         public AllMoviesPageViewModel()
         {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                ListVisible = false;
-                IsEnabled = true;
-                IsRunning = true;
-            });
+            var realm = Realm.GetInstance();
+
+            var movies = realm.All<Movie>().ToList();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has  an Internet connection");
-                    return false;
-                });
-
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    MsgVisible = true;
-                });
-
                 return;
             }
 
-            if (!Barrel.Current.Exists("Movies.Cached") || Barrel.Current.IsExpired("Movies.Cached"))
+            if (movies.Count < 1)
             {
                 GetStoreMoviesCommand.Execute(null);
                 GetMoviesGenresCommand.Execute(null);
             }
             else
             {
-               FillUpMovies.Execute(null);
+                FillUpMovies.Execute(null);
             }
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                ListVisible = true;
-                IsEnabled = false;
-                IsRunning = false;
-            });
+            
         }
     }
 }

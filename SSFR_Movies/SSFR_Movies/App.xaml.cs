@@ -1,23 +1,15 @@
-using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SSFR_Movies.Views;
-using SSFR_Movies.Services;
-using System.Threading.Tasks;
-using CommonServiceLocator;
+using System;
 using System.Net.Http;
-using MonkeyCache.FileStore;
-using SSFR_Movies.Helpers;
-using System.Collections;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using System.Collections.Generic;
+using Xamarin.Forms;
+//using Microsoft.AppCenter;
+//using Microsoft.AppCenter.Analytics;
+//using Microsoft.AppCenter.Crashes;
 using Xamarin.Forms.Internals;
-using SSFR_Movies.Data;
-using SSFR_Movies.Models;
+using Xamarin.Forms.Xaml;
+//using SSFR_Movies.Data;
 
-[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace SSFR_Movies
 {
     /// <summary>
@@ -32,21 +24,21 @@ namespace SSFR_Movies
 		{
             InitializeComponent();
 
+            XF.Material.Forms.Material.Init(this);
+            
+#if DEBUG
+            HotReloader.Current.Start(this);
+#endif
             var mainPage = new StartPagexaml();
 
             MainPage = mainPage;
             
             SetHttpClient();
-        }                                   
-
-        async void InitializeAsync(Func<Task> action)
-        {
-            await action();
         }
 
         protected override void OnStart ()
 		{
-            AppCenter.Start("android=8d9e8fc5-562a-434b-934c-cd959dc47068;", typeof(Analytics), typeof(Crashes));
+            //AppCenter.Start("android=8d9e8fc5-562a-434b-934c-cd959dc47068;", typeof(Analytics), typeof(Crashes));
         }
 
 		protected override void OnSleep ()
@@ -66,7 +58,5 @@ namespace SSFR_Movies
         {
             BaseAddress = new Uri("https://api.themoviedb.org")
         };
-
-
     }
 }

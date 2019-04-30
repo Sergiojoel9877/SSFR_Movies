@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommonServiceLocator;
-using Plugin.Connectivity;
+﻿using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -27,7 +23,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<Lazy<AllMoviesPageViewModel>>().Value;
+            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             activityIndicator.IsVisible = false;
 
@@ -46,23 +42,27 @@ namespace SSFR_Movies.Views
         private void SuscribeToMessages()
         {
        
-            MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
-            {
-                MovieSelected();
-            });
+            //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
+            //{
+            //    MovieSelected();
+            //});
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
-                MoviesList.SelectedItem = null;
+                 MoviesList.SelectedItem = null;
             });
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                });
             }
         }
 
@@ -96,7 +96,7 @@ namespace SSFR_Movies.Views
             }
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -106,7 +106,7 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
 
                 try
@@ -114,8 +114,8 @@ namespace SSFR_Movies.Views
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
-
+                        var movie_results = await Locator.Current.GetService<ApiClient>().SearchMovieByName(key);
+                        
                         if (movie_results.Results.Count != 0)
                         {
 

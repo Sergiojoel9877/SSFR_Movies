@@ -7,10 +7,8 @@ using Android.OS;
 using Xamarin.Forms;
 using Android.Gms.Ads;
 using Android.Content;
-using SSFR_Movies.Services;
-using FFImageLoading;
-using Refractored.XamForms.PullToRefresh.Droid;
 using Android.Widget;
+using SSFR_Movies.Droid.CustomRenderers;
 
 namespace SSFR_Movies.Droid
 {
@@ -40,22 +38,44 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
-            PullToRefreshLayoutRenderer.Init();
-            
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
             
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "Visual_Experimental", "FastRenderers_Experimental" });
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental" });
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            SSFR_Movies.Droid.Effects.TouchEffectPlatform.Init();
+
+            PullToRefreshLayoutRenderer.Init();
+
+            //FFImageLoading.ImageSourceHandler();
+
+            global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
+
+            XF.Material.Droid.Material.Init(this, bundle);
 
             Android.Glide.Forms.Init();
 
             LoadApplication(LazyApp.Value);
-        }
 
-        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        }
+#pragma warning disable 0219, 0649
+        static MainActivity()
+        {
+            bool flasg = false;
+
+            if (flasg)
+            {
+                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+                //var dummy1 = typeof(PullToRefreshLayoutRenderer);
+                var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
+            }
+        }
+#pragma warning restore
+
+        public async override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
@@ -66,7 +86,7 @@ namespace SSFR_Movies.Droid
             base.OnTrimMemory(level);
         }
 
-        public override async void OnLowMemory()
+        public async override void OnLowMemory()
         {
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 

@@ -38,7 +38,6 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 try
                 {
                     SetNativeControl(CreateView());
-
                 }
                 catch (DeadObjectException e1)
                 {
@@ -76,6 +75,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
             }
             catch (DeadObjectException e)
             {
+                System.Diagnostics.Debug.WriteLine($"Error: {e}");
                 return null;
             }
         }

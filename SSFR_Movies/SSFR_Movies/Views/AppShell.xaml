@@ -27,20 +27,18 @@
             <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
-    <ShellItem>
+    <ShellItem Route="Main">
         <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <!--<ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>-->
             <ShellContent>
                 <local:AllMoviesPage/>
             </ShellContent>
         </ShellSection>
-        <ShellSection Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <!--<ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>-->
+        <ShellSection IsEnabled="{Binding Enabled}" Title="Favorites" Route="favorites" Icon="Heart.png" >
             <ShellContent>
                 <local:FavoritesMoviesPage/>
             </ShellContent>
         </ShellSection>
-        <ShellSection Title="About" Route="about" Icon="About.png">
+        <ShellSection IsEnabled="{Binding Enabled}" Title="About" Route="about" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>
         </ShellSection>
     </ShellItem>

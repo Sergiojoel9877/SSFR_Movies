@@ -1,13 +1,7 @@
-﻿using CommonServiceLocator;
-using Microsoft.EntityFrameworkCore;
-using MonkeyCache.FileStore;
-using Plugin.Connectivity;
-using SSFR_Movies.Data;
+﻿using SSFR_Movies.CustomRenderers;
+using Splat;
 using SSFR_Movies.ViewModels;
 using System;
-using Unity;
-using Unity.ServiceLocation;
-using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.Services
@@ -18,37 +12,25 @@ namespace SSFR_Movies.Services
     [Preserve(AllMembers = true)]
     public class ContainerInitializer
     {
-      
-        public static void Initialize()
+        public void Initialize()
         {
-            
-            //Sets the barrel cache ID.. with out it, the Barrel cannot work
-            Barrel.ApplicationId = "SSFR_Movies";
-
-            var container = new Lazy<UnityContainer>(() => new UnityContainer());
-
-            var serviceLocator = new UnityServiceLocator(container.Value);
-
-            ServiceLocator.SetLocatorProvider(() => serviceLocator);
-            
-            container.Value.RegisterInstance(typeof(Lazy<ApiClient>));
-            container.Value.RegisterInstance(typeof(Lazy<AllMoviesPageViewModel>));
-            container.Value.RegisterInstance(typeof(Lazy<FavoriteMoviesPageViewModel>));
-            container.Value.RegisterInstance(typeof(DatabaseContext<>));
-            container.Value.RegisterInstance(typeof(DBRepository<>));
-            container.Value.RegisterType(typeof(DatabaseContext<>));
-            container.Value.RegisterType(typeof(DbContextOptionsBuilder));
-
-            //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            Locator.CurrentMutable.RegisterLazySingleton(() => new ApiClient(), typeof(ApiClient));
+            Locator.CurrentMutable.Register(() => new AllMoviesPageViewModel(), typeof(AllMoviesPageViewModel));
+            Locator.CurrentMutable.RegisterLazySingleton(() => new FavoriteMoviesPageViewModel(), typeof(FavoriteMoviesPageViewModel));
+            Locator.CurrentMutable.Register(()=> new PullToRefreshLayout(), typeof(PullToRefreshLayout));
+        }
+#pragma warning disable 0219, 0649
+        static bool falseflag = false;
+        static ContainerInitializer()
+        {
+            if (falseflag)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
+                var ignore = new Lazy<ApiClient>(() => new ApiClient());
+                var ignore2 = new Lazy<AllMoviesPageViewModel>(() => new AllMoviesPageViewModel());
+                var ignore3 = new Lazy<FavoriteMoviesPageViewModel>(() => new FavoriteMoviesPageViewModel());
+                var ignore4 = typeof(SSFR_Movies.Effects.TouchEffect);
             }
         }
+#pragma warning restore 0219, 0649
     }
 }
