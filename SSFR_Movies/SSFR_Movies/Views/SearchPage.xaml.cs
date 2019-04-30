@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommonServiceLocator;
-using Plugin.Connectivity;
+﻿using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -27,60 +23,56 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vm = ServiceLocator.Current.GetInstance<AllMoviesPageViewModel>();
+            vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             activityIndicator.IsVisible = false;
 
             BindingContext = vm;
             
+            Shell.SetNavBarIsVisible(this, false);
+
             searchBar.Focus();
 
             SuscribeToMessages();
 
-            Shell.SetNavBarIsVisible(this, false);
+            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
             
         }
 
         private void SuscribeToMessages()
         {
        
-            MessagingCenter.Subscribe<CustomViewCell>(this, "PushAsync", (s) =>
-            {
-                MovieSelected();
-            });
+            //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
+            //{
+            //    MovieSelected();
+            //});
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
-                MoviesList.SelectedItem = null;
+                 MoviesList.SelectedItem = null;
             });
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                });
             }
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            BindingContext = vm;
             
             SuscribeToMessages();
-
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-
-            BindingContext = null;
-        }
-        
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
         {
 
@@ -104,7 +96,7 @@ namespace SSFR_Movies.Views
             }
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
@@ -114,17 +106,16 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
 
                 try
                 {
-
                     if (key != "")
                     {
 
-                        var movie_results = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.SearchMovieByName(key);
-
+                        var movie_results = await Locator.Current.GetService<ApiClient>().SearchMovieByName(key);
+                        
                         if (movie_results.Results.Count != 0)
                         {
 
@@ -132,14 +123,6 @@ namespace SSFR_Movies.Views
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                //var PosterPath = "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + MovieResult.PosterPath;
-
-                                //var Backdroppath = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + MovieResult.BackdropPath;
-
-                                //MovieResult.PosterPath = PosterPath;
-
-                                //MovieResult.BackdropPath = Backdroppath;
-
                                 vm.AllMoviesList.Value.Add(MovieResult);
                             }
 
@@ -181,7 +164,6 @@ namespace SSFR_Movies.Views
                 catch (Exception e3)
                 {
                     Debug.WriteLine("Error: " + e3.InnerException);
-                    //MoviesList.EndRefresh();
                 }
             });
         }
@@ -200,7 +182,7 @@ namespace SSFR_Movies.Views
 
                 ((ListView)sender).SelectedItem = null;
                 
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
 
             }
             catch (Exception e4)

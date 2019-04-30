@@ -1,13 +1,11 @@
-﻿using CommonServiceLocator;
-using MonkeyCache.FileStore;
-using SSFR_Movies.Services;
+﻿using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -28,7 +26,7 @@ namespace SSFR_Movies.Views
         {
             get => fireContainerCommand ?? (new Command(async ()=>
             {
-                await Task.Delay(2200);
+                await Task.Delay(2000);
 
                 ActIndicator.IsVisible = false;
 
@@ -38,14 +36,12 @@ namespace SSFR_Movies.Views
 
                 await ProBar.ProgressTo(.5, 200, Easing.Linear);
 
-                await Task.Factory.StartNew(()=>
-                {
-                    ContainerInitializer.Initialize();
-                },TaskCreationOptions.RunContinuationsAsynchronously);
-                
+                var cont = new ContainerInitializer();
+                cont.Initialize();
+
                 var mainPage = new Lazy<AppShell>(() => new AppShell());
                 
-                Device.BeginInvokeOnMainThread(async () =>
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await ProBar.ProgressTo(100, 200, Easing.Linear);
 

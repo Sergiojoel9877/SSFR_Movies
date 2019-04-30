@@ -4,7 +4,7 @@
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"
+    Visual="Material"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
     <ContentPage.Content>
@@ -47,47 +47,22 @@
 
             <ActivityIndicator
                 x:Name="activityIndicator"
-                BackgroundColor="Transparent"
                 HeightRequest="40"
+                BackgroundColor="#004b96"
                 VerticalOptions="CenterAndExpand"
                 HorizontalOptions="CenterAndExpand"
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" x:DataType="vm:AllMoviesPageViewModel" IsVisible="{Binding ListVisible}" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:AllMoviesPageViewModel">
+                    <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350"/>
+                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <!--<ListView
-                x:Name="MoviesList"
-                CachingStrategy="RecycleElementAndDataTemplate"
-                HasUnevenRows="True"
-                IsPullToRefreshEnabled="True"
-                IsRefreshing="{Binding IsRefreshing}"
-                IsVisible="{Binding ListVisible}"
-                ItemTapped="ItemSelected"
-                RefreshCommand="{Binding FillUpMoviesListAfterRefreshCommand}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell>
-                                
-                                -->
-            <!----><!--
-                                
-                            </helpers:CustomViewCell>
-                        </StackLayout>
-                       
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />

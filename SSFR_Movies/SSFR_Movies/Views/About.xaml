@@ -11,9 +11,8 @@
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
                     <ffimage:CachedImage
-                        BitmapOptimizations="True"
-                        DownsampleToViewSize="True"
                         HeightRequest="250"
+                        DownsampleToViewSize="True"
                         HorizontalOptions="Center"
                         Source="icon.png"
                         WidthRequest="250" />
@@ -26,7 +25,7 @@
                                 <Span 
                                     FontAttributes="Bold"
                                     FontSize="Large"
-                                    Text="SSFR Movies 2.0"
+                                    Text="SSFR Movies 2.0.2"
                                     TextColor="White"/>
                             </FormattedString>
                         </Label.FormattedText>

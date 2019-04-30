@@ -1,28 +1,23 @@
-﻿using MonkeyCache.FileStore;
-using Newtonsoft.Json;
-using Plugin.Connectivity;
+﻿using Newtonsoft.Json;
+using Realms;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Drawing;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
-using System.Net.Http;
+using XF.Material.Forms.UI.Dialogs;
 
 namespace SSFR_Movies.Services
 {
     /// <summary>
     /// To get all movies and store them in cache. 
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class ApiClient
     {
         private const string API_KEY = "766bc32f686bc7f4d8e1c4694b0376a8";
@@ -33,23 +28,26 @@ namespace SSFR_Movies.Services
                
         Lazy<JsonSerializer> serializer = new Lazy<JsonSerializer>(() => new JsonSerializer());
 
+        private readonly Realm realm = Realm.GetInstance();
+
         #region MoviesCacheFunctionsEtcRegion
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, CancellationTokenSource token = null, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
-  
+
             try
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
                     return false;
                 }
 
@@ -83,19 +81,22 @@ namespace SSFR_Movies.Services
 
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
             try
             {
                 //Verify if internet connection is available
-                if (!CrossConnectivity.Current.IsConnected)
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
+                    //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                    //{
+                    //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                    //    return false;
+                    //});
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                     return null;
                 }
 
@@ -121,17 +122,20 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
+            //await new SynchronizationContextRemover();
 
             await Task.Yield();
 
             //Verify if internet connection is available
-            if (!CrossConnectivity.Current.IsConnected)
+            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
+                //Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                //{
+                //    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
+                //    return false;
+                //});
+                await MaterialDialog.Instance.SnackbarAsync("No internet Connection", 3000);
+
                 return false;
             }
             try
@@ -166,20 +170,23 @@ namespace SSFR_Movies.Services
             }
 
         }
-
+         
         private bool StoreMovieByGenresInCache(JsonTextReader results)
         {
             var movies = serializer.Value.Deserialize<Movie>(results);
-            
-            //Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
-            Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
+
+            realm.Write(()=> realm.Add(movies, true));
+
+            ////Here, all genres are chached, the cache memory will store them for 5 minutes after that they have to be stored again.. 
+            //Barrel.Current.Add("MoviesByXGenre.Cached", movies, TimeSpan.FromMinutes(5));
 
             return true;
         }
 
         public async Task<bool> GetAndStoreMovieGenresAsync()
         {
-            
+            //await new SynchronizationContextRemover();
+
             await Task.Yield();
 
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
@@ -197,6 +204,7 @@ namespace SSFR_Movies.Services
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
+            await new SynchronizationContextRemover();
 
             await Task.Yield();
            
@@ -220,7 +228,7 @@ namespace SSFR_Movies.Services
             //Here, all genres are chached, the cache memory will store them for 60 days after that they have to be stored again.. 
             try
             {
-                Barrel.Current.Add("Genres.Cached", movies, TimeSpan.FromDays(60));
+                realm.Write(()=> realm.Add(movies, true));
             }
             catch (DirectoryNotFoundException)
             {
@@ -236,11 +244,12 @@ namespace SSFR_Movies.Services
             try
             {
                 var movies = serializer.Value.Deserialize<Movie>(results);
-
+                
                 try
                 {
+                    realm.Write(()=> realm.Add(movies, true));
                     //Here, all movies are chached, the cache memory will store them for 24hrs.. after that they have to be stored again.. 
-                    Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
+                    //Barrel.Current.Add("Movies.Cached", movies, TimeSpan.FromDays(1));
                 }
                 catch (DirectoryNotFoundException e)
                 {
@@ -275,58 +284,57 @@ namespace SSFR_Movies.Services
             return url;
         }
 
-        public async Task<ResultDW> GetStreamURL(string URL)
-        {
-            var obj = default(string);
-            var obj1 = default(ResultOP);
-            var fileID = URL.Substring(URL.Length - 11);
+        //public async Task<ResultDW> GetStreamURL(string URL)
+        //{
+        //    var obj1 = default(ResultOP);
+        //    var fileID = URL.Substring(URL.Length - 11);
 
-            System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
-            {
-                BaseAddress = new Uri("https://api.openload.co/1")
-            };
-            httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        //    System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient
+        //    {
+        //        BaseAddress = new Uri("https://api.openload.co/1")
+        //    };
+        //    httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
 
-            try
-            {
-                string request = $"/file/dlticket?file={fileID}";
+        //    try
+        //    {
+        //        string request = $"/file/dlticket?file={fileID}";
 
-                var m = await httpClient.GetAsync(request);
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
-            }
-            catch (Exception E)
-            {
-                Debug.WriteLine($"ERROR: {E.InnerException}");
-            }
-            var downloadLink = await GetDownloadLink(fileID, obj1);
+        //        obj1 = JsonConvert.DeserializeObject<ResultOP>(results);
+        //    }
+        //    catch (Exception E)
+        //    {
+        //        Debug.WriteLine($"ERROR: {E.InnerException}");
+        //    }
+        //    var downloadLink = await GetDownloadLink(fileID, obj1);
 
-            return downloadLink;
-        }
+        //    return downloadLink;
+        //}
 
-        public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
-        {
-            HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri("https://api.openload.co/1");
+        //public async Task<ResultDW> GetDownloadLink(string fileID, ResultOP result)
+        //{
+        //    HttpClient httpClient = new HttpClient();
+        //    httpClient.BaseAddress = new Uri("https://api.openload.co/1");
             
-            string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
+        //    string request = $"/file/dl?file={fileID}&ticket={result.Ticket}&captcha_response={result.CaptchaUrl}";
 
-            try
-            {
-                var m = await httpClient.GetAsync(request);
+        //    try
+        //    {
+        //        var m = await httpClient.GetAsync(request);
 
-                var results = await m.Content.ReadAsStringAsync();
+        //        var results = await m.Content.ReadAsStringAsync();
 
-                var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
-            }
-            catch (Exception ER)
-            {
-                Debug.WriteLine($"ERROR: {ER.InnerException}");
-            }
-            return null;
-        }
+        //        var obj1 = JsonConvert.DeserializeObject<ResultDW>(results);
+        //    }
+        //    catch (Exception ER)
+        //    {
+        //        Debug.WriteLine($"ERROR: {ER.InnerException}");
+        //    }
+        //    return null;
+        //}
         
         private static string HttpGet(string URL)
         {

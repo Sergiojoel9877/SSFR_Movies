@@ -3,10 +3,10 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:SSFR_Movies.Views"
        Title="SSFR Movies Home"
-       RouteHost="ssfr"
        RouteScheme="app"
+       RouteHost="ssfr.com"
+       Route="ssfrmovies"
        NavigationPage.HasNavigationBar="False"
-       Route="SSFR_Movies"
        NavigationPage.HasBackButton="False"
        FlyoutBehavior="Disabled"
        x:Class="SSFR_Movies.Views.AppShell">
@@ -29,17 +29,16 @@
     </Shell.Resources>
     <ShellItem>
         <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
-            <!--<ShellContent>
+            <ShellContent>
                 <local:AllMoviesPage/>
-            </ShellContent>-->
+            </ShellContent>
         </ShellSection>
-        <ShellSection Title="Favorites" Route="favorites" Icon="Heart.png" >
+        <ShellSection IsEnabled="{Binding Enabled}" Title="Favorites" Route="favorites" Icon="Heart.png" >
             <ShellContent>
                 <local:FavoritesMoviesPage/>
             </ShellContent>
         </ShellSection>
-        <ShellSection Title="About" Route="about" Icon="About.png">
+        <ShellSection IsEnabled="{Binding Enabled}" Title="About" Route="about" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>
         </ShellSection>
     </ShellItem>
