@@ -21,7 +21,7 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
-        string RegexOpenLoad = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
+        //string RegexOpenLoad = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
         public MovieDetailsPage(Result movie)
         {
@@ -50,12 +50,12 @@ namespace SSFR_Movies.Views
 
         }
 
-        string Check(string regexpttrn, string uri)
-        {
-            var regex = new Regex(@regexpttrn, RegexOptions.Compiled);
-            Match match = regex.Match(uri);
-            return match.Success ? match.Value : "";
-        }
+        //string Check(string regexpttrn, string uri)
+        //{
+        //    var regex = new Regex(@regexpttrn, RegexOptions.Compiled);
+        //    Match match = regex.Match(uri);
+        //    return match.Success ? match.Value : "";
+        //}
 
         private async void IsPresentInFavList(Result m)
         {
