@@ -46,7 +46,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
         {
             base.OnElementChanged(e);
 
-            if (Control == null)
+            if (e.NewElement != null && Control == null)
             {
                 var webView = CreateNativeControl();
                 xGetter.onFinish(new OnTaskCompleted());
@@ -62,18 +62,18 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 SetNativeControl(webView);
             }
 
-            if (e.OldElement != null)
-            {
-                Control.RemoveJavascriptInterface("xGetter");
-                var olE = e.OldElement as HybridWebView;
-                olE.LoadRequest -= OlE_LoadRequest;
-            }
-            if (e.NewElement != null)
-            {
-                Control.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
-                var nwE = e.NewElement as HybridWebView;
-                nwE.LoadRequest += OlE_LoadRequest;
-            }
+            //if (e.OldElement != null)
+            //{
+            //    Control.RemoveJavascriptInterface("xGetter");
+            //    var olE = e.OldElement as HybridWebView;
+            //    olE.LoadRequest -= OlE_LoadRequest;
+            //}
+            //if ()
+            //{
+            //    Control.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
+            //    var nwE = e.NewElement as HybridWebView;
+            //    nwE.LoadRequest += OlE_LoadRequest;
+            //}
         }
 
         private void OlE_LoadRequest(object sender, HybridWebView.LoadUrlRequested e)
