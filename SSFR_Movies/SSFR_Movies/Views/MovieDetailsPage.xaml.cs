@@ -1,10 +1,12 @@
-﻿using Realms;
+﻿using FFImageLoading.Transformations;
+using Realms;
 using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -48,7 +50,23 @@ namespace SSFR_Movies.Views
                 MovieTitle.SetAnimation();
             }
 
+            absoluteLayout.LowerChild(theFrame);
+
+            Content.GestureRecognizers.Add(new SwipeGestureRecognizer()
+            {
+                Direction = SwipeDirection.Right,
+                Command = new Command(() =>
+                {
+                    MainThread.BeginInvokeOnMainThread(async ()=>
+                    {
+                        await Navigation.PopAsync();
+                    });
+                })
+            });
+
         }
+
+
 
         //string Check(string regexpttrn, string uri)
         //{
@@ -280,7 +298,7 @@ namespace SSFR_Movies.Views
 
             streamWV.IsVisible = true;
 
-            await Scroll.ScrollToAsync(0, 500, true);
+            await vScroll.ScrollToAsync(0, 500, true);
             
             var URI = Locator
                         .Current

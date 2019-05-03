@@ -30,7 +30,6 @@ namespace SSFR_Movies.Helpers
         private Lazy<Image> pin2FavList = null;
         private Lazy<StackLayout> compat = null;
         private TapGestureRecognizer tap = null;
-        private TapGestureRecognizer imageTapped = null;
 
         #endregion
 
@@ -62,11 +61,6 @@ namespace SSFR_Movies.Helpers
             {
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-
-            List<FFImageLoading.Work.ITransformation> Blur = new List<FFImageLoading.Work.ITransformation>
-            {
-                new BlurredTransformation(15)
-            };
 
             blurCachedImage = new Lazy<Image>(() => new Image()
             {
@@ -186,21 +180,10 @@ namespace SSFR_Movies.Helpers
             
             tap = new TapGestureRecognizer();
 
-            imageTapped = new TapGestureRecognizer();
-
             tap.Tapped += AddToFavListTap;
-
-            imageTapped.Tapped += PosterTapped;
-
-            absoluteLayout.Value.GestureRecognizers.Add(imageTapped);
 
             compat.Value.GestureRecognizers.Add(tap);
 
-        }
-
-        private void PosterTapped(object sender, EventArgs e)
-        {
-            MessagingCenter.Send(this, "Hide", true);
         }
 
         private async void AddToFavListTap(object sender, EventArgs e)

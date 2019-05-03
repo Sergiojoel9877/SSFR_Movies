@@ -265,26 +265,6 @@
                         </Grid>
                     </FlexLayout>
 
-                    <Image
-                        x:Name="MessageImg"
-                        Grid.ColumnSpan="2"
-                        HeightRequest="300"
-                        HorizontalOptions="Center"
-                        IsVisible="{Binding MsgVisible}"
-                        Source="NoInternet.png"
-                        WidthRequest="300" />
-
-                     <Label
-                        x:Name="Message"
-                        Margin="0,5,0,0"
-                        FontAttributes="Bold"
-                        FontSize="Medium"
-                        HorizontalOptions="Center"
-                        HorizontalTextAlignment="Center"
-                        IsVisible="{Binding MsgVisible}"
-                        Text="{Binding MsgText}"
-                        TextColor="White" />
-
                     <ActivityIndicator
                         x:Name="activityIndicator"
                         HeightRequest="40"
