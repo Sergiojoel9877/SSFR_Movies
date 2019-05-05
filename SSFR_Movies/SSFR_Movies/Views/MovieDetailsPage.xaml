@@ -26,11 +26,13 @@
             Wrap="NoWrap">
 
             <ScrollView x:Name="vScroll" VerticalOptions="FillAndExpand">
+                <!--Container-->
                 <StackLayout
                     CompressedLayout.IsHeadless="True"
                     WidthRequest="{Binding Source={x:Reference vScroll}, Path=WidthRequest}"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand">
+                    <!--Header Frame-->
                     <Frame 
                         x:Name="frame"
                         BackgroundColor="#00103B"
