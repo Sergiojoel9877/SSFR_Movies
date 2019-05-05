@@ -1,20 +1,15 @@
-﻿using FFImageLoading.Transformations;
-using Realms;
+﻿using Realms;
 using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
@@ -29,44 +24,97 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
+            vScroll.TranslationX = -500;
+
+            Result resultSingleton = ResultSingleton.Instance();
+
+            BindingContext = resultSingleton;
+
+            //MessagingCenter.Subscribe<AllMoviesPage, Result>(this, "Result", (p, e)=>
+            //{
+            //    BindingContext = p;
+            //});
+
             MessagingCenter.Send(this, "ClearSelection");
 
-            var tap = new TapGestureRecognizer();
+            SetPosterImgGestureRecognizer();
 
-            tap.Tapped += TitleTapped;
-            
-            PosterPathImage.GestureRecognizers.Add(tap);
-            
-            AddToFav.Source = "StarEmpty.png";
+            SetAddSourceToFavoritesListImage("StarEmpty.png");
 
-            BindingContext = movie;
-            
-            QuitFromFavLayout.Clicked += QuitFromFavorites;
-            
-            AddToFavLayout.Clicked += Tap_Tapped;
-            
+            SetEventHandlers();
+
+            SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(movie);
+
+            LowerChildInAbsoluteLayout();
+
+
+        }
+
+        private void SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(Result movie)
+        {
             if (movie.Title.Length >= 25)
             {
                 MovieTitle.SetAnimation();
             }
-
-            absoluteLayout.LowerChild(theFrame);
-
-            Content.GestureRecognizers.Add(new SwipeGestureRecognizer()
-            {
-                Direction = SwipeDirection.Right,
-                Command = new Command(() =>
-                {
-                    MainThread.BeginInvokeOnMainThread(async ()=>
-                    {
-                        await Navigation.PopAsync();
-                    });
-                })
-            });
-
         }
 
+        private void LowerChildInAbsoluteLayout()
+        {
+            absoluteLayout.LowerChild(theFrame);
+        }
 
+        private void SetEventHandlers()
+        {
+            QuitFromFavLayout.Clicked += QuitFromFavorites;
+
+            AddToFavLayout.Clicked += Tap_Tapped;
+        }
+
+        private void SetAddSourceToFavoritesListImage(string v)
+        {
+            AddToFav.Source = "StarEmpty.png";
+        }
+
+        private void SetPosterImgGestureRecognizer()
+        {
+            var tap = new TapGestureRecognizer();
+
+            tap.Tapped += TitleTapped;
+
+            PosterPathImage.GestureRecognizers.Add(tap);
+        }
+
+        public MovieDetailsPage()
+        {
+            InitializeComponent();
+
+            vScroll.TranslationX = 500;
+
+            Result resultSingleton = ResultSingleton.Instance();
+      
+            BindingContext = resultSingleton;
+
+            SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(resultSingleton);
+
+            var item = BindingContext as Result;
+
+            IsPresentInFavList(item);
+
+            Task.Run(async ()=>
+            {
+                await ScrollTrailer.ScrollToAsync(-200, 0, true);
+            });
+
+            MessagingCenter.Send(this, "ClearSelection");
+
+            SetPosterImgGestureRecognizer();
+
+            SetAddSourceToFavoritesListImage("StarEmpty.png");
+
+            SetEventHandlers();
+
+            LowerChildInAbsoluteLayout();
+        }
 
         //string Check(string regexpttrn, string uri)
         //{
@@ -81,7 +129,7 @@ namespace SSFR_Movies.Views
             var realm = await Realm.GetInstanceAsync();
 
             var movieExists = realm.Find<Result>(m.Id);
-            
+
             if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
             {
                 MainThread.BeginInvokeOnMainThread(() =>
@@ -109,9 +157,9 @@ namespace SSFR_Movies.Views
             await Task.Yield();
 
             await AddToFav.ScaleTo(1.50, 500, Easing.SpringOut);
-            
+
             await AddToFavList();
-            
+
             await AddToFav.ScaleTo(1, 500, Easing.SpringIn);
         }
 
@@ -147,23 +195,23 @@ namespace SSFR_Movies.Views
                     }
                     else
                     {
-                       
+
                         realm.Write(() =>
                         {
                             movie.FavoriteMovie = "Star.png";
 
                             realm.Add(movie, true);
                         });
-                        
+
                         await SpeakNow("Added Successfully");
 
                         await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
 
                         MessagingCenter.Send(this, "Refresh", true);
-                            
+
                         MessagingCenter.Send(this, "ClearSelection");
 
-                        MainThread.BeginInvokeOnMainThread(()=>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
                             AddToFav.Source = "Star.png";
 
@@ -171,7 +219,7 @@ namespace SSFR_Movies.Views
 
                             QuitFromFavLayout.IsVisible = true;
                         });
-                    } 
+                    }
                 }
                 catch (Exception e)
                 {
@@ -207,7 +255,7 @@ namespace SSFR_Movies.Views
 
                         realm.Add(movie, true);
                     });
-                    
+
                     await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
                     AddToFav.Source = "StarEmpty.png";
@@ -229,17 +277,16 @@ namespace SSFR_Movies.Views
                 }
             }
         }
-        
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            
-            var item = BindingContext as Result;
 
-            IsPresentInFavList(item);
-            
-            await ScrollTrailer.ScrollToAsync(-200, 0, true);
-
+            MainThread.BeginInvokeOnMainThread(async ()=>
+            {
+                await vScroll.TranslateTo(0, 0, 1000, Easing.Linear);
+            });
+    
             MessagingCenter.Send(this, "ClearSelection");
 
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
@@ -247,10 +294,10 @@ namespace SSFR_Movies.Views
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
                 return;
             }
-            
+
             var movie = (Result)BindingContext;
 
-            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
 
             if (video.Results.Count() == 0)
             {
@@ -279,7 +326,7 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync((int)movie.Id);
+            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
 
             if (video.Results.Count() > 0)
             {
@@ -299,7 +346,7 @@ namespace SSFR_Movies.Views
             streamWV.IsVisible = true;
 
             await vScroll.ScrollToAsync(0, 500, true);
-            
+
             var URI = Locator
                         .Current
                             .GetService<ApiClient>()
@@ -394,9 +441,10 @@ namespace SSFR_Movies.Views
                         //        "script.innerHTML = window.atob('" + encoded + "');" +
                         //        "parent.appendChild(script)" +
                         //        "})()");
-                        //streamWVswap.Source = new HtmlWebViewSource()
+                        streamWVswap.Source = new Uri(e.Url);
+                        //new HtmlWebViewSource()
                         //{
-                        //    Html =  $@"<html><body>
+                        //    Html = $@"<html><body>
                         //            <frame src='{e.Url}'>
                         //            </body></html>"
                         //};
@@ -417,9 +465,9 @@ namespace SSFR_Movies.Views
 
         private async void TitleTapped(object sender, EventArgs e)
         {
-           await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
+            await PosterPathImage.ScaleTo(1.3, 500, Easing.Linear);
 
-           await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
+            await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
         }
     }
 }

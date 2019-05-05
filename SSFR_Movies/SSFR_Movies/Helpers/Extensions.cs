@@ -1,7 +1,6 @@
 ﻿//using SSFR_Movies.Data;
 using SSFR_Movies.Models;
 using System;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 

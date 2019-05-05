@@ -1,19 +1,15 @@
-﻿using FFImageLoading.Forms;
-using FFImageLoading.Transformations;
+﻿using FFImageLoading.Transformations;
 using Realms;
 using Splat;
 using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
-using SSFR_Movies.Views;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
@@ -22,20 +18,19 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private Lazy<Image> blurCachedImage = null;
-        private Lazy<Image> cachedImage = null;
-        private Lazy<StackLayout> Container = null;
-        private Lazy<StackLayout> SubContainer = null;
-        private Lazy<AbsoluteLayout> absoluteLayout = null;
-        private Lazy<StackLayout> panelContainer = null;
-        private Lazy<Frame> FrameUnderImages = null;
-        private Lazy<Grid> gridInsideFrame = null;
-        private Lazy<Label> releaseDate = null;
-        public Lazy<Label> title = null;
-        private Lazy<Image> unPinFromFavList = null;
-        private Lazy<StackLayout> compat = null;
-        private TapGestureRecognizer tap = null;
-        private TapGestureRecognizer imageTapped = null;
+        private readonly Lazy<Image> blurCachedImage = null;
+        private readonly Lazy<Image> cachedImage = null;
+        private readonly Lazy<StackLayout> Container = null;
+        private readonly Lazy<StackLayout> SubContainer = null;
+        private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
+        private readonly Lazy<StackLayout> panelContainer = null;
+        private readonly Lazy<Frame> FrameUnderImages = null;
+        private readonly Lazy<Grid> gridInsideFrame = null;
+        private readonly Lazy<Label> releaseDate = null;
+        public readonly Lazy<Label> title = null;
+        private readonly Lazy<Image> unPinFromFavList = null;
+        private readonly Lazy<StackLayout> compat = null;
+        private readonly TapGestureRecognizer tap = null;
         #endregion
 
         public CustomViewCellFavPage()
@@ -135,7 +130,7 @@ namespace SSFR_Movies.Helpers
             });
 
             title.Value.SetBinding(Label.TextProperty, "Title");
-           
+
             releaseDate = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
@@ -193,9 +188,9 @@ namespace SSFR_Movies.Helpers
             tap.Tapped += QuitFromFavListTap;
 
             compat.Value.GestureRecognizers.Add(tap);
-            
+
         }
-       
+
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
@@ -226,7 +221,7 @@ namespace SSFR_Movies.Helpers
 
                     if (deleteMovie != null)
                     {
-                        realm.Write(()=>
+                        realm.Write(() =>
                         {
                             movie.FavoriteMovie = "StarEmpty.png";
 

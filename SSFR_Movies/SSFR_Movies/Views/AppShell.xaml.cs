@@ -1,16 +1,10 @@
 ﻿using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static SSFR_Movies.Views.SearchPage;
 
 namespace SSFR_Movies.Views
 {
@@ -36,11 +30,12 @@ namespace SSFR_Movies.Views
         void RegisterRoutes()
         {
             Routing.RegisterRoute("Search", typeof(SearchPage));
+            Routing.RegisterRoute("MovieDetails", typeof(MovieDetailsPage));
         }
 
         private void RegisterMessage()
         {
-            MessagingCenter.Subscribe<AllMoviesPageViewModel, bool>(this, "HIDE", (p, e)=>
+            MessagingCenter.Subscribe<AllMoviesPageViewModel, bool>(this, "HIDE", (p, e) =>
             {
                 Enabled = e;
             });
@@ -68,7 +63,9 @@ namespace SSFR_Movies.Views
         public bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string name = null)
         {
             if (Equals(storage, value))
+            {
                 return true;
+            }
 
             storage = value;
 

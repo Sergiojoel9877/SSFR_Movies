@@ -1,4 +1,4 @@
-﻿using FFImageLoading.Transformations;
+﻿using FFImageLoading.Forms;
 using Realms;
 using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
@@ -17,25 +17,25 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCell : FlexLayout
     {
         #region Controls
-        private Lazy<Image> blurCachedImage = null;
-        private Lazy<Image> cachedImage = null;
-        private Lazy<StackLayout> Container = null;
-        private Lazy<StackLayout> SubContainer = null;
-        private Lazy<AbsoluteLayout> absoluteLayout = null;
-        private Lazy<StackLayout> panelContainer = null;
-        private Lazy<Frame> FrameUnderImages = null;
-        private Lazy<Grid> gridInsideFrame = null;
-        private Lazy<Label> releaseDate = null;
+        private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
+        private readonly Lazy<Frame> FrameUnderImages = null;
+        private readonly Lazy<Grid> gridInsideFrame = null;
+        private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly Lazy<CachedImage> cachedImage = null;
+        private readonly Lazy<CachedImage> pin2FavList = null;
         public Lazy<Label> title = null;
-        private Lazy<Image> pin2FavList = null;
-        private Lazy<StackLayout> compat = null;
-        private TapGestureRecognizer tap = null;
+        private readonly Lazy<StackLayout> Container = null;
+        private readonly Lazy<StackLayout> SubContainer = null;
+        private readonly Lazy<StackLayout> panelContainer = null;
+        private readonly Lazy<Label> releaseDate = null;
+        private readonly Lazy<StackLayout> compat = null;
+        private readonly TapGestureRecognizer tap = null;
 
         #endregion
 
         public CustomViewCell()
         {
-      
+
             HeightRequest = 300;
             Direction = FlexDirection.Column;
             Margin = 16;
@@ -48,7 +48,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            SubContainer = new Lazy<StackLayout>(()=> new StackLayout()
+            SubContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
                 Margin = new Thickness(16, 0, 16, 0),
                 HeightRequest = 280,
@@ -57,37 +57,49 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            absoluteLayout = new Lazy<AbsoluteLayout>(()=> new AbsoluteLayout()
+            absoluteLayout = new Lazy<AbsoluteLayout>(() => new AbsoluteLayout()
             {
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<Image>(() => new Image()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HeightRequest = 330,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                Transformations = new List<FFImageLoading.Work.ITransformation>()
+                {
+                    new FFImageLoading.Transformations.BlurredTransformation()
+                    {
+                        Radius = 10
+                    }
+                },
                 Scale = 3,
+                BitmapOptimizations = true,
+                DownsampleToViewSize = true,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
-            cachedImage = new Lazy<Image>(() => new Image()
+            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
+                BitmapOptimizations = true,
+                CacheType = FFImageLoading.Cache.CacheType.Memory,
+                DownsampleToViewSize = true,
                 HeightRequest = 280,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280
             });
-            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
-            
-            panelContainer = new Lazy<StackLayout>(()=> new StackLayout()
+            cachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+
+            panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HeightRequest = 125,
                 HorizontalOptions = LayoutOptions.Center,
             });
 
-            FrameUnderImages = new Lazy<Frame>(()=> new Frame()
+            FrameUnderImages = new Lazy<Frame>(() => new Frame()
             {
                 BackgroundColor = Color.FromHex("#44312D2D"),
                 CornerRadius = 5,
@@ -101,20 +113,20 @@ namespace SSFR_Movies.Helpers
                 new ColumnDefinition() { Width = GridLength.Star},
                 new ColumnDefinition() { Width = GridLength.Star}
             };
-            
+
             RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
             {
                 new RowDefinition() { Height = GridLength.Star},
                 new RowDefinition() { Height = GridLength.Star}
             };
 
-            gridInsideFrame = new Lazy<Grid>(()=> new Grid()
+            gridInsideFrame = new Lazy<Grid>(() => new Grid()
             {
                 ColumnDefinitions = columnDefinitions,
                 RowDefinitions = rowDefinitions
             });
 
-            title = new Lazy<Label>(()=> new Label()
+            title = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 TextColor = Color.White,
@@ -125,8 +137,8 @@ namespace SSFR_Movies.Helpers
             });
 
             title.Value.SetBinding(Label.TextProperty, "Title");
-            
-            releaseDate = new Lazy<Label>(()=> new Label()
+
+            releaseDate = new Lazy<Label>(() => new Label()
             {
                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                 TextColor = Color.FromHex("#65FFFFFF"),
@@ -137,22 +149,26 @@ namespace SSFR_Movies.Helpers
             });
             releaseDate.Value.SetBinding(Label.TextProperty, "ReleaseDate");
 
-            compat = new Lazy<StackLayout>(()=> new StackLayout()
+            compat = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<Image>(() => new Image()
+            pin2FavList = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                BitmapOptimizations = true,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                DownsampleToViewSize = true,
+                DownsampleUseDipUnits = true,
             });
-            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
+            pin2FavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
-            
+
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
             Grid.SetColumnSpan(title.Value, 3);
             gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
@@ -175,9 +191,9 @@ namespace SSFR_Movies.Helpers
             CompressedLayout.SetIsHeadless(SubContainer.Value, true);
             Container.Value.Children.Add(SubContainer.Value);
             Container.Value.Children.Add(panelContainer.Value);
-           
+
             Children.Add(Container.Value);
-            
+
             tap = new TapGestureRecognizer();
 
             tap.Tapped += AddToFavListTap;
@@ -202,7 +218,7 @@ namespace SSFR_Movies.Helpers
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
-                        Task.Run(async ()=>
+                        Task.Run(async () =>
                         {
                             var conf = new MaterialSnackbarConfiguration()
                             {
@@ -211,7 +227,7 @@ namespace SSFR_Movies.Helpers
                             };
                             await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         });
-                        
+
                         return false;
                     });
                     return;
@@ -231,12 +247,12 @@ namespace SSFR_Movies.Helpers
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
                         await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-            
+
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        
+
                         return;
                     }
-                    
+
                     realm.Write(() =>
                     {
                         movie.FavoriteMovie = "Star.png";
@@ -252,7 +268,7 @@ namespace SSFR_Movies.Helpers
                         BackgroundColor = Color.FromHex("#272B2E")
                     };
                     await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
-                                        
+
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
                 }

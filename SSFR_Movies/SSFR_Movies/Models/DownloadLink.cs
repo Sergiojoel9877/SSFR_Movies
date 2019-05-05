@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using System.Globalization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Realms;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace SSFR_Movies.Models
 {

@@ -1,9 +1,5 @@
 ﻿using SSFR_Movies.Services;
-using SSFR_Movies.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -21,10 +17,10 @@ namespace SSFR_Movies.Views
             FireContainerCommand.Execute(null);
         }
 
-        Command fireContainerCommand;
+        readonly Command fireContainerCommand = null;
         Command FireContainerCommand
         {
-            get => fireContainerCommand ?? (new Command(async ()=>
+            get => fireContainerCommand ?? (new Command(async () =>
             {
                 await Task.Delay(2000);
 
@@ -40,7 +36,7 @@ namespace SSFR_Movies.Views
                 cont.Initialize();
 
                 var mainPage = new Lazy<AppShell>(() => new AppShell());
-                
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await ProBar.ProgressTo(100, 200, Easing.Linear);
