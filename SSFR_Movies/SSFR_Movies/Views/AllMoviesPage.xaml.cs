@@ -78,14 +78,13 @@ namespace SSFR_Movies.Views
                 {
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        updownList.Icon = updownList.Icon.Equals("ListDown.png") ? "ListUp.png" : "ListDown.png";
+                        updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
                     });
 
-                    if (updownList.Icon.Equals("ListDown.png"))
+                    if (updownList.Icon == "ListDown.png")
                     {
                         MainThread.BeginInvokeOnMainThread(async () =>
                         {
-
                             genresContainer.IsVisible = false;
 
                             await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);

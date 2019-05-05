@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Visual="Material"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
-    xmlns:HybridWebview="clr-namespace:SSFR_Movies.CustomRenderers"
+    xmlns:HybridWebview="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
@@ -254,7 +254,7 @@
                             HorizontalOptions="FillAndExpand" />
 
                     </StackLayout>
-                    <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
+                    <helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
                         

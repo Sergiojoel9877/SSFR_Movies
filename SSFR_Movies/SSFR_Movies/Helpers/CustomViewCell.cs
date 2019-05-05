@@ -10,6 +10,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
+using SkiaSharp;
 
 namespace SSFR_Movies.Helpers
 {
@@ -21,6 +22,7 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
         private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly SKBitmap skbit = null;
         private readonly Lazy<CachedImage> cachedImage = null;
         private readonly Lazy<CachedImage> pin2FavList = null;
         public Lazy<Label> title = null;
@@ -74,8 +76,6 @@ namespace SSFR_Movies.Helpers
                     }
                 },
                 Scale = 3,
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
             });
@@ -84,7 +84,6 @@ namespace SSFR_Movies.Helpers
             cachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 BitmapOptimizations = true,
-                CacheType = FFImageLoading.Cache.CacheType.Memory,
                 DownsampleToViewSize = true,
                 HeightRequest = 280,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
