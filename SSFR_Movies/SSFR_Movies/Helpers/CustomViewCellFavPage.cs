@@ -2,6 +2,7 @@
 using Realms;
 using Splat;
 using SSFR_Movies.Converters;
+using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -18,7 +19,7 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<Image> blurCachedImage = null;
+        private readonly Lazy<BlurredImage> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<StackLayout> Container = null;
         private readonly Lazy<StackLayout> SubContainer = null;
@@ -61,15 +62,11 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            List<FFImageLoading.Work.ITransformation> Blur = new List<FFImageLoading.Work.ITransformation>
-            {
-                new BlurredTransformation(15)
-            };
-
-            blurCachedImage = new Lazy<Image>(() => new Image()
+            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
             {
                 HeightRequest = 330,
                 Opacity = 0.6,
+                Aspect = Aspect.AspectFill,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand,

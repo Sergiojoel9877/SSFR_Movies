@@ -24,6 +24,8 @@ namespace SSFR_Movies.ViewModels
     {
         public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
 
+        public Lazy<ObservableCollection<Genre>> GenreList { get; set; } = new Lazy<ObservableCollection<Genre>>(() => new ObservableCollection<Genre>());
+
         readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
         {
             TintColor = Color.FromHex("#0066cc"),
@@ -70,6 +72,18 @@ namespace SSFR_Movies.ViewModels
         {
             get => moviesStored;
             set => SetProperty(ref moviesStored, value);
+        }
+
+        async Task FillGenresList()
+        {
+            var realm = await Realm.GetInstanceAsync();
+
+            var genreList = realm.All<Genres>().FirstOrDefault();
+
+            genreList.GenresGenres.ForEach((g) =>
+            {
+                GenreList.Value.Add(g);
+            });
         }
 
         public async Task FillMoviesList()
@@ -278,6 +292,9 @@ namespace SSFR_Movies.ViewModels
                         MsgText = "No storage space left!";
                     });
                 }
+
+                var realm = await Realm.GetInstanceAsync();
+
             }));
         }
 
@@ -320,6 +337,7 @@ namespace SSFR_Movies.ViewModels
             get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
             {
                 await FillMoviesList();
+                await FillGenresList();
             }));
         }
 

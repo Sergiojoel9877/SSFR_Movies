@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SkiaSharp;
+using SSFR_Movies.CustomRenderers;
 
 namespace SSFR_Movies.Helpers
 {
@@ -21,10 +22,9 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
-        private readonly Lazy<CachedImage> blurCachedImage = null;
-        private readonly SKBitmap skbit = null;
-        private readonly Lazy<CachedImage> cachedImage = null;
-        private readonly Lazy<CachedImage> pin2FavList = null;
+        private readonly Lazy<BlurredImage> blurCachedImage = null;
+        private readonly Lazy<Image> cachedImage = null;
+        private readonly Lazy<Image> pin2FavList = null;
         public Lazy<Label> title = null;
         private readonly Lazy<StackLayout> Container = null;
         private readonly Lazy<StackLayout> SubContainer = null;
@@ -64,33 +64,25 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
             {
                 HeightRequest = 330,
+                Aspect = Aspect.AspectFill,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Transformations = new List<FFImageLoading.Work.ITransformation>()
-                {
-                    new FFImageLoading.Transformations.BlurredTransformation()
-                    {
-                        Radius = 10
-                    }
-                },
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 330
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            blurCachedImage.Value.SetBinding(BlurredImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
-            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            cachedImage = new Lazy<Image>(() => new Image()
             {
-                BitmapOptimizations = true,
-                DownsampleToViewSize = true,
                 HeightRequest = 280,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 WidthRequest = 280
             });
-            cachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
 
             panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
@@ -153,18 +145,14 @@ namespace SSFR_Movies.Helpers
                 HeightRequest = 50
             });
 
-            pin2FavList = new Lazy<CachedImage>(() => new CachedImage()
+            pin2FavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
                 WidthRequest = 40,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                BitmapOptimizations = true,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                DownsampleToViewSize = true,
-                DownsampleUseDipUnits = true,
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
-            pin2FavList.Value.SetBinding(CachedImage.SourceProperty, "FavoriteMovie");
+            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
             compat.Value.Children.Add(pin2FavList.Value);
 

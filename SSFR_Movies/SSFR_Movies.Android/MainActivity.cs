@@ -40,7 +40,7 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
             var config = new FFImageLoading.Config.Configuration()
             {
@@ -57,6 +57,8 @@ namespace SSFR_Movies.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
             Android.Glide.Forms.Init();
 

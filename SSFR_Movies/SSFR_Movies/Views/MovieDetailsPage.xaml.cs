@@ -24,7 +24,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vScroll.TranslationX = -500;
+            //vScroll.TranslationX = -500;
 
             Result resultSingleton = ResultSingleton.Instance();
 
@@ -88,7 +88,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            vScroll.TranslationX = 500;
+           // vScroll.TranslationX = 500;
 
             Result resultSingleton = ResultSingleton.Instance();
       
@@ -100,10 +100,10 @@ namespace SSFR_Movies.Views
 
             IsPresentInFavList(item);
 
-            Task.Run(async ()=>
-            {
-                await ScrollTrailer.ScrollToAsync(-200, 0, true);
-            });
+            //Task.Run(async ()=>
+            //{
+            //    await ScrollTrailer.ScrollToAsync(-200, 0, true);
+            //});
 
             MessagingCenter.Send(this, "ClearSelection");
 
@@ -282,10 +282,10 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
 
-            MainThread.BeginInvokeOnMainThread(async ()=>
-            {
-                await vScroll.TranslateTo(0, 0, 1000, Easing.Linear);
-            });
+            //MainThread.BeginInvokeOnMainThread(async ()=>
+            //{
+            //    await vScroll.TranslateTo(0, 0, 1000, Easing.Linear);
+            //});
     
             MessagingCenter.Send(this, "ClearSelection");
 
@@ -354,7 +354,7 @@ namespace SSFR_Movies.Views
                                     item.ReleaseDate.Substring(0, 4));
 
             streamWV.Source = URI;
-
+            
             streamWV.Navigated += StreamWV_Navigated;
 
             streamWVswap.Navigated += StreamWVswap_Navigated;

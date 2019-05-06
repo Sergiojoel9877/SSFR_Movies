@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Visual="Material"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
-    xmlns:HybridWebview="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
+    xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
@@ -39,7 +39,7 @@
                         HeightRequest="300"
                         CornerRadius="5"
                         WidthRequest="{Binding Source={x:Reference vScroll}, Path=WidthRequest}"
-                        HasShadow="True"
+                        HasShadow="False"
                         VerticalOptions="Center">
                         <AbsoluteLayout
                             x:Name="absoluteLayout"
@@ -49,15 +49,12 @@
                             HeightRequest="300"
                             VerticalOptions="FillAndExpand">
 
-                            <ffimage:CachedImage
+                            <customRenderers:BlurredImage
                                 x:Name="BackDropImage"
                                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                                 AbsoluteLayout.LayoutFlags="All"
-                                BitmapOptimizations="True"
-                                Opacity="0.6"
+                                Aspect="AspectFill"
                                 Source="{Binding BackdropPath, Converter={StaticResource BackgroundConverter}}"
-                                DownsampleToViewSize="True"
-                                LoadingPlaceholder="Loading.png"
                                 Scale="3"
                                 HeightRequest="350"
                                 HorizontalOptions="FillAndExpand"
@@ -257,8 +254,8 @@
                     <helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
-                        
-                        <HybridWebview:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+
+                        <customRenderers:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
 
                         <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
                         
