@@ -94,6 +94,8 @@ namespace SSFR_Movies.Views
       
             BindingContext = resultSingleton;
 
+            ResultSingleton.SetIntanceToNull();
+
             SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(resultSingleton);
 
             var item = BindingContext as Result;

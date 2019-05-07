@@ -24,5 +24,10 @@ namespace SSFR_Movies.Helpers
 
             return Result;
         }
+
+        public static void SetIntanceToNull()
+        {
+            Result = null;
+        }
     }
 }

@@ -14,6 +14,7 @@ using Android.Renderscripts;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Java.Lang;
 using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Droid.CustomRenderers;
 using Xamarin.Forms;
@@ -30,7 +31,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
         private const float BITMAP_SCALE = 0.3f;
         private const float RESIZE_SCALE = 0.2f;
 
-        public BlurredImageRenderer()
+        public BlurredImageRenderer(Context context) : base(context)
         {
             AutoPackage = false;
         }
@@ -44,9 +45,17 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 var imageView = new BlurredImageView(Context);
                 SetNativeControl(imageView);
             }
+          
+            try
+            {
+                UpdateBitmap(e.OldElement);
+           
+                //UpdateAspect();
+            }
+            catch (System.Exception err)
+            {
 
-            UpdateBitmap(e.OldElement);
-            UpdateAspect();
+            }
         }
 
         protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -58,10 +67,10 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 UpdateBitmap(null);
                 return;
             }
-            if (e.PropertyName == Image.AspectProperty.PropertyName)
-            {
-                UpdateAspect();
-            }
+            //if (e.PropertyName == Image.AspectProperty.PropertyName)
+            //{
+            //    UpdateAspect();
+            //}
         }
 
         protected override void Dispose(bool disposing)
@@ -86,6 +95,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
         private void UpdateAspect()
         {
+            Element.Aspect = Aspect.AspectFill;
             using (ImageView.ScaleType scaleType = ToScaleType(Element.Aspect))
             {
                 Control.SetScaleType(scaleType);
@@ -209,8 +219,8 @@ namespace SSFR_Movies.Droid.CustomRenderers
         {
             try
             {
-                int width = Convert.ToInt32(Math.Round(originalBitmap.Width * BITMAP_SCALE));
-                int height = Convert.ToInt32(Math.Round(originalBitmap.Height * BITMAP_SCALE));
+                int width = Convert.ToInt32(System.Math.Round(originalBitmap.Width * BITMAP_SCALE));
+                int height = Convert.ToInt32(System.Math.Round(originalBitmap.Height * BITMAP_SCALE));
 
                 // Create another bitmap that will hold the results of the filter.  
                 Bitmap inputBitmap = Bitmap.CreateScaledBitmap(originalBitmap, width, height, false);
@@ -244,7 +254,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 }
                 
             }
-            catch (Exception)
+            catch (NullPointerException e)
             {
 
             }
