@@ -4,6 +4,7 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Visual="Material"
+    x:Name="content"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
@@ -24,8 +25,7 @@
             CompressedLayout.IsHeadless="True"
             Direction="Column"
             Wrap="NoWrap">
-
-            <ScrollView x:Name="vScroll" VerticalOptions="FillAndExpand">
+            <ScrollView x:Name="hScroll" VerticalOptions="FillAndExpand" Orientation="Horizontal" HeightRequest="400">
                 <!--Container-->
                 <StackLayout
                     CompressedLayout.IsHeadless="True"
@@ -37,9 +37,9 @@
                         x:Name="frame"
                         BackgroundColor="#00103B"
                         HeightRequest="300"
-                        CornerRadius="5"
+                        CornerRadius="0"
                         WidthRequest="{Binding Source={x:Reference vScroll}, Path=WidthRequest}"
-                        HasShadow="False"
+                        HasShadow="True"
                         VerticalOptions="Center">
                         <AbsoluteLayout
                             x:Name="absoluteLayout"
@@ -65,7 +65,7 @@
                                 <Frame
                                     x:Name="theFrame"
                                     BackgroundColor="#44161513"
-                                    HasShadow="True"
+                                    HasShadow="False"
                                     CornerRadius="12"
                                     HeightRequest="280"
                                     HorizontalOptions="FillAndExpand"
@@ -107,7 +107,7 @@
                                                     LineBreakMode="NoWrap"
                                                     Text="Play Movie"
                                                     TextColor="White"
-                                                    VerticalTextAlignment="Center" />   
+                                                    VerticalTextAlignment="Center" />
                                             </StackLayout>
                                             <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
                                                 <ffimage:CachedImage
@@ -179,78 +179,83 @@
                                 WidthRequest="300"/>
                         </AbsoluteLayout>
                     </Frame>
-                    <StackLayout BackgroundColor="#0066cc" HorizontalOptions="FillAndExpand">
-                        <StackLayout Orientation="Horizontal">
+                </StackLayout>
+            </ScrollView>
+            <ScrollView x:Name="vScroll" VerticalOptions="FillAndExpand" WidthRequest="{Binding Source={x:Reference hScroll }, Path=Width}">
+                        <StackLayout BackgroundColor="#0066cc" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HeightRequest="{Binding Source={x:Reference content}, Path=Height}">
+                            <StackLayout Orientation="Horizontal">
+                                <Label
+                                    Margin="16,5,16,0"
+                                    FontAttributes="Bold"
+                                    FontSize="Large"
+                                    HorizontalOptions="Start"
+                                    Text="Synopsis"
+                                    TextColor="White"
+                                    VerticalOptions="Start" />
+                                <ScrollView
+                                    x:Name="ScrollTrailer"
+                                    Margin="16,5,16,0"
+                                    HorizontalOptions="FillAndExpand"
+                                    HorizontalScrollBarVisibility="Never"
+                                    Orientation="Horizontal"
+                                    VerticalOptions="Start"
+                                    VerticalScrollBarVisibility="Never">
+                                    <StackLayout
+                                        Margin="0"
+                                        HorizontalOptions="End"
+                                        Orientation="Horizontal">
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
+                                        </StackLayout.GestureRecognizers>
+                                        <Image
+                                            HeightRequest="35"
+                                            Source="YoutubeBtn.png"
+                                            WidthRequest="35" />
+                                        <Label
+                                            Margin="5,0,0,0"
+                                            FontAttributes="Bold"
+                                            FontSize="Small"
+                                            HorizontalTextAlignment="End"
+                                            LineBreakMode="NoWrap"
+                                            Text="Play Trailer"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </StackLayout>
+                                </ScrollView>
+                            </StackLayout>
                             <Label
-                                Margin="16,5,16,0"
-                                FontAttributes="Bold"
-                                FontSize="Large"
-                                HorizontalOptions="Start"
-                                Text="Synopsis"
-                                TextColor="White"
-                                VerticalOptions="Start" />
-                            <ScrollView
-                                x:Name="ScrollTrailer"
-                                Margin="16,5,16,0"
+                                Margin="16,5,16,5"
+                                FontSize="Medium"
+                                HorizontalTextAlignment="Start"
+                                Style="{StaticResource LabelsStyle}"
+                                Text="{Binding Overview}" />
+
+                            <Button
+                                x:Name="AddToFavLayout"
+                                Margin="16"
+                                BackgroundColor="#006FDE"
                                 HorizontalOptions="FillAndExpand"
-                                HorizontalScrollBarVisibility="Never"
-                                Orientation="Horizontal"
-                                VerticalOptions="Start"
-                                VerticalScrollBarVisibility="Never">
-                                <StackLayout
-                                    Margin="0"
-                                    HorizontalOptions="End"
-                                    Orientation="Horizontal">
-                                    <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
-                                    </StackLayout.GestureRecognizers>
-                                    <Image
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />
-                                    <Label
-                                        Margin="5,0,0,0"
-                                        FontAttributes="Bold"
-                                        FontSize="Small"
-                                        HorizontalTextAlignment="End"
-                                        LineBreakMode="NoWrap"
-                                        Text="Play Trailer"
-                                        TextColor="White"
-                                        VerticalTextAlignment="Center" />
-                                </StackLayout>
-                            </ScrollView>
+                                CornerRadius="30"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                Text="Add To Favorites List"
+                                TextColor="White"/>
+
+                            <Button 
+                                x:Name="QuitFromFavLayout"
+                                Margin="16"
+                                Visual="Material"
+                                BackgroundColor="#FF0000"
+                                FontAttributes="Bold"
+                                FontSize="Medium"
+                                CornerRadius="30"
+                                Text="Quit from the favorites list"
+                                TextColor="White" 
+                                HorizontalOptions="FillAndExpand" />
+
                         </StackLayout>
-                        <Label
-                            Margin="16,5,16,5"
-                            FontSize="Medium"
-                            HorizontalTextAlignment="Start"
-                            Style="{StaticResource LabelsStyle}"
-                            Text="{Binding Overview}" />
-
-                        <Button
-                            x:Name="AddToFavLayout"
-                            Margin="16"
-                            BackgroundColor="#006FDE"
-                            HorizontalOptions="FillAndExpand"
-                            CornerRadius="30"
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            Text="Add To Favorites List"
-                            TextColor="White"/>
-
-                        <Button 
-                            x:Name="QuitFromFavLayout"
-                            Margin="16"
-                            Visual="Material"
-                            BackgroundColor="#FF0000"
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            CornerRadius="30"
-                            Text="Quit from the favorites list"
-                            TextColor="White" 
-                            HorizontalOptions="FillAndExpand" />
-
-                    </StackLayout>
+                    </ScrollView>
+        
                     <helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />
                     <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
                     <StackLayout>
@@ -258,11 +263,10 @@
                         <customRenderers:HybridWebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
 
                         <WebView x:Name="streamWV" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
-                        
+
                         <!--<WebView x:Name="streamWVswap" HeightRequest="500" WidthRequest="300" IsVisible="False" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>-->
                     </StackLayout>
-                </StackLayout>
-            </ScrollView>
+
         </FlexLayout>
     </ContentPage.Content>
 </ContentPage>

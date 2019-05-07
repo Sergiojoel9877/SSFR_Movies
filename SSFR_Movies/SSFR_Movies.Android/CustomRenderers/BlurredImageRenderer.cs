@@ -214,31 +214,35 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
                 // Create another bitmap that will hold the results of the filter.  
                 Bitmap inputBitmap = Bitmap.CreateScaledBitmap(originalBitmap, width, height, false);
-                Bitmap outputBitmap = Bitmap.CreateBitmap(inputBitmap);
+                if (inputBitmap != null)
+                {
+                    Bitmap outputBitmap = Bitmap.CreateBitmap(inputBitmap);
 
-                // Create the Renderscript instance that will do the work.  
-                RenderScript rs = RenderScript.Create(Context);
+                    // Create the Renderscript instance that will do the work.  
+                    RenderScript rs = RenderScript.Create(Context);
 
 
-                Allocation tmpIn = Allocation.CreateFromBitmap(rs, inputBitmap);
-                Allocation tmpOut = Allocation.CreateFromBitmap(rs, outputBitmap);
+                    Allocation tmpIn = Allocation.CreateFromBitmap(rs, inputBitmap);
+                    Allocation tmpOut = Allocation.CreateFromBitmap(rs, outputBitmap);
 
-                // Allocate memory for Renderscript to work with  
-                var t = Android.Renderscripts.Type.CreateXY(rs, tmpIn.Element, Convert.ToInt32(width * RESIZE_SCALE), Convert.ToInt32(height * RESIZE_SCALE));
-                Allocation tmpScratch = Allocation.CreateTyped(rs, t);
+                    // Allocate memory for Renderscript to work with  
+                    var t = Android.Renderscripts.Type.CreateXY(rs, tmpIn.Element, Convert.ToInt32(width * RESIZE_SCALE), Convert.ToInt32(height * RESIZE_SCALE));
+                    Allocation tmpScratch = Allocation.CreateTyped(rs, t);
 
-                ScriptIntrinsicResize theIntrinsic = ScriptIntrinsicResize.Create(rs);
+                    ScriptIntrinsicResize theIntrinsic = ScriptIntrinsicResize.Create(rs);
 
-                // Resize the original img down.  
-                theIntrinsic.SetInput(tmpIn);
-                theIntrinsic.ForEach_bicubic(tmpScratch);
+                    // Resize the original img down.  
+                    theIntrinsic.SetInput(tmpIn);
+                    theIntrinsic.ForEach_bicubic(tmpScratch);
 
-                // Resize smaller img up.  
-                theIntrinsic.SetInput(tmpScratch);
-                theIntrinsic.ForEach_bicubic(tmpOut);
-                tmpOut.CopyTo(outputBitmap);
+                    // Resize smaller img up.  
+                    theIntrinsic.SetInput(tmpScratch);
+                    theIntrinsic.ForEach_bicubic(tmpOut);
+                    tmpOut.CopyTo(outputBitmap);
 
-                return outputBitmap;
+                    return outputBitmap;
+                }
+                
             }
             catch (Exception)
             {
