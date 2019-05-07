@@ -66,11 +66,9 @@ namespace SSFR_Movies.Helpers
             blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
             {
                 HeightRequest = 330,
-                Aspect = Aspect.AspectFill,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 330
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
             blurCachedImage.Value.SetBinding(BlurredImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 

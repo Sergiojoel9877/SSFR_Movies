@@ -31,7 +31,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
         private const float BITMAP_SCALE = 0.3f;
         private const float RESIZE_SCALE = 0.2f;
 
-        public BlurredImageRenderer(Context context) : base(context)
+        public BlurredImageRenderer()
         {
             AutoPackage = false;
         }
