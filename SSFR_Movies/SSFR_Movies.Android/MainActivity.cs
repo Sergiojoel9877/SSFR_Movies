@@ -5,7 +5,7 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
-using FFImageLoading;
+//using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
 using System;
 using Xamarin.Forms;
@@ -40,17 +40,17 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 
-            var config = new FFImageLoading.Config.Configuration()
-            {
-                VerboseLogging = false,
-                VerbosePerformanceLogging = false,
-                VerboseMemoryCacheLogging = false,
-                VerboseLoadingCancelledLogging = false,
-                Logger = new CustomLogger(),
-            };
-            ImageService.Instance.Initialize(config);
+            //var config = new FFImageLoading.Config.Configuration()
+            //{
+            //    VerboseLogging = false,
+            //    VerbosePerformanceLogging = false,
+            //    VerboseMemoryCacheLogging = false,
+            //    VerboseLoadingCancelledLogging = false,
+            //    Logger = new CustomLogger(),
+            //};
+            //ImageService.Instance.Initialize(config);
 
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
@@ -76,23 +76,23 @@ namespace SSFR_Movies.Droid
 
         }
 
-        public class CustomLogger : FFImageLoading.Helpers.IMiniLogger
-        {
-            public void Debug(string message)
-            {
-                Console.WriteLine(message);
-            }
+        //public class CustomLogger : FFImageLoading.Helpers.IMiniLogger
+        //{
+        //    public void Debug(string message)
+        //    {
+        //        Console.WriteLine(message);
+        //    }
 
-            public void Error(string errorMessage)
-            {
-                Console.WriteLine(errorMessage);
-            }
+        //    public void Error(string errorMessage)
+        //    {
+        //        Console.WriteLine(errorMessage);
+        //    }
 
-            public void Error(string errorMessage, Exception ex)
-            {
-                Error(errorMessage + System.Environment.NewLine + ex.ToString());
-            }
-        }
+        //    public void Error(string errorMessage, Exception ex)
+        //    {
+        //        Error(errorMessage + System.Environment.NewLine + ex.ToString());
+        //    }
+        //}
 #pragma warning disable 0219, 0649
         static MainActivity()
         {
@@ -100,29 +100,29 @@ namespace SSFR_Movies.Droid
 
             if (flasg)
             {
-                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+                //var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
                 //var dummy1 = typeof(PullToRefreshLayoutRenderer);
                 var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore
 
-        public async override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             
             base.OnTrimMemory(level);
         }
 
-        public async override void OnLowMemory()
+        public override void OnLowMemory()
         {
-            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 

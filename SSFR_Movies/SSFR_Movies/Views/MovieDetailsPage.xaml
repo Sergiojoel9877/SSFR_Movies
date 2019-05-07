@@ -6,7 +6,7 @@
     Visual="Material"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="Details"
     BackgroundColor="#0066cc">
@@ -65,7 +65,7 @@
                                 <Frame
                                     x:Name="theFrame"
                                     BackgroundColor="#44161513"
-                                    HasShadow="True"
+                                    HasShadow="False"
                                     CornerRadius="12"
                                     HeightRequest="280"
                                     HorizontalOptions="FillAndExpand"
@@ -94,8 +94,8 @@
                                                 <StackLayout.GestureRecognizers>
                                                     <TapGestureRecognizer Tapped="StreamMovie_Tapped" />
                                                 </StackLayout.GestureRecognizers>
-                                                <ffimage:CachedImage
-                                                    DownsampleToViewSize="True"
+                                                <Image
+                                                    Aspect="AspectFill"
                                                     HeightRequest="35"
                                                     Source="Play.png"
                                                     WidthRequest="35" />
@@ -107,13 +107,12 @@
                                                     LineBreakMode="NoWrap"
                                                     Text="Play Movie"
                                                     TextColor="White"
-                                                    VerticalTextAlignment="Center" />   
+                                                    VerticalTextAlignment="Center" />
                                             </StackLayout>
                                             <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
-                                                <ffimage:CachedImage
+                                                <Image
                                                     x:Name="AddToFav"
-                                                    BitmapOptimizations="True"
-                                                    DownsampleToViewSize="True"
+                                                    Aspect="AspectFill"
                                                     HeightRequest="40"
                                                     Source="StarEmpty.png"
                                                     WidthRequest="40" />
@@ -161,17 +160,13 @@
                                     </Grid>
                                 </Frame>
                             </ContentView>
-                            <ffimage:CachedImage
+                            <Image
+                                x:Name="PosterPathImage"
                                 AbsoluteLayout.LayoutBounds="0, 0.6, 0.5, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
-                                x:Name="PosterPathImage"
                                 Aspect="AspectFit" 
-                                CacheType="All"
                                 Margin="0,0,0,0"
                                 Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"
-                                LoadingPlaceholder="Loading.png"
-                                BitmapOptimizations="True"
-                                DownsampleToViewSize="True"
                                 HeightRequest="300"
                                 VerticalOptions="Center"
                                 HorizontalOptions="Center"

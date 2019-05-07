@@ -1,5 +1,4 @@
-﻿using FFImageLoading.Transformations;
-using Realms;
+﻿using Realms;
 using Splat;
 using SSFR_Movies.Converters;
 using SSFR_Movies.CustomRenderers;
