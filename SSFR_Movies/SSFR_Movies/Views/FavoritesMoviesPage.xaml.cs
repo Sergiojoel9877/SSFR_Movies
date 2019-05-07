@@ -7,6 +7,7 @@ using SSFR_Movies.Models;
 using SSFR_Movies.ViewModels;
 using System;
 using System.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -135,13 +136,18 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private async void MovieSelected()
+        private void MovieSelected()
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                MoviesList.SelectedItem = null;
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
+                });
             }
         }
 

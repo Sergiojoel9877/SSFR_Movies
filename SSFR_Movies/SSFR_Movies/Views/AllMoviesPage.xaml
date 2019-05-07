@@ -38,10 +38,9 @@
                         Grid.Column="0"
                         Margin="0,15,0,0"
                         HeightRequest="40"
-                        BackgroundColor="#44000000"
                         HorizontalScrollBarVisibility="Never">
 
-                        <FlexLayout BackgroundColor="Transparent" Direction="Row" BindableLayout.ItemsSource="{Binding GenreList.Value}">
+                        <FlexLayout Direction="Row" BindableLayout.ItemsSource="{Binding GenreList.Value}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate>
                                     <Frame Style="{StaticResource FramesStyle}">
