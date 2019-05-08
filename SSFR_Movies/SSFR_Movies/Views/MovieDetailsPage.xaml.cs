@@ -339,6 +339,12 @@ namespace SSFR_Movies.Views
         private async void StreamMovie_Tapped(object sender, EventArgs e)
         {
 
+            MainThread.BeginInvokeOnMainThread(async ()=>
+            {
+                await hScroll.TranslateTo(0, -458, 250, Easing.BounceIn);
+                streamWV.HeightRequest += streamWV.Height; 
+            });
+
             var item = BindingContext as Result;
 
             streamWV.IsVisible = true;
