@@ -8,9 +8,10 @@ namespace SSFR_Movies.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var URL = "https://image.tmdb.org/t/p/w1066_and_h600_bestv2";
+            if (value == null)
+                return "NoInternet.png";
 
-            return URL + (string)value;
+            return "https://image.tmdb.org/t/p/w1066_and_h600_bestv2" + (string)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -5,6 +5,7 @@ using SSFR_Movies.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -237,7 +238,7 @@ namespace SSFR_Movies.Services
             try
             {
                 var movies = serializer.Value.Deserialize<Movie>(results);
-
+         
                 try
                 {
                     realm.Write(() => realm.Add(movies, true));

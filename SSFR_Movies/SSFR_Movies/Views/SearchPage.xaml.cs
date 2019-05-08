@@ -1,4 +1,5 @@
 ﻿using Splat;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.ViewModels;
@@ -58,9 +59,11 @@ namespace SSFR_Movies.Views
             {
                 var movie = MoviesList.SelectedItem as Result;
 
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
                 });
             }
         }
@@ -122,7 +125,10 @@ namespace SSFR_Movies.Views
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                vm.AllMoviesList.Value.Add(MovieResult);
+                                if (MovieResult.BackdropPath != null)
+                                {
+                                    vm.AllMoviesList.Value.Add(MovieResult);
+                                }
                             }
 
                             BindingContext = vm;
@@ -181,7 +187,9 @@ namespace SSFR_Movies.Views
 
                 ((ListView)sender).SelectedItem = null;
 
-                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
+                await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
 
             }
             catch (Exception e4)

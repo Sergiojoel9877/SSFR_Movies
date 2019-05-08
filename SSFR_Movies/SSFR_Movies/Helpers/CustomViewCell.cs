@@ -65,7 +65,6 @@ namespace SSFR_Movies.Helpers
 
             blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
             {
-                HeightRequest = 330,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand

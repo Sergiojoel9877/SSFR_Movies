@@ -88,8 +88,6 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-           // vScroll.TranslationX = 500;
-
             Result resultSingleton = ResultSingleton.Instance();
       
             BindingContext = resultSingleton;
@@ -101,11 +99,6 @@ namespace SSFR_Movies.Views
             var item = BindingContext as Result;
 
             IsPresentInFavList(item);
-
-            //Task.Run(async ()=>
-            //{
-            //    await ScrollTrailer.ScrollToAsync(-200, 0, true);
-            //});
 
             MessagingCenter.Send(this, "ClearSelection");
 
@@ -299,15 +292,18 @@ namespace SSFR_Movies.Views
 
             var movie = (Result)BindingContext;
 
-            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
+            if (movie.Id != 0)
+            {
+                var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
 
-            if (video.Results.Count() == 0)
-            {
-                ScrollTrailer.IsVisible = false;
-            }
-            else
-            {
-                ScrollTrailer.IsVisible = true;
+                if (video.Results.Count() == 0)
+                {
+                    ScrollTrailer.IsVisible = false;
+                }
+                else
+                {
+                    ScrollTrailer.IsVisible = true;
+                }
             }
         }
 
