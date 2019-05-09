@@ -9,7 +9,6 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
-using SkiaSharp;
 using SSFR_Movies.CustomRenderers;
 
 namespace SSFR_Movies.Helpers
@@ -22,6 +21,7 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
         private readonly Lazy<BlurredImage> blurCachedImage = null;
+        private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
         public Lazy<Label> title = null;
@@ -31,7 +31,6 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<Label> releaseDate = null;
         private readonly Lazy<StackLayout> compat = null;
         private readonly TapGestureRecognizer tap = null;
-
         #endregion
 
         public CustomViewCell()
@@ -73,12 +72,22 @@ namespace SSFR_Movies.Helpers
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
-                HeightRequest = 280,
+                Aspect = Aspect.AspectFill,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
             cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+
+            FrameCover = new Lazy<Frame>(() => new Frame()
+            {
+                IsClippedToBounds = true,
+                Margin = new Thickness(0, 0, 0, 0),
+                HasShadow = true,
+                BorderColor = Color.FromHex("#00000000"),
+                Padding = new Thickness(0, 0, 0, 0),
+                BackgroundColor = Color.FromHex("#00000000"),
+                CornerRadius = 15
+            });
 
             panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
@@ -150,6 +159,8 @@ namespace SSFR_Movies.Helpers
             });
             pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
+            FrameCover.Value.Content = cachedImage.Value;
+
             compat.Value.Children.Add(pin2FavList.Value);
 
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
@@ -159,13 +170,13 @@ namespace SSFR_Movies.Helpers
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(FrameCover.Value, new Rectangle(.5, 0, 0.46, 1));
+            AbsoluteLayout.SetLayoutFlags(FrameCover.Value, AbsoluteLayoutFlags.All);
 
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
-            absoluteLayout.Value.Children.Add(cachedImage.Value);
+            absoluteLayout.Value.Children.Add(FrameCover.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
             panelContainer.Value.Children.Add(FrameUnderImages.Value);

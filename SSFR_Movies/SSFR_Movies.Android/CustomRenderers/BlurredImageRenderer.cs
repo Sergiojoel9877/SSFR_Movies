@@ -77,6 +77,10 @@ namespace SSFR_Movies.Droid.CustomRenderers
         {
             if (_isDisposed)
             {
+                //if (Element != null)
+                //{
+                //    Element.PropertyChanged -= OnElementPropertyChanged;
+                //}
                 return;
             }
             _isDisposed = true;
@@ -88,8 +92,10 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 {
                     bitmap.Recycle();
                     bitmap.Dispose();
+                    //Tracker?.Dispose();
                 }
             }
+
             base.Dispose(disposing);
         }
 

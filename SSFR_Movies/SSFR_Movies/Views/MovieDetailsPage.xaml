@@ -7,8 +7,7 @@
     x:Name="content"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
-
-    xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:helpers="clr-namespace:SSFR_Movies.ViewModels"
     Title="Details"
     BackgroundColor="#0066cc">
 
@@ -47,7 +46,8 @@
                         HeightRequest="300"
                         CornerRadius="0"
                         WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}"
-                        HasShadow="True"
+                        HasShadow="False"
+                        BorderColor="#00000000"
                         BackgroundColor="#00000000"
                         VerticalOptions="Center">
                         <AbsoluteLayout
@@ -60,7 +60,7 @@
                             VerticalOptions="FillAndExpand">
                             <ContentView
                                 AbsoluteLayout.LayoutBounds="0, 1, 1, 0.6"
-                                  BackgroundColor="#00000000"
+                                BackgroundColor="#00000000"
                                 AbsoluteLayout.LayoutFlags="All">
                                 <Frame
                                     x:Name="theFrame2"
@@ -159,18 +159,22 @@
                                     </Grid>
                                 </Frame>
                             </ContentView>
-                            <Image
-                                x:Name="PosterPathImage"
-                                AbsoluteLayout.LayoutBounds="0, 0.6, 0.5, 0.6"
+                            <Frame 
+                                x:Name="FrameCover"
+                                AbsoluteLayout.LayoutBounds="0.13, 0.6, 0.33, 0.6"
                                 AbsoluteLayout.LayoutFlags="All"
-                                Aspect="AspectFit" 
-                                Margin="0,0,0,0"
-                                Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"
-                                HeightRequest="300"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Style="{StaticResource ImageInsideCardStyle}"
-                                WidthRequest="300"/>
+                                IsClippedToBounds="True"
+                                Margin="0" 
+                                HasShadow="True"
+                                BorderColor="#00000000"
+                                Padding="0"
+                                BackgroundColor="#00000000"
+                                CornerRadius="15">
+                                <Image
+                                    x:Name="PosterPathImage"
+                                    Aspect="AspectFill"
+                                    Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"/>
+                            </Frame>
                         </AbsoluteLayout>
                     </Frame>
                     <StackLayout BackgroundColor="#0066cc" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HeightRequest="{Binding Source={x:Reference content}, Path=Height}">

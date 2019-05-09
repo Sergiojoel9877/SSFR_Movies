@@ -1,4 +1,5 @@
-﻿using Realms;
+﻿using AsyncAwaitBestPractices;
+using Realms;
 using Splat;
 using SSFR_Movies.Converters;
 using SSFR_Movies.CustomRenderers;
@@ -20,6 +21,7 @@ namespace SSFR_Movies.Helpers
         #region Controls
         private readonly Lazy<BlurredImage> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
+        private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
         private readonly Lazy<StackLayout> SubContainer = null;
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
@@ -75,12 +77,22 @@ namespace SSFR_Movies.Helpers
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
-                HeightRequest = 280,
+                Aspect = Aspect.AspectFill,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                WidthRequest = 280
+                VerticalOptions = LayoutOptions.FillAndExpand
             });
             cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+
+            FrameCover = new Lazy<Frame>(() => new Frame()
+            {
+                IsClippedToBounds = true,
+                Margin = new Thickness(0, 0, 0, 0),
+                HasShadow = true,
+                BorderColor = Color.FromHex("#00000000"),
+                Padding = new Thickness(0, 0, 0, 0),
+                BackgroundColor = Color.FromHex("#00000000"),
+                CornerRadius = 15
+            });
 
             panelContainer = new Lazy<StackLayout>(() => new StackLayout()
             {
@@ -152,6 +164,8 @@ namespace SSFR_Movies.Helpers
             });
             unPinFromFavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
+            FrameCover.Value.Content = cachedImage.Value;
+
             compat.Value.Children.Add(unPinFromFavList.Value);
 
             gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
@@ -161,13 +175,13 @@ namespace SSFR_Movies.Helpers
 
             AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
             AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(cachedImage.Value, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(cachedImage.Value, AbsoluteLayoutFlags.All);
+            AbsoluteLayout.SetLayoutBounds(FrameCover.Value, new Rectangle(.5, 0, 0.46, 1));
+            AbsoluteLayout.SetLayoutFlags(FrameCover.Value, AbsoluteLayoutFlags.All);
 
             FrameUnderImages.Value.Content = gridInsideFrame.Value;
 
             absoluteLayout.Value.Children.Add(blurCachedImage.Value);
-            absoluteLayout.Value.Children.Add(cachedImage.Value);
+            absoluteLayout.Value.Children.Add(FrameCover.Value);
             CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
             panelContainer.Value.Children.Add(FrameUnderImages.Value);
@@ -187,12 +201,20 @@ namespace SSFR_Movies.Helpers
 
         }
 
-        private async void QuitFromFavListTap(object sender, EventArgs e)
+        private void QuitFromFavListTap(object sender, EventArgs e)
         {
-            await Task.Yield();
-
-            await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-
+            if (MainThread.IsMainThread)
+            {
+                unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut).SafeFireAndForget();
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(()=>
+                {
+                    unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut).SafeFireAndForget();
+                });
+            }
+            
             if (sender != null)
             {
 
@@ -211,7 +233,7 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var realm = await Realm.GetInstanceAsync();
+                    var realm = Realm.GetInstance();
 
                     var deleteMovie = realm.Find<Result>(movie.Id);
 
@@ -228,9 +250,18 @@ namespace SSFR_Movies.Helpers
 
                         MessagingCenter.Send(this, "Refresh", true);
 
-                        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        if (MainThread.IsMainThread)
+                        {
+                            unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(()=>
+                            {
+                                unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
+                            });
+                        }
                     }
-
                 }
                 catch (Exception e15)
                 {
