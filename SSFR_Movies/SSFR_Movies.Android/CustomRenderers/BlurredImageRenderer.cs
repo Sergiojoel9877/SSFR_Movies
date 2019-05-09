@@ -181,7 +181,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
             var originalBitmap = await handler.LoadImageAsync(imageSource, context);
 
             // Blur it twice!  
-            var blurredBitmap = await Task.Run(() => CreateBlurredImage(CreateResizedImage(originalBitmap), 18));
+            var blurredBitmap = await Task.Run(() => CreateBlurredImage(CreateResizedImage(originalBitmap), 5));
 
             return blurredBitmap;
         }

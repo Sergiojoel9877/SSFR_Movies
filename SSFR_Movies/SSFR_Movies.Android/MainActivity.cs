@@ -86,7 +86,7 @@ namespace SSFR_Movies.Droid
         //    public void Error(string errorMessage)
         //    {
         //        Console.WriteLine(errorMessage);
-        //    }
+        //    }%
 
         //    public void Error(string errorMessage, Exception ex)
         //    {

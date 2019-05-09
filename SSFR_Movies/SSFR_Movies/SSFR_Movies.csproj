@@ -11,6 +11,8 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="AsyncAwaitBestPractices" Version="2.1.1" />
+    <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="2.1.1" />
     <PackageReference Include="Realm" Version="3.4.0" />
     <PackageReference Include="Realm.Database" Version="3.4.0" />
     <PackageReference Include="Realm.DataBinding" Version="1.2.0" />
