@@ -21,7 +21,7 @@ namespace SSFR_Movies.Droid
         protected override void OnCreate(Bundle bundle)
         {
 
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental" });
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", ""});
 
             MainApplication.activity = this;
 

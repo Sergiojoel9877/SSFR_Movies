@@ -10,6 +10,7 @@ using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SSFR_Movies.CustomRenderers;
+using AsyncAwaitBestPractices;
 
 namespace SSFR_Movies.Helpers
 {
@@ -200,11 +201,20 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+            if (MainThread.IsMainThread)
+            {
+                await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(async ()=>
+                {
+                    await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+                });
+            }
 
             if (sender != null)
             {
-
                 var movie = BindingContext as Result;
 
                 //Verify if internet connection is available
@@ -212,16 +222,20 @@ namespace SSFR_Movies.Helpers
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
-                        Task.Run(async () =>
+                        var conf = new MaterialSnackbarConfiguration()
                         {
-                            var conf = new MaterialSnackbarConfiguration()
-                            {
-                                TintColor = Color.FromHex("#0066cc"),
-                                BackgroundColor = Color.FromHex("#272B2E")
-                            };
-                            await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
-                        });
+                            TintColor = Color.FromHex("#0066cc"),
+                            BackgroundColor = Color.FromHex("#272B2E")
+                        };
 
+                        if (MainThread.IsMainThread)
+                        {
+                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
+                        }
+                        else
+                        {
+                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
+                        }
                         return false;
                     });
                     return;
@@ -240,9 +254,20 @@ namespace SSFR_Movies.Helpers
                             TintColor = Color.FromHex("#0066cc"),
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
-                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        if (MainThread.IsMainThread)
+                        {
+                            MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
+                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
+                                await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                            });
+                        }
 
                         return;
                     }
@@ -261,27 +286,26 @@ namespace SSFR_Movies.Helpers
                         TintColor = Color.FromHex("#0066cc"),
                         BackgroundColor = Color.FromHex("#272B2E")
                     };
-                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
 
-                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-
+                    if (MainThread.IsMainThread)
+                    {
+                        MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
+                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    }
+                    else
+                    {
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
+                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        });
+                    }
                 }
                 catch (Exception e15)
                 {
                     Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
-        }
-
-        public async Task SpeakNow(string msg)
-        {
-            var settings = new SpeechOptions
-            {
-                Volume = 1f,
-                Pitch = 1.0f
-            };
-
-            await TextToSpeech.SpeakAsync(msg, settings);
         }
     }
 }

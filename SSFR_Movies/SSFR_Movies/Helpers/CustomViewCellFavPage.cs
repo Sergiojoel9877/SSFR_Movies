@@ -201,17 +201,19 @@ namespace SSFR_Movies.Helpers
 
         }
 
-        private void QuitFromFavListTap(object sender, EventArgs e)
+        private async void QuitFromFavListTap(object sender, EventArgs e)
         {
+            await Task.Yield();
+
             if (MainThread.IsMainThread)
             {
-                unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut).SafeFireAndForget();
+                await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
             }
             else
             {
-                MainThread.BeginInvokeOnMainThread(()=>
+                MainThread.BeginInvokeOnMainThread(async ()=>
                 {
-                    unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut).SafeFireAndForget();
+                    await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
                 });
             }
             
@@ -233,7 +235,7 @@ namespace SSFR_Movies.Helpers
 
                 try
                 {
-                    var realm = Realm.GetInstance();
+                    var realm = await Realm.GetInstanceAsync();
 
                     var deleteMovie = realm.Find<Result>(movie.Id);
 
@@ -250,17 +252,22 @@ namespace SSFR_Movies.Helpers
 
                         MessagingCenter.Send(this, "Refresh", true);
 
-                        if (MainThread.IsMainThread)
+                        MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
-                        }
-                        else
-                        {
-                            MainThread.BeginInvokeOnMainThread(()=>
-                            {
-                                unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
-                            });
-                        }
+                            await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        });
+
+                        //if (MainThread.IsMainThread)
+                        //{
+                        //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        //}
+                        //else
+                        //{
+                        //    MainThread.BeginInvokeOnMainThread(async ()=>
+                        //    {
+                        //        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                        //    });
+                        //}
                     }
                 }
                 catch (Exception e15)
