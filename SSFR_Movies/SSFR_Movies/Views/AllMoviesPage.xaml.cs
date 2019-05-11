@@ -1,4 +1,5 @@
 ﻿using AsyncAwaitBestPractices;
+using Plugin.SharedTransitions;
 using Realms;
 using Splat;
 using SSFR_Movies.CustomRenderers;
@@ -196,6 +197,7 @@ namespace SSFR_Movies.Views
 
                 if (MainThread.IsMainThread)
                 {
+                    SharedTransitionNavigationPage.SetSelectedTagGroup(this, movie.Id);
                     Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true).SafeFireAndForget();
                 }
                 else

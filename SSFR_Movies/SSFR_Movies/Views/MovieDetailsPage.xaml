@@ -7,7 +7,7 @@
     x:Name="content"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
-    xmlns:helpers="clr-namespace:SSFR_Movies.ViewModels"
+    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     Title="Details"
     BackgroundColor="#0066cc">
 
@@ -173,7 +173,8 @@
                                 <Image
                                     x:Name="PosterPathImage"
                                     Aspect="AspectFill"
-                                    Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"/>
+                                    Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"
+                                    sharedTransitions:Transition.Tag="1"/>
                             </Frame>
                         </AbsoluteLayout>
                     </Frame>

@@ -1,4 +1,5 @@
-﻿using SSFR_Movies.Services;
+﻿using Plugin.SharedTransitions;
+using SSFR_Movies.Services;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Essentials;

@@ -11,6 +11,7 @@ using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SSFR_Movies.CustomRenderers;
 using AsyncAwaitBestPractices;
+using Plugin.SharedTransitions;
 
 namespace SSFR_Movies.Helpers
 {
@@ -78,6 +79,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
             cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+            cachedImage.Value.SetBinding(Transition.TagGroupProperty, new Binding("Id", BindingMode.Default));
 
             FrameCover = new Lazy<Frame>(() => new Frame()
             {
@@ -145,7 +147,7 @@ namespace SSFR_Movies.Helpers
                 FontAttributes = FontAttributes.Bold
             });
             releaseDate.Value.SetBinding(Label.TextProperty, "ReleaseDate");
-
+           
             compat = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HeightRequest = 50

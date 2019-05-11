@@ -1,4 +1,5 @@
 ﻿using AsyncAwaitBestPractices;
+using Plugin.SharedTransitions;
 using Realms;
 using Splat;
 using SSFR_Movies.Converters;
@@ -82,6 +83,8 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
             cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+            cachedImage.Value.SetBinding(Transition.TagGroupProperty, new Binding("Id", BindingMode.Default));
+            Transition.SetTag(cachedImage.Value, 2);
 
             FrameCover = new Lazy<Frame>(() => new Frame()
             {

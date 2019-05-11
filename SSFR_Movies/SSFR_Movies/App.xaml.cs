@@ -1,3 +1,4 @@
+using Plugin.SharedTransitions;
 using SSFR_Movies.Views;
 using System;
 using System.Net.Http;
@@ -29,7 +30,7 @@ namespace SSFR_Movies
 #if DEBUG
             HotReloader.Current.Start(this);
 #endif
-            var mainPage = new StartPagexaml();
+            var mainPage = new SharedTransitionNavigationPage(new StartPagexaml());
 
             MainPage = mainPage;
 
