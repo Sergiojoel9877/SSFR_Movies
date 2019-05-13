@@ -208,17 +208,7 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            if (MainThread.IsMainThread)
-            {
-                await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async ()=>
-                {
-                    await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-                });
-            }
+            await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
 
             if (sender != null)
             {
@@ -237,11 +227,11 @@ namespace SSFR_Movies.Helpers
 
                         if (MainThread.IsMainThread)
                         {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
+                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         }
                         else
                         {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
+                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         }
                         return false;
                     });
@@ -262,20 +252,10 @@ namespace SSFR_Movies.Helpers
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
 
-                        if (MainThread.IsMainThread)
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
-                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        }
-                        else
-                        {
-                            MainThread.BeginInvokeOnMainThread(async () =>
-                            {
-                                MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
-                                await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                            });
-                        }
+                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
+                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                   
                         return;
                     }
 
@@ -286,27 +266,17 @@ namespace SSFR_Movies.Helpers
                         realm.Add(movie, true);
                     });
 
-                    MessagingCenter.Send(this, "Refresh", true);
-
                     var conf = new MaterialSnackbarConfiguration()
                     {
                         TintColor = Color.FromHex("#0066cc"),
                         BackgroundColor = Color.FromHex("#272B2E")
                     };
 
-                    if (MainThread.IsMainThread)
-                    {
-                        MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    }
-                    else
-                    {
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
-                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        });
-                    }
+                    MessagingCenter.Send(this, "Refresh", true);
+
+                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+
+                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
                 }
                 catch (Exception e15)
                 {

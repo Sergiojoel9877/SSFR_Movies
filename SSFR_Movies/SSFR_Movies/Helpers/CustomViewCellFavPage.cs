@@ -201,24 +201,13 @@ namespace SSFR_Movies.Helpers
             tap.Tapped += QuitFromFavListTap;
 
             compat.Value.GestureRecognizers.Add(tap);
-
         }
 
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
 
-            if (MainThread.IsMainThread)
-            {
-                await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async ()=>
-                {
-                    await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-                });
-            }
+            await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
             
             if (sender != null)
             {
@@ -254,23 +243,6 @@ namespace SSFR_Movies.Helpers
                         Locator.Current.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "Refresh", true);
-
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        });
-
-                        //if (MainThread.IsMainThread)
-                        //{
-                        //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        //}
-                        //else
-                        //{
-                        //    MainThread.BeginInvokeOnMainThread(async ()=>
-                        //    {
-                        //        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        //    });
-                        //}
                     }
                 }
                 catch (Exception e15)
@@ -278,17 +250,6 @@ namespace SSFR_Movies.Helpers
                     Debug.Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
-        }
-
-        public async Task SpeakNow(string msg)
-        {
-            var settings = new SpeechOptions()
-            {
-                Volume = 1f,
-                Pitch = 1.0f
-            };
-
-            await TextToSpeech.SpeakAsync(msg, settings);
         }
     }
 }

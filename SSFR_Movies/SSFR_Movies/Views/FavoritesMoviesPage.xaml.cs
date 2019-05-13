@@ -7,6 +7,7 @@ using SSFR_Movies.Models;
 using SSFR_Movies.ViewModels;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -112,7 +113,7 @@ namespace SSFR_Movies.Views
             {
                 if (e)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
+                    Device.BeginInvokeOnMainThread(async ()=>
                     {
                         var estado = await vm.FillMoviesList(null);
 
