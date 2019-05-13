@@ -69,16 +69,23 @@ namespace SSFR_Movies.Helpers
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(BlurredImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            var PosterPathSource = new UriImageSource()
+            {
+                CachingEnabled = true,
+                CacheValidity = TimeSpan.MaxValue
+            };
+            PosterPathSource.SetBinding(UriImageSource.UriProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
 
             cachedImage = new Lazy<Image>(() => new Image()
             {
                 Aspect = Aspect.AspectFill,
+                Source = PosterPathSource,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            cachedImage.Value.SetBinding(Image.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
-
+          
             FrameCover = new Lazy<Frame>(() => new Frame()
             {
                 IsClippedToBounds = true,

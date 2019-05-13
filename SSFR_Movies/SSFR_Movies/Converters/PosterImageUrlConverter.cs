@@ -11,7 +11,7 @@ namespace SSFR_Movies.Converters
             if (value == null)
                 return "NoInternet.png";
 
-            return "https://image.tmdb.org/t/p/w370_and_h556_bestv2" + (string)value;
+            return new Uri("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + (string)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
