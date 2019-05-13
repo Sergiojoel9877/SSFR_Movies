@@ -15,87 +15,80 @@
     </ContentPage.Resources>
     
     <ContentPage.Content>
-        <StackLayout x:Name="stack">
-            <FlexLayout
-                x:Name="GenresContainer"
-                AlignContent="Center"
-                BackgroundColor="#272B2E"
-                Direction="Column"
-                CompressedLayout.IsHeadless="True">
+        <AbsoluteLayout x:Name="stack" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
 
-                <Grid CompressedLayout.IsHeadless="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+            <ScrollView
+                x:Name="scrollview"
+                AbsoluteLayout.LayoutBounds="0, 0, 1, 0.1"
+                AbsoluteLayout.LayoutFlags="All"
+                Margin="0,15,0,0"
+                HeightRequest="40"
+                HorizontalScrollBarVisibility="Never">
 
-                    <ScrollView
-                        x:Name="Scrollview"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,15,0,0"
-                        HeightRequest="40"
-                        HorizontalScrollBarVisibility="Never">
-
-                        <FlexLayout Direction="Row" BindableLayout.ItemsSource="{Binding GenreList.Value}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame Style="{StaticResource FramesStyle}">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            Style="{StaticResource LabelsStyle}"
-                                            Text="{Binding Name}">
-                                            <Label.GestureRecognizers>
-                                                <TapGestureRecognizer Tapped="Genre_Tapped" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
-                                    </Frame>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </FlexLayout>
-                        
-                    </ScrollView>
-                </Grid>
-            </FlexLayout>
-            <ScrollView x:Name="scroll">
-                <StackLayout CompressedLayout.IsHeadless="True">
-                    
-                    <ActivityIndicator
-                        x:Name="activityIndicator"
-                        HeightRequest="40"
-                        Visual="Material"
-                        VerticalOptions="CenterAndExpand"
-                        HorizontalOptions="CenterAndExpand"
-                        IsRunning="{Binding IsRunning}"
-                        IsVisible="{Binding IsEnabled}"
-                        WidthRequest="40"
-                        BackgroundColor="#004b96"
-                        Color="#FFF" />
-
-                    <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" SelectionChanged="MovieSelected" ItemsSource="{Binding AllMoviesList.Value}" WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <StackLayout CompressedLayout.IsHeadless="True">
-                                    <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                                </StackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>  
-                    </CollectionView>
-
-                    <Button 
-                        x:Name="RefreshBtn"
-                        IsVisible="{Binding ListVisible}"
-                        BackgroundColor="#272B2E"
-                        TextColor="#006FDE"
-                        Text="Refresh"
-                        Clicked="RefreshBtnClicked"
-                        FontSize="Medium"/>
-               
-                </StackLayout>
+                <FlexLayout Direction="Row" BindableLayout.ItemsSource="{Binding GenreList.Value}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Style="{StaticResource FramesStyle}">
+                                <Label
+                                    FontAttributes="Bold"
+                                    Style="{StaticResource LabelsStyle}"
+                                    Text="{Binding Name}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Genre_Tapped" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
             </ScrollView>
-        </StackLayout>
+            
+            <AbsoluteLayout x:Name="scroll" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+         
+                <ActivityIndicator
+                    x:Name="activityIndicator"
+                    AbsoluteLayout.LayoutBounds="0.5, 0.5, 0.5, 0.2"
+                    AbsoluteLayout.LayoutFlags="All"
+                    HeightRequest="40"
+                    Visual="Material"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="CenterAndExpand"
+                    IsRunning="{Binding IsRunning}"
+                    IsVisible="{Binding IsEnabled}"
+                    WidthRequest="40"
+                    BackgroundColor="#004b96"
+                    Color="#FFF" />
+
+                <CollectionView
+                    x:Name="MoviesList"
+                    IsVisible="{Binding ListVisible}"
+                    SelectionMode="Single"
+                    SelectionChanged="MovieSelected"
+                    ItemsSource="{Binding AllMoviesList.Value}"
+                    WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}"
+                    AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                    AbsoluteLayout.LayoutFlags="All">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout CompressedLayout.IsHeadless="True">
+                                <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Button
+                    AbsoluteLayout.LayoutBounds="0, 0.9, 0, 0.2"
+                    AbsoluteLayout.LayoutFlags="All"
+                    x:Name="RefreshBtn"
+                    IsVisible="{Binding ListVisible}"
+                    BackgroundColor="#272B2E"
+                    TextColor="#006FDE"
+                    Text="Refresh"
+                    Clicked="RefreshBtnClicked"
+                    FontSize="Medium"/>
+
+            </AbsoluteLayout>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

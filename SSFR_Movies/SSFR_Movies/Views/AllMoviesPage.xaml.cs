@@ -28,8 +28,6 @@ namespace SSFR_Movies.Views
     {
         readonly AllMoviesPageViewModel vm = null;
 
-        FlexLayout genresContainer = null;
-
         ToolbarItem updownList = null;
 
         ToolbarItem searchToolbarItem = null;
@@ -46,26 +44,39 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
+            HideScrollAtStart();
+         
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
-
+            
             SetPullToRefresh();
 
             SetPull2RefreshToMainStack();
             
             SuscribeToMessages();
 
-            SetContainerForMovieGenres().SafeFireAndForget();
-
             SetToolBarItems();
 
             SetScrollViewOrientation();
+
+            ControlRaiseOverAllViews();
+        }
+
+        private void HideScrollAtStart()
+        {
+            scrollview.TranslationY = -80;
+        }
+
+        private void ControlRaiseOverAllViews()
+        {
+            stack.RaiseChild(scrollview);
+            
         }
 
         private void SetScrollViewOrientation()
         {
-            Scrollview.Orientation = ScrollOrientation.Horizontal;
+            scrollview.Orientation = ScrollOrientation.Horizontal;
         }
 
         private void SetToolBarItems()
@@ -77,26 +88,29 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new Command(async () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    if (MainThread.IsMainThread)
                     {
                         updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
-                    });
+                    }
+                    else
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+                        });
+                    }
 
                     if (updownList.Icon == "ListDown.png")
                     {
                         if (MainThread.IsMainThread)
                         {
-                            genresContainer.IsVisible = false;
-
-                            await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                            await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
                         }
                         else
                         {
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
-                                genresContainer.IsVisible = false;
-
-                                await Scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                                await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
                             });
                         }
                     }
@@ -104,17 +118,13 @@ namespace SSFR_Movies.Views
                     {
                         if (MainThread.IsMainThread)
                         {
-                            genresContainer.IsVisible = true;
-
-                            await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                            await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
                         }
                         else
                         {
                             MainThread.BeginInvokeOnMainThread(async () =>
                             {
-                                genresContainer.IsVisible = true;
-
-                                await Scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                                await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
                             });
                         }
                     }
@@ -149,29 +159,15 @@ namespace SSFR_Movies.Views
 
         }
 
-        private async Task<FlexLayout> SetContainerForMovieGenres()
+        private void SetPull2RefreshToMainStack()
         {
-            genresContainer = this.FindByName<FlexLayout>("GenresContainer");
+            AbsoluteLayout.SetLayoutBounds(pull2refreshlyt, new Rectangle(0, 0, 1, 1));
+            AbsoluteLayout.SetLayoutFlags(pull2refreshlyt, AbsoluteLayoutFlags.All);
 
-            if (MainThread.IsMainThread)
-            {
-                genresContainer.IsVisible = false;
-                await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    genresContainer.IsVisible = false;
-                    await Scrollview.TranslateTo(0, -80, 500, Easing.Linear);
-                });
-            }
-            return genresContainer;
+            stack.Children.Add(pull2refreshlyt);
         }
 
-        private void SetPull2RefreshToMainStack() => stack.Children.Add(pull2refreshlyt);
-
-        private PullToRefreshLayout SetPullToRefresh()
+        private void SetPullToRefresh()
         {
             pull2refreshlyt = Locator.Current.GetService<PullToRefreshLayout>();
             pull2refreshlyt.Content = scroll;
@@ -182,8 +178,6 @@ namespace SSFR_Movies.Views
             {
                 await LoadMoreMovies();
             });
-
-            return pull2refreshlyt;
         }
 
         private void MovieSelected(object sender, SelectionChangedEventArgs e)
@@ -203,7 +197,6 @@ namespace SSFR_Movies.Views
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true).SafeFireAndForget();
-                        //await Navigation.PushAsync(new MovieDetailsPage(movie));
                     });
                 }
             }
@@ -349,24 +342,24 @@ namespace SSFR_Movies.Views
                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
-
-                MainThread.BeginInvokeOnMainThread(() =>
+                if (MainThread.IsMainThread)
                 {
-                    //activityIndicator.IsRunning = true;
-                    //activityIndicator.IsVisible = true;
                     MoviesList.IsVisible = false;
                     RefreshBtn.IsVisible = false;
-                });
+                }
+                else
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        MoviesList.IsVisible = false;
+                        RefreshBtn.IsVisible = false;
+                    });
+                }
 
                 Settings.NextPage++;
 
                 vm.AllMoviesList.Value.Clear();
 
-                var token = new CancellationTokenSource();
-
-                token.CancelAfter(4000);
-
-                //var MoviesDownloaded = await ServiceLocator.Current.GetInstance<Lazy<ApiClient>>().Value.GetAndStoreMoviesAsync(false, page: Settings.NextPage);
                 var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
                 if (MoviesDownloaded)
@@ -379,29 +372,46 @@ namespace SSFR_Movies.Views
                     {
                         BindingContext = vm;
 
-                        MainThread.BeginInvokeOnMainThread(() =>
-                       {
-                            //pull2refreshlyt.IsRefreshing = false;
-                            //activityIndicator.IsRunning = false;
+                        if (MainThread.IsMainThread)
+                        {
                             MoviesList.IsVisible = true;
-                           activityIndicator.IsVisible = false;
-                           RefreshBtn.IsVisible = true;
-                           pull2refreshlyt.IsRefreshing = false;
-                       });
+                            activityIndicator.IsVisible = false;
+                            RefreshBtn.IsVisible = true;
+                            pull2refreshlyt.IsRefreshing = false;
+                        }
+                        else
+                        {
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                MoviesList.IsVisible = true;
+                                activityIndicator.IsVisible = false;
+                                RefreshBtn.IsVisible = true;
+                                pull2refreshlyt.IsRefreshing = false;
+                            });
+                        }
                     }
                 }
             }
             catch (Exception e)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                if (MainThread.IsMainThread)
                 {
                     pull2refreshlyt.IsRefreshing = false;
-                    //activityIndicator.IsRunning = false;
                     MoviesList.IsVisible = true;
                     activityIndicator.IsVisible = false;
                     RefreshBtn.IsVisible = true;
-                });
-
+                }
+                else
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        pull2refreshlyt.IsRefreshing = false;
+                        MoviesList.IsVisible = true;
+                        activityIndicator.IsVisible = false;
+                        RefreshBtn.IsVisible = true;
+                    });
+                }
+                
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     Task.Run(async () =>
@@ -427,13 +437,22 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (MainThread.IsMainThread)
             {
                 vm.ListVisible = false;
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
-            });
-
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    vm.ListVisible = false;
+                    vm.IsEnabled = true;
+                    vm.IsRunning = true;
+                });
+            }
+          
             MoviesList.ItemsSource = null;
 
             try
@@ -457,18 +476,33 @@ namespace SSFR_Movies.Views
 
                     BindingContext = vm;
 
-                    MainThread.BeginInvokeOnMainThread(async () =>
+                    if (MainThread.IsMainThread)
                     {
                         MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
-                        await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
+                        MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn).SafeFireAndForget();
 
                         vm.ListVisible = true;
 
                         vm.IsEnabled = false;
 
                         vm.IsRunning = false;
-                    });
+                    }
+                    else
+                    {
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
+
+                            await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
+
+                            vm.ListVisible = true;
+
+                            vm.IsEnabled = false;
+
+                            vm.IsRunning = false;
+                        });
+                    }
                 }
                 else
                 {
@@ -510,8 +544,6 @@ namespace SSFR_Movies.Views
 
             if (MainThread.IsMainThread)
             {
-                scroll.ScrollToAsync(0, 500, true).SafeFireAndForget();
-
                 RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear).SafeFireAndForget();
 
                 RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear).SafeFireAndForget();
@@ -520,8 +552,6 @@ namespace SSFR_Movies.Views
             {
                 MainThread.BeginInvokeOnMainThread(()=>
                 {
-                    scroll.ScrollToAsync(0, 500, true).SafeFireAndForget();
-
                     RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear).SafeFireAndForget();
 
                     RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear).SafeFireAndForget();
