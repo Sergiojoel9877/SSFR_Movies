@@ -188,17 +188,10 @@ namespace SSFR_Movies.Views
 
                 Result resultSingleton = ResultSingleton.SetInstance(movie);
 
-                if (MainThread.IsMainThread)
+                Device.BeginInvokeOnMainThread(async ()=>
                 {
-                    Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true).SafeFireAndForget();
-                }
-                else
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true).SafeFireAndForget();
-                    });
-                }
+                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
+                });
             }
         }
 

@@ -48,7 +48,7 @@ namespace SSFR_Movies.Views
 
             ToolbarItems.Add(searchToolbarItem);
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+            //MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
             SubscribeToMessage();
         }
@@ -109,6 +109,11 @@ namespace SSFR_Movies.Views
                 }
             });
 
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+
             MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
             {
                 if (e)
@@ -137,7 +142,7 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private void MovieSelected()
+        private void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
             if (MoviesList.SelectedItem != null)
             {
@@ -145,7 +150,7 @@ namespace SSFR_Movies.Views
 
                 Result resultSingleton = ResultSingleton.SetInstance(movie);
 
-                MainThread.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(async () =>
                 {
                     await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
                 });

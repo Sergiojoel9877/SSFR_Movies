@@ -20,9 +20,6 @@ namespace SSFR_Movies.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
-
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental"});
-
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))
@@ -39,6 +36,8 @@ namespace SSFR_Movies.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental"});
 
             //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
 

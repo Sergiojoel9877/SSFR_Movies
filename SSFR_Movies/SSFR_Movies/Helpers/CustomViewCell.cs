@@ -272,11 +272,11 @@ namespace SSFR_Movies.Helpers
                         BackgroundColor = Color.FromHex("#272B2E")
                     };
 
-                    MessagingCenter.Send(this, "Refresh", true);
-
                     await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
 
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    
+                    MessagingCenter.Send(this, "Refresh", true);
                 }
                 catch (Exception e15)
                 {

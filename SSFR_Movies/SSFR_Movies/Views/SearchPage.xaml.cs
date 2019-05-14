@@ -225,7 +225,7 @@ namespace SSFR_Movies.Views
         {
             public MovieSearchHandler()
             {
-                SearchBoxVisibility = SearchBoxVisiblity.Collapsable;
+                SearchBoxVisibility = SearchBoxVisibility.Collapsible;
                 IsSearchEnabled = true;
                 Placeholder = "Search";
             }

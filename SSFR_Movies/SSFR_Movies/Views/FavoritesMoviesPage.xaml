@@ -34,11 +34,15 @@
                 Text="You have not picked any movie as a favorite one"
                 TextColor="White" />
 
-            <CollectionView x:Name="MoviesList" Visual="Material" ItemsSource="{Binding FavMoviesList.Value}" SelectionMode="Single">
+            <CollectionView
+                x:Name="MoviesList"
+                ItemsSource="{Binding FavMoviesList.Value}"
+                SelectionMode="Single"
+                SelectionChanged="MovieSelected">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCellFavPage HeightRequest="300"/>
+                            <helpers:CustomViewCellFavPage HeightRequest="350" CompressedLayout.IsHeadless="True"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
