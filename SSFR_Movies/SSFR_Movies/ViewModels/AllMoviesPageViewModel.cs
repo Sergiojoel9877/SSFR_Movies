@@ -134,7 +134,7 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                MainThread.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(async () =>
                 {
                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
@@ -152,7 +152,7 @@ namespace SSFR_Movies.ViewModels
                 AllMoviesList.Value.Add(r);
             });
 
-            MainThread.BeginInvokeOnMainThread(() =>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 ListVisible = true;
                 IsRunning = false;
@@ -213,7 +213,7 @@ namespace SSFR_Movies.ViewModels
                    return;
                }
 
-               MainThread.BeginInvokeOnMainThread(() =>
+               Device.BeginInvokeOnMainThread(() =>
                {
                    ListVisible = false;
                    IsRunning = true;
@@ -224,7 +224,7 @@ namespace SSFR_Movies.ViewModels
 
                if (!stored)
                {
-                   MainThread.BeginInvokeOnMainThread(async () =>
+                   Device.BeginInvokeOnMainThread(async () =>
                    {
                         //MsgVisible = true;
                         //MsgText = "Low storage left!";
@@ -234,7 +234,7 @@ namespace SSFR_Movies.ViewModels
                    });
                }
 
-               MainThread.BeginInvokeOnMainThread(() =>
+               Device.BeginInvokeOnMainThread(() =>
                {
                    ListVisible = true;
                    IsEnabled = false;
@@ -286,7 +286,7 @@ namespace SSFR_Movies.ViewModels
 
                 if (!done)
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    Device.BeginInvokeOnMainThread(() =>
                     {
                         MsgVisible = true;
                         MsgText = "No storage space left!";

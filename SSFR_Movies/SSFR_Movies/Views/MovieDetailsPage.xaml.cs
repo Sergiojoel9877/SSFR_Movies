@@ -47,17 +47,10 @@ namespace SSFR_Movies.Views
 
         private void SetAddSourceToFavoritesListImage(string v)
         {
-            if (MainThread.IsMainThread)
-            {
-                AddToFav.Source = "StarEmpty.png";
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(()=>
+                Device.BeginInvokeOnMainThread(()=>
                 {
                     AddToFav.Source = "StarEmpty.png";
                 });
-            }
         }
 
         private void SetPosterImgGestureRecognizer()
@@ -237,19 +230,7 @@ namespace SSFR_Movies.Views
 
                     await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                    if (MainThread.IsMainThread)
-                    {
-                        AddToFav.Source = "StarEmpty.png";
-
-                        AddToFavLayout.IsVisible = true;
-
-                        QuitFromFavLayout.IsVisible = false;
-
-                        MessagingCenter.Send(this, "Refresh", true);
-                    }
-                    else
-                    {
-                        MainThread.BeginInvokeOnMainThread(()=>
+                        Device.BeginInvokeOnMainThread(()=>
                         {
                             AddToFav.Source = "StarEmpty.png";
 
@@ -259,7 +240,6 @@ namespace SSFR_Movies.Views
 
                             MessagingCenter.Send(this, "Refresh", true);
                         });
-                    }
                 }
                 catch (Exception)
                 {
@@ -339,7 +319,7 @@ namespace SSFR_Movies.Views
 
         //    streamWV.HeightRequest = 800;
 
-        //    if (MainThread.IsMainThread)
+        //    if (Device.IsMainThread)
         //    {
         //        await hScroll.TranslateTo(0, -458, 500, Easing.Linear);
 
@@ -348,7 +328,7 @@ namespace SSFR_Movies.Views
         //    }
         //    else
         //    {
-        //        MainThread.BeginInvokeOnMainThread(async () =>
+        //        Device.BeginInvokeOnMainThread(async () =>
         //        {
         //            await hScroll.TranslateTo(0, -458, 500, Easing.Linear);
 
@@ -358,7 +338,7 @@ namespace SSFR_Movies.Views
 
         //    var item = BindingContext as Result;
 
-        //    if (MainThread.IsMainThread)
+        //    if (Device.IsMainThread)
         //    {
         //        streamWV.IsVisible = true;
 
@@ -366,7 +346,7 @@ namespace SSFR_Movies.Views
         //    }
         //    else
         //    {
-        //        MainThread.BeginInvokeOnMainThread(async () =>
+        //        Device.BeginInvokeOnMainThread(async () =>
         //        {
         //            streamWV.IsVisible = true;
 

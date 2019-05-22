@@ -11,6 +11,7 @@ using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SSFR_Movies.CustomRenderers;
 using AsyncAwaitBestPractices;
+using FFImageLoading.Forms;
 
 namespace SSFR_Movies.Helpers
 {
@@ -21,7 +22,7 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
-        private readonly Lazy<BlurredImage> blurCachedImage = null;
+        private readonly Lazy<CachedImage> blurCachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
@@ -63,13 +64,18 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
+                HeightRequest = 300,
+                WidthRequest = 300,
+                CacheDuration = TimeSpan.MaxValue,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {
@@ -224,15 +230,7 @@ namespace SSFR_Movies.Helpers
                             TintColor = Color.FromHex("#0066cc"),
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
-
-                        if (MainThread.IsMainThread)
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
-                        }
-                        else
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
-                        }
+                        MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         return false;
                     });
                     return;

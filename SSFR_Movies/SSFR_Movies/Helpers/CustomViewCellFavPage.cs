@@ -1,4 +1,5 @@
 ﻿using AsyncAwaitBestPractices;
+using FFImageLoading.Forms;
 using Realms;
 using Splat;
 using SSFR_Movies.Converters;
@@ -19,7 +20,7 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<BlurredImage> blurCachedImage = null;
+        private readonly Lazy<CachedImage> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -63,7 +64,7 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,

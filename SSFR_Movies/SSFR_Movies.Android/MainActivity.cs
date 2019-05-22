@@ -5,8 +5,10 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
+using AsyncAwaitBestPractices;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
+using SSFR_Movies.Helpers;
 using System;
 using Xamarin.Forms;
 
@@ -39,7 +41,7 @@ namespace SSFR_Movies.Droid
 
             Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental"});
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
             //var config = new FFImageLoading.Config.Configuration()
             //{
@@ -57,9 +59,9 @@ namespace SSFR_Movies.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
-            Android.Glide.Forms.Init();
+            //Android.Glide.Forms.Init();
 
             //SSFR_Movies.Droid.Effects.TouchEffectPlatform.Init();
 
@@ -99,31 +101,35 @@ namespace SSFR_Movies.Droid
 
             if (flasg)
             {
-                //var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
                 //var dummy1 = typeof(PullToRefreshLayoutRenderer);
                 var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore
 
-        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            new SynchronizationContextRemover();
 
-            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
             
             base.OnTrimMemory(level);
         }
 
-        public override void OnLowMemory()
+        public override async void OnLowMemory()
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+            new SynchronizationContextRemover();
 
-            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
 
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
 
             base.OnLowMemory();
         }

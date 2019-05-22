@@ -7,6 +7,8 @@
     x:Name="content"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:transformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     xmlns:helpers="clr-namespace:SSFR_Movies.ViewModels"
     Title="Details"
     BackgroundColor="#0066cc">
@@ -26,15 +28,20 @@
             AbsoluteLayout.LayoutFlags="All"
             HorizontalOptions="FillAndExpand"
             VerticalOptions="FillAndExpand">
-            <customRenderers:BlurredImage
+            <ffimage:CachedImage
                 x:Name="BackDropImage"
+                CacheDuration="2000"
                 AbsoluteLayout.LayoutBounds="0,0,1,0.7"
                 AbsoluteLayout.LayoutFlags="All"
                 Source="{Binding BackdropPath, Converter={StaticResource BackgroundConverter}}"
                 Scale="3"
-                HeightRequest="350"
+                HeightRequest="300"
                 HorizontalOptions="FillAndExpand"
-                WidthRequest="500"/>
+                WidthRequest="300">
+                <ffimage:CachedImage.Transformations>
+                    <transformations:BlurredTransformation Radius="10" />
+                </ffimage:CachedImage.Transformations>
+            </ffimage:CachedImage>
             <ScrollView x:Name="hScroll"
                         AbsoluteLayout.LayoutBounds="0,0,1,1"
                         AbsoluteLayout.LayoutFlags="All" 

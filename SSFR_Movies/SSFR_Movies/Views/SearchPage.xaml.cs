@@ -61,7 +61,7 @@ namespace SSFR_Movies.Views
 
                 Result resultSingleton = ResultSingleton.SetInstance(movie);
 
-                MainThread.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(async () =>
                 {
                     await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
                 });
@@ -108,7 +108,7 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async () =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
 
                 try
@@ -225,7 +225,7 @@ namespace SSFR_Movies.Views
         {
             public MovieSearchHandler()
             {
-                SearchBoxVisibility = SearchBoxVisibility.Collapsible;
+                SearchBoxVisibility = SearchBoxVisiblity.Collapsable;
                 IsSearchEnabled = true;
                 Placeholder = "Search";
             }

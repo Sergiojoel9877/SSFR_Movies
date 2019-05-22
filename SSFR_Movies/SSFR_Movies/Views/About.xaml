@@ -13,6 +13,7 @@
                         HeightRequest="250"
                         HorizontalOptions="Center"
                         Source="icon.png"
+                        Aspect="AspectFit"
                         WidthRequest="250" />
                     
                     <Label
