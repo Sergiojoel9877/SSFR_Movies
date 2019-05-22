@@ -84,7 +84,7 @@ namespace SSFR_Movies.Views
             updownList = new ToolbarItem()
             {
                 Text = "Up",
-                Icon = "ListDown.png",
+                IconImageSource = "ListDown.png",
                 Priority = 1,
                 Command = new Command(async () =>
                 {
@@ -115,14 +115,14 @@ namespace SSFR_Movies.Views
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
-                Icon = "Search.png",
+                IconImageSource = "Search.png",
                 Priority = 0,
 
                 Command = new Command(() =>
                 {
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await Shell.Current.GoToAsync("app://ssfr.com/Search", true);
+                            await Shell.Current.GoToAsync("/Search", true);
                         });
                 })
             };
@@ -164,7 +164,7 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(async ()=>
                 {
-                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
+                    await Shell.Current.GoToAsync("/MovieDetails", true);
                 });
             }
         }
