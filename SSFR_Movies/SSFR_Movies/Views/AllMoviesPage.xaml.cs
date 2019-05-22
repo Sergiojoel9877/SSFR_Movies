@@ -84,23 +84,23 @@ namespace SSFR_Movies.Views
             updownList = new ToolbarItem()
             {
                 Text = "Up",
-                Icon = "ListDown.png",
+                IconImageSource = "ListDown.png",
                 Priority = 1,
                 Command = new Command(async () =>
                 {
                     if (MainThread.IsMainThread)
                     {
-                        updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+                        updownList.IconImageSource = updownList.IconImageSource.ToString() == "ListDown.png" ? "ListUp.png" : "ListDown.png";
                     }
                     else
                     {
                         MainThread.BeginInvokeOnMainThread(() =>
                         {
-                            updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+                            updownList.IconImageSource = updownList.IconImageSource.ToString() == "ListDown.png" ? "ListUp.png" : "ListDown.png";
                         });
                     }
 
-                    if (updownList.Icon == "ListDown.png")
+                    if (updownList.IconImageSource.ToString() == "ListDown.png")
                     {
                         if (MainThread.IsMainThread)
                         {
@@ -134,20 +134,20 @@ namespace SSFR_Movies.Views
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
-                Icon = "Search.png",
+                IconImageSource = "Search.png",
                 Priority = 0,
 
                 Command = new Command(async () =>
                 {
                     if (MainThread.IsMainThread)
                     {
-                        await Shell.Current.GoToAsync("app://ssfr.com/Search", true);
+                        await Shell.Current.GoToAsync("/Search", true);
                     }
                     else
                     {
                         MainThread.BeginInvokeOnMainThread(async () =>
                         {
-                            await Shell.Current.GoToAsync("app://ssfr.com/Search", true);
+                            await Shell.Current.GoToAsync("/Search", true);
                         });
                     }
                 })
@@ -190,7 +190,7 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(async ()=>
                 {
-                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
+                    await Shell.Current.GoToAsync("/MovieDetails", true);
                 });
             }
         }
