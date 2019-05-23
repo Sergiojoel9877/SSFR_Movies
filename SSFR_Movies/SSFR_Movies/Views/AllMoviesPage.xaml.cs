@@ -9,6 +9,7 @@ using SSFR_Movies.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -86,14 +87,14 @@ namespace SSFR_Movies.Views
                 Text = "Up",
                 IconImageSource = "ListDown.png",
                 Priority = 1,
-                Command = new Command(async () =>
+                Command = new Command(() =>
                 {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            updownList.Icon = updownList.Icon == "ListDown.png" ? "ListUp.png" : "ListDown.png";
+                            updownList.IconImageSource = updownList.IconImageSource.ToString() == "ListDown.png" ? "ListUp.png" : "ListDown.png";
                         });
-                   
-                    if (updownList.Icon == "ListDown.png")
+
+                    if (updownList.IconImageSource.GetValue(IconImageSourceProperty).ToString() == "ListDown.png")
                     {
                         
                             Device.BeginInvokeOnMainThread(async () =>

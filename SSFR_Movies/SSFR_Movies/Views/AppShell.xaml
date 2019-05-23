@@ -21,22 +21,24 @@
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#0088FF"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="White"/>
             </Style>
-            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
-    <ShellItem Route="Main">
-        <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <ShellContent>
+    <TabBar Route="Main">
+        <Tab Title="All" Route="home" Icon="Recent.png">
+            <!--<ShellContent>
                 <local:AllMoviesPage/>
-            </ShellContent>
-        </ShellSection>
-        <ShellSection IsEnabled="{Binding Enabled}" Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <ShellContent>
+            </ShellContent>-->
+            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
+        </Tab>
+        <Tab Title="Favorites" Route="favorites" Icon="Heart.png" >
+            <!--<ShellContent>
                 <local:FavoritesMoviesPage/>
-            </ShellContent>
-        </ShellSection>
-        <ShellSection IsEnabled="{Binding Enabled}" Title="About" Route="about" Icon="About.png">
+            </ShellContent>-->
+            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
+        </Tab>
+        <Tab Title="About" Route="about" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>
-        </ShellSection>
-    </ShellItem>
+        </Tab>
+    </TabBar>
 </Shell>

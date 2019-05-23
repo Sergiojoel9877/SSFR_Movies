@@ -18,7 +18,7 @@ namespace SSFR_Movies.Views
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
-                Icon = "Search.png",
+                IconImageSource = "Search.png",
                 Priority = 0,
 
                 Command = new Command(async () =>

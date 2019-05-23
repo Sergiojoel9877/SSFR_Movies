@@ -38,7 +38,7 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCellFavPage()
         {
-            HeightRequest = 300;
+            HeightRequest = 350;
             Direction = FlexDirection.Column;
             Margin = 16;
             AlignContent = FlexAlignContent.Center;
@@ -46,7 +46,6 @@ namespace SSFR_Movies.Helpers
             Container = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
-
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
@@ -66,11 +65,16 @@ namespace SSFR_Movies.Helpers
 
             blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
+                HeightRequest = 300,
+                WidthRequest = 300,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
+                CacheDuration = TimeSpan.MaxValue,
+                CacheType = FFImageLoading.Cache.CacheType.Disk,
+                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {

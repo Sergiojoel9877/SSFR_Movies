@@ -39,7 +39,7 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", "FastRenderers_Experimental"});
+            Forms.SetFlags(new[] { "CollectionView_Experimental" });
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 

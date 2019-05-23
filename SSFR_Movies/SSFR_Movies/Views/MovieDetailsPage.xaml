@@ -39,14 +39,15 @@
                 HorizontalOptions="FillAndExpand"
                 WidthRequest="300">
                 <ffimage:CachedImage.Transformations>
-                    <transformations:BlurredTransformation Radius="10" />
+                    <transformations:BlurredTransformation/>
                 </ffimage:CachedImage.Transformations>
             </ffimage:CachedImage>
-            <ScrollView x:Name="hScroll"
-                        AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        AbsoluteLayout.LayoutFlags="All" 
-                        BackgroundColor="#22000000"
-                        VerticalOptions="FillAndExpand">
+            <ScrollView 
+                x:Name="hScroll"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All" 
+                BackgroundColor="#22000000"
+                VerticalOptions="FillAndExpand">
                 <StackLayout BackgroundColor="#00000000">
                     <Frame 
                         x:Name="frame"

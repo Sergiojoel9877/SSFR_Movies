@@ -3,7 +3,7 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:SSFR_Movies.ViewModels"    
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"    
     Title="SSFR Movies"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     BackgroundColor="#161513">
@@ -14,13 +14,12 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <Image
+            <ffimage:CachedImage
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
                 HeightRequest="300"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
-                Source="Unpin.png"
                 WidthRequest="300" />
             
             <Label
@@ -48,7 +47,7 @@
             </CollectionView>
             
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
-            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+            <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

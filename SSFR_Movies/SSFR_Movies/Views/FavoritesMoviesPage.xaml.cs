@@ -34,6 +34,8 @@ namespace SSFR_Movies.Views
 
             SetVisibility();
 
+            UnPin.Source = "Unpin.png";
+
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
@@ -42,7 +44,7 @@ namespace SSFR_Movies.Views
 
                 Command = new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    await Shell.Current.GoToAsync("/SearchPage", true);
                 })
             };
 
@@ -152,7 +154,7 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
+                    await Shell.Current.GoToAsync("/MovieDetails", true);
                 });
             }
         }
