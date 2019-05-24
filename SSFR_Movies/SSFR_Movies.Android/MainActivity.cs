@@ -13,15 +13,14 @@ using Xamarin.Forms;
 namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
-    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", /*Theme = "@style/MainTheme",*/ Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
+    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
 
         protected override void OnCreate(Bundle bundle)
         {
-
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental", ""});
+            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental"});
 
             MainApplication.activity = this;
 
@@ -40,59 +39,23 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.Init(false);
-
-            //var config = new FFImageLoading.Config.Configuration()
-            //{
-            //    VerboseLogging = false,
-            //    VerbosePerformanceLogging = false,
-            //    VerboseMemoryCacheLogging = false,
-            //    VerboseLoadingCancelledLogging = false,
-            //    Logger = new CustomLogger(),
-            //};
-            //ImageService.Instance.Initialize(config);
-
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
-
             Android.Glide.Forms.Init();
 
-            //SSFR_Movies.Droid.Effects.TouchEffectPlatform.Init();
-
             PullToRefreshLayoutRenderer.Init();
-
-            //FFImageLoading.ImageSourceHandler();
 
             global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
 
             XF.Material.Droid.Material.Init(this, bundle);
 
             LoadApplication(LazyApp.Value);
-
         }
 
-        //public class CustomLogger : FFImageLoading.Helpers.IMiniLogger
-        //{
-        //    public void Debug(string message)
-        //    {
-        //        Console.WriteLine(message);
-        //    }
-
-        //    public void Error(string errorMessage)
-        //    {
-        //        Console.WriteLine(errorMessage);
-        //    }%
-
-        //    public void Error(string errorMessage, Exception ex)
-        //    {
-        //        Error(errorMessage + System.Environment.NewLine + ex.ToString());
-        //    }
-        //}
 #pragma warning disable 0219, 0649
         static MainActivity()
         {
@@ -100,8 +63,6 @@ namespace SSFR_Movies.Droid
 
             if (flasg)
             {
-                //var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
-                //var dummy1 = typeof(PullToRefreshLayoutRenderer);
                 var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
@@ -109,23 +70,13 @@ namespace SSFR_Movies.Droid
 
         public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-
-            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
-
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-            
             base.OnTrimMemory(level);
         }
 
         public override void OnLowMemory()
         {
-            //FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-
-            //await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
-
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-
             base.OnLowMemory();
         }
     }
