@@ -22,7 +22,8 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
-        private readonly Lazy<CachedImage> blurCachedImage = null;
+        //private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
@@ -64,18 +65,24 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            var BackdropPathSource = new UriImageSource()
+            {
+                CachingEnabled = true,
+                CacheValidity = TimeSpan.MaxValue
+            };
+            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 300,
                 WidthRequest = 300,
-                CacheDuration = TimeSpan.MaxValue,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
+                Opacity = 60,
+                Source = BackdropPathSource,
+                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {

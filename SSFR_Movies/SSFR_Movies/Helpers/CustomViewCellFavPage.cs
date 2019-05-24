@@ -20,7 +20,7 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -63,18 +63,24 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            var BackdropPathSource = new UriImageSource()
+            {
+                CachingEnabled = true,
+                CacheValidity = TimeSpan.MaxValue
+            };
+            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 300,
                 WidthRequest = 300,
+                Opacity = 60,
+                Source = BackdropPathSource,
+                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CacheDuration = TimeSpan.MaxValue,
-                CacheType = FFImageLoading.Cache.CacheType.Disk,
-                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {
