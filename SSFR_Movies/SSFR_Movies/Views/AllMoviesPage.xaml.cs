@@ -86,6 +86,8 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new Command(() =>
                 {
+                    //Settings.Down = false;
+
                     if (Settings.Down)
                     {
                         Settings.Down = false;
@@ -100,7 +102,7 @@ namespace SSFR_Movies.Views
                         Device.BeginInvokeOnMainThread(async () =>
                         {
                             await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-                        }); 
+                        });
                     }
                 })
             };

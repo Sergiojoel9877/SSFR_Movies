@@ -17,18 +17,7 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            if (MainThread.IsMainThread)
-            {
-                var right = new Animation(d => lbl.TranslationX = d, 350, -500);
-
-                right.Commit(lbl, "Animation", 300, 7500, Easing.Linear, (d, b) =>
-                {
-                    lbl.TranslationX = 350;
-                }, () => true);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(() =>
+                Device.BeginInvokeOnMainThread(() =>
                 {
                     var right = new Animation(d => lbl.TranslationX = d, 350, -500);
 
@@ -37,7 +26,6 @@ namespace SSFR_Movies.Helpers
                         lbl.TranslationX = 350;
                     }, () => true);
                 });
-            }
         }
     }
 }

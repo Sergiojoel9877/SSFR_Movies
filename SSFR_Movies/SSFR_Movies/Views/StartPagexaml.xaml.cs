@@ -35,7 +35,7 @@ namespace SSFR_Movies.Views
 
                 var mainPage = new Lazy<AppShell>(() => new AppShell());
 
-                MainThread.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(async () =>
                 {
                     await ProBar.ProgressTo(100, 200, Easing.Linear);
 

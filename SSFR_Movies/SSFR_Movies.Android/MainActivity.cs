@@ -5,8 +5,10 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
+using AsyncAwaitBestPractices;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
+using SSFR_Movies.Helpers;
 using System;
 using Xamarin.Forms;
 
@@ -20,8 +22,6 @@ namespace SSFR_Movies.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
-            Forms.SetFlags(new[] { "CollectionView_Experimental", "Shell_Experimental"});
-
             MainApplication.activity = this;
 
             if (Intent.GetBooleanExtra("crash", false))
@@ -39,13 +39,29 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
+            Forms.SetFlags(new[] { "CollectionView_Experimental" });
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+
+            //var config = new FFImageLoading.Config.Configuration()
+            //{
+            //    VerboseLogging = false,
+            //    VerbosePerformanceLogging = false,
+            //    VerboseMemoryCacheLogging = false,
+            //    VerboseLoadingCancelledLogging = false,
+            //    Logger = new CustomLogger(),
+            //};
+            //ImageService.Instance.Initialize(config);
+
             MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            Android.Glide.Forms.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
+
+            //Android.Glide.Forms.Init();
 
             PullToRefreshLayoutRenderer.Init();
 
@@ -63,20 +79,36 @@ namespace SSFR_Movies.Droid
 
             if (flasg)
             {
+                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+                //var dummy1 = typeof(PullToRefreshLayoutRenderer);
                 var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore
 
-        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            new SynchronizationContextRemover();
+
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
+            
             base.OnTrimMemory(level);
         }
 
-        public override void OnLowMemory()
+        public override async void OnLowMemory()
         {
-            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            new SynchronizationContextRemover();
+
+            FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
+
+            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
+
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
+
             base.OnLowMemory();
         }
     }

@@ -77,10 +77,6 @@ namespace SSFR_Movies.Droid.CustomRenderers
         {
             if (_isDisposed)
             {
-                //if (Element != null)
-                //{
-                //    Element.PropertyChanged -= OnElementPropertyChanged;
-                //}
                 return;
             }
             _isDisposed = true;
@@ -223,20 +219,19 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
         private Bitmap CreateResizedImage(Bitmap originalBitmap)
         {
-            try
-            {
+            //try
+            //{
                 int width = Convert.ToInt32(System.Math.Round(originalBitmap.Width * BITMAP_SCALE));
                 int height = Convert.ToInt32(System.Math.Round(originalBitmap.Height * BITMAP_SCALE));
 
                 // Create another bitmap that will hold the results of the filter.  
                 Bitmap inputBitmap = Bitmap.CreateScaledBitmap(originalBitmap, width, height, false);
-                if (inputBitmap != null)
-                {
+                //if (inputBitmap != null)
+                //{
                     Bitmap outputBitmap = Bitmap.CreateBitmap(inputBitmap);
 
                     // Create the Renderscript instance that will do the work.  
                     RenderScript rs = RenderScript.Create(Context);
-
 
                     Allocation tmpIn = Allocation.CreateFromBitmap(rs, inputBitmap);
                     Allocation tmpOut = Allocation.CreateFromBitmap(rs, outputBitmap);
@@ -257,14 +252,14 @@ namespace SSFR_Movies.Droid.CustomRenderers
                     tmpOut.CopyTo(outputBitmap);
 
                     return outputBitmap;
-                }
+                //}
                 
-            }
-            catch (NullPointerException e)
-            {
+            //}
+            //catch (NullPointerException e)
+            //{
 
-            }
-            return null;
+            //}
+            //return null;
         }
 
         private class BlurredImageView : ImageView

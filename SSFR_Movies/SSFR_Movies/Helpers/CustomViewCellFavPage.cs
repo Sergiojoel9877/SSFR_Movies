@@ -1,4 +1,5 @@
 ﻿using AsyncAwaitBestPractices;
+using FFImageLoading.Forms;
 using Realms;
 using Splat;
 using SSFR_Movies.Converters;
@@ -19,7 +20,7 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<BlurredImage> blurCachedImage = null;
+        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -37,7 +38,7 @@ namespace SSFR_Movies.Helpers
 
         public CustomViewCellFavPage()
         {
-            HeightRequest = 300;
+            HeightRequest = 350;
             Direction = FlexDirection.Column;
             Margin = 16;
             AlignContent = FlexAlignContent.Center;
@@ -45,7 +46,6 @@ namespace SSFR_Movies.Helpers
             Container = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
-
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
@@ -63,13 +63,24 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
+            var BackdropPathSource = new UriImageSource()
             {
+                CachingEnabled = true,
+                CacheValidity = TimeSpan.MaxValue
+            };
+            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            blurCachedImage = new Lazy<Image>(() => new Image()
+            {
+                HeightRequest = 300,
+                WidthRequest = 300,
+                Opacity = 60,
+                Source = BackdropPathSource,
+                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {
@@ -201,24 +212,13 @@ namespace SSFR_Movies.Helpers
             tap.Tapped += QuitFromFavListTap;
 
             compat.Value.GestureRecognizers.Add(tap);
-
         }
 
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
             await Task.Yield();
 
-            if (MainThread.IsMainThread)
-            {
-                await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async ()=>
-                {
-                    await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-                });
-            }
+            await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
             
             if (sender != null)
             {
@@ -254,23 +254,6 @@ namespace SSFR_Movies.Helpers
                         Locator.Current.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
 
                         MessagingCenter.Send(this, "Refresh", true);
-
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        });
-
-                        //if (MainThread.IsMainThread)
-                        //{
-                        //    await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        //}
-                        //else
-                        //{
-                        //    MainThread.BeginInvokeOnMainThread(async ()=>
-                        //    {
-                        //        await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        //    });
-                        //}
                     }
                 }
                 catch (Exception e15)
@@ -278,17 +261,6 @@ namespace SSFR_Movies.Helpers
                     Debug.Debug.WriteLine("Error: " + e15.InnerException);
                 }
             }
-        }
-
-        public async Task SpeakNow(string msg)
-        {
-            var settings = new SpeechOptions()
-            {
-                Volume = 1f,
-                Pitch = 1.0f
-            };
-
-            await TextToSpeech.SpeakAsync(msg, settings);
         }
     }
 }

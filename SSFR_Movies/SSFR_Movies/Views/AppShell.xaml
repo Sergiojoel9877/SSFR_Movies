@@ -3,9 +3,6 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:SSFR_Movies.Views"
        Title="SSFR Movies Home"
-       RouteScheme="app"
-       RouteHost="ssfr.com"
-       Route="ssfrmovies"
        NavigationPage.HasNavigationBar="False"
        NavigationPage.HasBackButton="False"
        FlyoutBehavior="Disabled"
@@ -14,32 +11,34 @@
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">#2196F3</Color>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.ShellBackgroundColor" Value="#272B2E" />
-                <Setter Property="Shell.ShellForegroundColor" Value="White" />
-                <Setter Property="Shell.ShellTitleColor" Value="White" />
-                <Setter Property="Shell.ShellDisabledColor" Value="#B4FFFFFF" />
-                <Setter Property="Shell.ShellUnselectedColor" Value="#0088FF" />
-                <Setter Property="Shell.ShellTabBarBackgroundColor" Value="#272B2E" />
-                <Setter Property="Shell.ShellTabBarForegroundColor" Value="White"/>
-                <Setter Property="Shell.ShellTabBarUnselectedColor" Value="#0088FF"/>
-                <Setter Property="Shell.ShellTabBarTitleColor" Value="White"/>
+                <Setter Property="Shell.BackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#0088FF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#0088FF"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="White"/>
             </Style>
-            <Style TargetType="ShellItem" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
-    <ShellItem Route="Main">
-        <ShellSection Title="All" Route="home" Icon="Recent.png">
-            <ShellContent>
+    <TabBar Route="Main">
+        <Tab Title="All" Route="home" Icon="Recent.png">
+            <!--<ShellContent>
                 <local:AllMoviesPage/>
-            </ShellContent>
-        </ShellSection>
-        <ShellSection IsEnabled="{Binding Enabled}" Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <ShellContent>
+            </ShellContent>-->
+            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
+        </Tab>
+        <Tab Title="Favorites" Route="favorites" Icon="Heart.png" >
+            <!--<ShellContent>
                 <local:FavoritesMoviesPage/>
-            </ShellContent>
-        </ShellSection>
-        <ShellSection IsEnabled="{Binding Enabled}" Title="About" Route="about" Icon="About.png">
+            </ShellContent>-->
+            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
+        </Tab>
+        <Tab Title="About" Route="about" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>
-        </ShellSection>
-    </ShellItem>
+        </Tab>
+    </TabBar>
 </Shell>

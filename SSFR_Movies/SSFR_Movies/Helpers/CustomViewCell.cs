@@ -11,6 +11,7 @@ using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 using SSFR_Movies.CustomRenderers;
 using AsyncAwaitBestPractices;
+using FFImageLoading.Forms;
 
 namespace SSFR_Movies.Helpers
 {
@@ -21,7 +22,8 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
-        private readonly Lazy<BlurredImage> blurCachedImage = null;
+        //private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
@@ -63,13 +65,24 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            blurCachedImage = new Lazy<BlurredImage>(() => new BlurredImage()
+            var BackdropPathSource = new UriImageSource()
             {
+                CachingEnabled = true,
+                CacheValidity = TimeSpan.MaxValue
+            };
+            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            blurCachedImage = new Lazy<Image>(() => new Image()
+            {
+                HeightRequest = 300,
+                WidthRequest = 300,
+                Opacity = 60,
+                Source = BackdropPathSource,
+                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-            blurCachedImage.Value.SetBinding(Image.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             var PosterPathSource = new UriImageSource()
             {
@@ -208,17 +221,7 @@ namespace SSFR_Movies.Helpers
         {
             await Task.Yield();
 
-            if (MainThread.IsMainThread)
-            {
-                await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-            }
-            else
-            {
-                MainThread.BeginInvokeOnMainThread(async ()=>
-                {
-                    await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-                });
-            }
+            await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
 
             if (sender != null)
             {
@@ -234,15 +237,7 @@ namespace SSFR_Movies.Helpers
                             TintColor = Color.FromHex("#0066cc"),
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
-
-                        if (MainThread.IsMainThread)
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
-                        }
-                        else
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf).SafeFireAndForget();
-                        }
+                        MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         return false;
                     });
                     return;
@@ -262,20 +257,10 @@ namespace SSFR_Movies.Helpers
                             BackgroundColor = Color.FromHex("#272B2E")
                         };
 
-                        if (MainThread.IsMainThread)
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
-                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        }
-                        else
-                        {
-                            MainThread.BeginInvokeOnMainThread(async () =>
-                            {
-                                MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf).SafeFireAndForget();
-                                await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                            });
-                        }
+                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
+                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                   
                         return;
                     }
 
@@ -286,27 +271,17 @@ namespace SSFR_Movies.Helpers
                         realm.Add(movie, true);
                     });
 
-                    MessagingCenter.Send(this, "Refresh", true);
-
                     var conf = new MaterialSnackbarConfiguration()
                     {
                         TintColor = Color.FromHex("#0066cc"),
                         BackgroundColor = Color.FromHex("#272B2E")
                     };
 
-                    if (MainThread.IsMainThread)
-                    {
-                        MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    }
-                    else
-                    {
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf).SafeFireAndForget();
-                            await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                        });
-                    }
+                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+
+                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    
+                    MessagingCenter.Send(this, "Refresh", true);
                 }
                 catch (Exception e15)
                 {

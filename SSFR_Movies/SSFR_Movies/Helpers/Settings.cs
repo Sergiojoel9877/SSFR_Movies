@@ -54,6 +54,12 @@ namespace SSFR_Movies.Helpers
             }
         }
 
+        public static bool Down
+        {
+            get => AppSettings.GetValueOrDefault("Down", false);
+            set => AppSettings.AddOrUpdateValue("Down", value);
+        }
+
         public static bool UpdateList
         {
             get => AppSettings.GetValueOrDefault("UpdateList", false);
