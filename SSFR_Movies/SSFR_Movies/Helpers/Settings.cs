@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
@@ -55,6 +52,12 @@ namespace SSFR_Movies.Helpers
             {
                 AppSettings.AddOrUpdateValue("NextPage", value);
             }
+        }
+
+        public static bool Down
+        {
+            get => AppSettings.GetValueOrDefault("Down", false);
+            set => AppSettings.AddOrUpdateValue("Down", value);
         }
 
         public static bool UpdateList

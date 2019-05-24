@@ -17,7 +17,7 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchPage : ContentPage
     {
-        AllMoviesPageViewModel vm;
+        readonly AllMoviesPageViewModel vm;
 
         public SearchPage()
         {
@@ -28,7 +28,7 @@ namespace SSFR_Movies.Views
             activityIndicator.IsVisible = false;
 
             BindingContext = vm;
-            
+
             Shell.SetNavBarIsVisible(this, false);
 
             searchBar.Focus();
@@ -36,12 +36,12 @@ namespace SSFR_Movies.Views
             SuscribeToMessages();
 
             MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-            
+
         }
 
         private void SuscribeToMessages()
         {
-       
+
             //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
             //{
             //    MovieSelected();
@@ -49,7 +49,7 @@ namespace SSFR_Movies.Views
 
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
-                 MoviesList.SelectedItem = null;
+                MoviesList.SelectedItem = null;
             });
         }
 
@@ -59,9 +59,11 @@ namespace SSFR_Movies.Views
             {
                 var movie = MoviesList.SelectedItem as Result;
 
-                MainThread.BeginInvokeOnMainThread(async () =>
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
+                Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await Navigation.PushAsync(new MovieDetailsPage(movie));
+                    await Shell.Current.GoToAsync("/MovieDetails", true);
                 });
             }
         }
@@ -69,7 +71,7 @@ namespace SSFR_Movies.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            
+
             SuscribeToMessages();
         }
 
@@ -106,7 +108,7 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async () =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
 
                 try
@@ -115,7 +117,7 @@ namespace SSFR_Movies.Views
                     {
 
                         var movie_results = await Locator.Current.GetService<ApiClient>().SearchMovieByName(key);
-                        
+
                         if (movie_results.Results.Count != 0)
                         {
 
@@ -123,7 +125,10 @@ namespace SSFR_Movies.Views
 
                             foreach (var MovieResult in movie_results.Results)
                             {
-                                vm.AllMoviesList.Value.Add(MovieResult);
+                                if (MovieResult.BackdropPath != null)
+                                {
+                                    vm.AllMoviesList.Value.Add(MovieResult);
+                                }
                             }
 
                             BindingContext = vm;
@@ -133,7 +138,7 @@ namespace SSFR_Movies.Views
                             MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
-                            
+
                             activityIndicator.IsVisible = false;
 
                             activityIndicator.IsRunning = false;
@@ -143,7 +148,7 @@ namespace SSFR_Movies.Views
                         }
                         else
                         {
-                           
+
                             MoviesList.ItemsSource = null;
 
                             activityIndicator.IsVisible = false;
@@ -181,8 +186,10 @@ namespace SSFR_Movies.Views
                 var movie = (Result)e.Item;
 
                 ((ListView)sender).SelectedItem = null;
-                
-                await Navigation.PushAsync(new MovieDetailsPage(movie), true);
+
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
+                await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
 
             }
             catch (Exception e4)
@@ -218,7 +225,7 @@ namespace SSFR_Movies.Views
         {
             public MovieSearchHandler()
             {
-                SearchBoxVisibility = SearchBoxVisiblity.Collapsable;
+                SearchBoxVisibility = SearchBoxVisibility.Collapsible;
                 IsSearchEnabled = true;
                 Placeholder = "Search";
             }
@@ -231,7 +238,7 @@ namespace SSFR_Movies.Views
             protected override void OnQueryChanged(string oldValue, string newValue)
             {
                 // Do nothing, we will wait for confirmation
-               
+
             }
         }
     }

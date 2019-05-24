@@ -3,18 +3,17 @@
     x:Class="SSFR_Movies.Views.About"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     Title="SSFR Movies"
     BackgroundColor="#161513">
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
-                    <ffimage:CachedImage
+                    <Image
                         HeightRequest="250"
-                        DownsampleToViewSize="True"
                         HorizontalOptions="Center"
                         Source="icon.png"
+                        Aspect="AspectFit"
                         WidthRequest="250" />
                     
                     <Label
@@ -25,7 +24,7 @@
                                 <Span 
                                     FontAttributes="Bold"
                                     FontSize="Large"
-                                    Text="SSFR Movies 2.0.2"
+                                    Text="SSFR Movies 2.0.4"
                                     TextColor="White"/>
                             </FormattedString>
                         </Label.FormattedText>

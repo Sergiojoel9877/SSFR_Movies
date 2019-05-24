@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Java.Lang;
-using Android.Webkit;
-using Java.Util.Regex;
-using Android.App;
+﻿
 using Android.Content;
 using Android.OS;
+using Android.Webkit;
+using Java.Lang;
+using Java.Util.Regex;
 
 /*
  *      xGetter
@@ -26,11 +21,11 @@ namespace SSFR_Movies.Droid.Services
 
         private WebView webView;
 
-        private Context context;
+        private readonly Context context;
 
         public static OnTaskComplete onComplete;
 
-        private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
+        private readonly string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
         public XGetter(Context view)
         {
@@ -106,7 +101,7 @@ namespace SSFR_Movies.Droid.Services
 
         public void find(string url)
         {
-   
+
             bool run = false;
             if (this.check(this.openload, url))
             {
@@ -131,7 +126,7 @@ namespace SSFR_Movies.Droid.Services
             return matcher.Find();
         }
 
- 
+
 
         public void onFinish(OnTaskComplete onCompleted)
         {

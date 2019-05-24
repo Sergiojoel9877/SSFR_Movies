@@ -7,6 +7,8 @@ using SSFR_Movies.Models;
 using SSFR_Movies.ViewModels;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,15 +19,14 @@ namespace SSFR_Movies.Views
     /// </summary>
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class FavoritesMoviesPage : ContentPage
-	{
-        FavoriteMoviesPageViewModel vm;
-        
-        ToolbarItem searchToolbarItem = null;
+    public partial class FavoritesMoviesPage : ContentPage
+    {
+        readonly FavoriteMoviesPageViewModel vm;
+        readonly ToolbarItem searchToolbarItem = null;
 
         public FavoritesMoviesPage()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
 
             vm = Locator.Current.GetService<FavoriteMoviesPageViewModel>();
 
@@ -33,21 +34,23 @@ namespace SSFR_Movies.Views
 
             SetVisibility();
 
+            UnPin.Source = "Unpin.png";
+
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
-                Icon = "Search.png",
+                IconImageSource = "Search.png",
                 Priority = 0,
 
                 Command = new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    await Shell.Current.GoToAsync("/SearchPage", true);
                 })
             };
-                       
+
             ToolbarItems.Add(searchToolbarItem);
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
+            //MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
             SubscribeToMessage();
         }
@@ -70,7 +73,7 @@ namespace SSFR_Movies.Views
                             MoviesList.ItemsSource = estado.Value;
                             MoviesList.SelectedItem = null;
                         }
-                        else if(estado.Key == 'v')
+                        else if (estado.Key == 'v')
                         {
                             MoviesList.IsVisible = false;
                             UnPin.IsVisible = true;
@@ -80,7 +83,7 @@ namespace SSFR_Movies.Views
                     });
                 }
             });
-            
+
             MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
             {
                 if (e)
@@ -108,11 +111,16 @@ namespace SSFR_Movies.Views
                 }
             });
 
+            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            {
+                MoviesList.SelectedItem = null;
+            });
+
             MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
             {
                 if (e)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
+                    Device.BeginInvokeOnMainThread(async ()=>
                     {
                         var estado = await vm.FillMoviesList(null);
 
@@ -135,17 +143,22 @@ namespace SSFR_Movies.Views
                 }
             });
         }
-        
-        private async void MovieSelected()
+
+        private void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
-                MoviesList.SelectedItem = null;
-                await Navigation.PushAsync(new MovieDetailsPage(movie));
+
+                Result resultSingleton = ResultSingleton.SetInstance(movie);
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Shell.Current.GoToAsync("/MovieDetails", true);
+                });
             }
         }
-        
+
         private async void SetVisibility()
         {
             var realm = await Realm.GetInstanceAsync();
@@ -172,7 +185,7 @@ namespace SSFR_Movies.Views
             MoviesList.IsVisible = Message.IsVisible == true ? false : true;
 
         }
-    
+
         /// <summary>
         /// To animate the Quit from Favorite list icon..
         /// </summary>
@@ -188,4 +201,3 @@ namespace SSFR_Movies.Views
         }
     }
 }
- 

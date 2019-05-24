@@ -17,7 +17,7 @@
 //    public class DBRepository<T> : IDBRepository<T> where T : BaseEntity
 //    {
 //        private readonly DatabaseContext<T> dbContext;
-        
+
 //        public DBRepository(DatabaseContext<T> databaseContext)
 //        {
 //            dbContext = databaseContext;    
@@ -78,7 +78,7 @@
 //            }
 //            return false;
 //        }
-        
+
 //        public async Task<IEnumerable<T>> GetEntities()
 //        {
 //            await Task.Yield();

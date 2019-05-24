@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -34,7 +32,9 @@ namespace SSFR_Movies.CustomRenderers
             set
             {
                 if ((bool)GetValue(IsRefreshingProperty) == value)
+                {
                     OnPropertyChanged(nameof(IsRefreshing));
+                }
 
                 SetValue(IsRefreshingProperty, value);
             }
@@ -101,7 +101,9 @@ namespace SSFR_Movies.CustomRenderers
         {
             ICommand cmd = RefreshCommand;
             if (cmd != null)
+            {
                 IsEnabled = cmd.CanExecute(RefreshCommandParameter);
+            }
         }
 
         /// <summary>
@@ -145,7 +147,9 @@ namespace SSFR_Movies.CustomRenderers
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             if (Content == null)
+            {
                 return new SizeRequest(new Size(100, 100));
+            }
 
             return base.OnMeasure(widthConstraint, heightConstraint);
         }

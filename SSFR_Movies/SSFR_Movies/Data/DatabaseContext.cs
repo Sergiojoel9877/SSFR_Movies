@@ -19,7 +19,7 @@
 //        public DbSet<T> Entity { get; set; }
 
 //        string DbName = "SSFR_Movies.db3";
-        
+
 //        public DatabaseContext()
 //        {
 //            Database.EnsureCreated();

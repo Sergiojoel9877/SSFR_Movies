@@ -1,10 +1,13 @@
 ﻿using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
-namespace SSFR_Movies.Effects {
+namespace SSFR_Movies.Effects
+{
     [Preserve(AllMembers = true)]
-    public static class EffectsConfig {
-        public static void Init() {
+    public static class EffectsConfig
+    {
+        public static void Init()
+        {
         }
 
         public static bool AutoChildrenInputTransparent { get; set; } = true;
@@ -15,39 +18,53 @@ namespace SSFR_Movies.Effects {
                 typeof(bool),
                 typeof(EffectsConfig),
                 false,
-                propertyChanged: (bindable, oldValue, newValue) => {
+                propertyChanged: (bindable, oldValue, newValue) =>
+                {
                     ConfigureChildrenInputTransparent(bindable);
                 }
             );
 
-        public static void SetChildrenInputTransparent(BindableObject view, bool value) {
+        public static void SetChildrenInputTransparent(BindableObject view, bool value)
+        {
             view.SetValue(ChildrenInputTransparentProperty, value);
         }
 
-        public static bool GetChildrenInputTransparent(BindableObject view) {
+        public static bool GetChildrenInputTransparent(BindableObject view)
+        {
             return (bool)view.GetValue(ChildrenInputTransparentProperty);
         }
 
-        static void ConfigureChildrenInputTransparent(BindableObject bindable) {
+        static void ConfigureChildrenInputTransparent(BindableObject bindable)
+        {
             if (!(bindable is Layout layout))
+            {
                 return;
+            }
 
-            if (GetChildrenInputTransparent(bindable)) {
+            if (GetChildrenInputTransparent(bindable))
+            {
                 foreach (var layoutChild in layout.Children)
+                {
                     AddInputTransparentToElement(layoutChild);
+                }
+
                 layout.ChildAdded += Layout_ChildAdded;
             }
-            else {
+            else
+            {
                 layout.ChildAdded -= Layout_ChildAdded;
             }
         }
 
-        static void Layout_ChildAdded(object sender, ElementEventArgs e) {
+        static void Layout_ChildAdded(object sender, ElementEventArgs e)
+        {
             AddInputTransparentToElement(e.Element);
         }
 
-        static void AddInputTransparentToElement(BindableObject obj) {
-            if (obj is View view && TouchEffect.GetColor(view) == Color.Default && Commands.GetTap(view) == null && Commands.GetLongTap(view) == null) {
+        static void AddInputTransparentToElement(BindableObject obj)
+        {
+            if (obj is View view && TouchEffect.GetColor(view) == Color.Default && Commands.GetTap(view) == null && Commands.GetLongTap(view) == null)
+            {
                 view.InputTransparent = true;
             }
         }

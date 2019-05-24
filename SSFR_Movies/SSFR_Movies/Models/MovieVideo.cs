@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Realms;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace SSFR_Movies.Models
@@ -43,4 +42,3 @@ namespace SSFR_Movies.Models
         public string Type { get; set; }
     }
 }
-   

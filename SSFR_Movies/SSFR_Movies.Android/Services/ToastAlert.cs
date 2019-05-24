@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
+﻿using Android.App;
 using Android.Widget;
 using SSFR_Movies.Services;
+using System.Security;
 
 [assembly: Xamarin.Forms.Dependency(typeof(SSFR_Movies.Droid.ToastAlert))]
 namespace SSFR_Movies.Droid

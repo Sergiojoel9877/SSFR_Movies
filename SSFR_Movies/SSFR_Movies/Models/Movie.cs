@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using Realms;
-using System.Linq;
-using System;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Realms;
+using System.Collections.Generic;
 
 namespace SSFR_Movies.Models
 {
@@ -25,10 +23,10 @@ namespace SSFR_Movies.Models
 
         [JsonProperty("results")]
         public IList<Result> Results { get; }
-       
+
     }
 
-  
+
     public class Result : RealmObject
     {
         [JsonProperty("id")]
@@ -60,7 +58,7 @@ namespace SSFR_Movies.Models
 
         [JsonProperty("original_title")]
         public string OriginalTitle { get; set; }
-        
+
         [JsonProperty("genre_ids")]
         public IList<int> GenreIds { get; }
 
@@ -78,10 +76,10 @@ namespace SSFR_Movies.Models
 
         [JsonIgnore]
         public string FavoriteMovie { get; set; } = "StarEmpty.png";
-        
+
     }
 
-    public enum OriginalLanguage { En, Ja, Zh, Ko, Ta, Fr, Ru, Es, No, Hi, Hr, Ht, Hu, Hy, Ar, As, Av, Az, Ba, Be, Bg, Bh, Bm, Bn, Bo, Br, Bs, Ca, Ce, Ch, Co, Cr, Cs, Cn, Cu, Cv, Cy, Da, De, Dv, Ee, El, Eo, Et, Eu, Fa, Ff, Fi, Fj, Fl, Fo, Fy, Ga, Gd, Gl, Gn, Gu, Gv, Ha, He, Ho, Hz, Ia, Id, Ie, Ig, Ii, Ik, Io, Is, It, Iu,  Jv, Ka, Kg, Ki, Kj, Kk, Kl, Km, Kn, Kr, Ks, Ku, Kv, Kw, Ky, La, Lb, Li, Ln, Lo, Lt, Lu, Lv, Mg, Mh, Mi, Mk, Ml, Mn, Mr, Ms, Mt, My, Na, Nb, Nd, Ne, Ng, Nl, Nn, Nr, Nv, Ny, Oc, Oj, Om, Or, Os, Pa, pi, Pl, Ps, Pt, Qu, Rm, Rn, Ro, Rw, Sa, Sc, Sd, Se,Sg, Si, Sk, Sl, Sm, Sn, So, Sq, Sr, Ss, St, Su, Sv, Sw, Te, Tg, Th, Ti, Tk, Tl, Tn, To, Tr, Ts, Tt, Tw, Ty, Ug, Uk, Ur, Uz, Ve, Vi, Vo, Wa, Wo, Xh, Yi, Yo, Za, Ah, Zu};
+    public enum OriginalLanguage { En, Ja, Zh, Ko, Ta, Fr, Ru, Es, No, Hi, Hr, Ht, Hu, Hy, Ar, As, Av, Az, Ba, Be, Bg, Bh, Bm, Bn, Bo, Br, Bs, Ca, Ce, Ch, Co, Cr, Cs, Cn, Cu, Cv, Cy, Da, De, Dv, Ee, El, Eo, Et, Eu, Fa, Ff, Fi, Fj, Fl, Fo, Fy, Ga, Gd, Gl, Gn, Gu, Gv, Ha, He, Ho, Hz, Ia, Id, Ie, Ig, Ii, Ik, Io, Is, It, Iu, Jv, Ka, Kg, Ki, Kj, Kk, Kl, Km, Kn, Kr, Ks, Ku, Kv, Kw, Ky, La, Lb, Li, Ln, Lo, Lt, Lu, Lv, Mg, Mh, Mi, Mk, Ml, Mn, Mr, Ms, Mt, My, Na, Nb, Nd, Ne, Ng, Nl, Nn, Nr, Nv, Ny, Oc, Oj, Om, Or, Os, Pa, pi, Pl, Ps, Pt, Qu, Rm, Rn, Ro, Rw, Sa, Sc, Sd, Se, Sg, Si, Sk, Sl, Sm, Sn, So, Sq, Sr, Ss, St, Su, Sv, Sw, Te, Tg, Th, Ti, Tk, Tl, Tn, To, Tr, Ts, Tt, Tw, Ty, Ug, Uk, Ur, Uz, Ve, Vi, Vo, Wa, Wo, Xh, Yi, Yo, Za, Ah, Zu };
 
     public class EnumeOL : RealmObject
     {

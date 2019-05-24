@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using Android.App;
-using Android.Content;
+﻿using Android.Content;
 using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Helpers;
+using System.ComponentModel;
+using System.Security;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Xamarin.Forms.Internals;
 
 namespace SSFR_Movies.ViewModels
@@ -17,8 +14,10 @@ namespace SSFR_Movies.ViewModels
 
         public bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string name = null)
         {
-            if(Equals(storage, value))
+            if (Equals(storage, value))
+            {
                 return true;
+            }
 
             storage = value;
 

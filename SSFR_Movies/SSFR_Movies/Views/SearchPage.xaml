@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Name="Content"
+    x:Name="content"
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -54,7 +54,7 @@
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference Content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">

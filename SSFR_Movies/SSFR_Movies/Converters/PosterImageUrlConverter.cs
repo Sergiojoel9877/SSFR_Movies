@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using Xamarin.Forms;
 
 namespace SSFR_Movies.Converters
@@ -10,9 +8,10 @@ namespace SSFR_Movies.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var URL = "https://image.tmdb.org/t/p/w370_and_h556_bestv2";
+            if (value == null)
+                return new Uri("NoInternet.png");
 
-            return URL + (string)value;
+            return new Uri("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + (string)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

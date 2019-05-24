@@ -1,11 +1,11 @@
-﻿using System;
-using System.ComponentModel;
-using System.Reflection;
-using Android.Runtime;
+﻿using Android.Runtime;
 using Android.Support.V4.Widget;
 using Android.Views;
 using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Droid.CustomRenderers;
+using System;
+using System.ComponentModel;
+using System.Reflection;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -18,7 +18,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
     [Preserve(AllMembers = true)]
     public class PullToRefreshLayoutRenderer : SwipeRefreshLayout,
         IVisualElementRenderer,
-        SwipeRefreshLayout.IOnRefreshListener   
+        SwipeRefreshLayout.IOnRefreshListener
     {
 #pragma warning disable
         /// <summary>
@@ -358,7 +358,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
 
             Tracker?.Dispose();
             Tracker = null;
-            
+
 
             if (rendererProperty != null)
             {

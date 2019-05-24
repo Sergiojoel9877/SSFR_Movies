@@ -17,8 +17,8 @@ namespace SSFR_Movies.ViewModels
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
-       
-        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(()=> new ObservableCollection<Result>(), isThreadSafe: true);
+
+        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>(), isThreadSafe: true);
 
         private bool listVisible = true;
         public bool ListVisible
@@ -50,6 +50,7 @@ namespace SSFR_Movies.ViewModels
             var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
 
             if (movies != null)
+            {
                 foreach (var MovieResult in movies)
                 {
                     if (!FavMoviesList.Value.Contains(MovieResult))
@@ -57,6 +58,7 @@ namespace SSFR_Movies.ViewModels
                         FavMoviesList.Value.Add(MovieResult);
                     }
                 }
+            }
 
             if (FavMoviesList.Value.Count == 0)
             {
@@ -64,7 +66,7 @@ namespace SSFR_Movies.ViewModels
             }
 
             return 'r'; //Indica que la lista contiene elementos
-            
+
         }
         public async Task<KeyValuePair<char, IEnumerable<Result>>> FillMoviesList(IEnumerable<Result> results)
         {
@@ -76,11 +78,11 @@ namespace SSFR_Movies.ViewModels
 
             if (movies.ToList().Count > 0)
             {
-                return new KeyValuePair<char, IEnumerable<Result>> ('r', movies); //Indica que la lista contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
             }
             else
             {
-                return new KeyValuePair<char, IEnumerable<Result>> ('v', movies); //Indica que la lista NO contiene elementos
+                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
             }
         }
 
@@ -99,7 +101,7 @@ namespace SSFR_Movies.ViewModels
             {
                 ListEmpty = true;
             }
-           
+
             GetStoreMoviesCommand.Execute(null);
         }
     }

@@ -1,35 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
+﻿using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
-using Android.Widget;
-using SSFR_Movies.Droid.CustomRenderers;
-using SSFR_Movies.Helpers;
-using Xamarin.Forms;
-using SSFR_Movies.Droid;
-using Xamarin.Forms.Platform.Android;
-using SSFR_Movies.CustomRenderers;
 using Android.Webkit;
-using System.Threading.Tasks;
-using Java.Lang;
+using SSFR_Movies.CustomRenderers;
+using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Droid.Services;
+using System;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
 
 [assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
     public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
     {
-        private Context _context;
-        private XGetter xGetter;
-        private string org;
+        readonly private Context _context;
+        readonly private XGetter xGetter;
+        //private string org;
         private static OnTaskComplete onComplete;
-        private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
+        readonly private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
         public HybridWebViewRenderer(Context context) : base(context)
         {
@@ -46,7 +35,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
         {
             base.OnElementChanged(e);
 
-            if (Control == null)
+            if (e.NewElement != null && Control == null)
             {
                 var webView = CreateNativeControl();
                 xGetter.onFinish(new OnTaskCompleted());
@@ -62,29 +51,29 @@ namespace SSFR_Movies.Droid.CustomRenderers
                 SetNativeControl(webView);
             }
 
-            if (e.OldElement != null)
-            {
-                Control.RemoveJavascriptInterface("xGetter");
-                var olE = e.OldElement as HybridWebView;
-                olE.LoadRequest -= OlE_LoadRequest;
-            }
-            if (e.NewElement != null)
-            {
-                Control.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
-                var nwE = e.NewElement as HybridWebView;
-                nwE.LoadRequest += OlE_LoadRequest;
-            }
+            //if (e.OldElement != null)
+            //{
+            //    Control.RemoveJavascriptInterface("xGetter");
+            //    var olE = e.OldElement as HybridWebView;
+            //    olE.LoadRequest -= OlE_LoadRequest;
+            //}
+            //if ()
+            //{
+            //    Control.AddJavascriptInterface(new SSFRJavaScriptInterface(), "xGetter");
+            //    var nwE = e.NewElement as HybridWebView;
+            //    nwE.LoadRequest += OlE_LoadRequest;
+            //}
         }
 
-        private void OlE_LoadRequest(object sender, HybridWebView.LoadUrlRequested e)
-        {
-            Control.LoadUrl(e.Url);
-        }
+        //private void OlE_LoadRequest(object sender, HybridWebView.LoadUrlRequested e)
+        //{
+        //    Control.LoadUrl(e.Url);
+        //}
 
         public class SSFRJavaScriptInterface : Java.Lang.Object
         {
             [JavascriptInterface]
-            public void func(string url)
+            public void Func(string url)
             {
                 new Handler(Looper.MainLooper).Post(() =>
                 {
@@ -130,10 +119,10 @@ namespace SSFR_Movies.Droid.CustomRenderers
             public override void OnPageFinished(Android.Webkit.WebView view, string url)
             {
                 base.OnPageFinished(view, url);
-                fuck(view);
+                Fuck(view);
             }
 
-            private void fuck(Android.Webkit.WebView view)
+            private void Fuck(Android.Webkit.WebView view)
             {
                 string encoded = "LyoKICAgICAgICB4R2V0dGVyCiAgICAgICAgICBCeQogICAgS2h1biBIdGV0eiBOYWluZyBbZmIu\n" +
                     "Y29tL0tIdGV0ek5haW5nXQpSZXBvID0+IGh0dHBzOi8vZ2l0aHViLmNvbS9LaHVuSHRldHpOYWlu\n" +
@@ -189,10 +178,10 @@ namespace SSFR_Movies.Droid.CustomRenderers
             }
         }
 
-        public void find(string url, EventArgs e)
+        public void Find(string url, EventArgs e)
         {
             bool run = false;
-            if (check(openload, url))
+            if (Check(openload, url))
             {
                 //Openload
                 run = true;
@@ -204,7 +193,7 @@ namespace SSFR_Movies.Droid.CustomRenderers
             }
         }
 
-        private bool check(string openload, string str)
+        private bool Check(string openload, string str)
         {
             Java.Util.Regex.Pattern pattern = Java.Util.Regex.Pattern.Compile(openload, Java.Util.Regex.RegexOptions.CaseInsensitive);
             Java.Util.Regex.Matcher matcher = pattern.Matcher(str);
