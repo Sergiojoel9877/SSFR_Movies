@@ -24,7 +24,7 @@
                                 <Span 
                                     FontAttributes="Bold"
                                     FontSize="Large"
-                                    Text="SSFR Movies 2.0.2"
+                                    Text="SSFR Movies 2.0.4"
                                     TextColor="White"/>
                             </FormattedString>
                         </Label.FormattedText>

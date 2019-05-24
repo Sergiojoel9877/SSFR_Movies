@@ -9,8 +9,6 @@ using SSFR_Movies.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -72,7 +70,6 @@ namespace SSFR_Movies.Views
         private void ControlRaiseOverAllViews()
         {
             stack.RaiseChild(scrollview);
-            
         }
 
         private void SetScrollViewOrientation()
@@ -89,26 +86,23 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new Command(() =>
                 {
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            updownList.IconImageSource = updownList.IconImageSource.ToString() == "ListDown.png" ? "ListUp.png" : "ListDown.png";
-                        });
+                    //Settings.Down = false;
 
-                    if (updownList.IconImageSource.GetValue(IconImageSourceProperty).ToString() == "ListDown.png")
+                    if (Settings.Down)
                     {
-                        
-                            Device.BeginInvokeOnMainThread(async () =>
-                            {
-                                await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
-                            });
+                        Settings.Down = false;
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                        });
                     }
                     else
                     {
-                     
-                            Device.BeginInvokeOnMainThread(async () =>
-                            {
-                                await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-                            });
+                        Settings.Down = true;
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                        });
                     }
                 })
             };
@@ -121,10 +115,10 @@ namespace SSFR_Movies.Views
 
                 Command = new Command(() =>
                 {
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await Shell.Current.GoToAsync("/Search", true);
-                        });
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Shell.Current.GoToAsync("/Search", true);
+                    });
                 })
             };
 
