@@ -457,5 +457,6 @@ namespace SSFR_Movies.Views
                     RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear).SafeFireAndForget();
                 });
         }
+
     }
 }
