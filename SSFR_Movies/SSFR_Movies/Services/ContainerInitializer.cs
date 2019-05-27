@@ -28,7 +28,6 @@ namespace SSFR_Movies.Services
                 var ignore = new Lazy<ApiClient>(() => new ApiClient());
                 var ignore2 = new Lazy<AllMoviesPageViewModel>(() => new AllMoviesPageViewModel());
                 var ignore3 = new Lazy<FavoriteMoviesPageViewModel>(() => new FavoriteMoviesPageViewModel());
-                var ignore4 = typeof(SSFR_Movies.Effects.TouchEffect);
                 var ignore5 = typeof(Rg.Plugins.Popup.Animations.Base.FadeBackgroundAnimation);
             }
         }
