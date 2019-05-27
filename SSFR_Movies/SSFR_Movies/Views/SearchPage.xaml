@@ -54,7 +54,14 @@
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}">
+            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material">
+                <CollectionView.ItemsLayout>
+                    <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
+                        <x:Arguments>
+                            <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
+                        </x:Arguments>
+                    </ListItemsLayout>
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">

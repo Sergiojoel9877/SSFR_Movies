@@ -37,6 +37,13 @@
                 ItemsSource="{Binding FavMoviesList.Value}"
                 SelectionMode="Single"
                 SelectionChanged="MovieSelected">
+                <CollectionView.ItemsLayout>
+                    <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
+                        <x:Arguments>
+                            <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
+                        </x:Arguments>
+                    </ListItemsLayout>
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
@@ -47,7 +54,7 @@
             </CollectionView>
             
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
-            <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
+            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

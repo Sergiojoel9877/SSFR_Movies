@@ -70,6 +70,13 @@
                     ItemsSource="{Binding AllMoviesList.Value}"
                     SelectionChanged="MovieSelected"
                     SelectionMode="Single">
+                    <CollectionView.ItemsLayout>
+                        <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
+                            <x:Arguments>
+                                <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
+                            </x:Arguments>
+                        </ListItemsLayout>
+                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout CompressedLayout.IsHeadless="True">
@@ -78,7 +85,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-
+         
                 <Button
                     x:Name="RefreshBtn"
                     AbsoluteLayout.LayoutBounds="0, 0.9, 0, 0.2"
