@@ -23,7 +23,7 @@ namespace SSFR_Movies.Views
 
                 Command = new Command(async () =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    await Shell.Current.GoToAsync("/Search", false);
                 })
             };
 
