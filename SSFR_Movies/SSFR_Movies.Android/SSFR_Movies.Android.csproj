@@ -75,7 +75,7 @@
     <AndroidEnableDesugar>True</AndroidEnableDesugar>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;arm64-v8a</AndroidSupportedAbis>
     <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
@@ -165,12 +165,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\AdViewRenderer.cs" />
-    <Compile Include="CustomRenderers\BlurredImageRenderer.cs" />
     <Compile Include="CustomRenderers\HybridWebViewRenderer.cs" />
     <Compile Include="CustomRenderers\PullToRefreshLayoutRenderer.cs" />
     <Compile Include="CustomRenderers\TransparentEntryRenderer.cs" />
-    <Compile Include="CustomRenderers\ViewContainerRenderer.cs" />
-    <Compile Include="Effects\TouchEffectPlatform.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
