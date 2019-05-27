@@ -42,7 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>Full</AndroidLinkMode>
-    <AndroidSupportedAbis>x86</AndroidSupportedAbis>
+    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
@@ -56,7 +56,7 @@
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
     <AndroidLinkSkip>Xamarin.Essentials;Xamarin.Forms.HotReload.Reloader</AndroidLinkSkip>
     <AndroidLinkTool>proguard</AndroidLinkTool>
-    <BundleAssemblies>true</BundleAssemblies>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -93,6 +93,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="glidex">
+      <Version>1.0.4</Version>
+    </PackageReference>
     <PackageReference Include="glidex.forms">
       <Version>1.0.4</Version>
     </PackageReference>
@@ -166,6 +169,7 @@
     <Compile Include="CustomRenderers\HybridWebViewRenderer.cs" />
     <Compile Include="CustomRenderers\PullToRefreshLayoutRenderer.cs" />
     <Compile Include="CustomRenderers\TransparentEntryRenderer.cs" />
+    <Compile Include="CustomRenderers\ViewContainerRenderer.cs" />
     <Compile Include="Effects\TouchEffectPlatform.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />

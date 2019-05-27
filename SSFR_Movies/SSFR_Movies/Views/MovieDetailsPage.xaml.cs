@@ -5,6 +5,7 @@ using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
+using SSFR_Movies.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -47,10 +48,10 @@ namespace SSFR_Movies.Views
 
         private void SetAddSourceToFavoritesListImage(string v)
         {
-                Device.BeginInvokeOnMainThread(()=>
-                {
-                    AddToFav.Source = "StarEmpty.png";
-                });
+            Device.BeginInvokeOnMainThread(()=>
+            {
+                AddToFav.Source = "StarEmpty.png";
+            });
         }
 
         private void SetPosterImgGestureRecognizer()
@@ -66,15 +67,19 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            Result resultSingleton = ResultSingleton.Instance();
-      
-            BindingContext = resultSingleton;
+            Initialize();
+
+        }
+
+        private void Initialize()
+        {
+            BindingContext = ResultSingleton.Instance();
 
             ResultSingleton.SetIntanceToNull();
-            
+
             MessagingCenter.Send(this, "ClearSelection");
 
-            SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(resultSingleton);
+            SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(BindingContext as Result);
 
             var item = BindingContext as Result;
 
@@ -98,8 +103,6 @@ namespace SSFR_Movies.Views
 
         private async Task IsPresentInFavList(Result m)
         {
-            await Task.Yield();
-
             var realm = await Realm.GetInstanceAsync();
 
             var movieExists = realm.Find<Result>(m.Id);
@@ -230,16 +233,16 @@ namespace SSFR_Movies.Views
 
                     await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
 
-                        Device.BeginInvokeOnMainThread(()=>
-                        {
-                            AddToFav.Source = "StarEmpty.png";
+                    Device.BeginInvokeOnMainThread(()=>
+                    {
+                        AddToFav.Source = "StarEmpty.png";
 
-                            AddToFavLayout.IsVisible = true;
+                        AddToFavLayout.IsVisible = true;
 
-                            QuitFromFavLayout.IsVisible = false;
+                        QuitFromFavLayout.IsVisible = false;
 
-                            MessagingCenter.Send(this, "Refresh", true);
-                        });
+                        MessagingCenter.Send(this, "Refresh", true);
+                    });
                 }
                 catch (Exception)
                 {
@@ -256,8 +259,6 @@ namespace SSFR_Movies.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-    
-            MessagingCenter.Send(this, "ClearSelection");
 
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
@@ -265,11 +266,11 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            var movie = (Result)BindingContext;
+            //MessagingCenter.Send(this, "ClearSelection");
 
-            if (movie.Id != 0)
+            if (((Result)BindingContext).Id != 0)
             {
-                var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
+                var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(((Result)BindingContext).Id);
 
                 if (video.Results.Count() == 0)
                 {
@@ -280,6 +281,22 @@ namespace SSFR_Movies.Views
                     ScrollTrailer.IsVisible = true;
                 }
             }
+        }
+
+        protected override void OnDisappearing()
+        {
+            DischargeEventHandlers();
+
+            BindingContext = null;
+
+            base.OnDisappearing();
+        }
+
+        private void DischargeEventHandlers()
+        {
+            QuitFromFavLayout.Clicked -= QuitFromFavorites;
+
+            AddToFavLayout.Clicked -= Tap_Tapped;
         }
 
         public async Task SpeakNow(string msg)
@@ -311,78 +328,35 @@ namespace SSFR_Movies.Views
             }
         }
 
-        //private async void StreamMovie_Tapped(object sender, EventArgs e)
-        //{
-        //    await Task.Yield();
-
-        //    streamWV.TranslationY = 1200;
-
-        //    streamWV.HeightRequest = 800;
-
-        //    if (Device.IsMainThread)
-        //    {
-        //        await hScroll.TranslateTo(0, -458, 500, Easing.Linear);
-
-        //        await vScroll.TranslateTo(0, -1358, 500, Easing.Linear);
-
-        //    }
-        //    else
-        //    {
-        //        Device.BeginInvokeOnMainThread(async () =>
-        //        {
-        //            await hScroll.TranslateTo(0, -458, 500, Easing.Linear);
-
-        //            await vScroll.TranslateTo(0, -1358, 500, Easing.Linear);
-        //        });
-        //    }
-
-        //    var item = BindingContext as Result;
-
-        //    if (Device.IsMainThread)
-        //    {
-        //        streamWV.IsVisible = true;
-
-        //        await streamWV.TranslateTo(0, 0, 500, Easing.BounceIn);
-        //    }
-        //    else
-        //    {
-        //        Device.BeginInvokeOnMainThread(async () =>
-        //        {
-        //            streamWV.IsVisible = true;
-
-        //            await streamWV.TranslateTo(0, 0, 500, Easing.BounceIn);
-        //        });
-        //    }
-
-        //    var URI = Locator
-        //                .Current
-        //                    .GetService<ApiClient>()
-        //                        .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
-        //                            item.ReleaseDate.Substring(0, 4));
-
-        //    streamWV.Source = URI;
-            
-        //    streamWV.Navigated += StreamWV_Navigated;
-
-        //    //streamWVswap.Navigated += StreamWVswap_Navigated;
-        //}
-
-        private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
+        private void StreamMovie_Tapped(object sender, EventArgs e)
         {
-            try
-            {
-                var nav = (WebView)sender;
+            var item = BindingContext as Result;
 
-                if (!e.Url.StartsWith("https://openloed.co"))
-                {
-                    nav.GoBack();
-                }
-            }
-            catch (Exception err)
-            {
-                Debug.WriteLine(err.Message);
-            }
+            var URI = Locator
+                        .Current
+                            .GetService<ApiClient>()
+                                .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
+                                    item.ReleaseDate.Substring(0, 4));
+
+            Device.OpenUri(new Uri(URI));
         }
+
+        //private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var nav = (WebView)sender;
+
+        //        if (!e.Url.StartsWith("https://openloed.co"))
+        //        {
+        //            nav.GoBack();
+        //        }
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        Debug.WriteLine(err.Message);
+        //    }
+        //}
 
         //private void StreamWV_Navigated(object sender, WebNavigatedEventArgs e)
         //{

@@ -1,3 +1,4 @@
+using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
 using System.Net.Http;
@@ -29,11 +30,25 @@ namespace SSFR_Movies
 //#if DEBUG
 //            HotReloader.Current.Start(this);
 //#endif
-            var mainPage = new StartPagexaml();
+            //var mainPage = new StartPagexaml();
 
-            MainPage = mainPage;
+            //MainPage = mainPage;
+            SetMainPage();
 
             SetHttpClient();
+        }
+
+        private void SetMainPage()
+        {
+            var cont = new Lazy<ContainerInitializer>(()=> new ContainerInitializer());
+            cont.Value.Initialize();
+
+            var mainPage = new Lazy<AppShell>(() => new AppShell());
+
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+                MainPage = mainPage.Value;
+            //});
         }
 
         protected override void OnStart()
