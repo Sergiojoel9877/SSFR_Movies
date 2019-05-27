@@ -30,9 +30,7 @@ namespace SSFR_Movies
 //#if DEBUG
 //            HotReloader.Current.Start(this);
 //#endif
-            //var mainPage = new StartPagexaml();
 
-            //MainPage = mainPage;
             SetMainPage();
 
             SetHttpClient();
@@ -45,10 +43,7 @@ namespace SSFR_Movies
 
             var mainPage = new Lazy<AppShell>(() => new AppShell());
 
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-                MainPage = mainPage.Value;
-            //});
+            MainPage = mainPage.Value;
         }
 
         protected override void OnStart()
