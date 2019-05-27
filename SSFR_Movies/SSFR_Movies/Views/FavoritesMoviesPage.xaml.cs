@@ -44,7 +44,7 @@ namespace SSFR_Movies.Views
 
                 Command = new Command(async () =>
                 {
-                    await Shell.Current.GoToAsync("/SearchPage", true);
+                    await Shell.Current.GoToAsync("/Search", true);
                 })
             };
 
@@ -154,7 +154,7 @@ namespace SSFR_Movies.Views
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await Shell.Current.GoToAsync("/MovieDetails", true);
+                    await Shell.Current.GoToAsync("/MovieDetails", false);
                 });
             }
         }
