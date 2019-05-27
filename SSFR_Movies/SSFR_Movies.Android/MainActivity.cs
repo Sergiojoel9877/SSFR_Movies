@@ -80,8 +80,6 @@ namespace SSFR_Movies.Droid
             if (flasg)
             {
                 var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
-                //var dummy1 = typeof(PullToRefreshLayoutRenderer);
-                var dummy1 = typeof(SSFR_Movies.Droid.Effects.TouchEffectPlatform);
             }
         }
 #pragma warning restore
