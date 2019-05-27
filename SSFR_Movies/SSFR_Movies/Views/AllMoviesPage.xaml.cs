@@ -149,18 +149,18 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private void MovieSelected(object sender, SelectionChangedEventArgs e)
+        private async void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
 
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
+                ResultSingleton.SetInstance(movie);
 
-                Device.BeginInvokeOnMainThread(async ()=>
-                {
-                    await Shell.Current.GoToAsync("/MovieDetails", true);
-                });
+                //Device.BeginInvokeOnMainThread(async ()=>
+                //{
+                await Shell.Current.GoToAsync("/MovieDetails", false);
+                //});
             }
         }
 
