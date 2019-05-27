@@ -26,16 +26,10 @@
     </Shell.Resources>
     <TabBar Route="Main">
         <Tab Title="All" Route="home" Icon="Recent.png">
-            <!--<ShellContent>
-                <local:AllMoviesPage/>
-            </ShellContent>-->
             <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
         </Tab>
         <Tab Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <!--<ShellContent>
-                <local:FavoritesMoviesPage/>
-            </ShellContent>-->
-            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
+            <ShellContent Route="FavoritesMoviesPage" ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
         </Tab>
         <Tab Title="About" Route="about" Icon="About.png">
             <ShellContent ContentTemplate="{DataTemplate local:About}"/>
