@@ -117,7 +117,7 @@ namespace SSFR_Movies.Views
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        await Shell.Current.GoToAsync("/Search", true);
+                        await Shell.Current.GoToAsync("/Search", false);
                     });
                 })
             };
