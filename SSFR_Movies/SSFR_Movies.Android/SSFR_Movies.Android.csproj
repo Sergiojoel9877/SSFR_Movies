@@ -179,7 +179,7 @@
     <Compile Include="Services\ToastAlert.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Proguard.cfg" />
+    <ProguardConfiguration Include="Proguard.cfg" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

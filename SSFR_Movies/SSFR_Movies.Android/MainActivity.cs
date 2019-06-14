@@ -21,7 +21,7 @@ namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IOnTaskCompleted
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
 
@@ -128,11 +128,6 @@ namespace SSFR_Movies.Droid
         public void OnError()
         {
             throw new NotImplementedException();
-        }
-
-        public void OnTaskCompleted(IList<XModel> p0, bool p1)
-        {
-            
         }
     }
 }
