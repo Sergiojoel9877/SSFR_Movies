@@ -91,6 +91,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+    <Reference Include="XGetter">
+      <HintPath>..\..\..\XGetter\XGetter\bin\Debug\XGetter.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="glidex">
@@ -174,10 +177,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CloseBackPress.cs" />
     <Compile Include="Services\ToastAlert.cs" />
-    <Compile Include="Services\XGetter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Proguard.cfg" />
+    <ProguardConfiguration Include="Proguard.cfg" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
