@@ -33,6 +33,8 @@ namespace SSFR_Movies.Views
 
         PullToRefreshLayout pull2refreshlyt = null;
 
+        bool Down { get; set; } = true;
+
         readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
         {
             TintColor = Color.FromHex("#0066cc"),
@@ -81,28 +83,20 @@ namespace SSFR_Movies.Views
         {
             updownList = new ToolbarItem()
             {
-                Text = "Up",
+                Text = "Down",
                 IconImageSource = "ListDown.png",
                 Priority = 1,
                 Command = new Command(() =>
                 {
-                    //Settings.Down = false;
-
-                    if (Settings.Down)
+                    if (!Down)
                     {
-                        Settings.Down = false;
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
-                        });
+                        scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                        Down = true;
                     }
-                    else
+                    else if (Down)
                     {
-                        Settings.Down = true;
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
-                        });
+                        scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                        Down = false;
                     }
                 })
             };
