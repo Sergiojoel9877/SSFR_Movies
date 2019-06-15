@@ -5,17 +5,11 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
-using AsyncAwaitBestPractices;
-using Com.Htetznaing.Xgetter;
-using Com.Htetznaing.Xgetter.Model;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
-using SSFR_Movies.Droid.Services;
 using SSFR_Movies.Helpers;
 using System;
-using System.Collections.Generic;
 using Xamarin.Forms;
-using static Com.Htetznaing.Xgetter.XGetter;
 
 namespace SSFR_Movies.Droid
 {
@@ -29,8 +23,8 @@ namespace SSFR_Movies.Droid
         {
             MainApplication.activity = this;
 
-            XGetter xGetter = new XGetter(this);
-            xGetter.OnFinish(this.OnTaskCompleted());
+            //XGetter xGetter = new XGetter(this);
+            //xGetter.OnFinish(this.OnTaskCompleted());
             //xGetter.OnFinish();
 
             if (Intent.GetBooleanExtra("crash", false))
@@ -119,10 +113,10 @@ namespace SSFR_Movies.Droid
             base.OnLowMemory();
         }
         
-        private IOnTaskCompleted OnTaskCompleted()
-        {
-            throw new NotImplementedException();
-        }
+        //private IOnTaskCompleted OnTaskCompleted()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
         public void OnError()
