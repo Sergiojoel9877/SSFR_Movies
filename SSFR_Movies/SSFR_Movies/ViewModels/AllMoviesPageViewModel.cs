@@ -1,4 +1,5 @@
-﻿using Realms;
+﻿using AsyncAwaitBestPractices.MVVM;
+using Realms;
 using Splat;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -317,18 +318,18 @@ namespace SSFR_Movies.ViewModels
         public Command FillUpMoviesListAfterRefreshCommand
         {
             get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command(async () =>
-           {
+            {
 
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-               {
-                   await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-                   return;
-               }
+                {
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    return;
+                }
 
-               await FillMoviesList();
+                await FillMoviesList();
 
-           }));
+            }));
         }
 
         private Command fillUpMovies;
@@ -373,7 +374,6 @@ namespace SSFR_Movies.ViewModels
             {
                 FillUpMovies.Execute(null);
             }
-
         }
     }
 }

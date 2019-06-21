@@ -1,4 +1,5 @@
 ﻿using AsyncAwaitBestPractices;
+using AsyncAwaitBestPractices.MVVM;
 using Realms;
 using Splat;
 using SSFR_Movies.CustomRenderers;
@@ -84,14 +85,14 @@ namespace SSFR_Movies.Views
                 Text = "Up",
                 IconImageSource = "ListDown.png",
                 Priority = 1,
-                Command = new Command(() =>
+                Command = new AsyncCommand(async () =>
                 {
                     //Settings.Down = false;
 
                     if (Settings.Down)
                     {
                         Settings.Down = false;
-                        Device.BeginInvokeOnMainThread(async () =>
+                        await Device.InvokeOnMainThreadAsync(async () =>
                         {
                             await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
                         });
@@ -99,7 +100,7 @@ namespace SSFR_Movies.Views
                     else
                     {
                         Settings.Down = true;
-                        Device.BeginInvokeOnMainThread(async () =>
+                        await Device.InvokeOnMainThreadAsync(async () =>
                         {
                             await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
                         });
@@ -143,7 +144,7 @@ namespace SSFR_Movies.Views
             pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
             pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
             pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
-            pull2refreshlyt.RefreshCommand = new Command(async () =>
+            pull2refreshlyt.RefreshCommand = new AsyncCommand(async () =>
             {
                 await LoadMoreMovies();
             });
@@ -304,11 +305,12 @@ namespace SSFR_Movies.Views
                     await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        MoviesList.IsVisible = false;
-                        RefreshBtn.IsVisible = false;
-                    });
+
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    MoviesList.IsVisible = false;
+                    RefreshBtn.IsVisible = false;
+                });
 
                 Settings.NextPage++;
 
@@ -326,13 +328,13 @@ namespace SSFR_Movies.Views
                     {
                         BindingContext = vm;
 
-                            Device.BeginInvokeOnMainThread(() =>
-                            {
-                                MoviesList.IsVisible = true;
-                                activityIndicator.IsVisible = false;
-                                RefreshBtn.IsVisible = true;
-                                pull2refreshlyt.IsRefreshing = false;
-                            });
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            MoviesList.IsVisible = true;
+                            activityIndicator.IsVisible = false;
+                            RefreshBtn.IsVisible = true;
+                            pull2refreshlyt.IsRefreshing = false;
+                        });
                     }
                 }
             }
