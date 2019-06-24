@@ -87,12 +87,13 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new AsyncCommand(async () =>
                 {
+                    await Task.Yield();
                     //Settings.Down = false;
 
                     if (Settings.Down)
                     {
                         Settings.Down = false;
-                        await Device.InvokeOnMainThreadAsync(async () =>
+                        Device.BeginInvokeOnMainThread(async () =>
                         {
                             await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
                         });
@@ -100,7 +101,7 @@ namespace SSFR_Movies.Views
                     else
                     {
                         Settings.Down = true;
-                        await Device.InvokeOnMainThreadAsync(async () =>
+                        Device.BeginInvokeOnMainThread(async () =>
                         {
                             await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
                         });
@@ -113,13 +114,9 @@ namespace SSFR_Movies.Views
                 Text = "Search",
                 IconImageSource = "Search.png",
                 Priority = 0,
-
-                Command = new Command(() =>
+                Command = new AsyncCommand(async () =>
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Shell.Current.GoToAsync("/Search", false);
-                    });
+                    await Shell.Current.GoToAsync("/Search", false);
                 })
             };
 
