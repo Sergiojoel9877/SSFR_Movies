@@ -1265,6 +1265,7 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Material.Android.Resource.Id.fill_horizontal = global::SSFR_Movies.Droid.Resource.Id.fill_horizontal;
 			global::Xamarin.Forms.Material.Android.Resource.Id.fill_vertical = global::SSFR_Movies.Droid.Resource.Id.fill_vertical;
 			global::Xamarin.Forms.Material.Android.Resource.Id.filled = global::SSFR_Movies.Droid.Resource.Id.filled;
+			global::Xamarin.Forms.Material.Android.Resource.Id.@fixed = global::SSFR_Movies.Droid.Resource.Id.@fixed;
 			global::Xamarin.Forms.Material.Android.Resource.Id.flyoutcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_appbar;
 			global::Xamarin.Forms.Material.Android.Resource.Id.flyoutcontent_recycler = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_recycler;
 			global::Xamarin.Forms.Material.Android.Resource.Id.forever = global::SSFR_Movies.Droid.Resource.Id.forever;
@@ -3844,6 +3845,7 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.Id.fill_horizontal = global::SSFR_Movies.Droid.Resource.Id.fill_horizontal;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.fill_vertical = global::SSFR_Movies.Droid.Resource.Id.fill_vertical;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.filled = global::SSFR_Movies.Droid.Resource.Id.filled;
+			global::Xamarin.Forms.Platform.Android.Resource.Id.@fixed = global::SSFR_Movies.Droid.Resource.Id.@fixed;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.flyoutcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_appbar;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.flyoutcontent_recycler = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_recycler;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.forever = global::SSFR_Movies.Droid.Resource.Id.forever;
@@ -6675,6 +6677,7 @@ namespace SSFR_Movies.Droid
 			global::XF.Material.Droid.Resource.Id.fill_horizontal = global::SSFR_Movies.Droid.Resource.Id.fill_horizontal;
 			global::XF.Material.Droid.Resource.Id.fill_vertical = global::SSFR_Movies.Droid.Resource.Id.fill_vertical;
 			global::XF.Material.Droid.Resource.Id.filled = global::SSFR_Movies.Droid.Resource.Id.filled;
+			global::XF.Material.Droid.Resource.Id.@fixed = global::SSFR_Movies.Droid.Resource.Id.@fixed;
 			global::XF.Material.Droid.Resource.Id.flyoutcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_appbar;
 			global::XF.Material.Droid.Resource.Id.flyoutcontent_recycler = global::SSFR_Movies.Droid.Resource.Id.flyoutcontent_recycler;
 			global::XF.Material.Droid.Resource.Id.forever = global::SSFR_Movies.Droid.Resource.Id.forever;
