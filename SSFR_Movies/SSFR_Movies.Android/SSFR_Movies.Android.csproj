@@ -54,7 +54,7 @@
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
-    <AndroidLinkSkip>Xamarin.Essentials;Xamarin.Forms.HotReload.Reloader</AndroidLinkSkip>
+    <AndroidLinkSkip>Xamarin.Essentials;Xamarin.Forms.HotReload.Reloader;Xamarin.GooglePlayServices.Ads.Lite</AndroidLinkSkip>
     <AndroidLinkTool>r8</AndroidLinkTool>
     <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
@@ -91,9 +91,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="XGetter">
-      <HintPath>..\..\..\XGetter\XGetter\bin\Debug\XGetter.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="glidex">
