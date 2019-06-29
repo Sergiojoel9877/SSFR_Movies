@@ -287,7 +287,7 @@ namespace SSFR_Movies.Views
         {
             DischargeEventHandlers();
 
-            BindingContext = null;
+            //BindingContext = null;
 
             base.OnDisappearing();
         }
