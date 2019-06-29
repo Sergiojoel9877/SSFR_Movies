@@ -5,16 +5,22 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
+using AsyncAwaitBestPractices;
+using Com.Htetznaing.Xgetter;
+using Com.Htetznaing.Xgetter.Model;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
+using SSFR_Movies.Droid.Services;
 using SSFR_Movies.Helpers;
 using System;
+using System.Collections.Generic;
 using Xamarin.Forms;
+using static Com.Htetznaing.Xgetter.XGetter;
 
 namespace SSFR_Movies.Droid
 {
     [Android.Runtime.Preserve(AllMembers = true)]
-    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
+    [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleInstance)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
@@ -22,11 +28,7 @@ namespace SSFR_Movies.Droid
         protected override void OnCreate(Bundle bundle)
         {
             MainApplication.activity = this;
-
-            //XGetter xGetter = new XGetter(this);
-            //xGetter.OnFinish(this.OnTaskCompleted());
-            //xGetter.OnFinish();
-
+        
             if (Intent.GetBooleanExtra("crash", false))
             {
                 Toast.MakeText(this, "App restarted after an unexpected crash, don't worry :)", ToastLength.Short).Show();
@@ -112,17 +114,7 @@ namespace SSFR_Movies.Droid
 
             base.OnLowMemory();
         }
-        
-        //private IOnTaskCompleted OnTaskCompleted()
-        //{
-        //    throw new NotImplementedException();
-        //}
 
-
-        public void OnError()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

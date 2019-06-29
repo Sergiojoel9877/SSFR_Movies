@@ -3,6 +3,9 @@ using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.ViewModels;
 using System;
 using Xamarin.Forms.Internals;
+using AsyncAwaitBestPractices.MVVM;
+using AsyncAwaitBestPractices;
+using Xamarin.Forms;
 
 namespace SSFR_Movies.Services
 {
@@ -29,6 +32,8 @@ namespace SSFR_Movies.Services
                 var ignore2 = new Lazy<AllMoviesPageViewModel>(() => new AllMoviesPageViewModel());
                 var ignore3 = new Lazy<FavoriteMoviesPageViewModel>(() => new FavoriteMoviesPageViewModel());
                 var ignore5 = typeof(Rg.Plugins.Popup.Animations.Base.FadeBackgroundAnimation);
+                var ignore6 = typeof(TaskExtensions);
+                var ignore7 = typeof(Device);
             }
         }
 #pragma warning restore 0219, 0649

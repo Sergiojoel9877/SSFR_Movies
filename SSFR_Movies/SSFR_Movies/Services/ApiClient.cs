@@ -118,7 +118,7 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
-            await new SynchronizationContextRemover();
+            new SynchronizationContextRemover();
 
             await Task.Yield();
 
@@ -179,7 +179,7 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMovieGenresAsync()
         {
-            await new SynchronizationContextRemover();
+            new SynchronizationContextRemover();
 
             await Task.Yield();
 
@@ -198,7 +198,7 @@ namespace SSFR_Movies.Services
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
-            await new SynchronizationContextRemover();
+            new SynchronizationContextRemover();
 
             await Task.Yield();
 

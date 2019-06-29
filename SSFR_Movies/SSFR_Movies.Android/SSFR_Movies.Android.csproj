@@ -42,8 +42,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>Full</AndroidLinkMode>
-    <AndroidSupportedAbis>armeabi-v7a;arm64-v8a</AndroidSupportedAbis>
-    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+    <AndroidSupportedAbis>x86</AndroidSupportedAbis>
+    <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AotAssemblies>false</AotAssemblies>
@@ -136,9 +136,9 @@
       <Version>28.0.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Essentials">
-      <Version>1.1.0</Version>
+      <Version>1.2.0-pre</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.0.0.425677" />
+    <PackageReference Include="Xamarin.Forms" Version="4.1.0.496342-pre2" />
     <PackageReference Include="Xamarin.FFImageLoading">
       <Version>2.4.11.982</Version>
     </PackageReference>
@@ -151,7 +151,7 @@
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0.1" />
     <PackageReference Include="Xamarin.Forms.Visual.Material">
-      <Version>4.0.0.425677</Version>
+      <Version>4.1.0.496342-pre2</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Ads.Lite">
       <Version>71.1501.0-preview2</Version>
