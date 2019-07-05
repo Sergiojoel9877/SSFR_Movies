@@ -1,4 +1,5 @@
 ﻿//using CommonServiceLocator;
+using AsyncAwaitBestPractices.MVVM;
 using Realms;
 using Splat;
 using SSFR_Movies.Helpers;
@@ -42,7 +43,7 @@ namespace SSFR_Movies.Views
                 IconImageSource = "Search.png",
                 Priority = 0,
 
-                Command = new Command(async () =>
+                Command = new AsyncCommand(async () =>
                 {
                     await Shell.Current.GoToAsync("/Search", false);
                 })

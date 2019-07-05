@@ -2,8 +2,6 @@
 using Android.OS;
 using Android.Views;
 using Android.Webkit;
-using Com.Htetznaing.Xgetter;
-using Com.Htetznaing.Xgetter.Model;
 using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Droid.Services;
@@ -11,23 +9,20 @@ using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
-using static Com.Htetznaing.Xgetter.XGetter;
 
 [assembly: ExportRenderer(typeof(HybridWebView), typeof(HybridWebViewRenderer))]
 namespace SSFR_Movies.Droid.CustomRenderers
 {
-    public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>, IOnTaskCompleted
+    public class HybridWebViewRenderer : ViewRenderer<HybridWebView, Android.Webkit.WebView>
     {
         readonly private Context _context;
-        readonly private XGetter xGetter;
         //private string org;
-        private static IOnTaskCompleted onComplete;
         readonly private string openload = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
         public HybridWebViewRenderer(Context context) : base(context)
         {
             _context = context;
-            xGetter = new XGetter(Context);
+           
         }
 
         protected override Android.Webkit.WebView CreateNativeControl()
@@ -42,7 +37,6 @@ namespace SSFR_Movies.Droid.CustomRenderers
             if (e.NewElement != null && Control == null)
             {
                 var webView = CreateNativeControl();
-                xGetter.OnFinish(this);
 #pragma warning disable 618 // This can probably be replaced with LinearLayout(LayoutParams.MatchParent, LayoutParams.MatchParent); just need to test that theory
                 webView.LayoutParameters = new global::Android.Widget.AbsoluteLayout.LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent, 0, 0);
 #pragma warning restore 618
@@ -210,11 +204,6 @@ namespace SSFR_Movies.Droid.CustomRenderers
         //}
 
         public void OnError()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IOnTaskCompleted.OnTaskCompleted(IList<XModel> p0, bool p1)
         {
             throw new NotImplementedException();
         }

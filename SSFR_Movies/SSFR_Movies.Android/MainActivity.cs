@@ -5,9 +5,6 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
-using AsyncAwaitBestPractices;
-using Com.Htetznaing.Xgetter;
-using Com.Htetznaing.Xgetter.Model;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Droid.Services;
@@ -15,7 +12,6 @@ using SSFR_Movies.Helpers;
 using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
-using static Com.Htetznaing.Xgetter.XGetter;
 
 namespace SSFR_Movies.Droid
 {
@@ -66,7 +62,7 @@ namespace SSFR_Movies.Droid
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
-            Android.Glide.Forms.Init();
+            Android.Glide.Forms.Init(this);
 
             PullToRefreshLayoutRenderer.Init();
 
