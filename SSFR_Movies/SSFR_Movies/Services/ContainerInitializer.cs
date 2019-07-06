@@ -32,7 +32,6 @@ namespace SSFR_Movies.Services
                 var ignore2 = new Lazy<AllMoviesPageViewModel>(() => new AllMoviesPageViewModel());
                 var ignore3 = new Lazy<FavoriteMoviesPageViewModel>(() => new FavoriteMoviesPageViewModel());
                 var ignore5 = typeof(Rg.Plugins.Popup.Animations.Base.FadeBackgroundAnimation);
-                var ignore6 = typeof(TaskExtensions);
                 var ignore7 = typeof(Device);
             }
         }

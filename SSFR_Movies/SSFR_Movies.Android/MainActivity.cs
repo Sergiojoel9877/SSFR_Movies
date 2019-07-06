@@ -64,7 +64,7 @@ namespace SSFR_Movies.Droid
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
-            Android.Glide.Forms.Init();
+            Android.Glide.Forms.Init(this);
 
             PullToRefreshLayoutRenderer.Init();
 

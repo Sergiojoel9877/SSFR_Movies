@@ -1,4 +1,5 @@
 ﻿
+using AsyncAwaitBestPractices.MVVM;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
@@ -21,7 +22,7 @@ namespace SSFR_Movies.Views
                 IconImageSource = "Search.png",
                 Priority = 0,
 
-                Command = new Command(async () =>
+                Command = new AsyncCommand(async () =>
                 {
                     await Shell.Current.GoToAsync("/Search", false);
                 })

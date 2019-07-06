@@ -34,8 +34,6 @@ namespace SSFR_Movies.Services
         {
             await new SynchronizationContextRemover();
 
-            await Task.Yield();
-
             try
             {
                 //Verify if internet connection is available

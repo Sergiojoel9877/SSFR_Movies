@@ -1,4 +1,5 @@
-﻿using Splat;
+﻿using AsyncAwaitBestPractices.MVVM;
+using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -35,8 +36,10 @@ namespace SSFR_Movies.Views
 
             SuscribeToMessages();
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-
+            MoviesList.SelectionChangedCommand = new AsyncCommand(async ()=> 
+            {
+                await MovieSelected();
+            });
         }
 
         private void SuscribeToMessages()
@@ -53,8 +56,10 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private void MovieSelected()
+        private Task MovieSelected()
         {
+            var tcs = new TaskCompletionSource<object>();
+
             if (MoviesList.SelectedItem != null)
             {
                 var movie = MoviesList.SelectedItem as Result;
@@ -64,8 +69,10 @@ namespace SSFR_Movies.Views
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     await Shell.Current.GoToAsync("/MovieDetails", true);
+                    tcs.SetResult(null);
                 });
             }
+            return tcs.Task;
         }
 
         protected override void OnAppearing()

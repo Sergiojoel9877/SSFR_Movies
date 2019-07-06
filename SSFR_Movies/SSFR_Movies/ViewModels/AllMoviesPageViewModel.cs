@@ -1,4 +1,5 @@
-﻿using AsyncAwaitBestPractices.MVVM;
+﻿using AsyncAwaitBestPractices;
+using AsyncAwaitBestPractices.MVVM;
 using Realms;
 using Splat;
 using SSFR_Movies.Models;
@@ -87,16 +88,16 @@ namespace SSFR_Movies.ViewModels
             });
         }
 
-        public async Task FillMoviesList()
+        public async Task<object> FillMoviesList()
         {
-            await Task.Yield();
+            var tcs = new TaskCompletionSource<object>();
 
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-
-                return;
+                tcs.SetResult(null);
+                return tcs.Task;
             }
 
             Device.BeginInvokeOnMainThread(() =>
@@ -112,7 +113,8 @@ namespace SSFR_Movies.ViewModels
 
             if (movies == null)
             {
-                return;
+                tcs.SetResult(null);
+                return tcs.Task;
             }
 
             movies.Results.ForEach((r) =>
@@ -127,6 +129,8 @@ namespace SSFR_Movies.ViewModels
                 IsEnabled = false;
                 IsRunning = false;
             });
+            tcs.SetResult(null);
+            return tcs.Task;
         }
 
         public void FillMoviesByGenreList()
@@ -199,10 +203,10 @@ namespace SSFR_Movies.ViewModels
             }
         }
 
-        private Command getStoreMoviesCommand;
-        public Command GetStoreMoviesCommand
+        private AsyncCommand getStoreMoviesCommand;
+        public AsyncCommand GetStoreMoviesCommand
         {
-            get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new Command(async () =>
+            get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new AsyncCommand(async () =>
            {
                await Task.Yield();
 
@@ -252,10 +256,10 @@ namespace SSFR_Movies.ViewModels
            }));
         }
 
-        private Command getStoreMoviesByGenresCommand;
-        public Command GetStoreMoviesByGenresCommand
+        private AsyncCommand getStoreMoviesByGenresCommand;
+        public AsyncCommand GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Command(async () =>
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new AsyncCommand(async () =>
            {
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
@@ -270,10 +274,10 @@ namespace SSFR_Movies.ViewModels
            }));
         }
 
-        private Command getMoviesGenresCommand;
-        public Command GetMoviesGenresCommand
+        private AsyncCommand getMoviesGenresCommand;
+        public AsyncCommand GetMoviesGenresCommand
         {
-            get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Command(async () =>
+            get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new AsyncCommand(async () =>
             {
                 await Task.Yield();
                 //Verify if internet connection is available
@@ -293,9 +297,6 @@ namespace SSFR_Movies.ViewModels
                         MsgText = "No storage space left!";
                     });
                 }
-
-                var realm = await Realm.GetInstanceAsync();
-
             }));
         }
 
@@ -314,10 +315,10 @@ namespace SSFR_Movies.ViewModels
 
         }
 
-        private Command fillUpMoviesListAfterRefreshCommand;
-        public Command FillUpMoviesListAfterRefreshCommand
+        private AsyncCommand fillUpMoviesListAfterRefreshCommand;
+        public AsyncCommand FillUpMoviesListAfterRefreshCommand
         {
-            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Command(async () =>
+            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new AsyncCommand(async () =>
             {
 
                 //Verify if internet connection is available
@@ -332,22 +333,21 @@ namespace SSFR_Movies.ViewModels
             }));
         }
 
-        private Command fillUpMovies;
-        public Command FillUpMovies
+        private AsyncCommand fillUpMovies;
+        public AsyncCommand FillUpMovies
         {
-            get => fillUpMovies ?? (fillUpMovies = new Command(async () =>
+            get => fillUpMovies ?? (fillUpMovies = new AsyncCommand(async () =>
             {
                 await FillMoviesList();
                 await FillGenresList();
             }));
         }
 
-        private Command noNetWorkHideTabs;
-        public Command NoNetWorkHideTabs
+        private AsyncCommand noNetWorkHideTabs;
+        public AsyncCommand NoNetWorkHideTabs
         {
-            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Command(async () =>
+            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new AsyncCommand(async () =>
             {
-                //MessagingCenter.Send(this, "HIDE");
                 await FillMoviesList();
                 await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
             }));
@@ -367,12 +367,12 @@ namespace SSFR_Movies.ViewModels
 
             if (movies.Count < 1)
             {
-                GetStoreMoviesCommand.Execute(null);
-                GetMoviesGenresCommand.Execute(null);
+                GetStoreMoviesCommand.ExecuteAsync().SafeFireAndForget();
+                GetMoviesGenresCommand.ExecuteAsync().SafeFireAndForget();
             }
             else
             {
-                FillUpMovies.Execute(null);
+                FillUpMovies.ExecuteAsync().SafeFireAndForget();
             }
         }
     }

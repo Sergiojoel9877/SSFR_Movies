@@ -1,5 +1,6 @@
 ﻿//using CommonServiceLocator;
 //using SSFR_Movies.Data;
+using AsyncAwaitBestPractices.MVVM;
 using Realms;
 using SSFR_Movies.Models;
 using System;
@@ -86,10 +87,10 @@ namespace SSFR_Movies.ViewModels
             }
         }
 
-        private Command getStoredMoviesCommand;
-        public Command GetStoreMoviesCommand
+        private AsyncCommand getStoredMoviesCommand;
+        public AsyncCommand GetStoreMoviesCommand
         {
-            get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new Command(async () =>
+            get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new AsyncCommand(async () =>
             {
                 await FillMoviesList();
             }));
@@ -102,7 +103,7 @@ namespace SSFR_Movies.ViewModels
                 ListEmpty = true;
             }
 
-            GetStoreMoviesCommand.Execute(null);
+            GetStoreMoviesCommand.ExecuteAsync();
         }
     }
 }
