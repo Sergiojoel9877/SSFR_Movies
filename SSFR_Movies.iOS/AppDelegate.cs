@@ -1,12 +1,13 @@
 ﻿using Foundation;
 using UIKit;
+using Xamarin.Forms.Platform.iOS;
 
 namespace SSFR_Movies.iOS
 {
     // The UIApplicationDelegate for the application. This class is responsible for launching the
     // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
     [Register("AppDelegate")]
-    public class AppDelegate : UIApplicationDelegate
+    public class AppDelegate : FormsApplicationDelegate
     {
         // class-level declarations
 
@@ -20,6 +21,10 @@ namespace SSFR_Movies.iOS
         {
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
+
+            Xamarin.Forms.Forms.Init();
+
+            LoadApplication(new App());
 
             return true;
         }

@@ -14,5 +14,8 @@ namespace SSFR_Movies.iOS
     [Register ("ViewController")]
     partial class ViewController
     {
+        void ReleaseDesignerOutlets ()
+        {
+        }
     }
 }
