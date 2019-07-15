@@ -463,7 +463,7 @@ namespace SSFR_Movies.Views
                 FontSize = 20,
                 VerticalTextAlignment = TextAlignment.Center
             };
-            title.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
+            title.ScaleTo(1, 1500, Easing.Linear).SafeFireAndForget();
             if (scrollingSpace <= e.ScrollY)
             {
                 Shell.SetTitleView(this, null);
