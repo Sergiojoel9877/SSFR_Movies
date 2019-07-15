@@ -47,6 +47,7 @@
                 x:Name="hScroll"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
+                Scrolled="HScroll_Scrolled"
                 BackgroundColor="#22000000"
                 VerticalOptions="FillAndExpand">
                 <StackLayout

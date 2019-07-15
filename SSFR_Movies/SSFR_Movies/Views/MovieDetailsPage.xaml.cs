@@ -448,5 +448,27 @@ namespace SSFR_Movies.Views
 
             await PosterPathImage.ScaleTo(1, 500, Easing.Linear);
         }
+
+        private void HScroll_Scrolled(object sender, ScrolledEventArgs e)
+        {
+            var scroll = (ScrollView)sender;
+            double scrollingSpace = scroll.ContentSize.Height - scroll.Height;
+
+            var title = new Label
+            {
+                Text = (BindingContext as Result).Title,
+                Scale = 0,
+                TextColor = Color.White,
+                FontAttributes = FontAttributes.Bold,
+                FontSize = 20,
+                VerticalTextAlignment = TextAlignment.Center
+            };
+            title.ScaleTo(1, 500, Easing.BounceIn).SafeFireAndForget();
+            if (scrollingSpace <= e.ScrollY)
+            {
+                Shell.SetTitleView(this, null);
+                Shell.SetTitleView(this, title);
+            }
+        }
     }
 }
