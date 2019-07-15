@@ -5,14 +5,13 @@ using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
-using AsyncAwaitBestPractices;
-
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Droid.Services;
 using SSFR_Movies.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Xamarin.Forms;
 
 namespace SSFR_Movies.Droid
@@ -61,6 +60,14 @@ namespace SSFR_Movies.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            //Forms.Initialize(new ActivationOptions()
+            //{
+            //    Activity = this.ApplicationContext, 
+            //    Bundle = bundle,
+            //    EffectScopes = new ActivationOptions.EffectScope[0],
+            //    Flags = ActivationFlags.NoCss
+            //});
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
@@ -112,7 +119,6 @@ namespace SSFR_Movies.Droid
 
             base.OnLowMemory();
         }
-
     }
 }
 
