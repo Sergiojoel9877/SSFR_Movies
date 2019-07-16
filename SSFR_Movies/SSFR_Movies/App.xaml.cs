@@ -1,6 +1,7 @@
 using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
+using System.Net;
 using System.Net.Http;
 using Xamarin.Forms;
 //using Microsoft.AppCenter;
@@ -27,9 +28,13 @@ namespace SSFR_Movies
 
             XF.Material.Forms.Material.Init(this);
 
-//#if DEBUG
-//            HotReloader.Current.Start(this);
-//#endif
+#if DEBUG
+            HotReloader.Current.Run(this, new HotReloader.Configuration()
+            {
+                PreviewerDefaultMode = HotReloader.PreviewerMode.On,
+                ExtensionIpAddress = IPAddress.Parse("172.27.14.178")
+            });
+#endif
 
             SetMainPage();
 
