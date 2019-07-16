@@ -9,6 +9,7 @@
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
     xmlns:transformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     x:Name="content"
+    Shell.TabBarBackgroundColor="#00000000"
     Title="Details"
     BackgroundColor="#0066cc"
     Visual="Material">
