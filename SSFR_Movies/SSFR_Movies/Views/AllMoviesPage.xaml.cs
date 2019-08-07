@@ -63,6 +63,16 @@ namespace SSFR_Movies.Views
             SetScrollViewOrientation();
 
             ControlRaiseOverAllViews();
+
+            var swp = new SwipeGestureRecognizer() { Direction = SwipeDirection.Left};
+            swp.Swiped += AllMoviesPage_Swiped;
+
+            MoviesList.GestureRecognizers.Add(swp);
+        }
+
+        private void AllMoviesPage_Swiped(object sender, SwipedEventArgs e)
+        {
+            Shell.Current.GoToAsync("/FavoritesMoviesPage", true);
         }
 
         private void HideScrollAtStart()
