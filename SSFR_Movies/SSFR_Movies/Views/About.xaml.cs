@@ -7,7 +7,7 @@ using Xamarin.Forms.Xaml;
 namespace SSFR_Movies.Views
 {
     [Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class About : ContentPage
     {
         readonly ToolbarItem searchToolbarItem = null;
