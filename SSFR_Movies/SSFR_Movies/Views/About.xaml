@@ -6,57 +6,54 @@
     Title="SSFR Movies"
     BackgroundColor="#161513">
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True">
+        <StackLayout
+            CompressedLayout.IsHeadless="True"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
                     <Image
+                        Aspect="AspectFit"
                         HeightRequest="250"
                         HorizontalOptions="Center"
                         Source="icon.png"
-                        Aspect="AspectFit"
                         WidthRequest="250" />
-                    
-                    <Label
-                        HorizontalOptions="CenterAndExpand"
-                        HorizontalTextAlignment="Center" >
+
+                    <Label HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center">
                         <Label.FormattedText>
                             <FormattedString>
-                                <Span 
+                                <Span
                                     FontAttributes="Bold"
                                     FontSize="Large"
                                     Text="SSFR Movies 2.0.4"
-                                    TextColor="White"/>
+                                    TextColor="White" />
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
 
                     <StackLayout
                         Margin="16"
+                        CompressedLayout.IsHeadless="True"
                         HorizontalOptions="FillAndExpand"
-                        VerticalOptions="End" 
-                        CompressedLayout.IsHeadless="True">
+                        VerticalOptions="End">
 
-                        <Label
-                            Margin="16"
-                            HorizontalTextAlignment="Center">
+                        <Label Margin="16" HorizontalTextAlignment="Center">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span  
-                                        Text="Concept and development: Sergio J. Ferreras"
+                                    <Span
                                         FontSize="Small"
-                                        TextColor="White"/>
+                                        Text="Concept and development: Sergio J. Ferreras"
+                                        TextColor="White" />
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
 
-                        <Label
-                            Margin="16"
-                            HorizontalTextAlignment="Center" >
+                        <Label Margin="16" HorizontalTextAlignment="Center">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span
-                                        Text="Logo designer: Elaine M. Jiménez"
                                         FontSize="Small"
+                                        Text="Logo designer: Elaine M. Jiménez"
                                         TextColor="White" />
                                 </FormattedString>
                             </Label.FormattedText>
@@ -72,8 +69,8 @@
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span
-                                        Text=" ® All Rights Reserved, Sergio J. Ferreras - SSFR Movies™"
                                         FontSize="Micro"
+                                        Text=" ® All Rights Reserved, Sergio J. Ferreras - SSFR Movies™"
                                         TextColor="White" />
                                 </FormattedString>
                             </Label.FormattedText>

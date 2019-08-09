@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Shell xmlns="http://xamarin.com/schemas/2014/forms"
-       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:local="clr-namespace:SSFR_Movies.Views"
-       Title="SSFR Movies Home"
-       NavigationPage.HasNavigationBar="False"
-       NavigationPage.HasBackButton="False"
-       FlyoutBehavior="Disabled"
-       x:Class="SSFR_Movies.Views.AppShell">
+<Shell
+    x:Class="SSFR_Movies.Views.AppShell"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SSFR_Movies.Views"
+    Title="SSFR Movies Home"
+    FlyoutBehavior="Disabled"
+    NavigationPage.HasBackButton="False"
+    NavigationPage.HasNavigationBar="False">
     <Shell.Resources>
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">#2196F3</Color>
@@ -17,22 +18,32 @@
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#0088FF" />
                 <Setter Property="Shell.TabBarBackgroundColor" Value="#272B2E" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="#0088FF"/>
-                <Setter Property="Shell.TabBarTitleColor" Value="White"/>
+                <Setter Property="Shell.TabBarForegroundColor" Value="White" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="#0088FF" />
+                <Setter Property="Shell.TabBarTitleColor" Value="White" />
             </Style>
-            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+            <Style BasedOn="{StaticResource BaseStyle}" TargetType="TabBar" />
         </ResourceDictionary>
     </Shell.Resources>
+
     <TabBar Route="Main">
-        <Tab Title="All" Route="home" Icon="Recent.png">
-            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}"/>
+        <Tab
+            Title="All"
+            Icon="Recent.png"
+            Route="home">
+            <ShellContent ContentTemplate="{DataTemplate local:AllMoviesPage}" />
         </Tab>
-        <Tab Title="Favorites" Route="favorites" Icon="Heart.png" >
-            <ShellContent Route="FavoritesMoviesPage" ContentTemplate="{DataTemplate local:FavoritesMoviesPage}"/>
+        <Tab
+            Title="Favorites"
+            Icon="Heart.png"
+            Route="favorites">
+            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}" Route="FavoritesMoviesPage" />
         </Tab>
-        <Tab Title="About" Route="about" Icon="About.png">
-            <ShellContent ContentTemplate="{DataTemplate local:About}"/>
+        <Tab
+            Title="About"
+            Icon="About.png"
+            Route="about">
+            <ShellContent ContentTemplate="{DataTemplate local:About}" />
         </Tab>
     </TabBar>
 </Shell>
