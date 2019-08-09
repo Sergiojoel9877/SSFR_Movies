@@ -1,7 +1,5 @@
-using SSFR_Movies.Services;
 using SSFR_Movies.Views;
 using System;
-using System.Net;
 using System.Net.Http;
 using Xamarin.Forms;
 //using Microsoft.AppCenter;
@@ -31,8 +29,7 @@ namespace SSFR_Movies
 #if DEBUG
             HotReloader.Current.Run(this, new HotReloader.Configuration()
             {
-                PreviewerDefaultMode = HotReloader.PreviewerMode.On,
-                ExtensionIpAddress = IPAddress.Parse("172.27.14.178")
+                PreviewerDefaultMode = HotReloader.PreviewerMode.On
             });
 #endif
 
@@ -43,12 +40,9 @@ namespace SSFR_Movies
 
         private void SetMainPage()
         {
-            var cont = new Lazy<ContainerInitializer>(()=> new ContainerInitializer());
-            cont.Value.Initialize();
-
-            var mainPage = new Lazy<AppShell>(() => new AppShell());
-
-            MainPage = mainPage.Value;
+            //new Lazy<ContainerInitializer>(() => new ContainerInitializer()).Value.Initialize();
+            //MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
+            MainPage = new Lazy<Start>(() => new Start()).Value;
         }
 
         protected override void OnStart()
