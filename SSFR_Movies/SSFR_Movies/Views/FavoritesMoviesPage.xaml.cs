@@ -8,8 +8,6 @@ using SSFR_Movies.Models;
 using SSFR_Movies.ViewModels;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,7 +17,7 @@ namespace SSFR_Movies.Views
     /// FavoriteMoviesPage Code Behind
     /// </summary>
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class FavoritesMoviesPage : ContentPage
     {
         readonly FavoriteMoviesPageViewModel vm;
@@ -121,7 +119,7 @@ namespace SSFR_Movies.Views
             {
                 if (e)
                 {
-                    Device.BeginInvokeOnMainThread(async ()=>
+                    Device.BeginInvokeOnMainThread(async () =>
                     {
                         var estado = await vm.FillMoviesList(null);
 
@@ -145,19 +143,12 @@ namespace SSFR_Movies.Views
             });
         }
 
-        private void MovieSelected(object sender, SelectionChangedEventArgs e)
+        private async void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
-            if (MoviesList.SelectedItem != null)
-            {
-                var movie = MoviesList.SelectedItem as Result;
+            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
 
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Shell.Current.GoToAsync("/MovieDetails", false);
-                });
-            }
+            await Shell.Current.GoToAsync("/MovieDetails", false);
+            MoviesList.SelectedItem = null;
         }
 
         private async void SetVisibility()
