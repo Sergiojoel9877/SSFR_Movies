@@ -23,7 +23,6 @@ namespace SSFR_Movies.Views
     /// AllMoviesPage Code Behind
     /// </summary>
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AllMoviesPage : ContentPage
     {
         readonly AllMoviesPageViewModel vm = null;
@@ -46,17 +45,17 @@ namespace SSFR_Movies.Views
 
             InitializeComponent();
 
-            HideScrollAtStart();
-         
+            //HideScrollAtStart();
+
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
-            
+
             SetPullToRefresh();
 
             SetPull2RefreshToMainStack();
-            
-            SuscribeToMessages();
+
+            //SuscribeToMessages();
 
             SetToolBarItems();
 
@@ -89,10 +88,10 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new AsyncCommand(async () =>
                 {
-                    if(!Settings.Down)
+                    if (!Settings.Down)
                     {
                         Settings.Down = true;
-                        Device.BeginInvokeOnMainThread(async () =>
+                        await Device.InvokeOnMainThreadAsync(async () =>
                         {
                             await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
                         });
@@ -118,18 +117,18 @@ namespace SSFR_Movies.Views
 
         }
 
-        private Task BringDownGenresBar()
+        private async Task<object> BringDownGenresBar()
         {
             var tcs = new TaskCompletionSource<object>();
 
-            Device.BeginInvokeOnMainThread(async () =>
+            await Device.InvokeOnMainThreadAsync(async () =>
             {
                 await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
                 tcs.SetResult(null);
             });
 
             Settings.Down = false;
-            return tcs.Task;
+            return tcs.Task.Result;
         }
 
         private void SetPull2RefreshToMainStack()
@@ -155,17 +154,10 @@ namespace SSFR_Movies.Views
 
         private async void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
-            if (MoviesList.SelectedItem != null)
-            {
-                var movie = MoviesList.SelectedItem as Result;
+            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
 
-                ResultSingleton.SetInstance(movie);
-
-                //Device.BeginInvokeOnMainThread(async ()=>
-                //{
-                await Shell.Current.GoToAsync("/MovieDetails", false);
-                //});
-            }
+            await Shell.Current.GoToAsync("/MovieDetails", true);
+            MoviesList.SelectedItem = null;
         }
 
         private void SuscribeToMessages()
@@ -180,7 +172,7 @@ namespace SSFR_Movies.Views
         {
             base.OnAppearing();
 
-            SuscribeToMessages();
+            //SuscribeToMessages();
 
             Connectivity.ConnectivityChanged += Current_ConnectivityChanged;
 
@@ -188,7 +180,7 @@ namespace SSFR_Movies.Views
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    vm.NoNetWorkHideTabs.ExecuteAsync();
+                    vm.NoNetWorkHideTabs.Value.ExecuteAsync().SafeFireAndForget();
 
                     Shell.SetTitleView(this, null);
 
@@ -249,7 +241,7 @@ namespace SSFR_Movies.Views
                     vm.ListVisible = true;
                 });
 
-                vm.GetStoreMoviesCommand.ExecuteAsync();
+                vm.GetStoreMoviesCommand.Value.ExecuteAsync().SafeFireAndForget();
 
                 BindingContext = vm;
 
@@ -263,7 +255,7 @@ namespace SSFR_Movies.Views
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    vm.NoNetWorkHideTabs.ExecuteAsync();
+                    vm.NoNetWorkHideTabs.Value.ExecuteAsync().SafeFireAndForget();
                     Shell.SetTitleView(this, null);
 
                     var titleView = new StackLayout()
@@ -297,8 +289,6 @@ namespace SSFR_Movies.Views
 
         private async Task LoadMoreMovies()
         {
-            await Task.Yield();
-
             try
             {
                 //Verify if internet connection is available
@@ -325,13 +315,13 @@ namespace SSFR_Movies.Views
                 {
                     BindingContext = null;
 
-                    vm.FillUpMoviesListAfterRefreshCommand.ExecuteAsync().SafeFireAndForget();
+                    await vm.FillUpMoviesListAfterRefreshCommand.Value.ExecuteAsync();
 
                     if (vm.ListVisible)
                     {
                         BindingContext = vm;
 
-                        Device.BeginInvokeOnMainThread(() =>
+                        await Device.InvokeOnMainThreadAsync(() =>
                         {
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
@@ -343,14 +333,14 @@ namespace SSFR_Movies.Views
             }
             catch (Exception e)
             {
-                Device.BeginInvokeOnMainThread(() =>
+                await Device.InvokeOnMainThreadAsync(() =>
                 {
                     pull2refreshlyt.IsRefreshing = false;
                     MoviesList.IsVisible = true;
                     activityIndicator.IsVisible = false;
                     RefreshBtn.IsVisible = true;
                 });
-                
+
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
                     Task.Run(async () =>
@@ -401,7 +391,7 @@ namespace SSFR_Movies.Views
                 {
                     await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
 
-                    vm.GetStoreMoviesByGenresCommand.ExecuteAsync().SafeFireAndForget();
+                    vm.GetStoreMoviesByGenresCommand.Value.ExecuteAsync().SafeFireAndForget();
 
                     BindingContext = vm;
 
@@ -455,7 +445,7 @@ namespace SSFR_Movies.Views
         {
             LoadMoreMovies().SafeFireAndForget();
 
-            Device.BeginInvokeOnMainThread(()=>
+            Device.BeginInvokeOnMainThread(() =>
             {
                 RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear).SafeFireAndForget();
 
