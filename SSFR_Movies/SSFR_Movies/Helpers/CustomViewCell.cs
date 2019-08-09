@@ -2,16 +2,12 @@
 using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
-using SSFR_Movies.CustomRenderers;
-using AsyncAwaitBestPractices;
-using FFImageLoading.Forms;
 
 namespace SSFR_Movies.Helpers
 {
@@ -47,7 +43,6 @@ namespace SSFR_Movies.Helpers
             Container = new Lazy<StackLayout>(() => new StackLayout()
             {
                 HorizontalOptions = LayoutOptions.Center,
-
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
@@ -98,7 +93,7 @@ namespace SSFR_Movies.Helpers
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
-          
+
             FrameCover = new Lazy<Frame>(() => new Frame()
             {
                 IsClippedToBounds = true,
@@ -260,7 +255,7 @@ namespace SSFR_Movies.Helpers
                         await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                   
+
                         return;
                     }
 
@@ -280,7 +275,7 @@ namespace SSFR_Movies.Helpers
                     await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
 
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    
+
                     MessagingCenter.Send(this, "Refresh", true);
                 }
                 catch (Exception e15)
