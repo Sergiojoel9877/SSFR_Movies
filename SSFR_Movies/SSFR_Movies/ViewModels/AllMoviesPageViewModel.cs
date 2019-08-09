@@ -2,11 +2,13 @@
 using AsyncAwaitBestPractices.MVVM;
 using Realms;
 using Splat;
+using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -206,6 +208,33 @@ namespace SSFR_Movies.ViewModels
             {
                 return false;
             }
+        }
+
+        private Lazy<AsyncCommand> remainingItemsThresholdReachedCommand;
+        public Lazy<AsyncCommand> RemainingItemsThresholdReachedCommand
+        {
+            get => remainingItemsThresholdReachedCommand ?? (remainingItemsThresholdReachedCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
+            {
+                var Semaphore = new SemaphoreSlim(1,1);
+
+                await Semaphore.WaitAsync();
+
+                try
+                {
+                    Settings.NextPage++;
+
+                    var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
+
+                    if (MoviesDownloaded)
+                    {
+                        await FillUpMoviesListAfterRefreshCommand.Value.ExecuteAsync();
+                    }
+                }
+                finally
+                {
+                    Semaphore.Release();
+                }
+            })));
         }
 
         private Lazy<AsyncCommand> getStoreMoviesCommand;
