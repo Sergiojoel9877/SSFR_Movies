@@ -1,28 +1,33 @@
 ﻿using SSFR_Movies.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace SSFR_Movies.Helpers
 {
     public class ResultSingleton
     {
         static Result Result { get; set; }
-        public static Result Instance()
+        public static Task<Result> GetInstanceAsync()
         {
+            var tcs = new TaskCompletionSource<Result>();
+
             if (Result == null)
             {
                 Result = new Result();
+                tcs.SetResult(Result);
             }
 
-            return Result;
+            tcs.SetResult(Result);
+            return tcs.Task;
         }
 
-        public static Result SetInstance(Result res)
+        public static Task<object> SetInstanceAsync(Result res)
         {
-            Result = res;
+            var tcs = new TaskCompletionSource<object>();
 
-            return Result;
+            Result = res;
+            tcs.SetResult(null);
+
+            return tcs.Task;
         }
 
         public static void SetIntanceToNull()
