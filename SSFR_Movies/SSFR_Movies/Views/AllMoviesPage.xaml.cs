@@ -27,6 +27,8 @@ namespace SSFR_Movies.Views
     {
         readonly AllMoviesPageViewModel vm = null;
 
+        int DownCount { get; set; } = 1;
+
         ToolbarItem updownList = null;
 
         ToolbarItem searchToolbarItem = null;
@@ -45,7 +47,7 @@ namespace SSFR_Movies.Views
 
             InitializeComponent();
 
-            //HideScrollAtStart();
+            HideScrollAtStart();
 
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
@@ -88,15 +90,19 @@ namespace SSFR_Movies.Views
                 Priority = 1,
                 Command = new AsyncCommand(async () =>
                 {
-                    if (!Settings.Down)
+                    DownCount++;
+
+                    if (DownCount % 2 == 0)
                     {
-                        Settings.Down = true;
                         await Device.InvokeOnMainThreadAsync(async () =>
                         {
-                            await scrollview.TranslateTo(0, 0, 150, Easing.Linear);
+                            await scrollview.TranslateTo(0, 80, 150, Easing.Linear);
                         });
                     }
-                    await BringDownGenresBar();
+                    else
+                    {
+                        await BringDownGenresBar();
+                    }
                 })
             };
 
