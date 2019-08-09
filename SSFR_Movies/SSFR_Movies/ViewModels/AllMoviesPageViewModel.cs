@@ -362,10 +362,6 @@ namespace SSFR_Movies.ViewModels
             get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
             {
                 await FillMoviesList();
-                await Device.InvokeOnMainThreadAsync(async () =>
-                {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                });
             })));
         }
 
