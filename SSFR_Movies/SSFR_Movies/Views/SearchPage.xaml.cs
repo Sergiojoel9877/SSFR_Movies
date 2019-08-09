@@ -1,5 +1,4 @@
-﻿using AsyncAwaitBestPractices.MVVM;
-using Splat;
+﻿using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -15,7 +14,6 @@ using Xamarin.Forms.Xaml;
 namespace SSFR_Movies.Views
 {
     [Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchPage : ContentPage
     {
         readonly AllMoviesPageViewModel vm;
@@ -34,12 +32,12 @@ namespace SSFR_Movies.Views
 
             searchBar.Focus();
 
-            SuscribeToMessages();
+            //SuscribeToMessages();
 
-            MoviesList.SelectionChangedCommand = new AsyncCommand(async ()=> 
-            {
-                await MovieSelected();
-            });
+            //MoviesList.SelectionChangedCommand = new AsyncCommand(async () =>
+            //{
+            //    await MovieSelected();
+            //});
         }
 
         private void SuscribeToMessages()
@@ -50,29 +48,18 @@ namespace SSFR_Movies.Views
             //    MovieSelected();
             //});
 
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
+            //MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
+            //{
+            //    MoviesList.SelectedItem = null;
+            //});
         }
 
-        private Task MovieSelected()
+        private async void MovieSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var tcs = new TaskCompletionSource<object>();
+            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
 
-            if (MoviesList.SelectedItem != null)
-            {
-                var movie = MoviesList.SelectedItem as Result;
-
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Shell.Current.GoToAsync("/MovieDetails", true);
-                    tcs.SetResult(null);
-                });
-            }
-            return tcs.Task;
+            await Shell.Current.GoToAsync("/MovieDetails", true);
+            MoviesList.SelectedItem = null;
         }
 
         protected override void OnAppearing()
@@ -178,38 +165,6 @@ namespace SSFR_Movies.Views
                     Debug.WriteLine("Error: " + e3.InnerException);
                 }
             });
-        }
-
-        private async void ItemSelected(object sender, ItemTappedEventArgs e)
-        {
-            try
-            {
-
-                if (e.Item == null)
-                {
-                    return;
-                }
-
-                var movie = (Result)e.Item;
-
-                ((ListView)sender).SelectedItem = null;
-
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
-
-            }
-            catch (Exception e4)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
-                    Debug.WriteLine("Error: " + e4.InnerException);
-                    Vibration.Vibrate();
-
-                    return false;
-                });
-            }
         }
 
         public async Task SpeakNow(string msg)
