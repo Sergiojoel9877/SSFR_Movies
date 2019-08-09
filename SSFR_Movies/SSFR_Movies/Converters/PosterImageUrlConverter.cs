@@ -9,7 +9,7 @@ namespace SSFR_Movies.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
-                return new Uri("NoInternet.png");
+                return "NoInternet.png";
 
             return new Uri("https://image.tmdb.org/t/p/w370_and_h556_bestv2" + (string)value);
         }
