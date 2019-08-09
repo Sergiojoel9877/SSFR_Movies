@@ -88,7 +88,7 @@ namespace SSFR_Movies.Views
                 Text = "Up",
                 IconImageSource = "ListDown.png",
                 Priority = 1,
-                Command = new AsyncCommand(async () =>
+                Command = new Command(async () =>
                 {
                     DownCount++;
 
