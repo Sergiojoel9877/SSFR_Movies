@@ -69,9 +69,9 @@ namespace SSFR_Movies.Droid
             //    Flags = ActivationFlags.NoCss
             //});
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
+            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
-            //Android.Glide.Forms.Init(this);
+            Android.Glide.Forms.Init(this);
 
             PullToRefreshLayoutRenderer.Init();
 
