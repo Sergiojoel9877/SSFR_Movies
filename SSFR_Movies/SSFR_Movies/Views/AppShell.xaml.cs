@@ -8,7 +8,7 @@ using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class AppShell : Shell
     {
 
