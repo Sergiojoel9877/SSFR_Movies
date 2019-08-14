@@ -14,9 +14,9 @@
     <ContentPage.Content>
         <AbsoluteLayout
             x:Name="stack"
-            CompressedLayout.IsHeadless="True"
             AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-            AbsoluteLayout.LayoutFlags="All">
+            AbsoluteLayout.LayoutFlags="All"
+            CompressedLayout.IsHeadless="True">
 
             <ScrollView
                 x:Name="scrollview"
@@ -46,9 +46,9 @@
 
             <AbsoluteLayout
                 x:Name="scroll"
-                CompressedLayout.IsHeadless="True"
                 AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                AbsoluteLayout.LayoutFlags="All">
+                AbsoluteLayout.LayoutFlags="All"
+                CompressedLayout.IsHeadless="True">
 
                 <ActivityIndicator
                     x:Name="activityIndicator"
@@ -68,10 +68,10 @@
                     x:Name="MoviesList"
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                     AbsoluteLayout.LayoutFlags="All"
-                    RemainingItemsThreshold="19"
-                    RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"
                     IsVisible="{Binding ListVisible}"
                     ItemsSource="{Binding AllMoviesList.Value}"
+                    RemainingItemsThreshold="19"
+                    RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"
                     SelectionChanged="MovieSelected"
                     SelectionMode="Single">
                     <CollectionView.ItemsLayout>
