@@ -214,8 +214,6 @@ namespace SSFR_Movies.Helpers
 
         private async void AddToFavListTap(object sender, EventArgs e)
         {
-            await Task.Yield();
-
             await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
 
             if (sender != null)
