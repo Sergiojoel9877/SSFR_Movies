@@ -3,9 +3,9 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"    
-    Title="SSFR Movies"
+    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    Title="SSFR Movies"
     BackgroundColor="#161513">
 
     <ContentPage.Resources>
@@ -18,10 +18,10 @@
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
                 HeightRequest="300"
-                VerticalOptions="Center"
                 HorizontalOptions="Center"
+                VerticalOptions="Center"
                 WidthRequest="300" />
-            
+
             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"
@@ -35,8 +35,8 @@
             <CollectionView
                 x:Name="MoviesList"
                 ItemsSource="{Binding FavMoviesList.Value}"
-                SelectionMode="Single"
-                SelectionChanged="MovieSelected">
+                SelectionChanged="MovieSelected"
+                SelectionMode="Single">
                 <CollectionView.ItemsLayout>
                     <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
                         <x:Arguments>
@@ -47,12 +47,12 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCellFavPage HeightRequest="350" CompressedLayout.IsHeadless="True"/>
+                            <helpers:CustomViewCellFavPage CompressedLayout.IsHeadless="True" HeightRequest="350" />
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            
+
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>
