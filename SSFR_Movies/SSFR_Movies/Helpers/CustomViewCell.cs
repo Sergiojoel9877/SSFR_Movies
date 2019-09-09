@@ -23,7 +23,7 @@ namespace SSFR_Movies.Helpers
         //private readonly Lazy<CachedImage> blurCachedImage = null;
         private readonly Lazy<CachedImage> blurCachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
-        private readonly Lazy<Image> cachedImage = null;
+        private readonly Lazy<CachedImage> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
         public Lazy<Label> title = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -62,42 +62,45 @@ namespace SSFR_Movies.Helpers
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
 
-            var BackdropPathSource = new UriImageSource()
-            {
-                CachingEnabled = true,
-                CacheValidity = TimeSpan.MaxValue
-            };
-            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+            //var BackdropPathSource = new UriImageSource()
+            //{
+            //    CachingEnabled = true,
+            //    CacheValidity = TimeSpan.MaxValue
+            //};
+            //BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
             blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HeightRequest = 300,
                 WidthRequest = 300,
+                CacheDuration = new TimeSpan(20000),
                 DownsampleToViewSize = true,
-                CacheDuration = new TimeSpan(2000, 200, 5848),
-                BitmapOptimizations = true,
-                //Opacity = 60,
-                Source = BackdropPathSource,
-                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(20) },
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 3,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            }) ;
-
-            var PosterPathSource = new UriImageSource()
-            {
-                CachingEnabled = true,
-                CacheValidity = TimeSpan.MaxValue
-            };
-            PosterPathSource.SetBinding(UriImageSource.UriProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
-
-            cachedImage = new Lazy<Image>(() => new Image()
-            {
+                LoadingPlaceholder = "Loading.png",
                 Aspect = Aspect.AspectFill,
-                Source = PosterPathSource,
+                Scale = 3,
+                ErrorPlaceholder = "About.png",
+                BitmapOptimizations = true,
+                Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(20) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
+            blurCachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
+
+            //var PosterPathSource = new Lazy<UriImageSource>(()=> new UriImageSource()
+            //{
+            //    CachingEnabled = true,
+            //    CacheValidity = TimeSpan.MaxValue
+            //});
+            //PosterPathSource.Value.SetBinding(UriImageSource.UriProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
+
+            cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            {
+                Aspect = Aspect.AspectFill,
+                LoadingPlaceholder = "NoInternet.png",
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            });
+            cachedImage.Value.SetBinding(CachedImage.SourceProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
 
             FrameCover = new Lazy<Frame>(() => new Frame()
             {
