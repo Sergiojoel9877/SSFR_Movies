@@ -61,17 +61,17 @@ namespace SSFR_Movies.Droid
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            //Forms.Initialize(new ActivationOptions()
+            //global::Xamarin.Forms.Forms.Initialize(new ActivationOptions()
             //{
-            //    Activity = this.ApplicationContext, 
+            //    Activity = this,
             //    Bundle = bundle,
-            //    EffectScopes = new ActivationOptions.EffectScope[0],
+            //    EffectScopes = null,
             //    Flags = ActivationFlags.NoCss
             //});
 
-            //FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
 
-            Android.Glide.Forms.Init(this);
+            //Android.Glide.Forms.Init(this);
 
             PullToRefreshLayoutRenderer.Init();
 

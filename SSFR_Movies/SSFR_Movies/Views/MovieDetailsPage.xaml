@@ -32,7 +32,7 @@
             <ffimage:CachedImage
                 x:Name="BackDropImage"
                 Grid.Row="0"
-                CacheDuration="2000"
+                CacheDuration="20000"
                 HeightRequest="300"
                 HorizontalOptions="FillAndExpand"
                 Scale="3"
