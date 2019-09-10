@@ -1288,9 +1288,9 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Material.Android.Resource.Id.listMode = global::SSFR_Movies.Droid.Resource.Id.listMode;
 			global::Xamarin.Forms.Material.Android.Resource.Id.list_item = global::SSFR_Movies.Droid.Resource.Id.list_item;
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_appbar = global::SSFR_Movies.Droid.Resource.Id.main_appbar;
-			global::Xamarin.Forms.Material.Android.Resource.Id.main_scrollview = global::SSFR_Movies.Droid.Resource.Id.main_scrollview;
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_tablayout = global::SSFR_Movies.Droid.Resource.Id.main_tablayout;
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_toolbar = global::SSFR_Movies.Droid.Resource.Id.main_toolbar;
+			global::Xamarin.Forms.Material.Android.Resource.Id.main_viewpager = global::SSFR_Movies.Droid.Resource.Id.main_viewpager;
 			global::Xamarin.Forms.Material.Android.Resource.Id.masked = global::SSFR_Movies.Droid.Resource.Id.masked;
 			global::Xamarin.Forms.Material.Android.Resource.Id.materialformsedittext = global::SSFR_Movies.Droid.Resource.Id.materialformsedittext;
 			global::Xamarin.Forms.Material.Android.Resource.Id.media_actions = global::SSFR_Movies.Droid.Resource.Id.media_actions;
@@ -1340,7 +1340,6 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Material.Android.Resource.Id.select_dialog_listview = global::SSFR_Movies.Droid.Resource.Id.select_dialog_listview;
 			global::Xamarin.Forms.Material.Android.Resource.Id.selected = global::SSFR_Movies.Droid.Resource.Id.selected;
 			global::Xamarin.Forms.Material.Android.Resource.Id.shellcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_appbar;
-			global::Xamarin.Forms.Material.Android.Resource.Id.shellcontent_scrollview = global::SSFR_Movies.Droid.Resource.Id.shellcontent_scrollview;
 			global::Xamarin.Forms.Material.Android.Resource.Id.shellcontent_toolbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_toolbar;
 			global::Xamarin.Forms.Material.Android.Resource.Id.shortcut = global::SSFR_Movies.Droid.Resource.Id.shortcut;
 			global::Xamarin.Forms.Material.Android.Resource.Id.showCustom = global::SSFR_Movies.Droid.Resource.Id.showCustom;
@@ -3869,9 +3868,9 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.Id.listMode = global::SSFR_Movies.Droid.Resource.Id.listMode;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.list_item = global::SSFR_Movies.Droid.Resource.Id.list_item;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.main_appbar = global::SSFR_Movies.Droid.Resource.Id.main_appbar;
-			global::Xamarin.Forms.Platform.Android.Resource.Id.main_scrollview = global::SSFR_Movies.Droid.Resource.Id.main_scrollview;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.main_tablayout = global::SSFR_Movies.Droid.Resource.Id.main_tablayout;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.main_toolbar = global::SSFR_Movies.Droid.Resource.Id.main_toolbar;
+			global::Xamarin.Forms.Platform.Android.Resource.Id.main_viewpager = global::SSFR_Movies.Droid.Resource.Id.main_viewpager;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.masked = global::SSFR_Movies.Droid.Resource.Id.masked;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.media_actions = global::SSFR_Movies.Droid.Resource.Id.media_actions;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.message = global::SSFR_Movies.Droid.Resource.Id.message;
@@ -3920,7 +3919,6 @@ namespace SSFR_Movies.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.Id.select_dialog_listview = global::SSFR_Movies.Droid.Resource.Id.select_dialog_listview;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.selected = global::SSFR_Movies.Droid.Resource.Id.selected;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.shellcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_appbar;
-			global::Xamarin.Forms.Platform.Android.Resource.Id.shellcontent_scrollview = global::SSFR_Movies.Droid.Resource.Id.shellcontent_scrollview;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.shellcontent_toolbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_toolbar;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.shortcut = global::SSFR_Movies.Droid.Resource.Id.shortcut;
 			global::Xamarin.Forms.Platform.Android.Resource.Id.showCustom = global::SSFR_Movies.Droid.Resource.Id.showCustom;
@@ -6704,7 +6702,6 @@ namespace SSFR_Movies.Droid
 			global::XF.Material.Droid.Resource.Id.list_item = global::SSFR_Movies.Droid.Resource.Id.list_item;
 			global::XF.Material.Droid.Resource.Id.lottie_layer_name = global::SSFR_Movies.Droid.Resource.Id.lottie_layer_name;
 			global::XF.Material.Droid.Resource.Id.main_appbar = global::SSFR_Movies.Droid.Resource.Id.main_appbar;
-			global::XF.Material.Droid.Resource.Id.main_scrollview = global::SSFR_Movies.Droid.Resource.Id.main_scrollview;
 			global::XF.Material.Droid.Resource.Id.main_tablayout = global::SSFR_Movies.Droid.Resource.Id.main_tablayout;
 			global::XF.Material.Droid.Resource.Id.main_toolbar = global::SSFR_Movies.Droid.Resource.Id.main_toolbar;
 			global::XF.Material.Droid.Resource.Id.masked = global::SSFR_Movies.Droid.Resource.Id.masked;
@@ -6804,7 +6801,6 @@ namespace SSFR_Movies.Droid
 			global::XF.Material.Droid.Resource.Id.select_dialog_listview = global::SSFR_Movies.Droid.Resource.Id.select_dialog_listview;
 			global::XF.Material.Droid.Resource.Id.selected = global::SSFR_Movies.Droid.Resource.Id.selected;
 			global::XF.Material.Droid.Resource.Id.shellcontent_appbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_appbar;
-			global::XF.Material.Droid.Resource.Id.shellcontent_scrollview = global::SSFR_Movies.Droid.Resource.Id.shellcontent_scrollview;
 			global::XF.Material.Droid.Resource.Id.shellcontent_toolbar = global::SSFR_Movies.Droid.Resource.Id.shellcontent_toolbar;
 			global::XF.Material.Droid.Resource.Id.shortcut = global::SSFR_Movies.Droid.Resource.Id.shortcut;
 			global::XF.Material.Droid.Resource.Id.showCustom = global::SSFR_Movies.Droid.Resource.Id.showCustom;
@@ -12520,8 +12516,8 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e00f3
 			public const int info = 2131624179;
 			
-			// aapt resource value: 0x7f0e0104
-			public const int inset_drawable = 2131624196;
+			// aapt resource value: 0x7f0e0103
+			public const int inset_drawable = 2131624195;
 			
 			// aapt resource value: 0x7f0e006a
 			public const int italic = 2131624042;
@@ -12556,17 +12552,17 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e00f9
 			public const int main_appbar = 2131624185;
 			
-			// aapt resource value: 0x7f0e00fc
-			public const int main_scrollview = 2131624188;
-			
 			// aapt resource value: 0x7f0e00fb
 			public const int main_tablayout = 2131624187;
 			
 			// aapt resource value: 0x7f0e00fa
 			public const int main_toolbar = 2131624186;
 			
-			// aapt resource value: 0x7f0e0103
-			public const int masked = 2131624195;
+			// aapt resource value: 0x7f0e00fc
+			public const int main_viewpager = 2131624188;
+			
+			// aapt resource value: 0x7f0e0102
+			public const int masked = 2131624194;
 			
 			// aapt resource value: 0x7f0e00b6
 			public const int materialformsedittext = 2131624118;
@@ -12856,9 +12852,6 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e00fd
 			public const int shellcontent_appbar = 2131624189;
 			
-			// aapt resource value: 0x7f0e00ff
-			public const int shellcontent_scrollview = 2131624191;
-			
 			// aapt resource value: 0x7f0e00fe
 			public const int shellcontent_toolbar = 2131624190;
 			
@@ -12874,8 +12867,8 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e002e
 			public const int showTitle = 2131623982;
 			
-			// aapt resource value: 0x7f0e0100
-			public const int sliding_tabs = 2131624192;
+			// aapt resource value: 0x7f0e00ff
+			public const int sliding_tabs = 2131624191;
 			
 			// aapt resource value: 0x7f0e00a8
 			public const int smallLabel = 2131624104;
@@ -12973,8 +12966,8 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e0082
 			public const int title_template = 2131624066;
 			
-			// aapt resource value: 0x7f0e0101
-			public const int toolbar = 2131624193;
+			// aapt resource value: 0x7f0e0100
+			public const int toolbar = 2131624192;
 			
 			// aapt resource value: 0x7f0e0047
 			public const int top = 2131624007;
@@ -13015,8 +13008,8 @@ namespace SSFR_Movies.Droid
 			// aapt resource value: 0x7f0e001b
 			public const int view_offset_helper = 2131623963;
 			
-			// aapt resource value: 0x7f0e0102
-			public const int visible = 2131624194;
+			// aapt resource value: 0x7f0e0101
+			public const int visible = 2131624193;
 			
 			// aapt resource value: 0x7f0e00d9
 			public const int volume_item_container = 2131624153;
