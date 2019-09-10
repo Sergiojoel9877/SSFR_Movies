@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SSFR_Movies</AssemblyName>
     <RootNamespace>SSFR_Movies</RootNamespace>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
   
   <PropertyGroup>
