@@ -87,23 +87,7 @@ namespace SSFR_Movies.Views
             {
                 Text = "Up",
                 IconImageSource = "ListDown.png",
-                Priority = 1,
-                Command = new Command(async () =>
-                {
-                    DownCount++;
-
-                    if (DownCount % 2 == 0)
-                    {
-                        await Device.InvokeOnMainThreadAsync(async () =>
-                        {
-                            await scrollview.TranslateTo(0, 80, 150, Easing.Linear);
-                        });
-                    }
-                    else
-                    {
-                        await BringDownGenresBar();
-                    }
-                })
+                Priority = 1
             };
 
             searchToolbarItem = new ToolbarItem()
@@ -116,11 +100,28 @@ namespace SSFR_Movies.Views
                     await Shell.Current.GoToAsync("/Search", true);
                 })
             };
+            updownList.Clicked += UpdownList_Clicked;
 
             ToolbarItems.Add(updownList);
 
             ToolbarItems.Add(searchToolbarItem);
+        }
 
+        private async void UpdownList_Clicked(object sender, EventArgs e)
+        {
+            DownCount++;
+
+            if (DownCount % 2 == 0)
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await scrollview.TranslateTo(0, 80, 150, Easing.Linear);
+                });
+            }
+            else
+            {
+                await BringDownGenresBar();
+            }
         }
 
         private async Task<object> BringDownGenresBar()
