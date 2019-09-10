@@ -83,7 +83,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
     <AndroidLinkMode>Full</AndroidLinkMode>
-    <AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
     <BundleAssemblies>true</BundleAssemblies>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
