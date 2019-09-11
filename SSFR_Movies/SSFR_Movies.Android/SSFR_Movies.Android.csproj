@@ -16,12 +16,12 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <AndroidExplicitCrunch>true</AndroidExplicitCrunch>
     <!--<AndroidUseAapt2 Condition="'$(AndroidUseAapt2)' == ''">True</AndroidUseAapt2>-->
-    <AndroidKeyStore>false</AndroidKeyStore>
+    <AndroidKeyStore>true</AndroidKeyStore>
     <AndroidSigningKeyStore>C:\Users\Sergio Ferreras B\AppData\Local\Xamarin\Mono for Android\Keystore\SSFR\SSFR.keystore</AndroidSigningKeyStore>
     <AndroidSigningStorePass>123456123456jug</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SSFR</AndroidSigningKeyAlias>
@@ -41,7 +41,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidLinkMode>None</AndroidLinkMode>
     <AndroidSupportedAbis>x86;arm64-v8a</AndroidSupportedAbis>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
@@ -81,13 +81,13 @@
     <AndroidEnableDesugar>True</AndroidEnableDesugar>
     <AotAssemblies>true</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
-    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>x86;arm64-v8a</AndroidSupportedAbis>
     <AndroidLinkMode>Full</AndroidLinkMode>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
     <BundleAssemblies>true</BundleAssemblies>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
-    <AndroidUseAapt2>false</AndroidUseAapt2>
+    <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidAapt2LinkExtraArgs>--no-version-vectors</AndroidAapt2LinkExtraArgs>
     <AndroidLinkTool>r8</AndroidLinkTool>
     <AndroidLinkSkip>Xamarin.Essentials</AndroidLinkSkip>
