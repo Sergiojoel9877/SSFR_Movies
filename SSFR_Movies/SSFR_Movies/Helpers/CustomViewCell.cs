@@ -8,8 +8,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using XF.Material.Forms.UI.Dialogs;
-using XF.Material.Forms.UI.Dialogs.Configurations;
+//using XF.Material.Forms.UI.Dialogs;
+//using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Helpers
 {
@@ -233,12 +233,12 @@ namespace SSFR_Movies.Helpers
                 {
                     Device.StartTimer(TimeSpan.FromSeconds(1), () =>
                     {
-                        var conf = new MaterialSnackbarConfiguration()
-                        {
-                            TintColor = Color.FromHex("#0066cc"),
-                            BackgroundColor = Color.FromHex("#272B2E")
-                        };
-                        MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
+                        //var conf = new MaterialSnackbarConfiguration()
+                        //{
+                        //    TintColor = Color.FromHex("#0066cc"),
+                        //    BackgroundColor = Color.FromHex("#272B2E")
+                        //};
+                        //MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
                         return false;
                     });
                     return;
@@ -252,13 +252,13 @@ namespace SSFR_Movies.Helpers
 
                     if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
                     {
-                        var _conf = new MaterialSnackbarConfiguration()
-                        {
-                            TintColor = Color.FromHex("#0066cc"),
-                            BackgroundColor = Color.FromHex("#272B2E")
-                        };
+                        //var _conf = new MaterialSnackbarConfiguration()
+                        //{
+                        //    TintColor = Color.FromHex("#0066cc"),
+                        //    BackgroundColor = Color.FromHex("#272B2E")
+                        //};
 
-                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                        //await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                         await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
@@ -272,13 +272,13 @@ namespace SSFR_Movies.Helpers
                         realm.Add(movie, true);
                     });
 
-                    var conf = new MaterialSnackbarConfiguration()
-                    {
-                        TintColor = Color.FromHex("#0066cc"),
-                        BackgroundColor = Color.FromHex("#272B2E")
-                    };
+                    //var conf = new MaterialSnackbarConfiguration()
+                    //{
+                    //    TintColor = Color.FromHex("#0066cc"),
+                    //    BackgroundColor = Color.FromHex("#272B2E")
+                    //};
 
-                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+                    //await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
 
                     await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
 
