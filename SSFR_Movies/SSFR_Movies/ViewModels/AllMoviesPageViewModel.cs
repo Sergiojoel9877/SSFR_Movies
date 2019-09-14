@@ -14,8 +14,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 //using ReactiveUI.Legacy;
-using XF.Material.Forms.UI.Dialogs;
-using XF.Material.Forms.UI.Dialogs.Configurations;
+//////using XF.Material.Forms.UI.Dialogs;
+//using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -29,11 +29,11 @@ namespace SSFR_Movies.ViewModels
 
         public Lazy<ObservableCollection<Genre>> GenreList { get; set; } = new Lazy<ObservableCollection<Genre>>(() => new ObservableCollection<Genre>());
 
-        readonly Lazy<MaterialSnackbarConfiguration> _conf = new Lazy<MaterialSnackbarConfiguration>(() => new MaterialSnackbarConfiguration()
-        {
-            TintColor = Color.FromHex("#0066cc"),
-            BackgroundColor = Color.FromHex("#272B2E")
-        });
+        //readonly Lazy<MaterialSnackbarConfiguration> _conf = new Lazy<MaterialSnackbarConfiguration>(() => new MaterialSnackbarConfiguration()
+        //{
+        //    TintColor = Color.FromHex("#0066cc"),
+        //    BackgroundColor = Color.FromHex("#272B2E")
+        //});
 
         private bool listVisible = true;
         public bool ListVisible
@@ -98,7 +98,7 @@ namespace SSFR_Movies.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                 });
 
                 tcs.SetResult(null);
@@ -146,7 +146,7 @@ namespace SSFR_Movies.ViewModels
             {
                 Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                 }).SafeFireAndForget();
 
                 tcs.SetResult(null);
@@ -184,15 +184,15 @@ namespace SSFR_Movies.ViewModels
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                var _conf = new MaterialSnackbarConfiguration()
-                {
-                    TintColor = Color.FromHex("#0066cc"),
-                    BackgroundColor = Color.FromHex("#272B2E")
-                };
+                //var _conf = new MaterialSnackbarConfiguration()
+                //{
+                //    TintColor = Color.FromHex("#0066cc"),
+                //    BackgroundColor = Color.FromHex("#272B2E")
+                //};
 
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
 
                 return false;
@@ -249,7 +249,7 @@ namespace SSFR_Movies.ViewModels
                  {
                      await Device.InvokeOnMainThreadAsync(async () =>
                      {
-                         await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                         //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                      });
 
                      return;
@@ -268,7 +268,7 @@ namespace SSFR_Movies.ViewModels
                  {
                      await Device.InvokeOnMainThreadAsync(async () =>
                      {
-                         await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                         //await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
                          IsRunning = false;
                          IsEnabled = false;
                      });
@@ -300,7 +300,7 @@ namespace SSFR_Movies.ViewModels
                 {
                     await Device.InvokeOnMainThreadAsync(async () =>
                     {
-                        await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                        //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                     });
 
                     return;
@@ -322,7 +322,7 @@ namespace SSFR_Movies.ViewModels
                 {
                     await Device.InvokeOnMainThreadAsync(async () =>
                     {
-                        await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                        //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                     });
 
                     return;
@@ -350,7 +350,7 @@ namespace SSFR_Movies.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                 });
                 return false;
             }
@@ -367,7 +367,7 @@ namespace SSFR_Movies.ViewModels
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                     return;
                 }
 
