@@ -3,7 +3,6 @@
     x:Class="SSFR_Movies.Views.MovieDetailsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:XFMaterial="clr-namespace:XF.Material.Forms.UI;assembly=XF.Material.Forms"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
@@ -75,14 +74,12 @@
                                         AbsoluteLayout.LayoutBounds="0, 1, 1, 0.6"
                                         AbsoluteLayout.LayoutFlags="All"
                                         BackgroundColor="#00000000">
-                                        <XFMaterial:MaterialCard
+                                        <Frame
                                             x:Name="theFrame2"
                                             BackgroundColor="#44161513"
                                             CornerRadius="12"
-                                            Elevation="6"
                                             HeightRequest="280"
-                                            HorizontalOptions="FillAndExpand"
-                                            IsClickable="True">
+                                            HorizontalOptions="FillAndExpand">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
@@ -172,7 +169,7 @@
                                                     </ScrollView>
                                                 </StackLayout>
                                             </Grid>
-                                        </XFMaterial:MaterialCard>
+                                        </Frame>
                                     </ContentView>
                                     <Frame
                                         x:Name="FrameCover"

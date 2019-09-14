@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using XF.Material.Forms.UI.Dialogs;
-using XF.Material.Forms.UI.Dialogs.Configurations;
+//using XF.Material.Forms.UI.Dialogs;
+//using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Views
 {
@@ -35,11 +35,11 @@ namespace SSFR_Movies.Views
 
         PullToRefreshLayout pull2refreshlyt = null;
 
-        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
-        {
-            TintColor = Color.FromHex("#0066cc"),
-            BackgroundColor = Color.FromHex("#272B2E")
-        };
+        //readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        //{
+        //    TintColor = Color.FromHex("#0066cc"),
+        //    BackgroundColor = Color.FromHex("#272B2E")
+        //};
 
         public AllMoviesPage()
         {
@@ -302,7 +302,7 @@ namespace SSFR_Movies.Views
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     pull2refreshlyt.IsRefreshing = false;
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
@@ -352,7 +352,7 @@ namespace SSFR_Movies.Views
                 {
                     Task.Run(async () =>
                     {
-                        await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                        //await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     });
 
                     Debug.WriteLine("Error: " + e.InnerException);
@@ -368,7 +368,7 @@ namespace SSFR_Movies.Views
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+               //await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
 
                 return;
             }
