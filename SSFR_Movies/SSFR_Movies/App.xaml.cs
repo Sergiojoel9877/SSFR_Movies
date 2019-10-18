@@ -24,13 +24,13 @@ namespace SSFR_Movies
         {
             InitializeComponent();
 
-            XF.Material.Forms.Material.Init(this);
+            ///XF.Material.Forms.Material.Init(this);
 
 #if DEBUG
-            HotReloader.Current.Run(this, new HotReloader.Configuration()
-            {
-                PreviewerDefaultMode = HotReloader.PreviewerMode.On
-            });
+            //HotReloader.Current.Run(this, new HotReloader.Configuration()
+            //{
+            //    PreviewerDefaultMode = HotReloader.PreviewerMode.On
+            //});
 #endif
 
             SetMainPage();

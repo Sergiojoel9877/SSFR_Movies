@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Gms.Ads;
+//using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
@@ -55,7 +55,7 @@ namespace SSFR_Movies.Droid
             //};
             //ImageService.Instance.Initialize(config);
 
-            MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
+            //MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
@@ -77,7 +77,7 @@ namespace SSFR_Movies.Droid
 
             global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
 
-            XF.Material.Droid.Material.Init(this, bundle);
+            //XF.Material.Droid.Material.Init(this, bundle);
 
             LoadApplication(LazyApp.Value);
         }
