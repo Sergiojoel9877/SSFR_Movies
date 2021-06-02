@@ -37,13 +37,6 @@
                 ItemsSource="{Binding FavMoviesList.Value}"
                 SelectionChanged="MovieSelected"
                 SelectionMode="Single">
-                <CollectionView.ItemsLayout>
-                    <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
-                        <x:Arguments>
-                            <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
-                        </x:Arguments>
-                    </ListItemsLayout>
-                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">

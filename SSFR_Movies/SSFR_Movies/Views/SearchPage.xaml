@@ -64,13 +64,6 @@
                 SelectionChanged="MovieSelected"
                 SelectionMode="Single"
                 Visual="Material">
-                <CollectionView.ItemsLayout>
-                    <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
-                        <x:Arguments>
-                            <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
-                        </x:Arguments>
-                    </ListItemsLayout>
-                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout CompressedLayout.IsHeadless="True">

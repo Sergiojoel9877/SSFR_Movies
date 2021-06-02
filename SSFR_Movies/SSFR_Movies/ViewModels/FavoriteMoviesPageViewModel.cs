@@ -81,10 +81,7 @@ namespace SSFR_Movies.ViewModels
             {
                 return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
             }
-            else
-            {
-                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
-            }
+            return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
         }
 
         private AsyncCommand getStoredMoviesCommand;

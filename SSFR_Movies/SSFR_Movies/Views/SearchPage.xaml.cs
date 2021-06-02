@@ -1,4 +1,5 @@
-﻿using Splat;
+﻿using Sharpnado.Tasks;
+using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
@@ -24,10 +25,10 @@ namespace SSFR_Movies.Views
 
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
-            activityIndicator.IsVisible = false;
-
             BindingContext = vm;
 
+            activityIndicator.IsVisible = false;
+            
             Shell.SetNavBarIsVisible(this, false);
 
             searchBar.Focus();
@@ -38,6 +39,16 @@ namespace SSFR_Movies.Views
             //{
             //    await MovieSelected();
             //});
+            SetListOrientationLayout();
+        }
+
+        private void SetListOrientationLayout()
+        {
+            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
+            {
+                SnapPointsAlignment = SnapPointsAlignment.Start,
+                SnapPointsType = SnapPointsType.MandatorySingle
+            };
         }
 
         private void SuscribeToMessages()
@@ -53,12 +64,11 @@ namespace SSFR_Movies.Views
             //    MoviesList.SelectedItem = null;
             //});
         }
-
-        private async void MovieSelected(object sender, SelectedItemChangedEventArgs e)
+        //TODO: Fix: MovieSelected method fails [SearchPage.xaml.cs]
+        private void MovieSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
-
-            await Shell.Current.GoToAsync("/MovieDetails", true);
+            TaskMonitor<object>.Create(ResultSingleton.SetInstanceAsync((sender as CollectionView).SelectedItem as Result));
+            TaskMonitor.Create(Shell.Current.GoToAsync("/MovieDetails", true));
             MoviesList.SelectedItem = null;
         }
 
@@ -71,7 +81,6 @@ namespace SSFR_Movies.Views
 
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
         {
-
             await Task.Yield();
 
             activityIndicator.IsVisible = true;
@@ -137,7 +146,7 @@ namespace SSFR_Movies.Views
 
                             activityIndicator.IsRunning = false;
 
-                            await SpeakNow("Search completed");
+                            //await SpeakNow("Search completed");
 
                         }
                         else
@@ -153,7 +162,7 @@ namespace SSFR_Movies.Views
 
                             DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
-                            await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
+                            //await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
 
                             Vibration.Vibrate();
 

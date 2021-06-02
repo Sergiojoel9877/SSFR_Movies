@@ -11,11 +11,8 @@ using UIKit;
 
 namespace SSFR_Movies.iOS
 {
-    [Register ("ViewController")]
+    [Register("ViewController")]
     partial class ViewController
     {
-        void ReleaseDesignerOutlets ()
-        {
-        }
     }
 }

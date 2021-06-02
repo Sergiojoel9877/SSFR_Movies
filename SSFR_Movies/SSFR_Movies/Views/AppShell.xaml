@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:SSFR_Movies.Views"
     Title="SSFR Movies Home"
     FlyoutBehavior="Disabled"
+    Shell.NavBarHasShadow="True"
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False">
     <Shell.Resources>

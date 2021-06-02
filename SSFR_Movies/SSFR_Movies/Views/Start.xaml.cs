@@ -1,6 +1,8 @@
-﻿using SSFR_Movies.Services;
+﻿using AsyncAwaitBestPractices.MVVM;
+using Sharpnado.Tasks;
+using SSFR_Movies.Services;
 using System;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,35 +14,49 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            FireContainerCommand.Execute(null);
+            TaskMonitor.Create(FireContainerCommand.ExecuteAsync());
         }
 
-        readonly Command fireContainerCommand = null;
-        Command FireContainerCommand
+        readonly AsyncCommand fireContainerCommand;
+        AsyncCommand FireContainerCommand
         {
-            get => fireContainerCommand ?? (new Command(async () =>
+            get => fireContainerCommand ?? (new AsyncCommand(async () =>
             {
-                ActIndicator.IsVisible = false;
-
-                ActIndicator.IsRunning = false;
-
-                Stack.IsVisible = true;
-
-                await ProBar.ProgressTo(.5, 200, Easing.Linear);
-
+                await Task.Yield();
+      
                 new Lazy<ContainerInitializer>(() => new ContainerInitializer()).Value.Initialize();
 
-                var mainPage = new Lazy<AppShell>(() => new AppShell());
-
-                Device.BeginInvokeOnMainThread(async () =>
+                await Device.InvokeOnMainThreadAsync(async ()=>
                 {
-                    await ProBar.ProgressTo(100, 200, Easing.Linear);
+                    ActIndicator.IsVisible = false;
+
+                    ActIndicator.IsRunning = false;
+
+                    Stack.IsVisible = true;
+
+                    await ProBar.ProgressTo(.5, 200, Easing.Linear);
+                });
+
+                //var mainPage = new Lazy<AppShell>(() => new AppShell());
+
+                await Task.WhenAll(Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Task.Yield();
 
                     Stack.IsVisible = false;
 
-                    App.Current.MainPage = mainPage.Value;
-                });
+                    Application.Current.MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
 
+                }), ProBar.ProgressTo(100, 200, Easing.Linear));
+
+                //await Device.InvokeOnMainThreadAsync(async () =>
+                //{
+                //    await ProBar.ProgressTo(100, 200, Easing.Linear);
+
+                //    Stack.IsVisible = false;
+
+                //    Application.Current.MainPage = mainPage.Value;
+                //});
             }));
         }
     }

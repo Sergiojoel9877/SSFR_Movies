@@ -1,6 +1,7 @@
 ﻿using AsyncAwaitBestPractices;
 using AsyncAwaitBestPractices.MVVM;
 using Realms;
+using Sharpnado.Tasks;
 using Splat;
 using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Helpers;
@@ -14,8 +15,8 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-//using XF.Material.Forms.UI.Dialogs;
-//using XF.Material.Forms.UI.Dialogs.Configurations;
+using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.Views
 {
@@ -33,13 +34,13 @@ namespace SSFR_Movies.Views
 
         ToolbarItem searchToolbarItem = null;
 
-        PullToRefreshLayout pull2refreshlyt = null;
+        PullToRefreshLayout pull2refreshlyt;
 
-        //readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
-        //{
-        //    TintColor = Color.FromHex("#0066cc"),
-        //    BackgroundColor = Color.FromHex("#272B2E")
-        //};
+        readonly MaterialSnackbarConfiguration _conf = new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        };
 
         public AllMoviesPage()
         {
@@ -47,11 +48,11 @@ namespace SSFR_Movies.Views
 
             InitializeComponent();
 
-            HideScrollAtStart();
-
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
             BindingContext = vm;
+
+            HideScrollAtStart();
 
             SetPullToRefresh();
 
@@ -64,6 +65,17 @@ namespace SSFR_Movies.Views
             SetScrollViewOrientation();
 
             ControlRaiseOverAllViews();
+
+            SetListOrientationLayout();
+        }
+
+        private void SetListOrientationLayout()
+        {
+            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
+            {
+                SnapPointsAlignment = SnapPointsAlignment.Start,
+                SnapPointsType = SnapPointsType.None
+            };
         }
 
         private void HideScrollAtStart()
@@ -85,9 +97,31 @@ namespace SSFR_Movies.Views
         {
             updownList = new ToolbarItem()
             {
-                Text = "Up",
+                Text = "Down",
                 IconImageSource = "ListDown.png",
-                Priority = 1
+                Priority = 1,
+                Command = new AsyncCommand(async ()=>
+                {
+                    var tapped = false;
+                    if (updownList.Text == "Down" && tapped != true)
+                    {
+                        await Device.InvokeOnMainThreadAsync(async ()=>
+                        {
+                            await scrollview.TranslateTo(0, 20, 150, Easing.Linear);
+                            tapped = true;
+                            updownList.Text = "Up";
+                        });
+                    }
+                    else
+                    {
+                        await Device.InvokeOnMainThreadAsync(async ()=>
+                        {
+                            await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
+                            tapped = false;
+                            updownList.Text = "Down";
+                        });
+                    }
+                })
             };
 
             searchToolbarItem = new ToolbarItem()
@@ -100,43 +134,25 @@ namespace SSFR_Movies.Views
                     await Shell.Current.GoToAsync("/Search", true);
                 })
             };
-            updownList.Clicked += UpdownList_Clicked;
 
             ToolbarItems.Add(updownList);
 
             ToolbarItems.Add(searchToolbarItem);
         }
 
-        private async void UpdownList_Clicked(object sender, EventArgs e)
-        {
-            DownCount++;
+        //private async Task<object> BringDownGenresBar()
+        //{
+        //    var tcs = new TaskCompletionSource<object>();
 
-            if (DownCount % 2 == 0)
-            {
-                await Device.InvokeOnMainThreadAsync(async () =>
-                {
-                    await scrollview.TranslateTo(0, 80, 150, Easing.Linear);
-                });
-            }
-            else
-            {
-                await BringDownGenresBar();
-            }
-        }
+        //    await Device.InvokeOnMainThreadAsync(async () =>
+        //    {
+        //        await scrollview.TranslateTo(0, 80, 150, Easing.Linear);
+        //        tcs.SetResult(null);
+        //    });
 
-        private async Task<object> BringDownGenresBar()
-        {
-            var tcs = new TaskCompletionSource<object>();
-
-            await Device.InvokeOnMainThreadAsync(async () =>
-            {
-                await scrollview.TranslateTo(0, -80, 150, Easing.Linear);
-                tcs.SetResult(null);
-            });
-
-            Settings.Down = false;
-            return tcs.Task.Result;
-        }
+        //    Settings.Down = false;
+        //    return tcs.Task.Result;
+        //}
 
         private void SetPull2RefreshToMainStack()
         {
@@ -153,27 +169,23 @@ namespace SSFR_Movies.Views
             pull2refreshlyt.RefreshBackgroundColor = Color.FromHex("#272B2E");
             pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
             pull2refreshlyt.SetBinding(PullToRefreshLayout.RefreshCommandProperty, "FillUpMoviesListAfterRefreshCommand");
-            pull2refreshlyt.RefreshCommand = new AsyncCommand(async () =>
-            {
-                await LoadMoreMovies();
-            });
+            pull2refreshlyt.RefreshCommand = new AsyncCommand(()=>LoadMoreMovies());
         }
 
         private async void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
-            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
-
+            await ResultSingleton.SetInstanceAsync(((MoviesList.SelectedItem as ContentView).BindingContext as SwipeItem).BindingContext as Result);
             await Shell.Current.GoToAsync("/MovieDetails", true);
             MoviesList.SelectedItem = null;
         }
 
-        private void SuscribeToMessages()
+        /*private void SuscribeToMessages()
         {
             MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
             {
                 MoviesList.SelectedItem = null;
             });
-        }
+        }*/
 
         protected override void OnAppearing()
         {
@@ -298,18 +310,20 @@ namespace SSFR_Movies.Views
         {
             try
             {
+                await Task.Yield();
+                
                 //Verify if internet connection is available
                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
                 {
                     pull2refreshlyt.IsRefreshing = false;
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                     return;
                 }
 
                 await Device.InvokeOnMainThreadAsync(() =>
                 {
                     MoviesList.IsVisible = false;
-                    RefreshBtn.IsVisible = false;
+                    //RefreshBtn.IsVisible = false;
                 });
 
                 Settings.NextPage++;
@@ -332,7 +346,7 @@ namespace SSFR_Movies.Views
                         {
                             MoviesList.IsVisible = true;
                             activityIndicator.IsVisible = false;
-                            RefreshBtn.IsVisible = true;
+                            //RefreshBtn.IsVisible = true;
                             pull2refreshlyt.IsRefreshing = false;
                         });
                     }
@@ -345,15 +359,16 @@ namespace SSFR_Movies.Views
                     pull2refreshlyt.IsRefreshing = false;
                     MoviesList.IsVisible = true;
                     activityIndicator.IsVisible = false;
-                    RefreshBtn.IsVisible = true;
+                    //RefreshBtn.IsVisible = true;
                 });
 
                 Device.StartTimer(TimeSpan.FromSeconds(3), () =>
                 {
-                    Task.Run(async () =>
-                    {
-                        //await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-                    });
+                    //Task.Run(async () =>
+                    //{
+                    //    await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    //});
+                    TaskMonitor.Create(MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf));
 
                     Debug.WriteLine("Error: " + e.InnerException);
                     return false;
@@ -364,27 +379,25 @@ namespace SSFR_Movies.Views
         private async void Genre_Tapped(object sender, EventArgs e)
         {
             await Task.Yield();
-
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-               //await MaterialDialog.Instance.SnackbarAsync("An error has ocurred!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-
+                TaskMonitor.Create(()=> MaterialDialog.Instance.SnackbarAsync("No Internet connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf));
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(() =>
+            TaskMonitor.Create(Device.InvokeOnMainThreadAsync(() =>
             {
                 vm.ListVisible = false;
                 vm.IsEnabled = true;
                 vm.IsRunning = true;
-            });
+            }));
 
             MoviesList.ItemsSource = null;
 
             try
             {
-                var realm = await Realm.GetInstanceAsync();
+                var realm = Realm.GetInstance();
 
                 var genreType = ((Label)sender).Text;
 
@@ -396,13 +409,16 @@ namespace SSFR_Movies.Views
 
                 if (stored)
                 {
-                    await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
+                    await Device.InvokeOnMainThreadAsync(async ()=>
+                    {
+                        await MoviesList.TranslateTo(1500, 0, 500, Easing.SpringOut);
+                    });
 
-                    vm.GetStoreMoviesByGenresCommand.Value.ExecuteAsync().SafeFireAndForget();
+                    await vm.GetStoreMoviesByGenresCommand.Value.ExecuteAsync();
 
                     BindingContext = vm;
 
-                    Device.BeginInvokeOnMainThread(async () =>
+                    await Device.InvokeOnMainThreadAsync(async () =>
                     {
                         MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
@@ -417,15 +433,14 @@ namespace SSFR_Movies.Views
                 }
                 else
                 {
-
                     MoviesList.ItemsSource = vm.AllMoviesList.Value;
 
-                    Device.BeginInvokeOnMainThread(() =>
+                    TaskMonitor.Create(Device.InvokeOnMainThreadAsync(() =>
                     {
                         vm.ListVisible = true;
                         vm.IsRunning = false;
                         vm.IsEnabled = false;
-                    });
+                    }));
                 }
             }
             catch (Exception e2)
@@ -437,7 +452,7 @@ namespace SSFR_Movies.Views
                     return false;
                 });
 
-                Device.BeginInvokeOnMainThread(() =>
+                await Device.InvokeOnMainThreadAsync(() =>
                 {
                     vm.ListVisible = false;
                     vm.IsEnabled = false;
@@ -448,16 +463,105 @@ namespace SSFR_Movies.Views
             }
         }
 
-        private void RefreshBtnClicked(object sender, EventArgs e)
+        //private void RefreshBtnClicked(object sender, EventArgs e)
+        //{
+        //    TaskMonitor.Create(LoadMoreMovies());
+
+        //    TaskMonitor.Create(Device.InvokeOnMainThreadAsync(async () =>
+        //    {
+        //        await RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear);
+
+        //        await RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear);
+        //    }));
+        //}
+
+        private async void AddToFavListTap(object sender, EventArgs e)
         {
-            LoadMoreMovies().SafeFireAndForget();
+            await Task.Yield();
+            //tap.Value.Tapped -= AddToFavListTap;
 
-            Device.BeginInvokeOnMainThread(() =>
+            //await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+
+            if (sender != null)
             {
-                RefreshBtn.TranslateTo(0, 80, 100, Easing.Linear).SafeFireAndForget();
+                var sndr = sender as SwipeItem;
+                var movie = sndr.BindingContext as Result;
 
-                RefreshBtn.TranslateTo(0, 0, 100, Easing.Linear).SafeFireAndForget();
-            });
+                //Verify if internet connection is available
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+                {
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+                    {
+                        var conf = new MaterialSnackbarConfiguration()
+                        {
+                            TintColor = Color.FromHex("#0066cc"),
+                            BackgroundColor = Color.FromHex("#272B2E")
+                        };
+                        MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
+                        return false;
+                    });
+                    return;
+                }
+
+                try
+                {
+                    var realm = await Realm.GetInstanceAsync();
+                    var locker = new object();
+
+                    var movieExists = default(Result);
+
+                    lock (locker)
+                    {
+                        movieExists = realm.Find<Result>(movie.Id);
+                    }
+
+                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
+                    {
+                        var _conf = new MaterialSnackbarConfiguration()
+                        {
+                            TintColor = Color.FromHex("#0066cc"),
+                            BackgroundColor = Color.FromHex("#272B2E")
+                        };
+
+                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+
+                        //await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+
+                        return;
+                    }
+
+                    realm.Write(() =>
+                    {
+                        movie.FavoriteMovie = "Star.png";
+
+                        realm.Add(movie, true);
+                    });
+
+                    var conf = new MaterialSnackbarConfiguration()
+                    {
+                        TintColor = Color.FromHex("#0066cc"),
+                        BackgroundColor = Color.FromHex("#272B2E")
+                    };
+
+                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
+
+                    //await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+
+                    MessagingCenter.Send(this, "Refresh", true);
+                    //await Locator.Current.GetService<FavoriteMoviesPageViewModel>().FillMoviesList();
+                }
+                catch (Exception e15)
+                {
+                    Debug.WriteLine("Error: " + e15.InnerException);
+                }
+            }
+        }
+
+        void SwipeItem_Invoked(System.Object sender, System.EventArgs e)
+        {
+            TaskMonitor<object>.Create(ResultSingleton.SetInstanceAsync((sender as SwipeItem).BindingContext as Result)); 
+            TaskMonitor.Create(Shell.Current.GoToAsync("/MovieDetails", true));
+            MoviesList.SelectedItem = null;
         }
     }
 }

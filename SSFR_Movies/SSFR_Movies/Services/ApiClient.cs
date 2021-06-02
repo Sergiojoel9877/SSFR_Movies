@@ -33,7 +33,7 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMoviesAsync(bool include_video, int page = 1, string sortby = "popularity.desc", bool include_adult = false, int genres = 12)
         {
-            new SynchronizationContextRemover();
+            await new SynchronizationContextRemover();
 
             try
             {
@@ -51,16 +51,13 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={_genres}";
 
-                using (var m = await App.HttpClient.GetAsync(requestUri))
-                {
-                    m.EnsureSuccessStatusCode();
-                    using (var stream = await m.Content.ReadAsStreamAsync())
-                    using (var reader = new StreamReader(stream))
-                    using (var json = new JsonTextReader(reader))
-                    {
-                        return await StoreInCache(json);
-                    }
-                };
+                using var m = await App.HttpClient.GetAsync(requestUri);
+                m.EnsureSuccessStatusCode();
+
+                using var stream = await m.Content.ReadAsStreamAsync();
+                using var reader = new StreamReader(stream);
+                using var json = new JsonTextReader(reader);
+                return await StoreInCache(json);
             }
             catch (Exception e)
             {
@@ -72,7 +69,7 @@ namespace SSFR_Movies.Services
 
         public async Task<Movie> SearchMovieByName(string name, bool include_adult = false)
         {
-            new SynchronizationContextRemover();
+            await new SynchronizationContextRemover();
 
             try
             {
@@ -84,16 +81,14 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/search/movie?api_key={API_KEY}&language={LANG}&query={name}&include_adult={include_adult.ToString().ToLower()}";
 
-                using (var m = await App.HttpClient.GetAsync(requestUri))
-                {
-                    m.EnsureSuccessStatusCode();
-                    using (var stream = await m.Content.ReadAsStreamAsync())
-                    using (var reader = new StreamReader(stream))
-                    using (var json = new JsonTextReader(reader))
-                    {
-                        return await DeserializeMovieAsync(json);
-                    }
-                };
+                using var m = await App.HttpClient.GetAsync(requestUri);
+                m.EnsureSuccessStatusCode();
+
+                using var stream = await m.Content.ReadAsStreamAsync();
+                using var reader = new StreamReader(stream);
+                using var json = new JsonTextReader(reader);
+
+                return await DeserializeMovieAsync(json);
             }
             catch (Exception e)
             {
@@ -112,7 +107,7 @@ namespace SSFR_Movies.Services
         //CREATE GETMOVIESBYGENRE
         public async Task<bool> GetAndStoreMoviesByGenreAsync(int genre, bool include_video, string sortby = "popularity.desc", bool include_adult = false, int page = 1)
         {
-            new SynchronizationContextRemover();
+            await new SynchronizationContextRemover();
 
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
@@ -127,16 +122,14 @@ namespace SSFR_Movies.Services
 
                 var requestUri = $"/3/discover/movie?api_key={API_KEY}&language={LANG}&sort_by={sortby}&include_adult={include_adult.ToString().ToLower()}&include_video={include_video.ToString().ToLower()}&page={page}&with_genres={genre}";
 
-                using (var m = await App.HttpClient.GetAsync(requestUri))
-                {
-                    m.EnsureSuccessStatusCode();
-                    using (var stream = await m.Content.ReadAsStreamAsync())
-                    using (var reader = new StreamReader(stream))
-                    using (var json = new JsonTextReader(reader))
-                    {
-                        return await StoreMovieByGenresInCache(json);
-                    }
-                };
+                using var m = await App.HttpClient.GetAsync(requestUri);
+                m.EnsureSuccessStatusCode();
+
+                using var stream = await m.Content.ReadAsStreamAsync();
+                using var reader = new StreamReader(stream);
+                using var json = new JsonTextReader(reader);
+
+                return await StoreMovieByGenresInCache(json);
             }
             catch (Exception e)
             {
@@ -164,40 +157,34 @@ namespace SSFR_Movies.Services
 
         public async Task<bool> GetAndStoreMovieGenresAsync()
         {
-            new SynchronizationContextRemover();
+            await new SynchronizationContextRemover();
             
             var requestUri = $"/3/genre/movie/list?api_key={API_KEY}&language={LANG}";
 
-            HttpResponseMessage m;
-            using (m = await App.HttpClient.GetAsync(requestUri))
-            {
-                m.EnsureSuccessStatusCode();
-                using (var stream = await m.Content.ReadAsStreamAsync())
-                using (var reader = new StreamReader(stream))
-                using (var json = new JsonTextReader(reader))
-                {
-                    return await StoreGenresInCache(json);
-                }
-            };
+            using var m = await App.HttpClient.GetAsync(requestUri);
+            m.EnsureSuccessStatusCode();
+
+            using var stream = await m.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+            using var json = new JsonTextReader(reader);
+
+            return await StoreGenresInCache(json);
         }
 
         public async Task<MovieVideo> GetMovieVideosAsync(int id)
         {
-            new SynchronizationContextRemover();
+            await new SynchronizationContextRemover();
 
             var requestUri = $"/3/movie/{id}/videos?api_key={API_KEY}&language={LANG}";
 
-            HttpResponseMessage m;
-            using (m = await App.HttpClient.GetAsync(requestUri))
-            {
-                m.EnsureSuccessStatusCode();
-                using (var stream = await m.Content.ReadAsStreamAsync())
-                using (var reader = new StreamReader(stream))
-                using (var json = new JsonTextReader(reader))
-                {
-                    return await DeserializeMovieVideoAsync(json);
-                }
-            }
+            using var m = await App.HttpClient.GetAsync(requestUri);
+            m.EnsureSuccessStatusCode();
+
+            using var stream = await m.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+            using var json = new JsonTextReader(reader);
+
+            return await DeserializeMovieVideoAsync(json);
         }
 
         private Task<MovieVideo> DeserializeMovieVideoAsync(JsonTextReader json)
@@ -262,7 +249,6 @@ namespace SSFR_Movies.Services
             }
         }
         #endregion
-
 
         #region MovieStreammingFunctionsRegion
 

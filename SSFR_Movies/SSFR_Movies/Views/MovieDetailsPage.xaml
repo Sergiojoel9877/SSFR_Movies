@@ -6,11 +6,13 @@
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     xmlns:local="clr-namespace:SSFR_Movies.Converters"
+    xmlns:models="clr-namespace:SSFR_Movies.Models"
     xmlns:transformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
     x:Name="content"
     Title="Details"
     BackgroundColor="#0066cc"
-    Visual="Material">
+    Visual="Material"
+    x:DataType="{x:Type models:Result }">
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -96,7 +98,8 @@
                                                     Margin="0,0,8,0"
                                                     HorizontalOptions="End"
                                                     Orientation="Vertical"
-                                                    VerticalOptions="Start">
+                                                    VerticalOptions="Start"
+                                                    x:DataType="{x:Type models:Result}">
                                                     <StackLayout
                                                         Margin="0"
                                                         HorizontalOptions="End"
@@ -121,7 +124,7 @@
                                                             </Label.GestureRecognizers>
                                                         </Label>
                                                     </StackLayout>
-                                                    <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
+                                                    <StackLayout HorizontalOptions="Start" Orientation="Horizontal" x:DataType="{x:Type models:Result}">
                                                         <Image
                                                             x:Name="AddToFav"
                                                             Aspect="AspectFill"
@@ -153,7 +156,8 @@
                                                         HorizontalOptions="FillAndExpand"
                                                         HorizontalScrollBarVisibility="Never"
                                                         Orientation="Horizontal"
-                                                        VerticalScrollBarVisibility="Never">
+                                                        VerticalScrollBarVisibility="Never"
+                                                        x:DataType="{x:Type models:Result}">
                                                         <Label
                                                             x:Name="MovieTitle"
                                                             FontAttributes="Bold"
@@ -181,7 +185,8 @@
                                         BorderColor="#00000000"
                                         CornerRadius="15"
                                         HasShadow="True"
-                                        IsClippedToBounds="True">
+                                        IsClippedToBounds="True"
+                                        x:DataType="{x:Type models:Result}">
                                         <Image
                                             x:Name="PosterPathImage"
                                             Aspect="AspectFill"
@@ -192,7 +197,8 @@
                             <StackLayout
                                 BackgroundColor="#0066cc"
                                 VerticalOptions="End"
-                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}">
+                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}"
+                                x:DataType="{x:Type models:Result}">
                                 <StackLayout Orientation="Horizontal">
                                     <Label
                                         Margin="16,5,16,0"

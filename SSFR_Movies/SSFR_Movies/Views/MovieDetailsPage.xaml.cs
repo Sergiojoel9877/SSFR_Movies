@@ -1,5 +1,6 @@
 ﻿using AsyncAwaitBestPractices;
 using Realms;
+using Sharpnado.Tasks;
 using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
@@ -16,8 +17,7 @@ using Xamarin.Forms.Xaml;
 namespace SSFR_Movies.Views
 {
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
-    [HotReloader.CSharpVisual]
-    //[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
         int _count { get; set; } = 1;
@@ -38,9 +38,9 @@ namespace SSFR_Movies.Views
         private void LowerChildInAbsoluteLayout()
         {
             absoluteLayout2.LowerChild(theFrame2);
-            absoluteLayout.RaiseChild(hScroll);
+            //absoluteLayout.RaiseChild(hScroll);
             absoluteLayout.RaiseChild(AddToFavLayout);
-            absoluteLayout.RaiseChild(PlayTrailer);
+            //absoluteLayout.RaiseChild(PlayTrailer);
         }
 
         private void SetEventHandlers()
@@ -73,7 +73,7 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            Initialize().SafeFireAndForget();
+            TaskMonitor.Create(Initialize());
         }
 
         private async Task Initialize()
@@ -81,8 +81,6 @@ namespace SSFR_Movies.Views
             BindingContext = await ResultSingleton.GetInstanceAsync();
 
             ResultSingleton.SetIntanceToNull();
-
-            //ShowFabButtonIfContentMatchScrollviewHeight();
         }
 
         private async Task ShowFabButtonIfContentMatchScrollviewHeight()
@@ -99,49 +97,41 @@ namespace SSFR_Movies.Views
             }
         }
 
-        //string Check(string regexpttrn, string uri)
-        //{
-        //    var regex = new Regex(@regexpttrn, RegexOptions.Compiled);
-        //    Match match = regex.Match(uri);
-        //    return match.Success ? match.Value : "";
-        //}
-
         private async Task IsPresentInFavList(Result m)
         {
-            using (var realm = await Realm.GetInstanceAsync())
+            var realm = await Realm.GetInstanceAsync();
+
+            var movieExists = realm.Find<Result>(m.Id);
+
+            if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
             {
-                var movieExists = realm.Find<Result>(m.Id);
-
-                if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
+                await Device.InvokeOnMainThreadAsync(() =>
                 {
-                    await Device.InvokeOnMainThreadAsync(() =>
-                    {
-                        AddToFav.Source = "Star.png";
+                    AddToFav.Source = "Star.png";
 
-                        AddToFavLayout.IsVisible = false;
+                    AddToFavLayout.IsVisible = false;
 
-                        QuitFromFavLayout.IsVisible = true;
-                    });
-                }
-                else
+                    QuitFromFavLayout.IsVisible = true;
+                });
+            }
+            else
+            {
+                await Device.InvokeOnMainThreadAsync(() =>
                 {
-                    await Device.InvokeOnMainThreadAsync(() =>
-                    {
-                        AddToFavLayout.IsVisible = true;
+                    AddToFavLayout.IsVisible = true;
 
-                        QuitFromFavLayout.IsVisible = false;
-                    });
-                }
-            };
+                    QuitFromFavLayout.IsVisible = false;
+                });
+            }
         }
 
-        private async void Tap_Tapped(object sender, EventArgs e)
+        private void Tap_Tapped(object sender, EventArgs e)
         {
-            await Task.WhenAll(
+            TaskMonitor.Create(Task.WhenAll(
                 AddToFav.ScaleTo(1.50, 500, Easing.SpringOut),
                 AddToFavList(),
                 AddToFav.ScaleTo(1, 500, Easing.SpringIn)
-            );
+            ));
         }
 
         private async Task AddToFavList()
@@ -340,7 +330,7 @@ namespace SSFR_Movies.Views
 
             if (video.Results.Count() > 0)
             {
-                Device.OpenUri(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
+                await Launcher.CanOpenAsync(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
             }
             else
             {

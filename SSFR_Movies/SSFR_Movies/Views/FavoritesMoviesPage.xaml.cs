@@ -1,6 +1,7 @@
 ﻿//using CommonServiceLocator;
 using AsyncAwaitBestPractices.MVVM;
 using Realms;
+using Sharpnado.Tasks;
 using Splat;
 using SSFR_Movies.Helpers;
 //using SSFR_Movies.Data;
@@ -40,7 +41,6 @@ namespace SSFR_Movies.Views
                 Text = "Search",
                 IconImageSource = "Search.png",
                 Priority = 0,
-
                 Command = new AsyncCommand(async () =>
                 {
                     await Shell.Current.GoToAsync("/Search", false);
@@ -52,6 +52,17 @@ namespace SSFR_Movies.Views
             //MoviesList.SelectionChangedCommand = new Command(MovieSelected);
 
             SubscribeToMessage();
+
+            SetListOrientationLayout();
+        }
+
+        private void SetListOrientationLayout()
+        {
+            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
+            {
+                SnapPointsAlignment = SnapPointsAlignment.Start,
+                SnapPointsType = SnapPointsType.MandatorySingle
+            };
         }
 
         private void SubscribeToMessage()
@@ -87,7 +98,7 @@ namespace SSFR_Movies.Views
             {
                 if (e)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
+                    TaskMonitor.Create(async () => await Device.InvokeOnMainThreadAsync(async () =>
                     {
                         var estado = await vm.FillMoviesList(null);
 
@@ -106,7 +117,7 @@ namespace SSFR_Movies.Views
                             Message.IsVisible = true;
                             MoviesList.SelectedItem = null;
                         }
-                    });
+                    }));
                 }
             });
 
@@ -115,11 +126,37 @@ namespace SSFR_Movies.Views
                 MoviesList.SelectedItem = null;
             });
 
-            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
+            //MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
+            //{
+            //    if (e)
+            //    {
+            //        TaskMonitor.Create(async ()=> await Device.InvokeOnMainThreadAsync(async () =>
+            //        {
+            //            var estado = await vm.FillMoviesList(null);
+
+            //            if (estado.Key == 'r')
+            //            {
+            //                MoviesList.IsVisible = true;
+            //                UnPin.IsVisible = false;
+            //                Message.IsVisible = false;
+            //                MoviesList.ItemsSource = estado.Value;
+            //                MoviesList.SelectedItem = null;
+            //            }
+            //            else if (estado.Key == 'v')
+            //            {
+            //                MoviesList.IsVisible = false;
+            //                UnPin.IsVisible = true;
+            //                Message.IsVisible = true;
+            //                MoviesList.SelectedItem = null;
+            //            }
+            //        }));
+            //    }
+            //});
+            MessagingCenter.Subscribe<AllMoviesPage, bool>(this, "Refresh", (s, e) =>
             {
                 if (e)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
+                    TaskMonitor.Create(async () => await Device.InvokeOnMainThreadAsync(async () =>
                     {
                         var estado = await vm.FillMoviesList(null);
 
@@ -138,16 +175,15 @@ namespace SSFR_Movies.Views
                             Message.IsVisible = true;
                             MoviesList.SelectedItem = null;
                         }
-                    });
+                    }));
                 }
             });
         }
 
-        private async void MovieSelected(object sender, SelectionChangedEventArgs e)
+        private void MovieSelected(object sender, SelectionChangedEventArgs e)
         {
-            await ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result);
-
-            await Shell.Current.GoToAsync("/MovieDetails", false);
+            TaskMonitor<object>.Create(ResultSingleton.SetInstanceAsync(MoviesList.SelectedItem as Result));
+            TaskMonitor.Create(Shell.Current.GoToAsync("/MovieDetails", true));
             MoviesList.SelectedItem = null;
         }
 
@@ -175,7 +211,6 @@ namespace SSFR_Movies.Views
             Message.IsVisible = UnPin.IsVisible == true ? true : false;
 
             MoviesList.IsVisible = Message.IsVisible == true ? false : true;
-
         }
 
         /// <summary>

@@ -4,9 +4,12 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:models="clr-namespace:SSFR_Movies.Models"
+    xmlns:viewmodels="clr-namespace:SSFR_Movies.ViewModels"
     x:Name="content"
     Title="SSFR Movies"
-    BackgroundColor="#161513">
+    BackgroundColor="#161513"
+    x:DataType="{x:Type viewmodels:AllMoviesPageViewModel }">
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -28,7 +31,7 @@
 
                 <FlexLayout BindableLayout.ItemsSource="{Binding GenreList.Value}" Direction="Row">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="{x:Type models:Genre}" >
                             <Frame Style="{StaticResource FramesStyle}">
                                 <Label
                                     FontAttributes="Bold"
@@ -63,7 +66,7 @@
                     Visual="Material"
                     WidthRequest="40"
                     Color="#FFF" />
-
+            
                 <CollectionView
                     x:Name="MoviesList"
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
@@ -74,23 +77,32 @@
                     RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"
                     SelectionChanged="MovieSelected"
                     SelectionMode="Single">
-                    <CollectionView.ItemsLayout>
-                        <ListItemsLayout SnapPointsAlignment="End" SnapPointsType="MandatorySingle">
-                            <x:Arguments>
-                                <ItemsLayoutOrientation>Vertical</ItemsLayoutOrientation>
-                            </x:Arguments>
-                        </ListItemsLayout>
-                    </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout CompressedLayout.IsHeadless="True">
-                                <helpers:CustomViewCell CompressedLayout.IsHeadless="True" HeightRequest="350" />
-                            </StackLayout>
+                        <DataTemplate x:DataType="{x:Type SwipeView}">
+                            <SwipeView>
+                                <SwipeView.RightItems> 
+                                    <SwipeItems Mode="Execute">
+                                        <SwipeItem IconImageSource="Star.png"
+                                                    Text="Add To Favorites"
+                                                    Invoked="AddToFavListTap"/>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems Mode="Execute">
+                                        <SwipeItem Invoked="SwipeItem_Invoked"/>
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <SwipeView.Content>
+                                    <StackLayout CompressedLayout.IsHeadless="True" x:DataType="{x:Type models:Result}">
+                                        <helpers:CustomViewCell CompressedLayout.IsHeadless="True" HeightRequest="350" />
+                                    </StackLayout>
+                                </SwipeView.Content>
+                            </SwipeView>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
 
-                <Button
+                <!--<Button
                     x:Name="RefreshBtn"
                     AbsoluteLayout.LayoutBounds="0, 0.9, 0, 0.2"
                     AbsoluteLayout.LayoutFlags="All"
@@ -99,7 +111,7 @@
                     FontSize="Medium"
                     IsVisible="{Binding ListVisible}"
                     Text="Refresh"
-                    TextColor="#006FDE" />
+                    TextColor="#006FDE" />-->
 
             </AbsoluteLayout>
         </AbsoluteLayout>

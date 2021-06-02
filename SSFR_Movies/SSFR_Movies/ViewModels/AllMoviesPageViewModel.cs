@@ -1,6 +1,8 @@
 ﻿using AsyncAwaitBestPractices;
 using AsyncAwaitBestPractices.MVVM;
+using MvvmHelpers;
 using Realms;
+using Sharpnado.Tasks;
 using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
@@ -14,8 +16,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 //using ReactiveUI.Legacy;
-//////using XF.Material.Forms.UI.Dialogs;
-//using XF.Material.Forms.UI.Dialogs.Configurations;
+using XF.Material.Forms.UI.Dialogs;
+using XF.Material.Forms.UI.Dialogs.Configurations;
 
 namespace SSFR_Movies.ViewModels
 {
@@ -25,15 +27,15 @@ namespace SSFR_Movies.ViewModels
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public Lazy<ObservableCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>());
+        public Lazy<ObservableRangeCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableRangeCollection<Result>>(() => new ObservableRangeCollection<Result>());
 
-        public Lazy<ObservableCollection<Genre>> GenreList { get; set; } = new Lazy<ObservableCollection<Genre>>(() => new ObservableCollection<Genre>());
+        public Lazy<ObservableRangeCollection<Genre>> GenreList { get; set; } = new Lazy<ObservableRangeCollection<Genre>>(() => new ObservableRangeCollection<Genre>());
 
-        //readonly Lazy<MaterialSnackbarConfiguration> _conf = new Lazy<MaterialSnackbarConfiguration>(() => new MaterialSnackbarConfiguration()
-        //{
-        //    TintColor = Color.FromHex("#0066cc"),
-        //    BackgroundColor = Color.FromHex("#272B2E")
-        //});
+        readonly Lazy<MaterialSnackbarConfiguration> _conf = new Lazy<MaterialSnackbarConfiguration>(() => new MaterialSnackbarConfiguration()
+        {
+            TintColor = Color.FromHex("#0066cc"),
+            BackgroundColor = Color.FromHex("#272B2E")
+        });
 
         private bool listVisible = true;
         public bool ListVisible
@@ -91,6 +93,8 @@ namespace SSFR_Movies.ViewModels
 
         public async Task<object> FillMoviesList()
         {
+            await Task.Yield();
+
             var tcs = new TaskCompletionSource<object>();
 
             //Verify if internet connection is available
@@ -98,7 +102,7 @@ namespace SSFR_Movies.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                 });
 
                 tcs.SetResult(null);
@@ -114,18 +118,23 @@ namespace SSFR_Movies.ViewModels
 
             var realm = await Realm.GetInstanceAsync();
             var movies = realm.All<Movie>().SingleOrDefault();
-
+            
             if (movies == null)
             {
                 tcs.SetResult(null);
                 return tcs.Task;
             }
 
-            movies.Results.ForEach((r) =>
-            {
-                AllMoviesList.Value.Add(r);
-            });
+            ////await Device.InvokeOnMainThreadAsync(()=>
+            ////{
+            //    movies.Results.ForEach((r) =>
+            //    {
+            //        AllMoviesList.Value.Add(r);
+            //    });
+            ////});
 
+            AllMoviesList.Value.AddRange(movies.Results);
+           
             await Device.InvokeOnMainThreadAsync(() =>
             {
                 ListVisible = true;
@@ -138,19 +147,21 @@ namespace SSFR_Movies.ViewModels
             return tcs.Task;
         }
 
-        public Task FillMoviesByGenreList()
+        public async Task<object> FillMoviesByGenreList()
         {
+            await Task.Yield();
+
             var tcs = new TaskCompletionSource<object>();
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                Device.InvokeOnMainThreadAsync(async () =>
+                await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                }).SafeFireAndForget();
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                });
 
                 tcs.SetResult(null);
-                return tcs.Task;
+                return await tcs.Task;
             }
 
             var realm = Realm.GetInstance();
@@ -158,17 +169,19 @@ namespace SSFR_Movies.ViewModels
 
             AllMoviesList.Value.Clear();
 
-            movies.Results.ForEach((r) =>
-            {
-                AllMoviesList.Value.Add(r);
-            });
+            //movies.Results.ForEach((r) =>
+            //{
+            //    AllMoviesList.Value.Add(r);
+            //});
 
-            Device.InvokeOnMainThreadAsync(() =>
+            AllMoviesList.Value.AddRange(movies.Results);
+
+            await Device.InvokeOnMainThreadAsync(() =>
             {
                 ListVisible = true;
                 IsRunning = false;
                 IsEnabled = false;
-            }).SafeFireAndForget();
+            });
 
             tcs.SetResult(null);
             return tcs.Task;
@@ -178,169 +191,138 @@ namespace SSFR_Movies.ViewModels
         ///  Get movies from server and store them in cache.. with a TimeSpan limit.
         /// </summary>
         /// <returns>Bool if they are succesfully saved..</returns>
+        [Obsolete("This wrapper is obsolete")]
         public static async Task<bool> GetAndStoreMoviesAsync()
         {
 
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
-                //var _conf = new MaterialSnackbarConfiguration()
-                //{
-                //    TintColor = Color.FromHex("#0066cc"),
-                //    BackgroundColor = Color.FromHex("#272B2E")
-                //};
+                var _conf = new MaterialSnackbarConfiguration()
+                {
+                    TintColor = Color.FromHex("#0066cc"),
+                    BackgroundColor = Color.FromHex("#272B2E")
+                };
 
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
                 });
 
                 return false;
             }
 
-            var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
+            //var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
 
-            if (done)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            //if (done)
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
+            return await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
         }
 
         private Lazy<AsyncCommand> remainingItemsThresholdReachedCommand;
         public Lazy<AsyncCommand> RemainingItemsThresholdReachedCommand
         {
-            get => remainingItemsThresholdReachedCommand ?? (remainingItemsThresholdReachedCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
+            get => remainingItemsThresholdReachedCommand ?? (remainingItemsThresholdReachedCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessRemainingItemsThresholdReachedCommand())));
+        }
+
+        async Task ProcessRemainingItemsThresholdReachedCommand()
+        {
+            var Semaphore = new SemaphoreSlim(1, 1);
+
+            await Semaphore.WaitAsync();
+
+            try
             {
-                var Semaphore = new SemaphoreSlim(1,1);
+                Settings.NextPage++;
 
-                await Semaphore.WaitAsync();
+                var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
 
-                try
+                if (MoviesDownloaded)
                 {
-                    Settings.NextPage++;
-
-                    var MoviesDownloaded = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false, page: Settings.NextPage);
-
-                    if (MoviesDownloaded)
-                    {
-                        await FillUpMoviesListAfterRefreshCommand.Value.ExecuteAsync();
-                    }
+                    await FillUpMoviesListAfterRefreshCommand.Value.ExecuteAsync();
                 }
-                finally
-                {
-                    Semaphore.Release();
-                }
-            })));
+            }
+            finally
+            {
+                Semaphore.Release();
+            }
         }
 
         private Lazy<AsyncCommand> getStoreMoviesCommand;
         public Lazy<AsyncCommand> GetStoreMoviesCommand
         {
-            get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-             {
-                 await Task.Yield();
+            get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessStoreMovies())));
+        }
+        
+        async Task ProcessStoreMovies()
+        {
+            await Device.InvokeOnMainThreadAsync(() =>
+            {
+                ListVisible = false;
+                IsRunning = true;
+                IsEnabled = true;
+            });
 
-                 //Verify if internet connection is available
-                 if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                 {
-                     await Device.InvokeOnMainThreadAsync(async () =>
-                     {
-                         //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                     });
+            var stored = /*await GetAndStoreMoviesAsync();*/ await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
 
-                     return;
-                 }
+            if (!stored)
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
+                    IsRunning = false;
+                    IsEnabled = false;
+                });
+            }
 
-                 await Device.InvokeOnMainThreadAsync(() =>
-                 {
-                     ListVisible = false;
-                     IsRunning = true;
-                     IsEnabled = true;
-                 });
+            await Device.InvokeOnMainThreadAsync(() =>
+            {
+                ListVisible = true;
+                IsEnabled = false;
+                IsRunning = false;
+            });
 
-                 var stored = await GetAndStoreMoviesAsync();
+            MoviesStored = stored;
 
-                 if (!stored)
-                 {
-                     await Device.InvokeOnMainThreadAsync(async () =>
-                     {
-                         //await MaterialDialog.Instance.SnackbarAsync("Low storage.", "Dismiss", MaterialSnackbar.DurationIndefinite);
-                         IsRunning = false;
-                         IsEnabled = false;
-                     });
-                 }
-
-                 await Device.InvokeOnMainThreadAsync(() =>
-                 {
-                     ListVisible = true;
-                     IsEnabled = false;
-                     IsRunning = false;
-                 });
-
-                 MoviesStored = stored;
-
-                 if (MoviesStored)
-                 {
-                     await FillMoviesList();
-                 }
-             })));
+            if (MoviesStored)
+            {
+                await FillMoviesList();
+            }
         }
 
         private Lazy<AsyncCommand> getStoreMoviesByGenresCommand;
         public Lazy<AsyncCommand> GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-            {
-                //Verify if internet connection is available
-                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                {
-                    await Device.InvokeOnMainThreadAsync(async () =>
-                    {
-                        //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                    });
-
-                    return;
-                }
-
-                await FillMoviesByGenreList();
-
-            })));
+            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesByGenreList())));
         }
 
         private Lazy<AsyncCommand> getMoviesGenresCommand;
         public Lazy<AsyncCommand> GetMoviesGenresCommand
         {
-            get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-            {
-                await Task.Yield();
-                //Verify if internet connection is available
-                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                {
-                    await Device.InvokeOnMainThreadAsync(async () =>
-                    {
-                        //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                    });
-
-                    return;
-                }
-
-                var done = await GetMoviesGenres();
-
-                if (!done)
-                {
-                    await Device.InvokeOnMainThreadAsync(() =>
-                    {
-                        MsgVisible = true;
-                        MsgText = "No storage space left!";
-                    });
-                }
-            })));
+            get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessGenres())));
         }
 
+        async Task ProcessGenres()
+        {
+            var done = /*await GetMoviesGenres();*/ await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
+
+            if (!done)
+            {
+                await Device.InvokeOnMainThreadAsync(() =>
+                {
+                    MsgVisible = true;
+                    MsgText = "No storage space left!";
+                });
+            }
+        }
+
+        [Obsolete("This wrapper is currently obsolete")]
         private async Task<bool> GetMoviesGenres()
         {
             await Task.Yield();
@@ -350,7 +332,7 @@ namespace SSFR_Movies.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
+                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
                 });
                 return false;
             }
@@ -361,37 +343,19 @@ namespace SSFR_Movies.ViewModels
         private Lazy<AsyncCommand> fillUpMoviesListAfterRefreshCommand;
         public Lazy<AsyncCommand> FillUpMoviesListAfterRefreshCommand
         {
-            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-            {
-
-                //Verify if internet connection is available
-                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                {
-                    //await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                    return;
-                }
-
-                await FillMoviesList();
-            })));
+            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesList())));
         }
 
         private Lazy<AsyncCommand> fillUpMovies;
         public Lazy<AsyncCommand> FillUpMovies
         {
-            get => fillUpMovies ?? (fillUpMovies = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-            {
-                await FillMoviesList();
-                await FillGenresList();
-            })));
+            get => fillUpMovies ?? (fillUpMovies = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> Task.WhenAll(FillMoviesList(), FillGenresList()))));
         }
 
         private Lazy<AsyncCommand> noNetWorkHideTabs;
         public Lazy<AsyncCommand> NoNetWorkHideTabs
         {
-            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
-            {
-                await FillMoviesList();
-            })));
+            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesList())));
         }
 
         public AllMoviesPageViewModel()
@@ -408,12 +372,11 @@ namespace SSFR_Movies.ViewModels
 
             if (movies < 1)
             {
-                GetStoreMoviesCommand.Value.ExecuteAsync().SafeFireAndForget();
-                GetMoviesGenresCommand.Value.ExecuteAsync().SafeFireAndForget();
+                TaskMonitor.Create(Task.WhenAll(GetStoreMoviesCommand.Value.ExecuteAsync(), GetMoviesGenresCommand.Value.ExecuteAsync()));
             }
             else
             {
-                FillUpMovies.Value.ExecuteAsync().SafeFireAndForget();
+                TaskMonitor.Create(FillUpMovies.Value.ExecuteAsync());
             }
         }
     }
