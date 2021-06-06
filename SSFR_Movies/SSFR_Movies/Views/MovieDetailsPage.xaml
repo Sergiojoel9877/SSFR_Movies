@@ -144,6 +144,9 @@
                                                 
                                                 <ScrollView
                                                     Grid.Row="2"
+                                                    CompressedLayout.IsHeadless="True"
+                                                    HorizontalScrollBarVisibility="Never"
+                                                    VerticalScrollBarVisibility="Never"
                                                     Grid.Column="0"
                                                     Orientation="Horizontal"
                                                     HorizontalOptions="FillAndExpand"
@@ -155,11 +158,7 @@
                                                         LineBreakMode="NoWrap"
                                                         HorizontalTextAlignment="Start"
                                                         Style="{StaticResource LabelsStyle}"
-                                                        Text="{Binding Result.Title}">
-                                                        <Label.GestureRecognizers>
-                                                            <TapGestureRecognizer Tapped="TitleTapped" />
-                                                        </Label.GestureRecognizers>
-                                                    </Label>
+                                                        Text="{Binding Result.Title}"/>
                                                 </ScrollView> 
                                             </Grid>
                                         </Frame>
