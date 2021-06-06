@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms.Internals;
 
-namespace SSFR_Movies.Services
+namespace SSFR_Movies.Services.Abstract
 {
     /// <summary>
     /// DBRepository interface, it contains the CRUD Methods for the database. 

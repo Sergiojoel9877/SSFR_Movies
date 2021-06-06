@@ -1,13 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Realms;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+using SSFR_Movies.Services.Abstract;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 

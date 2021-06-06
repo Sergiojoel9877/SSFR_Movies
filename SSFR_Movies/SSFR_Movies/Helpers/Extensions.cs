@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -9,13 +10,14 @@ namespace SSFR_Movies.Helpers
     {
         //Verify the length of the incoming string
         //to assign its value to the initial range of the animation.........
-        public static Task SetAnimation(this Label lbl)
+        //TODO: FIX LAG
+        public static void SetAnimation(this Label lbl)
         {
-            return Device.InvokeOnMainThreadAsync(() =>
+            MainThread.BeginInvokeOnMainThread(()=>
             {
-                var right = new Animation(d => lbl.TranslationX = d, 350, -500);
+                var Go = new Animation(d => lbl.TranslationX = d, 350, -500);
 
-                right.Commit(lbl, "Animation", 300, 7500, Easing.Linear, (d, b) =>
+                Go.Commit(lbl, "Animation", 250, 7500, Easing.Linear, (d, b) =>
                 {
                     lbl.TranslationX = 350;
                 }, () => true);

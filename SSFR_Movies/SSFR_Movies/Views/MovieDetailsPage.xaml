@@ -11,8 +11,7 @@
     x:Name="content"
     Title="Details"
     BackgroundColor="#0066cc"
-    Visual="Material"
-    x:DataType="{x:Type models:Result }">
+    Visual="Material">
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -37,7 +36,7 @@
                 HeightRequest="300"
                 HorizontalOptions="FillAndExpand"
                 Scale="3"
-                Source="{Binding BackdropPath, Converter={StaticResource BackgroundConverter}}"
+                Source="{Binding Result.BackdropPath, Converter={StaticResource BackgroundConverter}}"
                 WidthRequest="300">
                 <ffimage:CachedImage.Transformations>
                     <transformations:BlurredTransformation Radius="200" />
@@ -98,8 +97,7 @@
                                                     Margin="0,0,8,0"
                                                     HorizontalOptions="End"
                                                     Orientation="Vertical"
-                                                    VerticalOptions="Start"
-                                                    x:DataType="{x:Type models:Result}">
+                                                    VerticalOptions="Start">
                                                     <StackLayout
                                                         Margin="0"
                                                         HorizontalOptions="End"
@@ -124,54 +122,45 @@
                                                             </Label.GestureRecognizers>
                                                         </Label>
                                                     </StackLayout>
-                                                    <StackLayout HorizontalOptions="Start" Orientation="Horizontal" x:DataType="{x:Type models:Result}">
+                                                    <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
                                                         <Image
                                                             x:Name="AddToFav"
+                                                            Source="{Binding AddToFavSource}"
                                                             Aspect="AspectFill"
                                                             HeightRequest="40"
-                                                            Source="StarEmpty.png"
                                                             WidthRequest="40" />
                                                         <Label
                                                             FontAttributes="Bold"
                                                             FontSize="Medium"
                                                             Style="{StaticResource LabelsStyle}"
-                                                            Text="{Binding Popularity}" />
+                                                            Text="{Binding Result.Popularity}" />
                                                     </StackLayout>
                                                     <Label
                                                         FontAttributes="Bold"
                                                         HorizontalTextAlignment="End"
                                                         Style="{StaticResource LabelsStyle}"
-                                                        Text="{Binding ReleaseDate}" />
+                                                        Text="{Binding Result.ReleaseDate}" />
                                                 </StackLayout>
-
-                                                <StackLayout
+                                                
+                                                <ScrollView
                                                     Grid.Row="2"
                                                     Grid.Column="0"
-                                                    Margin="0,20,0,8"
+                                                    Orientation="Horizontal"
                                                     HorizontalOptions="FillAndExpand"
-                                                    Orientation="Vertical"
-                                                    VerticalOptions="End">
-                                                    <ScrollView
-                                                        x:Name="ScrollTitle"
-                                                        HorizontalOptions="FillAndExpand"
-                                                        HorizontalScrollBarVisibility="Never"
-                                                        Orientation="Horizontal"
-                                                        VerticalScrollBarVisibility="Never"
-                                                        x:DataType="{x:Type models:Result}">
-                                                        <Label
-                                                            x:Name="MovieTitle"
-                                                            FontAttributes="Bold"
-                                                            FontSize="Large"
-                                                            HorizontalTextAlignment="Start"
-                                                            LineBreakMode="NoWrap"
-                                                            Style="{StaticResource LabelsStyle}"
-                                                            Text="{Binding Title}">
-                                                            <Label.GestureRecognizers>
-                                                                <TapGestureRecognizer Tapped="TitleTapped" />
-                                                            </Label.GestureRecognizers>
-                                                        </Label>
-                                                    </ScrollView>
-                                                </StackLayout>
+                                                    Margin="0,20,0,-5">
+                                                    <Label
+                                                        x:Name="MovieTitle"
+                                                        FontAttributes="Bold"
+                                                        FontSize="Large"
+                                                        LineBreakMode="NoWrap"
+                                                        HorizontalTextAlignment="Start"
+                                                        Style="{StaticResource LabelsStyle}"
+                                                        Text="{Binding Result.Title}">
+                                                        <Label.GestureRecognizers>
+                                                            <TapGestureRecognizer Tapped="TitleTapped" />
+                                                        </Label.GestureRecognizers>
+                                                    </Label>
+                                                </ScrollView> 
                                             </Grid>
                                         </Frame>
                                     </ContentView>
@@ -185,20 +174,18 @@
                                         BorderColor="#00000000"
                                         CornerRadius="15"
                                         HasShadow="True"
-                                        IsClippedToBounds="True"
-                                        x:DataType="{x:Type models:Result}">
+                                        IsClippedToBounds="True">
                                         <Image
                                             x:Name="PosterPathImage"
                                             Aspect="AspectFill"
-                                            Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}" />
+                                            Source="{Binding Result.PosterPath, Converter={StaticResource PosterConverter}}" />
                                     </Frame>
                                 </AbsoluteLayout>
                             </Frame>
                             <StackLayout
                                 BackgroundColor="#0066cc"
-                                VerticalOptions="End"
-                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}"
-                                x:DataType="{x:Type models:Result}">
+                                VerticalOptions="FillAndExpand"
+                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}">
                                 <StackLayout Orientation="Horizontal">
                                     <Label
                                         Margin="16,5,16,0"
@@ -215,20 +202,39 @@
                                     FontSize="Medium"
                                     HorizontalTextAlignment="Start"
                                     Style="{StaticResource LabelsStyle}"
-                                    Text="{Binding Overview}" />
+                                    Text="{Binding Result.Overview}" />
 
                                 <Button
                                     x:Name="QuitFromFavLayout"
+                                    IsVisible="{Binding QuitFromFavLayoutIsVisible}"
+                                    Command="{Binding RemoveFromFavListCommand}"
                                     Margin="16"
                                     BackgroundColor="#FF0000"
                                     CornerRadius="30"
                                     FontAttributes="Bold"
                                     FontSize="Medium"
                                     HorizontalOptions="FillAndExpand"
-                                    IsVisible="False"
                                     Text="Quit from the favorites list"
                                     TextColor="White"
                                     Visual="Material" />
+
+                                <Button
+                                    x:Name="AddToFavLayout"
+                                    IsVisible="{Binding AddToFavLayoutIsVisible}"
+                                    Command="{Binding AddToFavListCommand}"
+                                    Grid.Row="0"
+                                    Margin="16,-10,16,16"
+                                    Padding="-5"
+                                    BackgroundColor="#006FDE"
+                                    CornerRadius="70"
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    HeightRequest="70"
+                                    HorizontalOptions="Center"
+                                    Text="Add"
+                                    TextColor="White"
+                                    VerticalOptions="End"
+                                    WidthRequest="70" />
 
                                 <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
 
@@ -240,27 +246,11 @@
             </ScrollView>
 
             <Button
-                x:Name="AddToFavLayout"
-                Grid.Row="0"
-                Margin="16"
-                Padding="-5"
-                BackgroundColor="#006FDE"
-                CornerRadius="70"
-                FontAttributes="Bold"
-                FontSize="Medium"
-                HeightRequest="70"
-                HorizontalOptions="Center"
-                Scale="0"
-                Text="Add"
-                TextColor="White"
-                VerticalOptions="End"
-                WidthRequest="70" />
-
-            <Button
                 x:Name="PlayTrailer"
+                Command="{Binding PlayTrailerCommand}"
                 Grid.Row="0"
                 Margin="16"
-                Padding="-70"
+                Padding="-7"
                 BackgroundColor="#006FDE"
                 CornerRadius="170"
                 FontAttributes="Bold"

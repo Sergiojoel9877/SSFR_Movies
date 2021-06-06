@@ -72,47 +72,8 @@
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                     AbsoluteLayout.LayoutFlags="All"
                     IsVisible="{Binding ListVisible}"
-                    ItemsSource="{Binding AllMoviesList.Value}"
                     RemainingItemsThreshold="19"
-                    RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"
-                    SelectionChanged="MovieSelected"
-                    SelectionMode="Single">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type SwipeView}">
-                            <SwipeView>
-                                <SwipeView.RightItems> 
-                                    <SwipeItems Mode="Execute">
-                                        <SwipeItem IconImageSource="Star.png"
-                                                    Text="Add To Favorites"
-                                                    Invoked="AddToFavListTap"/>
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
-                                <SwipeView.LeftItems>
-                                    <SwipeItems Mode="Execute">
-                                        <SwipeItem Invoked="SwipeItem_Invoked"/>
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <SwipeView.Content>
-                                    <StackLayout CompressedLayout.IsHeadless="True" x:DataType="{x:Type models:Result}">
-                                        <helpers:CustomViewCell CompressedLayout.IsHeadless="True" HeightRequest="350" />
-                                    </StackLayout>
-                                </SwipeView.Content>
-                            </SwipeView>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <!--<Button
-                    x:Name="RefreshBtn"
-                    AbsoluteLayout.LayoutBounds="0, 0.9, 0, 0.2"
-                    AbsoluteLayout.LayoutFlags="All"
-                    BackgroundColor="#272B2E"
-                    Clicked="RefreshBtnClicked"
-                    FontSize="Medium"
-                    IsVisible="{Binding ListVisible}"
-                    Text="Refresh"
-                    TextColor="#006FDE" />-->
-
+                    RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"/>
             </AbsoluteLayout>
         </AbsoluteLayout>
     </ContentPage.Content>

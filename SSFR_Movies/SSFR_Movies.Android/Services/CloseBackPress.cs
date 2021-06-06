@@ -3,7 +3,7 @@ using Android.App;
 using Android.Content;
 using Android.Views;
 using SSFR_Movies.Droid.Services;
-using SSFR_Movies.Services;
+using SSFR_Movies.Services.Abstract;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(CloseBackPress))]

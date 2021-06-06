@@ -1,8 +1,7 @@
-﻿using AsyncAwaitBestPractices.MVVM;
-using Sharpnado.Tasks;
-using SSFR_Movies.Services;
+﻿using SSFR_Movies.Services;
 using System;
 using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -14,7 +13,10 @@ namespace SSFR_Movies.Views
         {
             InitializeComponent();
 
-            TaskMonitor.Create(FireContainerCommand.ExecuteAsync());
+            Task.Run(async () =>
+            {
+                await FireContainerCommand.ExecuteAsync();
+            });
         }
 
         readonly AsyncCommand fireContainerCommand;

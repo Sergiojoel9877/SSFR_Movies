@@ -17,6 +17,8 @@
             <ffimage:CachedImage
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
+                Source="{Binding PinSource}"
+                IsVisible="{Binding FavImageIsVisible}"
                 HeightRequest="300"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -27,6 +29,7 @@
                 Margin="0,5,0,0"
                 FontAttributes="Bold"
                 FontSize="Medium"
+                IsVisible="{Binding MessageIsVisible}"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
                 Text="You have not picked any movie as a favorite one"
@@ -34,20 +37,11 @@
 
             <CollectionView
                 x:Name="MoviesList"
-                ItemsSource="{Binding FavMoviesList.Value}"
-                SelectionChanged="MovieSelected"
-                SelectionMode="Single">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCellFavPage CompressedLayout.IsHeadless="True" HeightRequest="350" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                IsVisible="{Binding MoviesListIsVisible}"
+                SelectionMode="Single"/>
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
-            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+            <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

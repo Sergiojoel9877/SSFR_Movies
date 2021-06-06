@@ -11,23 +11,31 @@
     <SolutionDir>..\</SolutionDir>
   </PropertyGroup>
   
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AsyncAwaitBestPractices" Version="3.1.0-pre5" />
-    <PackageReference Include="AsyncAwaitBestPractices.MVVM" Version="3.1.0-pre5" />
-    <PackageReference Include="Realm" Version="4.1.0" />
-    <PackageReference Include="Realm.Fody" Version="4.1.0">
+    <PackageReference Include="Realm" Version="10.1.4" />
+    <PackageReference Include="Realm.Fody" Version="10.1.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Rg.Plugins.Popup" Version="1.1.5.188" />
-    <PackageReference Include="Splat" Version="8.2.4" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.11" />
+    <PackageReference Include="Splat" Version="11.1.1" />
     <PackageReference Include="Xam.Plugins.Settings" Version="4.0.0.10-beta" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" />
-    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="4.2.0.709249" />
-    <PackageReference Include="Xamarin.HotReload" Version="1.4.19" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.0.2012" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.2.0-pre2" />
+    <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="1.2.0-pre2" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="XF.Material" Version="1.7.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +68,15 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Xamarin.CommunityToolkit" />
+    <None Remove="Xamarin.CommunityToolkit.Markup" />
+    <None Remove="Xamarin.Essentials" />
+    <None Remove="XF.Material" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Views\DataTemplateSelectors\" />
+    <None Remove="Services\Abstract\" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -94,5 +111,9 @@
     <None Update="Views\StartPagexaml.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\DataTemplateSelectors\" />
+    <Folder Include="Services\Abstract\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
-﻿using SSFR_Movies.Services;
-
+﻿using Splat;
+using SSFR_Movies.Services.Abstract;
+using SSFR_Movies.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
@@ -35,6 +36,7 @@ namespace SSFR_Movies.Views
             {
                 c.Close();
                 base.OnBackButtonPressed();
+                Locator.Current.GetService<FavoriteMoviesPageViewModel>().Dispose();
             }
 
             return true;

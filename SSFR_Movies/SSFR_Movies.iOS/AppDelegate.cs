@@ -29,7 +29,7 @@ namespace SSFR_Movies.iOS
             Xamarin.Forms.Forms.Init();
             FormsMaterial.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
-
+            XF.Material.iOS.Material.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(application, launchOptions);

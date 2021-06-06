@@ -37,8 +37,8 @@
         <Tab
             Title="Favorites"
             Icon="Heart.png"
-            Route="favorites">
-            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}" Route="FavoritesMoviesPage" />
+            Route="FavoritesMoviesPage">
+            <local:FavoritesMoviesPage />
         </Tab>
         <Tab
             Title="About"
@@ -48,3 +48,4 @@
         </Tab>
     </TabBar>
 </Shell>
+            <!--<ShellContent  ContentTemplate="{DataTemplate local:FavoritesMoviesPage}" Route="FavoritesMoviesPage" />-->

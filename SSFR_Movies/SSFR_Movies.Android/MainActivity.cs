@@ -1,18 +1,15 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
+//using Android.Gms.Ads;
 //using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
-using SSFR_Movies.Droid.Services;
 using SSFR_Movies.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using Xamarin.Forms;
 
 namespace SSFR_Movies.Droid
 {
@@ -20,7 +17,7 @@ namespace SSFR_Movies.Droid
     [Activity(Label = "SSFR_Movies", Icon = "@mipmap/icon", Theme = "@style/Theme.Splash", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleInstance)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
+        readonly Lazy<App> LazyApp = new (() => new App());
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -41,8 +38,6 @@ namespace SSFR_Movies.Droid
 
             base.OnCreate(bundle);
 
-            Forms.SetFlags(new[] { "CollectionView_Experimental" });
-
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
             //var config = new FFImageLoading.Config.Configuration()
@@ -51,13 +46,12 @@ namespace SSFR_Movies.Droid
             //    VerbosePerformanceLogging = false,
             //    VerboseMemoryCacheLogging = false,
             //    VerboseLoadingCancelledLogging = false,
-            //    Logger = new CustomLogger(),
             //};
             //ImageService.Instance.Initialize(config);
 
             //MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
-            Rg.Plugins.Popup.Popup.Init(this, bundle);
+            Rg.Plugins.Popup.Popup.Init(this);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
@@ -73,11 +67,9 @@ namespace SSFR_Movies.Droid
 
             //Android.Glide.Forms.Init(this);
 
-            PullToRefreshLayoutRenderer.Init();
-
             global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
 
-            //XF.Material.Droid.Material.Init(this, bundle);
+            XF.Material.Droid.Material.Init(this, bundle);
 
             LoadApplication(LazyApp.Value);
         }

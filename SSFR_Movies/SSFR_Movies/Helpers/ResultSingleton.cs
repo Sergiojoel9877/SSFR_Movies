@@ -6,28 +6,18 @@ namespace SSFR_Movies.Helpers
     public class ResultSingleton
     {
         static Result Result { get; set; }
-        public static Task<Result> GetInstanceAsync()
+
+        public static Result GetInstance()
         {
-            var tcs = new TaskCompletionSource<Result>();
-
-            if (Result == null)
-            {
-                Result = new Result();
-                tcs.SetResult(Result);
-            }
-
-            tcs.SetResult(Result);
-            return tcs.Task;
+            return Result ??= new Result();
         }
 
-        public static Task<object> SetInstanceAsync(Result res)
+        public static void SetInstance(Result res)
         {
-            var tcs = new TaskCompletionSource<object>();
+            if (res == null)
+                return;
 
             Result = res;
-            tcs.SetResult(null);
-
-            return tcs.Task;
         }
 
         public static void SetIntanceToNull()

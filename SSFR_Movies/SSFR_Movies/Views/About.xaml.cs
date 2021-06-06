@@ -1,8 +1,6 @@
-﻿
-using AsyncAwaitBestPractices.MVVM;
+﻿using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {

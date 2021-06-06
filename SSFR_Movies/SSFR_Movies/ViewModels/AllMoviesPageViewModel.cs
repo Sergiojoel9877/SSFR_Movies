@@ -1,17 +1,13 @@
-﻿using AsyncAwaitBestPractices;
-using AsyncAwaitBestPractices.MVVM;
-using MvvmHelpers;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Realms;
-using Sharpnado.Tasks;
 using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -27,11 +23,11 @@ namespace SSFR_Movies.ViewModels
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class AllMoviesPageViewModel : ViewModelBase
     {
-        public Lazy<ObservableRangeCollection<Result>> AllMoviesList { get; set; } = new Lazy<ObservableRangeCollection<Result>>(() => new ObservableRangeCollection<Result>());
+        public ObservableRangeCollection<Result> AllMoviesList { get; set; } = new();
 
-        public Lazy<ObservableRangeCollection<Genre>> GenreList { get; set; } = new Lazy<ObservableRangeCollection<Genre>>(() => new ObservableRangeCollection<Genre>());
+        public Lazy<ObservableRangeCollection<Genre>> GenreList { get; set; } = new();
 
-        readonly Lazy<MaterialSnackbarConfiguration> _conf = new Lazy<MaterialSnackbarConfiguration>(() => new MaterialSnackbarConfiguration()
+        readonly Lazy<MaterialSnackbarConfiguration> _conf = new(() => new MaterialSnackbarConfiguration()
         {
             TintColor = Color.FromHex("#0066cc"),
             BackgroundColor = Color.FromHex("#272B2E")
@@ -79,11 +75,9 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref moviesStored, value);
         }
 
-        async Task FillGenresList()
+        void FillGenresList()
         {
-            var realm = await Realm.GetInstanceAsync();
-
-            var genreList = realm.All<Genres>().FirstOrDefault();
+            var genreList = RealmDB.All<Genres>().FirstOrDefault();
 
             genreList.GenresGenres.ForEach((g) =>
             {
@@ -93,8 +87,6 @@ namespace SSFR_Movies.ViewModels
 
         public async Task<object> FillMoviesList()
         {
-            await Task.Yield();
-
             var tcs = new TaskCompletionSource<object>();
 
             //Verify if internet connection is available
@@ -116,8 +108,7 @@ namespace SSFR_Movies.ViewModels
                 IsRunning = true;
             });
 
-            var realm = await Realm.GetInstanceAsync();
-            var movies = realm.All<Movie>().SingleOrDefault();
+            var movies = RealmDB.All<Movie>().SingleOrDefault();
             
             if (movies == null)
             {
@@ -133,7 +124,7 @@ namespace SSFR_Movies.ViewModels
             //    });
             ////});
 
-            AllMoviesList.Value.AddRange(movies.Results);
+            AllMoviesList.AddRange(movies.Results);
            
             await Device.InvokeOnMainThreadAsync(() =>
             {
@@ -149,8 +140,6 @@ namespace SSFR_Movies.ViewModels
 
         public async Task<object> FillMoviesByGenreList()
         {
-            await Task.Yield();
-
             var tcs = new TaskCompletionSource<object>();
             //Verify if internet connection is available
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
@@ -164,17 +153,16 @@ namespace SSFR_Movies.ViewModels
                 return await tcs.Task;
             }
 
-            var realm = Realm.GetInstance();
-            var movies = realm.All<Movie>().SingleOrDefault();
+            var movies = RealmDB.All<Movie>().SingleOrDefault();
 
-            AllMoviesList.Value.Clear();
+            AllMoviesList.Clear();
 
             //movies.Results.ForEach((r) =>
             //{
             //    AllMoviesList.Value.Add(r);
             //});
 
-            AllMoviesList.Value.AddRange(movies.Results);
+            AllMoviesList.AddRange(movies.Results);
 
             await Device.InvokeOnMainThreadAsync(() =>
             {
@@ -228,7 +216,7 @@ namespace SSFR_Movies.ViewModels
         private Lazy<AsyncCommand> remainingItemsThresholdReachedCommand;
         public Lazy<AsyncCommand> RemainingItemsThresholdReachedCommand
         {
-            get => remainingItemsThresholdReachedCommand ?? (remainingItemsThresholdReachedCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessRemainingItemsThresholdReachedCommand())));
+            get => remainingItemsThresholdReachedCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await ProcessRemainingItemsThresholdReachedCommand()));
         }
 
         async Task ProcessRemainingItemsThresholdReachedCommand()
@@ -257,7 +245,7 @@ namespace SSFR_Movies.ViewModels
         private Lazy<AsyncCommand> getStoreMoviesCommand;
         public Lazy<AsyncCommand> GetStoreMoviesCommand
         {
-            get => getStoreMoviesCommand ?? (getStoreMoviesCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessStoreMovies())));
+            get => getStoreMoviesCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await ProcessStoreMovies()));
         }
         
         async Task ProcessStoreMovies()
@@ -299,13 +287,13 @@ namespace SSFR_Movies.ViewModels
         private Lazy<AsyncCommand> getStoreMoviesByGenresCommand;
         public Lazy<AsyncCommand> GetStoreMoviesByGenresCommand
         {
-            get => getStoreMoviesByGenresCommand ?? (getStoreMoviesByGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesByGenreList())));
+            get => getStoreMoviesByGenresCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await FillMoviesByGenreList()));
         }
 
         private Lazy<AsyncCommand> getMoviesGenresCommand;
         public Lazy<AsyncCommand> GetMoviesGenresCommand
         {
-            get => getMoviesGenresCommand ?? (getMoviesGenresCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> ProcessGenres())));
+            get => getMoviesGenresCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async ()=> await ProcessGenres()));
         }
 
         async Task ProcessGenres()
@@ -343,40 +331,54 @@ namespace SSFR_Movies.ViewModels
         private Lazy<AsyncCommand> fillUpMoviesListAfterRefreshCommand;
         public Lazy<AsyncCommand> FillUpMoviesListAfterRefreshCommand
         {
-            get => fillUpMoviesListAfterRefreshCommand ?? (fillUpMoviesListAfterRefreshCommand = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesList())));
+            get => fillUpMoviesListAfterRefreshCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await FillMoviesList()));
         }
 
         private Lazy<AsyncCommand> fillUpMovies;
         public Lazy<AsyncCommand> FillUpMovies
         {
-            get => fillUpMovies ?? (fillUpMovies = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> Task.WhenAll(FillMoviesList(), FillGenresList()))));
+            get => fillUpMovies ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () =>
+            {
+                await FillMoviesList();
+                FillGenresList();
+            }));
         }
 
         private Lazy<AsyncCommand> noNetWorkHideTabs;
         public Lazy<AsyncCommand> NoNetWorkHideTabs
         {
-            get => noNetWorkHideTabs ?? (noNetWorkHideTabs = new Lazy<AsyncCommand>(() => new AsyncCommand(()=> FillMoviesList())));
+            get => noNetWorkHideTabs ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await FillMoviesList()));
         }
+
+        public Realm RealmDB { get; private set; } = Realm.GetInstance();
 
         public AllMoviesPageViewModel()
         {
-            var realm = Realm.GetInstance();
-
-            var movies = realm.All<Movie>().Count();
-
-            //Verify if internet connection is available
-            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+            try
             {
-                return;
+                var movies = RealmDB.All<Movie>().Count();
+
+                //Verify if internet connection is available
+                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+                {
+                    return;
+                }
+
+                if (movies < 1)
+                {
+                    //await Task.WhenAll(GetStoreMoviesCommand.Value.ExecuteAsync(), GetMoviesGenresCommand.Value.ExecuteAsync());
+                    GetStoreMoviesCommand.Value.ExecuteAsync();
+                    GetMoviesGenresCommand.Value.ExecuteAsync();
+                }
+                else
+                {
+                    FillUpMovies.Value.ExecuteAsync();
+                }
+
             }
-
-            if (movies < 1)
+            catch (Exception ex)
             {
-                TaskMonitor.Create(Task.WhenAll(GetStoreMoviesCommand.Value.ExecuteAsync(), GetMoviesGenresCommand.Value.ExecuteAsync()));
-            }
-            else
-            {
-                TaskMonitor.Create(FillUpMovies.Value.ExecuteAsync());
+                Console.WriteLine($"Error: {ex}");
             }
         }
     }

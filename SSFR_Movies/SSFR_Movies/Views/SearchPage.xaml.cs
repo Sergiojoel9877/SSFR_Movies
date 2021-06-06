@@ -1,12 +1,14 @@
-﻿using Sharpnado.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
+using SSFR_Movies.Services.Abstract;
 using SSFR_Movies.ViewModels;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+using SSFR_Movies.Views.DataTemplateSelectors;
+using Xamarin.CommunityToolkit.Markup;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -33,50 +35,18 @@ namespace SSFR_Movies.Views
 
             searchBar.Focus();
 
-            //SuscribeToMessages();
-
-            //MoviesList.SelectionChangedCommand = new AsyncCommand(async () =>
-            //{
-            //    await MovieSelected();
-            //});
-            SetListOrientationLayout();
+            SetListItemTemplate();
         }
 
-        private void SetListOrientationLayout()
+        private void SetListItemTemplate()
         {
-            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
-            {
-                SnapPointsAlignment = SnapPointsAlignment.Start,
-                SnapPointsType = SnapPointsType.MandatorySingle
-            };
-        }
-
-        private void SuscribeToMessages()
-        {
-
-            //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
-            //{
-            //    MovieSelected();
-            //});
-
-            //MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            //{
-            //    MoviesList.SelectedItem = null;
-            //});
-        }
-        //TODO: Fix: MovieSelected method fails [SearchPage.xaml.cs]
-        private void MovieSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            TaskMonitor<object>.Create(ResultSingleton.SetInstanceAsync((sender as CollectionView).SelectedItem as Result));
-            TaskMonitor.Create(Shell.Current.GoToAsync("/MovieDetails", true));
-            MoviesList.SelectedItem = null;
+            MoviesList.ItemTemplate = new SelectedMovieTemplateSelector();
+            MoviesList.Bind(CollectionView.ItemsSourceProperty, nameof(AllMoviesPageViewModel.AllMoviesList));
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            SuscribeToMessages();
         }
 
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
@@ -111,9 +81,8 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(async () =>
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-
                 try
                 {
                     if (key != "")
@@ -124,13 +93,13 @@ namespace SSFR_Movies.Views
                         if (movie_results.Results.Count != 0)
                         {
 
-                            vm.AllMoviesList.Value.Clear();
+                            vm.AllMoviesList.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
                                 if (MovieResult.BackdropPath != null)
                                 {
-                                    vm.AllMoviesList.Value.Add(MovieResult);
+                                    vm.AllMoviesList.Add(MovieResult);
                                 }
                             }
 
@@ -138,7 +107,7 @@ namespace SSFR_Movies.Views
 
                             MoviesList.IsVisible = true;
 
-                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
+                            MoviesList.ItemsSource = vm.AllMoviesList;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 

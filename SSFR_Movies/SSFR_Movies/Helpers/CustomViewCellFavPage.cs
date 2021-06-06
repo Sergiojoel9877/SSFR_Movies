@@ -1,18 +1,12 @@
-﻿using AsyncAwaitBestPractices;
+﻿using System;
+using System.Collections.Generic;
 using FFImageLoading.Forms;
-using Realms;
+using FFImageLoading.Work;
 using Splat;
 using SSFR_Movies.Converters;
-using SSFR_Movies.CustomRenderers;
 using SSFR_Movies.Models;
-using SSFR_Movies.Services;
-using SSFR_Movies.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
+using SSFR_Movies.Services.Abstract;
 using Xamarin.Forms;
-using Debug = System.Diagnostics;
 
 namespace SSFR_Movies.Helpers
 {
@@ -20,7 +14,7 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<Image> blurCachedImage = null;
+        private readonly Lazy<CachedImage> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -34,9 +28,15 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<Image> unPinFromFavList = null;
         private readonly Lazy<StackLayout> compat = null;
         private readonly TapGestureRecognizer tap = null;
+        private List<ITransformation> Transformations { get; set; } = new()
+        {
+            new FFImageLoading.Transformations.BlurredTransformation(15)
+        };
+
+        public Result Result { get; set; }
         #endregion
 
-        public CustomViewCellFavPage()
+        public CustomViewCellFavPage(Result result)
         {
             HeightRequest = 350;
             Direction = FlexDirection.Column;
@@ -45,6 +45,7 @@ namespace SSFR_Movies.Helpers
 
             Container = new Lazy<StackLayout>(() => new StackLayout()
             {
+                Margin = 16,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.FillAndExpand
             });
@@ -70,13 +71,13 @@ namespace SSFR_Movies.Helpers
             };
             BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
-            blurCachedImage = new Lazy<Image>(() => new Image()
+            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
             {
                 HeightRequest = 300,
                 WidthRequest = 300,
                 Opacity = 60,
                 Source = BackdropPathSource,
-                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
+                Transformations = Transformations,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Scale = 3,
                 VerticalOptions = LayoutOptions.FillAndExpand
@@ -212,54 +213,32 @@ namespace SSFR_Movies.Helpers
             tap.Tapped += QuitFromFavListTap;
 
             compat.Value.GestureRecognizers.Add(tap);
+
+            Result = result;
+
+            var OnTapNavigationGesture = new TapGestureRecognizer();
+            OnTapNavigationGesture.Tapped += OnTapNavigationGesture_Tapped;
+
+            GestureRecognizers.Add(OnTapNavigationGesture);
+        }
+
+        private async void OnTapNavigationGesture_Tapped(object sender, EventArgs e)
+        {
+            ResultSingleton.SetInstance(Result);
+            await Shell.Current.GoToAsync("/MovieDetails", true);
         }
 
         private async void QuitFromFavListTap(object sender, EventArgs e)
         {
-            await Task.Yield();
-
             await unPinFromFavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-            
+
+            IMovieService movieService = Locator.Current.GetService<IMovieService>();
+
             if (sender != null)
             {
+                await movieService.RemoveMovieFromFavoriteList(Result);
 
-                var movie = BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                        return false;
-                    });
-                    return;
-                }
-
-                try
-                {
-                    var realm = await Realm.GetInstanceAsync();
-
-                    var deleteMovie = realm.Find<Result>(movie.Id);
-
-                    if (deleteMovie != null)
-                    {
-                        realm.Write(() =>
-                        {
-                            movie.FavoriteMovie = "StarEmpty.png";
-
-                            realm.Add(movie, true);
-                        });
-
-                        Locator.Current.GetService<FavoriteMoviesPageViewModel>().FavMoviesList.Value.Remove(movie);
-
-                        MessagingCenter.Send(this, "Refresh", true);
-                    }
-                }
-                catch (Exception e15)
-                {
-                    Debug.Debug.WriteLine("Error: " + e15.InnerException);
-                }
+                await unPinFromFavList.Value.ScaleTo(1, 500, Easing.BounceOut);
             }
         }
     }

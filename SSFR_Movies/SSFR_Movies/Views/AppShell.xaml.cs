@@ -1,14 +1,12 @@
-﻿using SSFR_Movies.Services;
-using SSFR_Movies.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using SSFR_Movies.Services.Abstract;
+using SSFR_Movies.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
-   
+
     public partial class AppShell : Shell
     {
 

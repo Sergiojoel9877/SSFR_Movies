@@ -1,15 +1,15 @@
-﻿using AsyncAwaitBestPractices;
-using Realms;
-using Sharpnado.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using AsyncAwaitBestPractices;
 using Splat;
 //using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using SSFR_Movies.Services.Abstract;
+using SSFR_Movies.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -20,44 +20,29 @@ namespace SSFR_Movies.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailsPage : ContentPage
     {
-        int _count { get; set; } = 1;
+        int Count { get; set; } = 1;
+        Result Result { get; set; }
 
         //string RegexOpenLoad = "https?:\\/\\/(www\\.)?(openload|oload)\\.[^\\/,^\\.]{2,}\\/(embed|f)\\/.+";
 
-        private async Task SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(Result movie)
+        private void SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(Result movie)
         {
             if (movie?.Title?.Length >= 25)
             {
-                await Device.InvokeOnMainThreadAsync(async () =>
+                //MovieTitle.SetAnimation();
+                var Go = new Animation(d => MovieTitle.TranslationX = d, 350, -500);
+
+                Go.Commit(MovieTitle, "Animation", 100, 8000, Easing.Linear, (d, b) =>
                 {
-                    await MovieTitle.SetAnimation();
-                });
+                    MovieTitle.TranslationX = 10;
+                }, () => true);
             }
         }
 
         private void LowerChildInAbsoluteLayout()
         {
             absoluteLayout2.LowerChild(theFrame2);
-            //absoluteLayout.RaiseChild(hScroll);
             absoluteLayout.RaiseChild(AddToFavLayout);
-            //absoluteLayout.RaiseChild(PlayTrailer);
-        }
-
-        private void SetEventHandlers()
-        {
-            QuitFromFavLayout.Clicked += QuitFromFavorites;
-
-            AddToFavLayout.Clicked += Tap_Tapped;
-
-            PlayTrailer.Clicked += PlayTrailer_Tapped;
-        }
-
-        private void SetAddSourceToFavoritesListImage(string v)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                AddToFav.Source = "StarEmpty.png";
-            });
         }
 
         private void SetPosterImgGestureRecognizer()
@@ -71,242 +56,83 @@ namespace SSFR_Movies.Views
 
         public MovieDetailsPage()
         {
-            InitializeComponent();
-
-            TaskMonitor.Create(Initialize());
+            InitializeComponent();            
         }
 
-        private async Task Initialize()
+        void Initialize()
         {
-            BindingContext = await ResultSingleton.GetInstanceAsync();
-
-            ResultSingleton.SetIntanceToNull();
+            BindingContext = Locator.Current.GetService<MovieDetailsPageViewModel>(); //ResultSingleton.GetInstanceAsync();
+            (BindingContext as MovieDetailsPageViewModel).OnMovieAddedRemovedUpdateUIElements += MovieDetailsPage_OnMovieAddedRemovedUpdateUIElements;
         }
 
-        private async Task ShowFabButtonIfContentMatchScrollviewHeight()
+        private async void MovieDetailsPage_OnMovieAddedRemovedUpdateUIElements(object sender, EventArgs e)
+        {
+            MessagingCenter.Send(this, "ClearSelection");
+
+            await Task.WhenAll(
+                AddToFav.ScaleTo(1.50, 500, Easing.SpringOut),
+                AddToFav.ScaleTo(1, 500, Easing.SpringIn));
+        }
+
+        private void ShowFabButtonIfContentMatchScrollviewHeight()
         {
             double scrollingSpace = hScroll.ContentSize.Height;
             double scrollHeight = hScroll.Height;
             if (scrollingSpace == scrollHeight)
             {
-                await Device.InvokeOnMainThreadAsync(async () =>
+                absoluteLayout.RaiseChild(AddToFavLayout);
+                MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    absoluteLayout.RaiseChild(AddToFavLayout);
                     await AddToFavLayout.ScaleTo(1, 250, Easing.Linear);
                 });
             }
         }
 
-        private async Task IsPresentInFavList(Result m)
+        protected override void OnAppearing()
         {
-            var realm = await Realm.GetInstanceAsync();
-
-            var movieExists = realm.Find<Result>(m.Id);
-
-            if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
-            {
-                await Device.InvokeOnMainThreadAsync(() =>
-                {
-                    AddToFav.Source = "Star.png";
-
-                    AddToFavLayout.IsVisible = false;
-
-                    QuitFromFavLayout.IsVisible = true;
-                });
-            }
-            else
-            {
-                await Device.InvokeOnMainThreadAsync(() =>
-                {
-                    AddToFavLayout.IsVisible = true;
-
-                    QuitFromFavLayout.IsVisible = false;
-                });
-            }
-        }
-
-        private void Tap_Tapped(object sender, EventArgs e)
-        {
-            TaskMonitor.Create(Task.WhenAll(
-                AddToFav.ScaleTo(1.50, 500, Easing.SpringOut),
-                AddToFavList(),
-                AddToFav.ScaleTo(1, 500, Easing.SpringIn)
-            ));
-        }
-
-        private async Task AddToFavList()
-        {
-            var movie = (Result)BindingContext;
-
-            var realm = await Realm.GetInstanceAsync();
-
-            //Verify if internet connection is available
-            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-
-            if (await DisplayAlert("Suggestion", "Would you like to add this movie to your favorites list?", "Yes", "no"))
-            {
-                try
-                {
-                    var movieExists = realm.Find<Result>(movie.Id);
-
-                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
-                    {
-                        await DisplayAlert("Oh no!", "It looks like " + movie.Title + " already exits in your favorite list!", "ok");
-                        AddToFav.Source = "Star.png";
-                    }
-                    else
-                    {
-                        realm.Write(() =>
-                        {
-                            movie.FavoriteMovie = "Star.png";
-                            realm.Add(movie, true);
-                        });
-
-                        await DisplayAlert("Added Successfully", "The movie " + movie.Title + " was added to your favorite list!", "ok");
-
-                        //MessagingCenter.Send(this, "ClearSelection");
-
-                        //MessagingCenter.Send(this, "Refresh", true);
-
-                        AddToFav.Source = "Star.png";
-
-                        AddToFavLayout.IsVisible = false;
-
-                        QuitFromFavLayout.IsVisible = true;
-
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine("Error: " + e.InnerException);
-                }
-            }
-        }
-
-        private async void QuitFromFavorites(object sender, EventArgs e)
-        {
-            var movie = (Result)BindingContext;
-
-            //Verify if internet connection is available
-            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection");
-                    return false;
-                });
-                return;
-            }
-
-            if (await DisplayAlert("Suggestion", "Would you like to delete this movie from your favorites list?", "Yes", "No"))
-            {
-                try
-                {
-                    var realm = await Realm.GetInstanceAsync();
-
-                    realm.Write(() =>
-                    {
-                        movie.FavoriteMovie = "StarEmpty.png";
-
-                        realm.Add(movie, true);
-                    });
-
-                    await DisplayAlert("Deleted Successfully", "The movie " + movie.Title + " was deleted from your favorite list!", "ok");
-
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        AddToFav.Source = "StarEmpty.png";
-
-                        AddToFavLayout.IsVisible = true;
-
-                        QuitFromFavLayout.IsVisible = false;
-
-                        MessagingCenter.Send(this, "Refresh", true);
-                    });
-                }
-                catch (Exception)
-                {
-                    Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-                    {
-                        DependencyService.Get<IToast>().LongAlert("Please be sure that your device has an Internet connection or maybe that movie doesn't exists!");
-
-                        return false;
-                    });
-                }
-            }
-        }
-
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-
             if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
             {
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
                 return;
             }
 
-            var item = BindingContext as Result;
+            Initialize();
 
-            await Task
-                  .WhenAll(SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(item), IsPresentInFavList(item));
+            Result = ResultSingleton.GetInstance();
+
+            SetAnimationToMovieTitleIfTitleIsGreaterThan25Chars(Result);
+
+            (BindingContext as MovieDetailsPageViewModel).IsPresentInFavList().ContinueWith(w => { });
 
             SetPosterImgGestureRecognizer();
 
-            SetAddSourceToFavoritesListImage("StarEmpty.png");
-
             LowerChildInAbsoluteLayout();
 
-            if (((Result)BindingContext).Id != 0)
+            if (Result.Id != 0)
             {
-                var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(((Result)BindingContext).Id);
+                var video = new MovieVideo();
+
+                Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(Result.Id).ContinueWith(async r =>
+                {
+                    video = await r;
+                });
 
                 if (video.Results.Count() == 0)
                 {
-                    await PlayTrailer.ScaleTo(0, 250, Easing.Linear);
+                    PlayTrailer.ScaleTo(0, 250, Easing.Linear);
                 }
                 else
                 {
-                    await PlayTrailer.ScaleTo(1, 250, Easing.Linear);
+                    PlayTrailer.ScaleTo(1, 250, Easing.Linear);
                 }
             }
-
-            SetEventHandlers();
-
-            await ShowFabButtonIfContentMatchScrollviewHeight();
+            base.OnAppearing();
         }
 
         protected override void OnDisappearing()
         {
-            DischargeEventHandlers();
-
+            (BindingContext as MovieDetailsPageViewModel).OnMovieAddedRemovedUpdateUIElements -= MovieDetailsPage_OnMovieAddedRemovedUpdateUIElements;
             base.OnDisappearing();
-        }
-
-        private void ChargeEventHandlers()
-        {
-            QuitFromFavLayout.Clicked += QuitFromFavorites;
-
-            AddToFavLayout.Clicked += Tap_Tapped;
-
-            PlayTrailer.Clicked += PlayTrailer_Tapped;
-        }
-
-        private void DischargeEventHandlers()
-        {
-            QuitFromFavLayout.Clicked -= QuitFromFavorites;
-
-            AddToFavLayout.Clicked -= Tap_Tapped;
-
-            PlayTrailer.Clicked -= PlayTrailer_Tapped;
         }
 
         public async Task SpeakNow(string msg)
@@ -320,25 +146,25 @@ namespace SSFR_Movies.Views
             await TextToSpeech.SpeakAsync(msg, settings);
         }
 
-        private async void PlayTrailer_Tapped(object sender, EventArgs e)
-        {
-            await Task.Yield();
+        //private async void PlayTrailer_Tapped(object sender, EventArgs e)
+        //{
+        //    await Task.Yield();
 
-            var movie = (Result)BindingContext;
+        //    var movie = (Result)BindingContext;
 
-            var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
+        //    var video = await Locator.Current.GetService<ApiClient>().GetMovieVideosAsync(movie.Id);
 
-            if (video.Results.Count() > 0)
-            {
-                await Launcher.CanOpenAsync(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
-            }
-            else
-            {
-                DependencyService.Get<IToast>().LongAlert("No trailers for this movie/serie found");
-            }
-        }
+        //    if (video.Results.Count() > 0)
+        //    {
+        //        await Launcher.CanOpenAsync(new Uri("vnd.youtube://watch/" + video.Results.Where(v => v.Type == "Trailer").FirstOrDefault().Key));
+        //    }
+        //    else
+        //    {
+        //        DependencyService.Get<IToast>().LongAlert("No trailers for this movie/serie found");
+        //    }
+        //}
 
-        private void StreamMovie_Tapped(object sender, EventArgs e)
+        private async void StreamMovie_Tapped(object sender, EventArgs e)
         {
             var item = BindingContext as Result;
 
@@ -348,7 +174,7 @@ namespace SSFR_Movies.Views
                                 .PlayMovieByNameAndYear(item.Title.Replace(" ", "+").Replace(":", String.Empty),
                                     item.ReleaseDate.Substring(0, 4));
 
-            Device.OpenUri(new Uri(URI));
+            await Xamarin.Essentials.Launcher.TryOpenAsync(new Uri(URI));
         }
 
         //private void StreamWVswap_Navigated(object sender, WebNavigatedEventArgs e)
@@ -468,7 +294,7 @@ namespace SSFR_Movies.Views
 
             var title = new Label
             {
-                Text = (BindingContext as Result).Title,
+                Text = Result.Title,
                 Scale = 0,
                 TextColor = Color.White,
                 FontAttributes = FontAttributes.Bold,
@@ -476,16 +302,16 @@ namespace SSFR_Movies.Views
                 VerticalTextAlignment = TextAlignment.Center
             };
 
-            Device.InvokeOnMainThreadAsync(async () =>
+            MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 await title.ScaleTo(1, 1500, Easing.Linear);
             }).SafeFireAndForget();
 
             if (scrollingSpace <= e.ScrollY)
             {
-                if (_count == 1)
+                if (Count == 1)
                 {
-                    Device.InvokeOnMainThreadAsync(async () =>
+                    MainThread.InvokeOnMainThreadAsync(async () =>
                     {
                         await AddToFavLayout.ScaleTo(1, 250, Easing.Linear);
                     }).SafeFireAndForget();
@@ -493,7 +319,7 @@ namespace SSFR_Movies.Views
                     Shell.SetTitleView(this, null);
                     Shell.SetTitleView(this, title);
                 }
-                _count += 1;
+                Count += 1;
             }
         }
     }

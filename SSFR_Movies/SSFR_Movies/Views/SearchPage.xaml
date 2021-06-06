@@ -61,17 +61,8 @@
             <CollectionView
                 x:Name="MoviesList"
                 IsVisible="{Binding ListVisible}"
-                SelectionChanged="MovieSelected"
                 SelectionMode="Single"
-                Visual="Material">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell CompressedLayout.IsHeadless="True" HeightRequest="350" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                Visual="Material"/>
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
