@@ -1,12 +1,11 @@
-﻿
+﻿using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-using Xamarin.Forms.Xaml;
 
 namespace SSFR_Movies.Views
 {
     [Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class About : ContentPage
     {
         readonly ToolbarItem searchToolbarItem = null;
@@ -21,9 +20,9 @@ namespace SSFR_Movies.Views
                 IconImageSource = "Search.png",
                 Priority = 0,
 
-                Command = new Command(async () =>
+                Command = new AsyncCommand(async () =>
                 {
-                    await Navigation.PushAsync(new SearchPage(), true);
+                    await Shell.Current.GoToAsync("/Search", false);
                 })
             };
 

@@ -1,33 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="SSFR_Movies.Views.AllMoviesPage"
-    x:Name="content"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:models="clr-namespace:SSFR_Movies.Models"
+    xmlns:viewmodels="clr-namespace:SSFR_Movies.ViewModels"
+    x:Name="content"
     Title="SSFR Movies"
-    BackgroundColor="#161513">
+    BackgroundColor="Black"
+    x:DataType="{x:Type viewmodels:AllMoviesPageViewModel }">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
-        </ResourceDictionary>
+        <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
     </ContentPage.Resources>
-    
     <ContentPage.Content>
-        <AbsoluteLayout x:Name="stack" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+        <AbsoluteLayout
+            x:Name="stack"
+            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+            AbsoluteLayout.LayoutFlags="All"
+            CompressedLayout.IsHeadless="True">
 
             <ScrollView
                 x:Name="scrollview"
+                Margin="0,15,0,0"
                 AbsoluteLayout.LayoutBounds="0, 0, 1, 0.1"
                 AbsoluteLayout.LayoutFlags="All"
-                Margin="0,15,0,0"
                 HeightRequest="40"
                 HorizontalScrollBarVisibility="Never">
 
-                <FlexLayout Direction="Row" BindableLayout.ItemsSource="{Binding GenreList.Value}">
+                <FlexLayout BindableLayout.ItemsSource="{Binding GenreList.Value}" Direction="Row">
                     <BindableLayout.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="{x:Type models:Genre}" >
                             <Frame Style="{StaticResource FramesStyle}">
                                 <Label
                                     FontAttributes="Bold"
@@ -42,52 +46,34 @@
                     </BindableLayout.ItemTemplate>
                 </FlexLayout>
             </ScrollView>
-            
-            <AbsoluteLayout x:Name="scroll" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
-         
+
+            <AbsoluteLayout
+                x:Name="scroll"
+                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                AbsoluteLayout.LayoutFlags="All"
+                CompressedLayout.IsHeadless="True">
+
                 <ActivityIndicator
                     x:Name="activityIndicator"
                     AbsoluteLayout.LayoutBounds="0.5, 0.5, 0.5, 0.2"
                     AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="#004b96"
                     HeightRequest="40"
-                    Visual="Material"
-                    VerticalOptions="CenterAndExpand"
                     HorizontalOptions="CenterAndExpand"
                     IsRunning="{Binding IsRunning}"
                     IsVisible="{Binding IsEnabled}"
+                    VerticalOptions="CenterAndExpand"
+                    Visual="Material"
                     WidthRequest="40"
-                    BackgroundColor="#004b96"
                     Color="#FFF" />
-
+            
                 <CollectionView
                     x:Name="MoviesList"
-                    IsVisible="{Binding ListVisible}"
-                    SelectionMode="Single"
-                    SelectionChanged="MovieSelected"
-                    ItemsSource="{Binding AllMoviesList.Value}"
-                    WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}"
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-                    AbsoluteLayout.LayoutFlags="All">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <StackLayout CompressedLayout.IsHeadless="True">
-                                <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                            </StackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-
-                <Button
-                    AbsoluteLayout.LayoutBounds="0, 0.9, 0, 0.2"
                     AbsoluteLayout.LayoutFlags="All"
-                    x:Name="RefreshBtn"
-                    IsVisible="{Binding ListVisible}"
-                    BackgroundColor="#272B2E"
-                    TextColor="#006FDE"
-                    Text="Refresh"
-                    Clicked="RefreshBtnClicked"
-                    FontSize="Medium"/>
-
+                    RemainingItemsThreshold="19"
+                    ItemSizingStrategy="MeasureFirstItem"
+                    RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"/>
             </AbsoluteLayout>
         </AbsoluteLayout>
     </ContentPage.Content>

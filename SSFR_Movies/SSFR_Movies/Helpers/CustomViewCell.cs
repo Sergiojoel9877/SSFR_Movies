@@ -1,292 +1,211 @@
-﻿using Realms;
-using SSFR_Movies.Converters;
-using SSFR_Movies.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using XF.Material.Forms.UI.Dialogs;
-using XF.Material.Forms.UI.Dialogs.Configurations;
-using SSFR_Movies.CustomRenderers;
-using AsyncAwaitBestPractices;
+using FFImageLoading;
 using FFImageLoading.Forms;
+using Splat;
+using SSFR_Movies.Models;
+using SSFR_Movies.ViewModels;
+using Xamarin.CommunityToolkit.Markup;
+using Xamarin.CommunityToolkit.ObjectModel;
+using Xamarin.Forms;
 
 namespace SSFR_Movies.Helpers
 {
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class CustomViewCell : FlexLayout
     {
         #region Controls
         private readonly Lazy<AbsoluteLayout> absoluteLayout = null;
         private readonly Lazy<Frame> FrameUnderImages = null;
         private readonly Lazy<Grid> gridInsideFrame = null;
-        //private readonly Lazy<CachedImage> blurCachedImage = null;
-        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
-        private readonly Lazy<Image> cachedImage = null;
+        private readonly Lazy<CachedImage> cachedImage = null;
         private readonly Lazy<Image> pin2FavList = null;
         public Lazy<Label> title = null;
         private readonly Lazy<StackLayout> Container = null;
         private readonly Lazy<StackLayout> SubContainer = null;
         private readonly Lazy<StackLayout> panelContainer = null;
         private readonly Lazy<Label> releaseDate = null;
-        private readonly Lazy<StackLayout> compat = null;
-        private readonly TapGestureRecognizer tap = null;
+
+        Result Result { get; set; }
         #endregion
 
-        public CustomViewCell()
+        public CustomViewCell(Result result)
         {
-
-            HeightRequest = 300;
-            Direction = FlexDirection.Column;
-            Margin = 16;
-            AlignContent = FlexAlignContent.Center;
-
-            Container = new Lazy<StackLayout>(() => new StackLayout()
+            try
             {
-                HorizontalOptions = LayoutOptions.Center,
+                Result = result;
 
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
+                CompressedLayout.SetIsHeadless(this, true);
+                HeightRequest = 350;
+                Direction = FlexDirection.Column;
+                Margin = 16;
+                AlignContent = FlexAlignContent.Center;
 
-            SubContainer = new Lazy<StackLayout>(() => new StackLayout()
-            {
-                Margin = new Thickness(16, 0, 16, 0),
-                HeightRequest = 280,
-                BackgroundColor = Color.FromHex("#44312D2D"),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-
-            absoluteLayout = new Lazy<AbsoluteLayout>(() => new AbsoluteLayout()
-            {
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-
-            var BackdropPathSource = new UriImageSource()
-            {
-                CachingEnabled = true,
-                CacheValidity = TimeSpan.MaxValue
-            };
-            BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
-
-            blurCachedImage = new Lazy<Image>(() => new Image()
-            {
-                HeightRequest = 300,
-                WidthRequest = 300,
-                Opacity = 60,
-                Source = BackdropPathSource,
-                //Transformations = new List<FFImageLoading.Work.ITransformation>() { new FFImageLoading.Transformations.BlurredTransformation(10) },
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 3,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-
-            var PosterPathSource = new UriImageSource()
-            {
-                CachingEnabled = true,
-                CacheValidity = TimeSpan.MaxValue
-            };
-            PosterPathSource.SetBinding(UriImageSource.UriProperty, new Binding("PosterPath", BindingMode.Default, new PosterImageUrlConverter()));
-
-            cachedImage = new Lazy<Image>(() => new Image()
-            {
-                Aspect = Aspect.AspectFill,
-                Source = PosterPathSource,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-          
-            FrameCover = new Lazy<Frame>(() => new Frame()
-            {
-                IsClippedToBounds = true,
-                Margin = new Thickness(0, 0, 0, 0),
-                HasShadow = true,
-                BorderColor = Color.FromHex("#00000000"),
-                Padding = new Thickness(0, 0, 0, 0),
-                BackgroundColor = Color.FromHex("#00000000"),
-                CornerRadius = 15
-            });
-
-            panelContainer = new Lazy<StackLayout>(() => new StackLayout()
-            {
-                HeightRequest = 125,
-                HorizontalOptions = LayoutOptions.Center,
-            });
-
-            FrameUnderImages = new Lazy<Frame>(() => new Frame()
-            {
-                BackgroundColor = Color.FromHex("#44312D2D"),
-                CornerRadius = 5,
-                HasShadow = true,
-                HorizontalOptions = LayoutOptions.Center
-            });
-
-            ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
-            {
-                new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
-                new ColumnDefinition() { Width = GridLength.Star},
-                new ColumnDefinition() { Width = GridLength.Star}
-            };
-
-            RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
-            {
-                new RowDefinition() { Height = GridLength.Star},
-                new RowDefinition() { Height = GridLength.Star}
-            };
-
-            gridInsideFrame = new Lazy<Grid>(() => new Grid()
-            {
-                ColumnDefinitions = columnDefinitions,
-                RowDefinitions = rowDefinitions
-            });
-
-            title = new Lazy<Label>(() => new Label()
-            {
-                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                TextColor = Color.White,
-                LineBreakMode = LineBreakMode.TailTruncation,
-                Margin = new Thickness(16, 0, 0, 0),
-                FontFamily = "Arial",
-                FontAttributes = FontAttributes.Bold
-            });
-
-            title.Value.SetBinding(Label.TextProperty, "Title");
-
-            releaseDate = new Lazy<Label>(() => new Label()
-            {
-                FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                TextColor = Color.FromHex("#65FFFFFF"),
-                LineBreakMode = LineBreakMode.NoWrap,
-                Margin = new Thickness(16, 0, 0, 0),
-                FontFamily = "Arial",
-                FontAttributes = FontAttributes.Bold
-            });
-            releaseDate.Value.SetBinding(Label.TextProperty, "ReleaseDate");
-
-            compat = new Lazy<StackLayout>(() => new StackLayout()
-            {
-                HeightRequest = 50
-            });
-
-            pin2FavList = new Lazy<Image>(() => new Image()
-            {
-                HeightRequest = 40,
-                WidthRequest = 40,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            });
-            pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
-
-            FrameCover.Value.Content = cachedImage.Value;
-
-            compat.Value.Children.Add(pin2FavList.Value);
-
-            gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
-            Grid.SetColumnSpan(title.Value, 3);
-            gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
-            gridInsideFrame.Value.Children.Add(compat.Value, 2, 1);
-
-            AbsoluteLayout.SetLayoutBounds(blurCachedImage.Value, new Rectangle(.5, 0, 1, 1));
-            AbsoluteLayout.SetLayoutFlags(blurCachedImage.Value, AbsoluteLayoutFlags.All);
-            AbsoluteLayout.SetLayoutBounds(FrameCover.Value, new Rectangle(.5, 0, 0.46, 1));
-            AbsoluteLayout.SetLayoutFlags(FrameCover.Value, AbsoluteLayoutFlags.All);
-
-            FrameUnderImages.Value.Content = gridInsideFrame.Value;
-
-            absoluteLayout.Value.Children.Add(blurCachedImage.Value);
-            absoluteLayout.Value.Children.Add(FrameCover.Value);
-            CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
-
-            panelContainer.Value.Children.Add(FrameUnderImages.Value);
-
-            SubContainer.Value.Children.Add(absoluteLayout.Value);
-            CompressedLayout.SetIsHeadless(SubContainer.Value, true);
-            Container.Value.Children.Add(SubContainer.Value);
-            Container.Value.Children.Add(panelContainer.Value);
-
-            Children.Add(Container.Value);
-
-            tap = new TapGestureRecognizer();
-
-            tap.Tapped += AddToFavListTap;
-
-            compat.Value.GestureRecognizers.Add(tap);
-
-        }
-
-        private async void AddToFavListTap(object sender, EventArgs e)
-        {
-            await Task.Yield();
-
-            await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
-
-            if (sender != null)
-            {
-                var movie = BindingContext as Result;
-
-                //Verify if internet connection is available
-                if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
+                Container = new Lazy<StackLayout>(() => new StackLayout()
                 {
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                    {
-                        var conf = new MaterialSnackbarConfiguration()
-                        {
-                            TintColor = Color.FromHex("#0066cc"),
-                            BackgroundColor = Color.FromHex("#272B2E")
-                        };
-                        MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, conf);
-                        return false;
-                    });
-                    return;
-                }
+                    Margin = 8
+                });
+                CompressedLayout.SetIsHeadless(Container.Value, true);
 
-                try
+                SubContainer = new Lazy<StackLayout>(() => new StackLayout()
                 {
-                    var realm = await Realm.GetInstanceAsync();
+                    Margin = new Thickness(0, 0, 0, 0),
+                    BackgroundColor = Color.Black
+                });
 
-                    var movieExists = realm.Find<Result>(movie.Id);
+                absoluteLayout = new Lazy<AbsoluteLayout>(() => new AbsoluteLayout()
+                {
+                });
+                CompressedLayout.SetIsHeadless(absoluteLayout.Value, true);
 
-                    if (movieExists != null && movieExists.FavoriteMovie == "Star.png")
+                var uriToImgSource = new UriImageSource
+                {
+                    CacheValidity = TimeSpan.FromDays(15),
+                    CachingEnabled = true
+                };
+
+                cachedImage = new Lazy<CachedImage>(() => new CachedImage()
+                {
+                    Aspect = Aspect.Fill,
+                    CacheDuration = TimeSpan.MaxValue,
+                    LoadingPriority = FFImageLoading.Work.LoadingPriority.Highest,
+                    LoadingPlaceholder = "Loading.png",
+                    RetryCount = 2,
+                    RetryDelay = 15,
+                    DownsampleToViewSize = true,
+                    Source = new UriImageSource
                     {
-                        var _conf = new MaterialSnackbarConfiguration()
-                        {
-                            TintColor = Color.FromHex("#0066cc"),
-                            BackgroundColor = Color.FromHex("#272B2E")
-                        };
-
-                        await MaterialDialog.Instance.SnackbarAsync("Oh no It looks like " + movie.Title + " already exits in your favorite list!", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf);
-
-                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                   
-                        return;
+                        CacheValidity = TimeSpan.MaxValue,
+                        CachingEnabled = true,
+                        Uri = new Uri(string.Concat("https://image.tmdb.org/t/p/w370_and_h556_bestv2", Result.PosterPath))
                     }
+                });
 
-                    realm.Write(() =>
-                    {
-                        movie.FavoriteMovie = "Star.png";
-
-                        realm.Add(movie, true);
-                    });
-
-                    var conf = new MaterialSnackbarConfiguration()
-                    {
-                        TintColor = Color.FromHex("#0066cc"),
-                        BackgroundColor = Color.FromHex("#272B2E")
-                    };
-
-                    await MaterialDialog.Instance.SnackbarAsync("Added Successfully, The movie " + movie.Title + " was added to your favorite list!", "Dismiss", MaterialSnackbar.DurationShort, conf);
-
-                    await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
-                    
-                    MessagingCenter.Send(this, "Refresh", true);
-                }
-                catch (Exception e15)
+                FrameCover = new Lazy<Frame>(() => new Frame()
                 {
-                    Debug.WriteLine("Error: " + e15.InnerException);
-                }
+                    IsClippedToBounds = true,
+                    Margin = new Thickness(0, 0, 0, 0),
+                    HeightRequest = 556,
+                    WidthRequest = 370,
+                    HasShadow = true,
+                    BorderColor = Color.FromHex("#00000000"),
+                    Padding = new Thickness(0, 0, 0, 0),
+                    BackgroundColor = Color.FromHex("#00000000"),
+                    CornerRadius = 15
+                });
+
+                panelContainer = new Lazy<StackLayout>(() => new StackLayout()
+                {
+                });
+                CompressedLayout.SetIsHeadless(panelContainer.Value, true);
+
+                FrameUnderImages = new Lazy<Frame>(() => new Frame()
+                {
+                    IsClippedToBounds = true,
+                    HeightRequest = 120,
+                    BackgroundColor = Color.Black,
+                    CornerRadius = 5,
+                    HasShadow = true
+                });
+
+                ColumnDefinitionCollection columnDefinitions = new ColumnDefinitionCollection()
+                {
+                    new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star)},
+                    new ColumnDefinition() { Width = GridLength.Star},
+                    new ColumnDefinition() { Width = GridLength.Star}
+                };
+
+                RowDefinitionCollection rowDefinitions = new RowDefinitionCollection()
+                {
+                    new RowDefinition() { Height = GridLength.Star},
+                    new RowDefinition() { Height = GridLength.Star}
+                };
+
+                gridInsideFrame = new Lazy<Grid>(() => new Grid()
+                {
+                    ColumnDefinitions = columnDefinitions,
+                    RowDefinitions = rowDefinitions
+                });
+
+                title = new Lazy<Label>(() => new Label()
+                {
+                    FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                    TextColor = Color.White,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    FontFamily = "Arial",
+                    FontAttributes = FontAttributes.Bold,
+                    Text = Result.Title
+                });
+
+                releaseDate = new Lazy<Label>(() => new Label()
+                {
+                    FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                    TextColor = Color.FromHex("#65FFFFFF"),
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    FontFamily = "Arial",
+                    FontAttributes = FontAttributes.Bold,
+                    Text = Result.ReleaseDate
+                });
+
+                pin2FavList = new Lazy<Image>(() => new Image()
+                {
+                    HeightRequest = 40,
+                    WidthRequest = 40
+                });
+                pin2FavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
+
+                FrameCover.Value.Content = cachedImage.Value;
+
+                gridInsideFrame.Value.Children.Add(title.Value, 0, 0);
+                Grid.SetColumnSpan(title.Value, 3);
+                gridInsideFrame.Value.Children.Add(releaseDate.Value, 0, 1);
+                gridInsideFrame.Value.Children.Add(pin2FavList.Value, 2, 1);
+
+                AbsoluteLayout.SetLayoutBounds(FrameCover.Value, new Rectangle(.5, 1, 1, 1));
+                AbsoluteLayout.SetLayoutFlags(FrameCover.Value, AbsoluteLayoutFlags.All);
+
+                FrameUnderImages.Value.Content = gridInsideFrame.Value;
+
+                absoluteLayout.Value.Children.Add(FrameCover.Value);
+                
+                panelContainer.Value.Children.Add(FrameUnderImages.Value);
+
+                SubContainer.Value.Children.Add(absoluteLayout.Value);
+                CompressedLayout.SetIsHeadless(SubContainer.Value, true);
+
+                Container.Value.Children.Add(SubContainer.Value);
+                Container.Value.Children.Add(panelContainer.Value);
+
+                Children.Add(Container.Value);
+                
+                var VmInstance = Locator.Current.GetService<AllMoviesPageViewModel>();
+
+                pin2FavList.Value.TapGesture(t =>
+                {
+                    t.Command = VmInstance.AddToFavListCommand;
+                    t.CommandParameter = Result;
+
+                }).TapGesture(r =>
+                {
+                    r.Command = new AsyncCommand(async () =>
+                    {
+                        await pin2FavList.Value.ScaleTo(1.50, 500, Easing.BounceOut);
+                        await pin2FavList.Value.ScaleTo(1, 500, Easing.BounceIn);
+                    });
+                });
+
+                this.TapGesture(t =>
+                {
+                    t.Command = VmInstance.NavToDetailsPage;
+                    t.CommandParameter = Result;
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.InnerException);
             }
         }
     }

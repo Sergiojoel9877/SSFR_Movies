@@ -1,11 +1,14 @@
-﻿using Splat;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
+using SSFR_Movies.Services.Abstract;
 using SSFR_Movies.ViewModels;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+using SSFR_Movies.Views.DataTemplateSelectors;
+using Xamarin.CommunityToolkit.Markup;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -14,7 +17,6 @@ using Xamarin.Forms.Xaml;
 namespace SSFR_Movies.Views
 {
     [Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchPage : ContentPage
     {
         readonly AllMoviesPageViewModel vm;
@@ -25,59 +27,37 @@ namespace SSFR_Movies.Views
 
             vm = Locator.Current.GetService<AllMoviesPageViewModel>();
 
-            activityIndicator.IsVisible = false;
-
             BindingContext = vm;
 
+            activityIndicator.IsVisible = false;
+            
             Shell.SetNavBarIsVisible(this, false);
 
             searchBar.Focus();
 
-            SuscribeToMessages();
+            SetListItemTemplate();
 
-            MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-
+            SetListOrientationLayout();
         }
 
-        private void SuscribeToMessages()
+        private void SetListItemTemplate()
         {
-
-            //MessagingCenter.Subscribe<CustomViewCell>(this, "_PushAsync", (s) =>
-            //{
-            //    MovieSelected();
-            //});
-
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
+            MoviesList.ItemTemplate = new SelectedMovieTemplateSelector();
+            MoviesList.Bind(CollectionView.ItemsSourceProperty, nameof(AllMoviesPageViewModel.AllMoviesList));
         }
 
-        private void MovieSelected()
+        private void SetListOrientationLayout()
         {
-            if (MoviesList.SelectedItem != null)
-            {
-                var movie = MoviesList.SelectedItem as Result;
-
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Shell.Current.GoToAsync("/MovieDetails", true);
-                });
-            }
+            MoviesList.ItemsLayout = new GridItemsLayout(2, ItemsLayoutOrientation.Vertical);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            SuscribeToMessages();
         }
 
         private async void SearchBar_SearchButtonPressed(object sender, EventArgs e)
         {
-
             await Task.Yield();
 
             activityIndicator.IsVisible = true;
@@ -108,9 +88,8 @@ namespace SSFR_Movies.Views
                 return;
             }
 
-            Device.BeginInvokeOnMainThread(async () =>
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-
                 try
                 {
                     if (key != "")
@@ -121,13 +100,13 @@ namespace SSFR_Movies.Views
                         if (movie_results.Results.Count != 0)
                         {
 
-                            vm.AllMoviesList.Value.Clear();
+                            vm.AllMoviesList.Clear();
 
                             foreach (var MovieResult in movie_results.Results)
                             {
                                 if (MovieResult.BackdropPath != null)
                                 {
-                                    vm.AllMoviesList.Value.Add(MovieResult);
+                                    vm.AllMoviesList.Add(MovieResult);
                                 }
                             }
 
@@ -135,7 +114,7 @@ namespace SSFR_Movies.Views
 
                             MoviesList.IsVisible = true;
 
-                            MoviesList.ItemsSource = vm.AllMoviesList.Value;
+                            MoviesList.ItemsSource = vm.AllMoviesList;
 
                             await MoviesList.TranslateTo(0, 0, 500, Easing.SpringIn);
 
@@ -143,7 +122,7 @@ namespace SSFR_Movies.Views
 
                             activityIndicator.IsRunning = false;
 
-                            await SpeakNow("Search completed");
+                            //await SpeakNow("Search completed");
 
                         }
                         else
@@ -159,7 +138,7 @@ namespace SSFR_Movies.Views
 
                             DependencyService.Get<IToast>().LongAlert("It seems like that movie doesn't exists, check your spelling!");
 
-                            await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
+                            //await SpeakNow("It seems like that movie doesn't exists, check your spelling!");
 
                             Vibration.Vibrate();
 
@@ -171,38 +150,6 @@ namespace SSFR_Movies.Views
                     Debug.WriteLine("Error: " + e3.InnerException);
                 }
             });
-        }
-
-        private async void ItemSelected(object sender, ItemTappedEventArgs e)
-        {
-            try
-            {
-
-                if (e.Item == null)
-                {
-                    return;
-                }
-
-                var movie = (Result)e.Item;
-
-                ((ListView)sender).SelectedItem = null;
-
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                await Shell.Current.GoToAsync("app://ssfr.com/MovieDetails", true);
-
-            }
-            catch (Exception e4)
-            {
-                Device.StartTimer(TimeSpan.FromSeconds(1), () =>
-                {
-                    DependencyService.Get<IToast>().LongAlert("An error has ocurred!");
-                    Debug.WriteLine("Error: " + e4.InnerException);
-                    Vibration.Vibrate();
-
-                    return false;
-                });
-            }
         }
 
         public async Task SpeakNow(string msg)

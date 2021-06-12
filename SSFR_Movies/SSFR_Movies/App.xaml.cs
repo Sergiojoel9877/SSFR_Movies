@@ -26,14 +26,14 @@ namespace SSFR_Movies
 
             XF.Material.Forms.Material.Init(this);
 
-//#if DEBUG
-//            HotReloader.Current.Start(this);
-//#endif
-            var mainPage = new StartPagexaml();
-
-            MainPage = mainPage;
+            SetMainPage();
 
             SetHttpClient();
+        }
+
+        private void SetMainPage()
+        {
+            MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
         }
 
         protected override void OnStart()

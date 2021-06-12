@@ -1,19 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Name="content"
     x:Class="SSFR_Movies.Views.SearchPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Visual="Material"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
-    BackgroundColor="#161513">
+    x:Name="content"
+    BackgroundColor="Black"
+    Visual="Material">
     <ContentPage.Content>
 
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" CompressedLayout.IsHeadless="True" BackgroundColor="#161513">
+        <StackLayout
+            BackgroundColor="Black"
+            CompressedLayout.IsHeadless="True"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
 
             <StackLayout
                 x:Name="Bar"
-                BackgroundColor="#272B2E"
+                BackgroundColor="Black"
                 HeightRequest="56"
                 HorizontalOptions="FillAndExpand"
                 Orientation="Horizontal"
@@ -47,22 +51,18 @@
 
             <ActivityIndicator
                 x:Name="activityIndicator"
-                HeightRequest="40"
                 BackgroundColor="#004b96"
-                VerticalOptions="CenterAndExpand"
+                HeightRequest="40"
                 HorizontalOptions="CenterAndExpand"
+                VerticalOptions="CenterAndExpand"
                 WidthRequest="40"
                 Color="White" />
 
-            <CollectionView x:Name="MoviesList" IsVisible="{Binding ListVisible}" SelectionMode="Single" Visual="Material" WidthRequest="{Binding Source={x:Reference content}, Path= WidthRequest}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCell HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <CollectionView
+                x:Name="MoviesList"
+                IsVisible="{Binding ListVisible}"
+                SelectionMode="Single"
+                Visual="Material"/>
 
             <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" />-->
             <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />

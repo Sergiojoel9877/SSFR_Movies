@@ -3,262 +3,278 @@
     x:Class="SSFR_Movies.Views.MovieDetailsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Visual="Material"
-    x:Name="content"
-    xmlns:local="clr-namespace:SSFR_Movies.Converters"
-    xmlns:customRenderers="clr-namespace:SSFR_Movies.CustomRenderers;assembly=SSFR_Movies"
     xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    xmlns:local="clr-namespace:SSFR_Movies.Converters"
+    xmlns:models="clr-namespace:SSFR_Movies.Models"
     xmlns:transformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
-    xmlns:helpers="clr-namespace:SSFR_Movies.ViewModels"
+    x:Name="content"
     Title="Details"
-    BackgroundColor="#0066cc">
+    BackgroundColor="#0066cc"
+    Visual="Material">
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
         <ResourceDictionary>
-            <local:BackgroundImageUrlConverter x:Key="BackgroundConverter"/>
-            <local:PosterImageUrlConverter x:Key="PosterConverter"/>
+            <local:BackgroundImageUrlConverter x:Key="BackgroundConverter" />
+            <local:PosterImageUrlConverter x:Key="PosterConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <AbsoluteLayout
+        <Grid
             x:Name="absoluteLayout"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand">
-            <ffimage:CachedImage
+            CompressedLayout.IsHeadless="True"
+            VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!--<ffimage:CachedImage
                 x:Name="BackDropImage"
-                CacheDuration="2000"
-                AbsoluteLayout.LayoutBounds="0,0,1,0.7"
-                AbsoluteLayout.LayoutFlags="All"
-                Source="{Binding BackdropPath, Converter={StaticResource BackgroundConverter}}"
-                Scale="3"
+                Grid.Row="0"
+                CacheDuration="20000"
                 HeightRequest="300"
                 HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand"
+                Scale="3"
+                Source="{Binding Result.BackdropPath, Converter={StaticResource BackgroundConverter}}"
                 WidthRequest="300">
                 <ffimage:CachedImage.Transformations>
-                    <transformations:BlurredTransformation/>
+                    <transformations:BlurredTransformation Radius="200" />
                 </ffimage:CachedImage.Transformations>
-            </ffimage:CachedImage>
-            <ScrollView 
+            </ffimage:CachedImage>-->
+             <Image
+                x:Name="BackDropImage"
+                Grid.Row="0"
+                HeightRequest="300"
+                IsOpaque="True"
+                Scale="3"
+                Source="{Binding Result.BackdropPath, Converter={StaticResource BackgroundConverter}}"
+                WidthRequest="300">
+                <!--<ffimage:CachedImage.Transformations>
+                    <transformations:BlurredTransformation Radius="200" />
+                </ffimage:CachedImage.Transformations>-->
+            </Image>
+            <ScrollView
                 x:Name="hScroll"
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
-                AbsoluteLayout.LayoutFlags="All" 
+                Grid.Row="0"
                 BackgroundColor="#22000000"
+                HorizontalOptions="CenterAndExpand"
+                Scrolled="HScroll_Scrolled"
                 VerticalOptions="FillAndExpand">
-                <StackLayout BackgroundColor="#00000000">
-                    <Frame 
-                        x:Name="frame"
-                        HeightRequest="300"
-                        CornerRadius="0"
-                        WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}"
-                        HasShadow="False"
-                        BorderColor="#00000000"
-                        BackgroundColor="#00000000"
-                        VerticalOptions="Center">
-                        <AbsoluteLayout
-                            x:Name="absoluteLayout2"
-                            AbsoluteLayout.LayoutBounds="0,0,1,1"
-                            AbsoluteLayout.LayoutFlags="All"
-                            HorizontalOptions="FillAndExpand"
-                            HeightRequest="300"
-                            BackgroundColor="#00000000"
-                            VerticalOptions="FillAndExpand">
-                            <ContentView
-                                AbsoluteLayout.LayoutBounds="0, 1, 1, 0.6"
-                                BackgroundColor="#00000000"
-                                AbsoluteLayout.LayoutFlags="All">
-                                <Frame
-                                    x:Name="theFrame2"
-                                    BackgroundColor="#44161513"
-                                    HasShadow="False"
-                                    CornerRadius="12"
-                                    HeightRequest="280"
-                                    HorizontalOptions="FillAndExpand"
-                                    WidthRequest="{Binding Source={x:Reference frame}, Path=WidthRequest}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
 
-                                        <StackLayout
-                                                HorizontalOptions="End"
-                                                Orientation="Vertical"
-                                                Margin="0,0,8,0"
-                                                Grid.Row="0"
-                                                Grid.Column="0"
-                                                VerticalOptions="Start">
-                                            <StackLayout
-                                                    Margin="0"
-                                                    HorizontalOptions="End"
-                                                    Orientation="Horizontal">
-                                                <!--<StackLayout.GestureRecognizers>
-                                                    --><!--<TapGestureRecognizer Tapped="StreamMovie_Tapped" />--><!--
-                                                </StackLayout.GestureRecognizers>-->
-                                                <Image
-                                                    Aspect="AspectFill"
-                                                    HeightRequest="35"
-                                                    Source="Play.png"
-                                                    WidthRequest="35" />
-                                                <Label
-                                                    Margin="5,0,0,0"
-                                                    FontAttributes="Bold"
-                                                    FontSize="Small"
-                                                    HorizontalTextAlignment="End"
-                                                    LineBreakMode="NoWrap"
-                                                    Text="Play Movie"
-                                                    TextColor="White"
-                                                    VerticalTextAlignment="Center" />
-                                            </StackLayout>
-                                            <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
-                                                <Image
-                                                    x:Name="AddToFav"
-                                                    Aspect="AspectFill"
-                                                    HeightRequest="40"
-                                                    Source="StarEmpty.png"
-                                                    WidthRequest="40" />
-                                                <Label
-                                                    FontAttributes="Bold"
-                                                    FontSize="Medium"
-                                                    Style="{StaticResource LabelsStyle}"
-                                                    Text="{Binding Popularity}" />
-                                            </StackLayout>
-                                            <Label
-                                                FontAttributes="Bold"
-                                                HorizontalTextAlignment="End"
-                                                Style="{StaticResource LabelsStyle}"
-                                                Text="{Binding ReleaseDate}" />
-                                        </StackLayout>
+                <StackLayout CompressedLayout.IsHeadless="True">
+                    <AbsoluteLayout AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
 
-                                        <StackLayout
-                                            Grid.Row="2"
-                                            Grid.Column="0"
-                                            Margin="0,20,0,8"
-                                            HorizontalOptions="FillAndExpand"
-                                            Orientation="Vertical"
-                                            VerticalOptions="End">
-                                            <ScrollView
-                                                x:Name="ScrollTitle"
-                                                HorizontalOptions="FillAndExpand"
-                                                HorizontalScrollBarVisibility="Never"
-                                                Orientation="Horizontal"
-                                                VerticalScrollBarVisibility="Never">
-                                                <Label
-                                                    x:Name="MovieTitle"
-                                                    FontAttributes="Bold"
-                                                    FontSize="Large"
-                                                    HorizontalTextAlignment="Start"
-                                                    LineBreakMode="NoWrap"
-                                                    Style="{StaticResource LabelsStyle}"
-                                                    Text="{Binding Title}">
-                                                    <Label.GestureRecognizers>
-                                                        <TapGestureRecognizer Tapped="TitleTapped" />
-                                                    </Label.GestureRecognizers>
-                                                </Label>
-                                            </ScrollView>
-                                        </StackLayout>
-                                    </Grid>
-                                </Frame>
-                            </ContentView>
-                            <Frame 
-                                x:Name="FrameCover"
-                                AbsoluteLayout.LayoutBounds="0.13, 0.6, 0.33, 0.6"
-                                AbsoluteLayout.LayoutFlags="All"
-                                IsClippedToBounds="True"
-                                Margin="0" 
-                                HasShadow="True"
-                                BorderColor="#00000000"
-                                Padding="0"
+                        <StackLayout AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
+                            <Frame
+                                x:Name="frame"
                                 BackgroundColor="#00000000"
-                                CornerRadius="15">
-                                <Image
-                                    x:Name="PosterPathImage"
-                                    Aspect="AspectFill"
-                                    Source="{Binding PosterPath, Converter={StaticResource PosterConverter}}"/>
-                            </Frame>
-                        </AbsoluteLayout>
-                    </Frame>
-                    <StackLayout BackgroundColor="#0066cc" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HeightRequest="{Binding Source={x:Reference content}, Path=Height}">
-                        <StackLayout Orientation="Horizontal">
-                            <Label
-                                Margin="16,5,16,0"
-                                FontAttributes="Bold"
-                                FontSize="Large"
-                                HorizontalOptions="Start"
-                                Text="Synopsis"
-                                TextColor="White"
-                                VerticalOptions="Start" />
-                            <ScrollView
-                                x:Name="ScrollTrailer"
-                                Margin="16,5,16,0"
-                                HorizontalOptions="FillAndExpand"
-                                HorizontalScrollBarVisibility="Never"
-                                Orientation="Horizontal"
+                                CornerRadius="0"
+                                HasShadow="False"
+                                HeightRequest="300"
                                 VerticalOptions="Start"
-                                VerticalScrollBarVisibility="Never">
-                                <StackLayout
-                                    Margin="0"
-                                    HorizontalOptions="End"
-                                    Orientation="Horizontal">
-                                    <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="PlayTrailer_Tapped" />
-                                    </StackLayout.GestureRecognizers>
-                                    <Image
-                                        HeightRequest="35"
-                                        Source="YoutubeBtn.png"
-                                        WidthRequest="35" />
+                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}">
+                                <AbsoluteLayout
+                                    x:Name="absoluteLayout2"
+                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                    AbsoluteLayout.LayoutFlags="All"
+                                    BackgroundColor="#00000000"
+                                    HeightRequest="300"
+                                    HorizontalOptions="FillAndExpand"
+                                    VerticalOptions="FillAndExpand">
+                                    <ContentView
+                                        AbsoluteLayout.LayoutBounds="0, 1, 1, 0.6"
+                                        AbsoluteLayout.LayoutFlags="All"
+                                        BackgroundColor="#00000000">
+                                        <Frame
+                                            x:Name="theFrame2"
+                                            BackgroundColor="#44161513"
+                                            CornerRadius="12"
+                                            HeightRequest="280"
+                                            HorizontalOptions="FillAndExpand">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <StackLayout
+                                                    Grid.Row="0"
+                                                    Grid.Column="0"
+                                                    Margin="0,0,8,0"
+                                                    HorizontalOptions="End"
+                                                    Orientation="Vertical"
+                                                    VerticalOptions="Start">
+                                                    <StackLayout
+                                                        Margin="0"
+                                                        HorizontalOptions="End"
+                                                        Orientation="Horizontal">
+                                                        <Image
+                                                            Aspect="AspectFill"
+                                                            HeightRequest="35"
+                                                            Source="Play.png"
+                                                            WidthRequest="35" />
+                                                        <Label
+                                                            x:Name="Play"
+                                                            Margin="5,0,0,0"
+                                                            FontAttributes="Bold"
+                                                            FontSize="Small"
+                                                            HorizontalTextAlignment="End"
+                                                            LineBreakMode="NoWrap"
+                                                            Text="Play Movie"
+                                                            TextColor="White"
+                                                            VerticalTextAlignment="Center">
+                                                            <Label.GestureRecognizers>
+                                                                <TapGestureRecognizer Tapped="StreamMovie_Tapped" />
+                                                            </Label.GestureRecognizers>
+                                                        </Label>
+                                                    </StackLayout>
+                                                    <StackLayout HorizontalOptions="Start" Orientation="Horizontal">
+                                                        <Image
+                                                            x:Name="AddToFav"
+                                                            Source="{Binding AddToFavSource}"
+                                                            Aspect="AspectFill"
+                                                            HeightRequest="40"
+                                                            WidthRequest="40" />
+                                                        <Label
+                                                            FontAttributes="Bold"
+                                                            FontSize="Medium"
+                                                            LineBreakMode="NoWrap"
+                                                            Style="{StaticResource LabelsStyle}"
+                                                            Text="{Binding Result.Popularity}" />
+                                                    </StackLayout>
+                                                    <Label
+                                                        FontAttributes="Bold"
+                                                        HorizontalTextAlignment="End"
+                                                        LineBreakMode="NoWrap"
+                                                        Style="{StaticResource LabelsStyle}"
+                                                        Text="{Binding Result.ReleaseDate}" />
+                                                </StackLayout>
+                                                
+                                                <ScrollView
+                                                    Grid.Row="2"
+                                                    CompressedLayout.IsHeadless="True"
+                                                    HorizontalScrollBarVisibility="Never"
+                                                    VerticalScrollBarVisibility="Never"
+                                                    Grid.Column="0"
+                                                    Orientation="Horizontal"
+                                                    HorizontalOptions="FillAndExpand"
+                                                    Margin="0,20,0,-5">
+                                                    <Label
+                                                        x:Name="MovieTitle"
+                                                        FontAttributes="Bold"
+                                                        FontSize="Large"
+                                                        LineBreakMode="NoWrap"
+                                                        HorizontalTextAlignment="Start"
+                                                        Style="{StaticResource LabelsStyle}"
+                                                        Text="{Binding Result.Title}"/>
+                                                </ScrollView> 
+                                            </Grid>
+                                        </Frame>
+                                    </ContentView>
+                                    <Frame
+                                        x:Name="FrameCover"
+                                        Margin="0"
+                                        Padding="0"
+                                        AbsoluteLayout.LayoutBounds="0.13, 0.6, 0.33, 0.6"
+                                        AbsoluteLayout.LayoutFlags="All"
+                                        BackgroundColor="#00000000"
+                                        BorderColor="#00000000"
+                                        CornerRadius="15"
+                                        HasShadow="True"
+                                        IsClippedToBounds="True">
+                                        <Image
+                                            x:Name="PosterPathImage"
+                                            Aspect="AspectFill"
+                                            Source="{Binding Result.PosterPath, Converter={StaticResource PosterConverter}}" />
+                                    </Frame>
+                                </AbsoluteLayout>
+                            </Frame>
+                            <StackLayout
+                                BackgroundColor="#0066cc"
+                                VerticalOptions="FillAndExpand"
+                                WidthRequest="{Binding Source={x:Reference hScroll}, Path=Width}">
+                                <StackLayout Orientation="Horizontal">
                                     <Label
-                                        Margin="5,0,0,0"
+                                        Margin="16,5,16,0"
                                         FontAttributes="Bold"
-                                        FontSize="Small"
-                                        HorizontalTextAlignment="End"
-                                        LineBreakMode="NoWrap"
-                                        Text="Play Trailer"
+                                        FontSize="Large"
+                                        HorizontalOptions="Start"
+                                        Text="Synopsis"
                                         TextColor="White"
-                                        VerticalTextAlignment="Center" />
+                                        VerticalOptions="Start" />
+
                                 </StackLayout>
-                            </ScrollView>
+                                <Label
+                                    Margin="16,5,16,40"
+                                    FontSize="Medium"
+                                    LineBreakMode="NoWrap"
+                                    HorizontalTextAlignment="Start"
+                                    Style="{StaticResource LabelsStyle}"
+                                    Text="{Binding Result.Overview}" />
+
+                                <Button
+                                    x:Name="QuitFromFavLayout"
+                                    IsVisible="{Binding QuitFromFavLayoutIsVisible}"
+                                    Command="{Binding RemoveFromFavListCommand}"
+                                    Margin="16"
+                                    BackgroundColor="#FF0000"
+                                    CornerRadius="30"
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="Quit from the favorites list"
+                                    TextColor="White"
+                                    Visual="Material" />
+
+                                <Button
+                                    x:Name="AddToFavLayout"
+                                    IsVisible="{Binding AddToFavLayoutIsVisible}"
+                                    Command="{Binding AddToFavListCommand}"
+                                    Grid.Row="0"
+                                    Margin="16,-10,16,16"
+                                    Padding="-5"
+                                    BackgroundColor="#006FDE"
+                                    CornerRadius="70"
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    HeightRequest="70"
+                                    HorizontalOptions="Center"
+                                    Text="Add"
+                                    TextColor="White"
+                                    VerticalOptions="End"
+                                    WidthRequest="70" />
+
+                                <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
+
+                            </StackLayout>
                         </StackLayout>
-                        <Label
-                            Margin="16,5,16,5"
-                            FontSize="Medium"
-                            HorizontalTextAlignment="Start"
-                            Style="{StaticResource LabelsStyle}"
-                            Text="{Binding Overview}" />
 
-                        <Button
-                            x:Name="AddToFavLayout"
-                            Margin="16"
-                            BackgroundColor="#006FDE"
-                            HorizontalOptions="FillAndExpand"
-                            CornerRadius="30"
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            Text="Add To Favorites List"
-                            TextColor="White"/>
-
-                        <Button 
-                            x:Name="QuitFromFavLayout"
-                            Margin="16"
-                            Visual="Material"
-                            BackgroundColor="#FF0000"
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            CornerRadius="30"
-                            Text="Quit from the favorites list"
-                            TextColor="White" 
-                            HorizontalOptions="FillAndExpand" />
-
-                    </StackLayout>
+                    </AbsoluteLayout>
                 </StackLayout>
             </ScrollView>
-        </AbsoluteLayout>
+
+            <Button
+                x:Name="PlayTrailer"
+                Command="{Binding PlayTrailerCommand}"
+                Grid.Row="0"
+                Margin="16"
+                Padding="-7"
+                BackgroundColor="#006FDE"
+                CornerRadius="170"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HeightRequest="70"
+                HorizontalOptions="End"
+                Scale="0"
+                Text="Play"
+                TextColor="White"
+                VerticalOptions="End"
+                WidthRequest="70" />
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

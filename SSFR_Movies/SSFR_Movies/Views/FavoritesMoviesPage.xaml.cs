@@ -1,14 +1,10 @@
-﻿//using CommonServiceLocator;
-using Realms;
-using Splat;
-using SSFR_Movies.Helpers;
-//using SSFR_Movies.Data;
-using SSFR_Movies.Models;
-using SSFR_Movies.ViewModels;
-using System;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
+using Splat;
+using SSFR_Movies.ViewModels;
+using SSFR_Movies.Views.DataTemplateSelectors;
+using Xamarin.CommunityToolkit.Markup;
+using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -18,7 +14,7 @@ namespace SSFR_Movies.Views
     /// FavoriteMoviesPage Code Behind
     /// </summary>
     [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+   
     public partial class FavoritesMoviesPage : ContentPage
     {
         readonly FavoriteMoviesPageViewModel vm;
@@ -32,158 +28,37 @@ namespace SSFR_Movies.Views
 
             BindingContext = vm;
 
-            SetVisibility();
-
-            UnPin.Source = "Unpin.png";
+            SetCollectionViewItemTemplate();
 
             searchToolbarItem = new ToolbarItem()
             {
                 Text = "Search",
                 IconImageSource = "Search.png",
                 Priority = 0,
-
-                Command = new Command(async () =>
+                Command = new AsyncCommand(async () =>
                 {
-                    await Shell.Current.GoToAsync("/SearchPage", true);
+                    await Shell.Current.GoToAsync("/Search", false);
                 })
             };
 
             ToolbarItems.Add(searchToolbarItem);
 
-            //MoviesList.SelectionChangedCommand = new Command(MovieSelected);
-
-            SubscribeToMessage();
+            SetListOrientationLayout();
         }
 
-        private void SubscribeToMessage()
+        void SetCollectionViewItemTemplate()
         {
-            MessagingCenter.Subscribe<MovieDetailsPage, bool>(this, "Refresh", (s, e) =>
-            {
-                if (e)
-                {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        var estado = await vm.FillMoviesList(null);
-
-                        if (estado.Key == 'r')
-                        {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
-                            MoviesList.SelectedItem = null;
-                        }
-                        else if (estado.Key == 'v')
-                        {
-                            MoviesList.IsVisible = false;
-                            UnPin.IsVisible = true;
-                            Message.IsVisible = true;
-                            MoviesList.SelectedItem = null;
-                        }
-                    });
-                }
-            });
-
-            MessagingCenter.Subscribe<CustomViewCellFavPage, bool>(this, "Refresh", (s, e) =>
-            {
-                if (e)
-                {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        var estado = await vm.FillMoviesList(null);
-
-                        if (estado.Key == 'r')
-                        {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
-                            MoviesList.SelectedItem = null;
-                        }
-                        else if (estado.Key == 'v')
-                        {
-                            MoviesList.IsVisible = false;
-                            UnPin.IsVisible = true;
-                            Message.IsVisible = true;
-                            MoviesList.SelectedItem = null;
-                        }
-                    });
-                }
-            });
-
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
-
-            MessagingCenter.Subscribe<CustomViewCell, bool>(this, "Refresh", (s, e) =>
-            {
-                if (e)
-                {
-                    Device.BeginInvokeOnMainThread(async ()=>
-                    {
-                        var estado = await vm.FillMoviesList(null);
-
-                        if (estado.Key == 'r')
-                        {
-                            MoviesList.IsVisible = true;
-                            UnPin.IsVisible = false;
-                            Message.IsVisible = false;
-                            MoviesList.ItemsSource = estado.Value;
-                            MoviesList.SelectedItem = null;
-                        }
-                        else if (estado.Key == 'v')
-                        {
-                            MoviesList.IsVisible = false;
-                            UnPin.IsVisible = true;
-                            Message.IsVisible = true;
-                            MoviesList.SelectedItem = null;
-                        }
-                    });
-                }
-            });
+            MoviesList.ItemTemplate = new SelectedFavoriteMovieTemplateSelector();
+            MoviesList.Bind(CollectionView.ItemsSourceProperty, nameof(FavoriteMoviesPageViewModel.FavMoviesList));
         }
 
-        private void MovieSelected(object sender, SelectionChangedEventArgs e)
+        private void SetListOrientationLayout()
         {
-            if (MoviesList.SelectedItem != null)
+            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
             {
-                var movie = MoviesList.SelectedItem as Result;
-
-                Result resultSingleton = ResultSingleton.SetInstance(movie);
-
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Shell.Current.GoToAsync("/MovieDetails", true);
-                });
-            }
-        }
-
-        private async void SetVisibility()
-        {
-            var realm = await Realm.GetInstanceAsync();
-
-            var movies_db = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
-
-            UnPin.IsVisible = movies_db.Count() == 0 ? true : false;
-
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
-
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
-        }
-
-        private async void QuitVisibility()
-        {
-            var realm = await Realm.GetInstanceAsync();
-
-            var movies_db = realm.All<Result>().ToList();
-
-            UnPin.IsVisible = movies_db.Count() != 0 ? false : true;
-
-            Message.IsVisible = UnPin.IsVisible == true ? true : false;
-
-            MoviesList.IsVisible = Message.IsVisible == true ? false : true;
-
+                SnapPointsAlignment = SnapPointsAlignment.Start,
+                SnapPointsType = SnapPointsType.MandatorySingle
+            };
         }
 
         /// <summary>
@@ -195,9 +70,7 @@ namespace SSFR_Movies.Views
         {
             var img = sender as Image;
 
-            await img.ScaleTo(2, 500, Easing.BounceOut);
-
-            await img.ScaleTo(1, 250, Easing.BounceIn);
+            await Task.WhenAll(img.ScaleTo(2, 500, Easing.BounceOut), img.ScaleTo(1, 250, Easing.BounceIn));
         }
     }
 }

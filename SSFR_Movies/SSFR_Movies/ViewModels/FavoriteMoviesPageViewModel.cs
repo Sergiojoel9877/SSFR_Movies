@@ -1,12 +1,10 @@
-﻿//using CommonServiceLocator;
-//using SSFR_Movies.Data;
-using Realms;
-using SSFR_Movies.Models;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
+using Splat;
+using SSFR_Movies.Helpers;
+using SSFR_Movies.Models;
+using SSFR_Movies.Services.Abstract;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSFR_Movies.ViewModels
@@ -18,7 +16,37 @@ namespace SSFR_Movies.ViewModels
     public class FavoriteMoviesPageViewModel : ViewModelBase
     {
 
-        public Lazy<ObservableCollection<Result>> FavMoviesList { get; set; } = new Lazy<ObservableCollection<Result>>(() => new ObservableCollection<Result>(), isThreadSafe: true);
+        IMovieService MovieService { get; set; }
+         
+        public ObservableCollection<Result> FavMoviesList { get; set; } = new();
+
+        string pinSource = "Unpin.png";
+        public string PinSource
+        {
+            get => pinSource;
+            set => SetProperty(ref pinSource, value);
+        }
+
+        bool favImageIsVisible = true;
+        public bool FavImageIsVisible
+        {
+            get => favImageIsVisible;
+            set => SetProperty(ref favImageIsVisible, value);
+        }
+
+        bool messageIsVisible = true;
+        public bool MessageIsVisible
+        {
+            get => messageIsVisible;
+            set => SetProperty(ref messageIsVisible, value);
+        }
+
+        bool moviesListIsVisible = true;
+        public bool MoviesListIsVisible
+        {
+            get => moviesListIsVisible;
+            set => SetProperty(ref moviesListIsVisible, value);
+        }
 
         private bool listVisible = true;
         public bool ListVisible
@@ -41,68 +69,100 @@ namespace SSFR_Movies.ViewModels
             set => SetProperty(ref listEmpty, value);
         }
 
-        public async Task<char> FillMoviesList()
+        public void FillMoviesList()
         {
-            await Task.Yield();
+            var realm = RealmDBSingleton.Current;
 
-            var realm = await Realm.GetInstanceAsync();
-
-            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
+            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png").ToList();
 
             if (movies != null)
-            {
                 foreach (var MovieResult in movies)
-                {
-                    if (!FavMoviesList.Value.Contains(MovieResult))
-                    {
-                        FavMoviesList.Value.Add(MovieResult);
-                    }
-                }
-            }
+                    if (!FavMoviesList.Contains(MovieResult))
+                        FavMoviesList.Add(MovieResult);
+                
+            FavImageIsVisible = FavMoviesList.Count() == 0;
 
-            if (FavMoviesList.Value.Count == 0)
-            {
-                return 'v'; //Indica que la lista esta vacia
-            }
+            MessageIsVisible = FavImageIsVisible == true;
 
-            return 'r'; //Indica que la lista contiene elementos
-
-        }
-        public async Task<KeyValuePair<char, IEnumerable<Result>>> FillMoviesList(IEnumerable<Result> results)
-        {
-            await Task.Yield();
-
-            var realm = await Realm.GetInstanceAsync();
-
-            var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
-
-            if (movies.ToList().Count > 0)
-            {
-                return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
-            }
-            else
-            {
-                return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
-            }
+            MoviesListIsVisible = MessageIsVisible == false;
         }
 
         private Command getStoredMoviesCommand;
         public Command GetStoreMoviesCommand
         {
-            get => getStoredMoviesCommand ?? (getStoredMoviesCommand = new Command(async () =>
+            get => getStoredMoviesCommand ??= new Command(() =>
             {
-                await FillMoviesList();
-            }));
+                FillMoviesList();
+            });
+        }
+
+        private Command onAppearingCommand;
+        public Command OnAppearingCommand
+        {
+            get => onAppearingCommand ??= new Command(()=>
+            {
+                MovieService = Locator.Current.GetService<IMovieService>();
+                MovieService.OnMovieAdded -= MovieService_OnMovieAdded;
+                MovieService.OnMovieAdded -= MovieService_OnMovieRemoved;
+                MovieService.OnMovieAdded += MovieService_OnMovieAdded;
+                MovieService.OnMovieRemoved += MovieService_OnMovieRemoved;
+            });
         }
 
         public FavoriteMoviesPageViewModel()
         {
-            if (FavMoviesList.Value.Count == 0)
+            if (FavMoviesList.Count == 0)
             {
                 ListEmpty = true;
             }
 
             GetStoreMoviesCommand.Execute(null);
+        }
+
+        public override void Dispose()
+        {
+            if (MovieService == null)
+                return;
+            MovieService.OnMovieAdded -= MovieService_OnMovieAdded;
+            MovieService.OnMovieAdded -= MovieService_OnMovieRemoved;
+            MovieService = null;
+            base.Dispose();
+        }
+
+        private void MovieService_OnMovieRemoved(object sender, MovieEventArgs e)
+        {
+            if (FavMoviesList.Contains(e.Result))
+                FavMoviesList.Remove(e.Result);
+
+            if (FavMoviesList.Count() == 0)
+            {
+                MainThread.BeginInvokeOnMainThread(()=>
+                {
+                    FavImageIsVisible = true;
+
+                    MessageIsVisible = true;
+
+                    MoviesListIsVisible = false;
+                });
+            }
+        }
+
+        private void MovieService_OnMovieAdded(object sender, MovieEventArgs e)
+        {
+            if(!FavMoviesList.Contains(e.Result))
+                FavMoviesList.Add(e.Result);
+
+            if (FavMoviesList.Count() > 0)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    FavImageIsVisible = false;
+
+                    MessageIsVisible = false;
+
+                    MoviesListIsVisible = true;
+                });
+            }
         }
     }
 }

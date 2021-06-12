@@ -1,31 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Foundation;
+using SFR_Movies.iOS.CustomRenderers;
 using UIKit;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.iOS;
 
-namespace GBH_Movies_Test.iOS
+namespace SSFR_Movies.iOS
 {
-    // The UIApplicationDelegate for the application. This class is responsible for launching the 
-    // User Interface of the application, as well as listening (and optionally responding) to 
-    // application events from iOS.
+    // The UIApplicationDelegate for the application. This class is responsible for launching the
+    // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
     [Register("AppDelegate")]
-    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    public class AppDelegate : FormsApplicationDelegate
     {
-        //
-        // This method is invoked when the application has loaded and is ready to run. In this 
-        // method you should instantiate the window, load the UI into it and then make the window
-        // visible.
-        //
-        // You have 17 seconds to return from this method, or iOS will terminate your application.
-        //
-        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        //readonly Lazy<App> LazyApp = new Lazy<App>(() => new App());
+        public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
-            global::Xamarin.Forms.Forms.Init();
+            // Override point for customization after application launch.
+            // If not required for your application you can safely delete this method
+
+            Rg.Plugins.Popup.Popup.Init();
+
+            Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
+
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+
+            PullToRefreshLayoutRenderer.Init();
+
+            Xamarin.Forms.Forms.Init();
+            FormsMaterial.Init();
+            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageSourceHandler();
+            XF.Material.iOS.Material.Init();
             LoadApplication(new App());
 
-            return base.FinishedLaunching(app, options);
+            return base.FinishedLaunching(application, launchOptions);
         }
     }
 }
+

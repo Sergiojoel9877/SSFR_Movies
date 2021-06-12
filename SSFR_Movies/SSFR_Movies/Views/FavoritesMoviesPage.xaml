@@ -3,10 +3,14 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"    
-    Title="SSFR Movies"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
+    Title="SSFR Movies"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     BackgroundColor="#161513">
+
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing" Command="{Binding OnAppearingCommand}"/>
+    </ContentPage.Behaviors>
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -14,19 +18,22 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <ffimage:CachedImage
+             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
+                Source="{Binding PinSource}"
+                IsVisible="{Binding FavImageIsVisible}"
                 HeightRequest="300"
-                VerticalOptions="Center"
                 HorizontalOptions="Center"
+                VerticalOptions="Center"
                 WidthRequest="300" />
-            
+
             <Label
                 x:Name="Message"
                 Margin="0,5,0,0"
                 FontAttributes="Bold"
                 FontSize="Medium"
+                IsVisible="{Binding MessageIsVisible}"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
                 Text="You have not picked any movie as a favorite one"
@@ -34,20 +41,11 @@
 
             <CollectionView
                 x:Name="MoviesList"
-                ItemsSource="{Binding FavMoviesList.Value}"
-                SelectionMode="Single"
-                SelectionChanged="MovieSelected">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout CompressedLayout.IsHeadless="True">
-                            <helpers:CustomViewCellFavPage HeightRequest="350" CompressedLayout.IsHeadless="True"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-            
-            <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
-            <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
+                IsVisible="{Binding MoviesListIsVisible}"
+                SelectionMode="Single"/>
+
+            <helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />
+            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
