@@ -48,11 +48,11 @@ namespace SSFR_Movies.Droid
 
             var config = new FFImageLoading.Config.Configuration()
             {
-                VerboseLogging = true,
-                VerbosePerformanceLogging = true,
-                VerboseMemoryCacheLogging = true,
-                VerboseLoadingCancelledLogging = true,
-                ExecuteCallbacksOnUIThread = true,
+                VerboseLogging = false,
+                VerbosePerformanceLogging = false,
+                VerboseMemoryCacheLogging = false,
+                VerboseLoadingCancelledLogging = false,
+                ExecuteCallbacksOnUIThread = false,
                 HttpClient = new HttpClient(new AndroidClientHandler()
                 {
                     AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,

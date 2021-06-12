@@ -3,10 +3,14 @@
     x:Class="SSFR_Movies.Views.FavoritesMoviesPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     Title="SSFR Movies"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     BackgroundColor="#161513">
+
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing" Command="{Binding OnAppearingCommand}"/>
+    </ContentPage.Behaviors>
 
     <ContentPage.Resources>
         <ResourceDictionary Source="/ResourceDictionaries/GenResourceDictionary.xaml" />
@@ -14,15 +18,6 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <!--<ffimage:CachedImage
-                x:Name="UnPin"
-                Grid.ColumnSpan="2"
-                Source="{Binding PinSource}"
-                IsVisible="{Binding FavImageIsVisible}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                WidthRequest="300" />-->
              <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"

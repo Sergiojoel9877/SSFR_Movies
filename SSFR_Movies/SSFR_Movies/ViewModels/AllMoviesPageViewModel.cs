@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AsyncAwaitBestPractices;
 using FFImageLoading;
 using Realms;
 using Splat;
@@ -9,6 +10,7 @@ using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
 using SSFR_Movies.Services.Abstract;
+using StructLinq;
 using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -110,14 +112,7 @@ namespace SSFR_Movies.ViewModels
                 tcs.SetResult(null);
                 return tcs.Task;
             }
-
-            await Device.InvokeOnMainThreadAsync(() =>
-            {
-                ListVisible = false;
-                IsEnabled = true;
-                IsRunning = true;
-            });
-
+            
             var movies = RealmDB.All<Movie>().SingleOrDefault();
             
             if (movies == null)
@@ -127,14 +122,6 @@ namespace SSFR_Movies.ViewModels
             }
 
             AllMoviesList.AddRange(movies.Results);
-           
-            await Device.InvokeOnMainThreadAsync(() =>
-            {
-                ListVisible = true;
-                MsgVisible = false;
-                IsEnabled = false;
-                IsRunning = false;
-            });
 
             tcs.SetResult(null);
             return tcs.Task;
@@ -197,16 +184,6 @@ namespace SSFR_Movies.ViewModels
                 return false;
             }
 
-            //var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
-
-            //if (done)
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
             return await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
         }
 
@@ -278,7 +255,7 @@ namespace SSFR_Movies.ViewModels
                 IsEnabled = true;
             });
 
-            var stored = /*await GetAndStoreMoviesAsync();*/ await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
+            var stored = await Locator.Current.GetService<ApiClient>().GetAndStoreMoviesAsync(false);
 
             if (!stored)
             {
@@ -319,7 +296,7 @@ namespace SSFR_Movies.ViewModels
 
         async Task ProcessGenres()
         {
-            var done = /*await GetMoviesGenres();*/ await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
+            var done = await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
 
             if (!done)
             {
@@ -329,24 +306,6 @@ namespace SSFR_Movies.ViewModels
                     MsgText = "No storage space left!";
                 });
             }
-        }
-
-        [Obsolete("This wrapper is currently obsolete")]
-        private async Task<bool> GetMoviesGenres()
-        {
-            await Task.Yield();
-
-            //Verify if internet connection is available
-            if (Connectivity.NetworkAccess == NetworkAccess.None || Connectivity.NetworkAccess == NetworkAccess.Unknown)
-            {
-                await Device.InvokeOnMainThreadAsync(async () =>
-                {
-                    await MaterialDialog.Instance.SnackbarAsync("No internet Connection", "Dismiss", MaterialSnackbar.DurationIndefinite, _conf.Value);
-                });
-                return false;
-            }
-
-            return await Locator.Current.GetService<ApiClient>().GetAndStoreMovieGenresAsync();
         }
 
         private Lazy<AsyncCommand> fillUpMoviesListAfterRefreshCommand;
@@ -387,13 +346,12 @@ namespace SSFR_Movies.ViewModels
 
                 if (movies < 1)
                 {
-                    //await Task.WhenAll(GetStoreMoviesCommand.Value.ExecuteAsync(), GetMoviesGenresCommand.Value.ExecuteAsync());
-                    GetStoreMoviesCommand.Value.ExecuteAsync();
-                    GetMoviesGenresCommand.Value.ExecuteAsync();
+                    GetStoreMoviesCommand.Value.ExecuteAsync().SafeFireAndForget(true);
+                    GetMoviesGenresCommand.Value.ExecuteAsync().SafeFireAndForget(true);
                 }
                 else
                 {
-                    FillUpMovies.Value.ExecuteAsync();
+                    FillUpMovies.Value.ExecuteAsync().SafeFireAndForget(true);
                 }
 
             }

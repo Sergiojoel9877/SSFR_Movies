@@ -36,7 +36,6 @@ namespace SSFR_Movies.Views
             {
                 c.Close();
                 base.OnBackButtonPressed();
-                Locator.Current.GetService<FavoriteMoviesPageViewModel>().Dispose();
             }
 
             return true;

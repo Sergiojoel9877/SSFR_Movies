@@ -33,9 +33,7 @@ namespace SSFR_Movies
 
         private void SetMainPage()
         {
-            //new Lazy<ContainerInitializer>(() => new ContainerInitializer()).Value.Initialize();
-            //MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
-            MainPage = new Lazy<Start>(() => new Start()).Value;
+            MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
         }
 
         protected override void OnStart()

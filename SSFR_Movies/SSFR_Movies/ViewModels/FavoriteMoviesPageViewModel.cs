@@ -96,6 +96,19 @@ namespace SSFR_Movies.ViewModels
             });
         }
 
+        private Command onAppearingCommand;
+        public Command OnAppearingCommand
+        {
+            get => onAppearingCommand ??= new Command(()=>
+            {
+                MovieService = Locator.Current.GetService<IMovieService>();
+                MovieService.OnMovieAdded -= MovieService_OnMovieAdded;
+                MovieService.OnMovieAdded -= MovieService_OnMovieRemoved;
+                MovieService.OnMovieAdded += MovieService_OnMovieAdded;
+                MovieService.OnMovieRemoved += MovieService_OnMovieRemoved;
+            });
+        }
+
         public FavoriteMoviesPageViewModel()
         {
             if (FavMoviesList.Count == 0)
@@ -103,17 +116,13 @@ namespace SSFR_Movies.ViewModels
                 ListEmpty = true;
             }
 
-            MovieService = Locator.Current.GetService<IMovieService>();
-
-            MovieService.OnMovieAdded += MovieService_OnMovieAdded;
-
-            MovieService.OnMovieRemoved += MovieService_OnMovieRemoved;
-
             GetStoreMoviesCommand.Execute(null);
         }
 
         public override void Dispose()
         {
+            if (MovieService == null)
+                return;
             MovieService.OnMovieAdded -= MovieService_OnMovieAdded;
             MovieService.OnMovieAdded -= MovieService_OnMovieRemoved;
             MovieService = null;

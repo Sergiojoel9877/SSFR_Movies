@@ -2,8 +2,11 @@
 using Android.App;
 using Android.Content;
 using Android.Views;
+using Java.Lang;
+using Splat;
 using SSFR_Movies.Droid.Services;
 using SSFR_Movies.Services.Abstract;
+using SSFR_Movies.ViewModels;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(CloseBackPress))]
@@ -24,9 +27,7 @@ namespace SSFR_Movies.Droid.Services
 
         public override void OnBackPressed()
         {
-
             ShowAlert("Exit", "Are you sure that you wanna exit?");
-
         }
 
         AlertDialog.Builder Ab;
@@ -58,7 +59,9 @@ namespace SSFR_Movies.Droid.Services
 
         public void OnClick(object dialog, DialogClickEventArgs e)
         {
+            Locator.Current.GetService<FavoriteMoviesPageViewModel>().Dispose();
             activity.FinishAffinity();
+            JavaSystem.Exit(0);
         }
     }
 }

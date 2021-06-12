@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AsyncAwaitBestPractices;
 using Splat;
-//using SSFR_Movies.Data;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;

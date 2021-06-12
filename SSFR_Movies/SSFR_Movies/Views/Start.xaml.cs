@@ -39,8 +39,6 @@ namespace SSFR_Movies.Views
                     await ProBar.ProgressTo(.5, 200, Easing.Linear);
                 });
 
-                //var mainPage = new Lazy<AppShell>(() => new AppShell());
-
                 await Task.WhenAll(Device.InvokeOnMainThreadAsync(async () =>
                 {
                     await Task.Yield();
@@ -50,15 +48,6 @@ namespace SSFR_Movies.Views
                     Application.Current.MainPage = new Lazy<AppShell>(() => new AppShell()).Value;
 
                 }), ProBar.ProgressTo(100, 200, Easing.Linear));
-
-                //await Device.InvokeOnMainThreadAsync(async () =>
-                //{
-                //    await ProBar.ProgressTo(100, 200, Easing.Linear);
-
-                //    Stack.IsVisible = false;
-
-                //    Application.Current.MainPage = mainPage.Value;
-                //});
             }));
         }
     }

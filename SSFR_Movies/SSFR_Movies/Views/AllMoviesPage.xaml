@@ -71,8 +71,8 @@
                     x:Name="MoviesList"
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                     AbsoluteLayout.LayoutFlags="All"
-                    ItemSizingStrategy="MeasureFirstItem"
                     RemainingItemsThreshold="19"
+                    ItemSizingStrategy="MeasureFirstItem"
                     RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"/>
             </AbsoluteLayout>
         </AbsoluteLayout>

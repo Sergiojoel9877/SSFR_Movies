@@ -14,12 +14,13 @@ using Xamarin.Forms;
 
 namespace SSFR_Movies.ViewModels
 {
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     public class MovieDetailsPageViewModel : ViewModelBase
     {
 
         public event EventHandler OnMovieAddedRemovedUpdateUIElements;
 
-        string addToFavSource = "StarEmpty.png";//"Star.png";
+        string addToFavSource = "StarEmpty.png";
         public string AddToFavSource
         {
             get => addToFavSource;

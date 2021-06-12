@@ -1,17 +1,10 @@
-﻿//using CommonServiceLocator;
-using Realms;
+﻿using System;
+using System.Threading.Tasks;
 using Splat;
-using SSFR_Movies.Helpers;
-//using SSFR_Movies.Data;
-using SSFR_Movies.Models;
 using SSFR_Movies.ViewModels;
 using SSFR_Movies.Views.DataTemplateSelectors;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.CommunityToolkit.Markup;
 using Xamarin.CommunityToolkit.ObjectModel;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -50,8 +43,6 @@ namespace SSFR_Movies.Views
 
             ToolbarItems.Add(searchToolbarItem);
 
-            SubscribeToMessage();
-
             SetListOrientationLayout();
         }
 
@@ -68,20 +59,6 @@ namespace SSFR_Movies.Views
                 SnapPointsAlignment = SnapPointsAlignment.Start,
                 SnapPointsType = SnapPointsType.MandatorySingle
             };
-        }
-
-        private void SubscribeToMessage()
-        {
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
-        }
-
-        private async void MovieSelected(object sender, SelectionChangedEventArgs e)
-        {
-            ResultSingleton.SetInstance(MoviesList.SelectedItem as Result);
-            await Shell.Current.GoToAsync("/MovieDetails", true);
         }
 
         /// <summary>

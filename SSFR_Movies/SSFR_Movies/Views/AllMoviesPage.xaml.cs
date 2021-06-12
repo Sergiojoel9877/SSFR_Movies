@@ -78,11 +78,6 @@ namespace SSFR_Movies.Views
 
         private void SetListOrientationLayout()
         {
-            //MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
-            //{
-            //    SnapPointsAlignment = SnapPointsAlignment.Start,
-            //    SnapPointsType = SnapPointsType.MandatorySingle
-            //};
             MoviesList.ItemsLayout = new GridItemsLayout(2, ItemsLayoutOrientation.Vertical);
         }
 
@@ -174,7 +169,7 @@ namespace SSFR_Movies.Views
         {
             pull2refreshlyt = new(); 
             pull2refreshlyt.Content = scroll;
-            pull2refreshlyt.RefreshColor = Color.FromHex("#272B2E"); //.RefreshBackgroundColor = Color.FromHex("#272B2E");
+            pull2refreshlyt.RefreshColor = Color.FromHex("#272B2E");
             pull2refreshlyt.RefreshColor = Color.FromHex("#006FDE");
             pull2refreshlyt.SetBinding(RefreshView.CommandProperty, "FillUpMoviesListAfterRefreshCommand");
             pull2refreshlyt.Command = new AsyncCommand(()=>LoadMoreMovies());
@@ -258,7 +253,7 @@ namespace SSFR_Movies.Views
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     MoviesList.ItemsSource = null;
-                    MoviesList.ItemsSource = vm.AllMoviesList ;
+                    MoviesList.ItemsSource = vm.AllMoviesList;
                 });
             }
             else
@@ -445,12 +440,5 @@ namespace SSFR_Movies.Views
                 });
             }
         }
-
-        //async void SwipeItem_Invoked(System.Object sender, System.EventArgs e)
-        //{
-        //    await ResultSingleton.SetInstanceAsync((sender as SwipeItem).BindingContext as Result); 
-        //    await Shell.Current.GoToAsync("/MovieDetails", true);
-        //    MoviesList.SelectedItem = null;
-        //}
     }
 }
