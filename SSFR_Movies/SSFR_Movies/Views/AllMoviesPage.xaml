@@ -8,7 +8,7 @@
     xmlns:viewmodels="clr-namespace:SSFR_Movies.ViewModels"
     x:Name="content"
     Title="SSFR Movies"
-    BackgroundColor="#161513"
+    BackgroundColor="Black"
     x:DataType="{x:Type viewmodels:AllMoviesPageViewModel }">
 
     <ContentPage.Resources>
@@ -71,7 +71,7 @@
                     x:Name="MoviesList"
                     AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                     AbsoluteLayout.LayoutFlags="All"
-                    IsVisible="{Binding ListVisible}"
+                    ItemSizingStrategy="MeasureFirstItem"
                     RemainingItemsThreshold="19"
                     RemainingItemsThresholdReachedCommand="{Binding RemainingItemsThresholdReachedCommand.Value}"/>
             </AbsoluteLayout>

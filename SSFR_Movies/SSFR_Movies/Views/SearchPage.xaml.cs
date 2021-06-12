@@ -36,12 +36,19 @@ namespace SSFR_Movies.Views
             searchBar.Focus();
 
             SetListItemTemplate();
+
+            SetListOrientationLayout();
         }
 
         private void SetListItemTemplate()
         {
             MoviesList.ItemTemplate = new SelectedMovieTemplateSelector();
             MoviesList.Bind(CollectionView.ItemsSourceProperty, nameof(AllMoviesPageViewModel.AllMoviesList));
+        }
+
+        private void SetListOrientationLayout()
+        {
+            MoviesList.ItemsLayout = new GridItemsLayout(2, ItemsLayoutOrientation.Vertical);
         }
 
         protected override void OnAppearing()

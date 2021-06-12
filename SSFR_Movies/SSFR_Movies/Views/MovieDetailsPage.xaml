@@ -29,19 +29,32 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <ffimage:CachedImage
+            <!--<ffimage:CachedImage
                 x:Name="BackDropImage"
                 Grid.Row="0"
                 CacheDuration="20000"
                 HeightRequest="300"
                 HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand"
                 Scale="3"
                 Source="{Binding Result.BackdropPath, Converter={StaticResource BackgroundConverter}}"
                 WidthRequest="300">
                 <ffimage:CachedImage.Transformations>
                     <transformations:BlurredTransformation Radius="200" />
                 </ffimage:CachedImage.Transformations>
-            </ffimage:CachedImage>
+            </ffimage:CachedImage>-->
+             <Image
+                x:Name="BackDropImage"
+                Grid.Row="0"
+                HeightRequest="300"
+                IsOpaque="True"
+                Scale="3"
+                Source="{Binding Result.BackdropPath, Converter={StaticResource BackgroundConverter}}"
+                WidthRequest="300">
+                <!--<ffimage:CachedImage.Transformations>
+                    <transformations:BlurredTransformation Radius="200" />
+                </ffimage:CachedImage.Transformations>-->
+            </Image>
             <ScrollView
                 x:Name="hScroll"
                 Grid.Row="0"
@@ -57,7 +70,6 @@
                             <Frame
                                 x:Name="frame"
                                 BackgroundColor="#00000000"
-                                BorderColor="#00000000"
                                 CornerRadius="0"
                                 HasShadow="False"
                                 HeightRequest="300"
@@ -132,12 +144,14 @@
                                                         <Label
                                                             FontAttributes="Bold"
                                                             FontSize="Medium"
+                                                            LineBreakMode="NoWrap"
                                                             Style="{StaticResource LabelsStyle}"
                                                             Text="{Binding Result.Popularity}" />
                                                     </StackLayout>
                                                     <Label
                                                         FontAttributes="Bold"
                                                         HorizontalTextAlignment="End"
+                                                        LineBreakMode="NoWrap"
                                                         Style="{StaticResource LabelsStyle}"
                                                         Text="{Binding Result.ReleaseDate}" />
                                                 </StackLayout>
@@ -199,6 +213,7 @@
                                 <Label
                                     Margin="16,5,16,40"
                                     FontSize="Medium"
+                                    LineBreakMode="NoWrap"
                                     HorizontalTextAlignment="Start"
                                     Style="{StaticResource LabelsStyle}"
                                     Text="{Binding Result.Overview}" />
@@ -212,7 +227,6 @@
                                     CornerRadius="30"
                                     FontAttributes="Bold"
                                     FontSize="Medium"
-                                    HorizontalOptions="FillAndExpand"
                                     Text="Quit from the favorites list"
                                     TextColor="White"
                                     Visual="Material" />

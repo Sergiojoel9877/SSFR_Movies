@@ -2,16 +2,17 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FFImageLoading;
 using Realms;
 using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services;
+using SSFR_Movies.Services.Abstract;
 using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
-//using ReactiveUI.Legacy;
 using XF.Material.Forms.UI.Dialogs;
 using XF.Material.Forms.UI.Dialogs.Configurations;
 
@@ -26,6 +27,15 @@ namespace SSFR_Movies.ViewModels
         public ObservableRangeCollection<Result> AllMoviesList { get; set; } = new();
 
         public Lazy<ObservableRangeCollection<Genre>> GenreList { get; set; } = new();
+
+        IMovieService MovieService { get; set; } = Locator.Current.GetService<IMovieService>();
+
+        private Result result = new();
+        public Result Result
+        {
+            get => result;
+            set => SetProperty(ref result, value);
+        }
 
         readonly Lazy<MaterialSnackbarConfiguration> _conf = new(() => new MaterialSnackbarConfiguration()
         {
@@ -116,14 +126,6 @@ namespace SSFR_Movies.ViewModels
                 return tcs.Task;
             }
 
-            ////await Device.InvokeOnMainThreadAsync(()=>
-            ////{
-            //    movies.Results.ForEach((r) =>
-            //    {
-            //        AllMoviesList.Value.Add(r);
-            //    });
-            ////});
-
             AllMoviesList.AddRange(movies.Results);
            
             await Device.InvokeOnMainThreadAsync(() =>
@@ -156,11 +158,6 @@ namespace SSFR_Movies.ViewModels
             var movies = RealmDB.All<Movie>().SingleOrDefault();
 
             AllMoviesList.Clear();
-
-            //movies.Results.ForEach((r) =>
-            //{
-            //    AllMoviesList.Value.Add(r);
-            //});
 
             AllMoviesList.AddRange(movies.Results);
 
@@ -225,6 +222,8 @@ namespace SSFR_Movies.ViewModels
 
             await Semaphore.WaitAsync();
 
+            ImageService.Instance.SetPauseWork(true);
+
             try
             {
                 Settings.NextPage++;
@@ -234,6 +233,7 @@ namespace SSFR_Movies.ViewModels
                 if (MoviesDownloaded)
                 {
                     await FillUpMoviesListAfterRefreshCommand.Value.ExecuteAsync();
+                    ImageService.Instance.SetPauseWork(false);
                 }
             }
             finally
@@ -247,7 +247,28 @@ namespace SSFR_Movies.ViewModels
         {
             get => getStoreMoviesCommand ??= new Lazy<AsyncCommand>(() => new AsyncCommand(async () => await ProcessStoreMovies()));
         }
-        
+
+        private AsyncCommand<Result> addToFavListCommand;
+        public AsyncCommand<Result> AddToFavListCommand
+        {
+            get => addToFavListCommand ??= new AsyncCommand<Result>(async (r) =>
+            {
+                Result = r;
+                await MovieService.AddMovieToFavoritesList(Result);
+            });
+        }
+
+        private AsyncCommand<Result> navToDetailsPage;
+        public AsyncCommand<Result> NavToDetailsPage
+        {
+            get => navToDetailsPage ??= new AsyncCommand<Result>(async (r) =>
+            {
+                Result = r;
+                ResultSingleton.SetInstance(Result);
+                await Shell.Current.GoToAsync("/MovieDetails", true);
+            });
+        }
+
         async Task ProcessStoreMovies()
         {
             await Device.InvokeOnMainThreadAsync(() =>

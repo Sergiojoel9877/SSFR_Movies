@@ -5,19 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:helpers="clr-namespace:SSFR_Movies.Helpers"
     x:Name="content"
-    BackgroundColor="#161513"
+    BackgroundColor="Black"
     Visual="Material">
     <ContentPage.Content>
 
         <StackLayout
-            BackgroundColor="#161513"
+            BackgroundColor="Black"
             CompressedLayout.IsHeadless="True"
             HorizontalOptions="FillAndExpand"
             VerticalOptions="FillAndExpand">
 
             <StackLayout
                 x:Name="Bar"
-                BackgroundColor="#272B2E"
+                BackgroundColor="Black"
                 HeightRequest="56"
                 HorizontalOptions="FillAndExpand"
                 Orientation="Horizontal"

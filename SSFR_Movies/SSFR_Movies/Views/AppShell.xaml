@@ -13,12 +13,12 @@
         <ResourceDictionary>
             <Color x:Key="NavigationPrimary">#2196F3</Color>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.BackgroundColor" Value="Black" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#0088FF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="#272B2E" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="Black" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="White" />
                 <Setter Property="Shell.TabBarUnselectedColor" Value="#0088FF" />
                 <Setter Property="Shell.TabBarTitleColor" Value="White" />
@@ -38,7 +38,8 @@
             Title="Favorites"
             Icon="Heart.png"
             Route="FavoritesMoviesPage">
-            <local:FavoritesMoviesPage />
+            <ShellContent ContentTemplate="{DataTemplate local:FavoritesMoviesPage}" />
+            <!--<local:FavoritesMoviesPage />-->
         </Tab>
         <Tab
             Title="About"

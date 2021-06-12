@@ -19,8 +19,8 @@ namespace SSFR_Movies.Services
         {
             Locator.CurrentMutable.RegisterLazySingleton(() => new ApiClient(), typeof(ApiClient));
             Locator.CurrentMutable.RegisterLazySingleton(() => new AllMoviesPageViewModel(), typeof(AllMoviesPageViewModel));
-            Locator.CurrentMutable.Register(() => new FavoriteMoviesPageViewModel(), typeof(FavoriteMoviesPageViewModel));
-            Locator.CurrentMutable.Register(() => new MovieDetailsPageViewModel(), typeof(MovieDetailsPageViewModel));
+            Locator.CurrentMutable.RegisterLazySingleton(() => new FavoriteMoviesPageViewModel(), typeof(FavoriteMoviesPageViewModel));
+            Locator.CurrentMutable.RegisterLazySingleton(() => new MovieDetailsPageViewModel(), typeof(MovieDetailsPageViewModel));
             Locator.CurrentMutable.RegisterLazySingleton(()=> new MovieService(), typeof(IMovieService));
         }
 #pragma warning disable 0219, 0649

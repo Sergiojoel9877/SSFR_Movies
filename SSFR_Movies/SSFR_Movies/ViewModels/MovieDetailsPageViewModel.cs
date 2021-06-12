@@ -134,7 +134,6 @@ namespace SSFR_Movies.ViewModels
         {
             try
             {
-
                 Result = ResultSingleton.GetInstance();
 
                 var movieExists = RealmDB.Find<Result>(Result.Id);

@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Glide;
 //using Android.Gms.Ads;
 //using Android.Gms.Ads;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
+using FFImageLoading;
+using FFImageLoading.Forms.Platform;
 //using FFImageLoading;
 using SSFR_Movies.Droid.CustomRenderers;
 using SSFR_Movies.Helpers;
+using Xamarin.Android.Net;
 
 namespace SSFR_Movies.Droid
 {
@@ -40,32 +46,28 @@ namespace SSFR_Movies.Droid
 
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
 
-            //var config = new FFImageLoading.Config.Configuration()
-            //{
-            //    VerboseLogging = false,
-            //    VerbosePerformanceLogging = false,
-            //    VerboseMemoryCacheLogging = false,
-            //    VerboseLoadingCancelledLogging = false,
-            //};
-            //ImageService.Instance.Initialize(config);
-
+            var config = new FFImageLoading.Config.Configuration()
+            {
+                VerboseLogging = true,
+                VerbosePerformanceLogging = true,
+                VerboseMemoryCacheLogging = true,
+                VerboseLoadingCancelledLogging = true,
+                ExecuteCallbacksOnUIThread = true,
+                HttpClient = new HttpClient(new AndroidClientHandler()
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                })
+            };
+            ImageService.Instance.Initialize(config);
             //MobileAds.Initialize(ApplicationContext, "ca-app-pub-7678114811413714~8329396213");
 
             Rg.Plugins.Popup.Popup.Init(this);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            //global::Xamarin.Forms.Forms.Initialize(new ActivationOptions()
-            //{
-            //    Activity = this,
-            //    Bundle = bundle,
-            //    EffectScopes = null,
-            //    Flags = ActivationFlags.NoCss
-            //});
+            CachedImageRenderer.InitImageViewHandler();
 
-            FFImageLoading.Forms.Platform.CachedImageRenderer.InitImageViewHandler();
-
-            //Android.Glide.Forms.Init(this);
+            //Android.Glide.Forms.Init(this, debug: true);
 
             global::Xamarin.Forms.FormsMaterial.Init(this, bundle);
 
@@ -81,31 +83,23 @@ namespace SSFR_Movies.Droid
 
             if (flasg)
             {
-                var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
+               // var dummy = typeof(FFImageLoading.Forms.Platform.CachedImageFastRenderer);
             }
         }
 #pragma warning restore
 
-        public override async void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
-            new SynchronizationContextRemover();
-
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
             
             base.OnTrimMemory(level);
         }
 
-        public override async void OnLowMemory()
+        public override void OnLowMemory()
         {
-            new SynchronizationContextRemover();
-
             FFImageLoading.ImageService.Instance.InvalidateMemoryCache();
-
-            await FFImageLoading.ImageService.Instance.InvalidateDiskCacheAsync();
 
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized);
 

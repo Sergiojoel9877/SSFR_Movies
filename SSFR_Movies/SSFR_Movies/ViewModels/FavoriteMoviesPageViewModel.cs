@@ -4,6 +4,7 @@ using Splat;
 using SSFR_Movies.Helpers;
 using SSFR_Movies.Models;
 using SSFR_Movies.Services.Abstract;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SSFR_Movies.ViewModels
@@ -86,19 +87,6 @@ namespace SSFR_Movies.ViewModels
             MoviesListIsVisible = MessageIsVisible == false;
         }
 
-        //public KeyValuePair<char, IEnumerable<Result>> FillMoviesList(IEnumerable<Result> results)
-        //{
-        //    var realm = RealmDBSingleton.Current;
-
-        //    var movies = realm.All<Result>().Where(x => x.FavoriteMovie == "Star.png");
-
-        //    if (movies.ToList().Count > 0)
-        //    {
-        //        return new KeyValuePair<char, IEnumerable<Result>>('r', movies); //Indica que la lista contiene elementos
-        //    }
-        //    return new KeyValuePair<char, IEnumerable<Result>>('v', movies); //Indica que la lista NO contiene elementos
-        //}
-
         private Command getStoredMoviesCommand;
         public Command GetStoreMoviesCommand
         {
@@ -137,13 +125,17 @@ namespace SSFR_Movies.ViewModels
             if (FavMoviesList.Contains(e.Result))
                 FavMoviesList.Remove(e.Result);
 
-            PinSource = "UnPin.png";
+            if (FavMoviesList.Count() == 0)
+            {
+                MainThread.BeginInvokeOnMainThread(()=>
+                {
+                    FavImageIsVisible = true;
 
-            FavImageIsVisible = FavMoviesList.Count() >= 0;
+                    MessageIsVisible = true;
 
-            MessageIsVisible = FavImageIsVisible == true;
-
-            MoviesListIsVisible = MessageIsVisible == true;
+                    MoviesListIsVisible = false;
+                });
+            }
         }
 
         private void MovieService_OnMovieAdded(object sender, MovieEventArgs e)
@@ -151,11 +143,17 @@ namespace SSFR_Movies.ViewModels
             if(!FavMoviesList.Contains(e.Result))
                 FavMoviesList.Add(e.Result);
 
-            FavImageIsVisible = FavMoviesList.Count() == 0;
+            if (FavMoviesList.Count() > 0)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    FavImageIsVisible = false;
 
-            MessageIsVisible = FavImageIsVisible == true;
+                    MessageIsVisible = false;
 
-            MoviesListIsVisible = MessageIsVisible == false;
+                    MoviesListIsVisible = true;
+                });
+            }
         }
     }
 }

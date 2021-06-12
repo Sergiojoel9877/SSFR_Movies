@@ -14,7 +14,16 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <ffimage:CachedImage
+            <!--<ffimage:CachedImage
+                x:Name="UnPin"
+                Grid.ColumnSpan="2"
+                Source="{Binding PinSource}"
+                IsVisible="{Binding FavImageIsVisible}"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="300" />-->
+             <Image
                 x:Name="UnPin"
                 Grid.ColumnSpan="2"
                 Source="{Binding PinSource}"
@@ -40,8 +49,8 @@
                 IsVisible="{Binding MoviesListIsVisible}"
                 SelectionMode="Single"/>
 
-            <!--<helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />-->
-            <!--<helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />-->
+            <helpers:AdMobView AdUnitId="ca-app-pub-3940256099942544/6300978111" VerticalOptions="End" />
+            <helpers:AdMobView AdUnitId="ca-app-pub-7678114811413714/1246889210" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

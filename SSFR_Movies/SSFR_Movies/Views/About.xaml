@@ -13,7 +13,14 @@
             VerticalOptions="FillAndExpand">
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
-                    <ffimage:CachedImage
+                    <!--<ffimage:CachedImage
+                        Aspect="AspectFit"
+                        HeightRequest="250"
+                        HorizontalOptions="Center"
+                        Source="icon.png"
+                        WidthRequest="250" />-->
+
+                    <Image
                         Aspect="AspectFit"
                         HeightRequest="250"
                         HorizontalOptions="Center"

@@ -61,8 +61,6 @@ namespace SSFR_Movies.Views
 
             SetPull2RefreshToMainStack();
 
-            SuscribeToMessages();
-
             SetToolBarItems();
 
             SetScrollViewOrientation();
@@ -70,14 +68,6 @@ namespace SSFR_Movies.Views
             ControlRaiseOverAllViews();
 
             SetListOrientationLayout();
-        }
-
-        private void SuscribeToMessages()
-        {
-            MessagingCenter.Subscribe<MovieDetailsPage>(this, "ClearSelection", (e) =>
-            {
-                MoviesList.SelectedItem = null;
-            });
         }
 
         void SetCollectionViewItemTemplate()
@@ -88,11 +78,12 @@ namespace SSFR_Movies.Views
 
         private void SetListOrientationLayout()
         {
-            MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
-            {
-                SnapPointsAlignment = SnapPointsAlignment.Start,
-                SnapPointsType = SnapPointsType.MandatorySingle
-            };
+            //MoviesList.ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical)
+            //{
+            //    SnapPointsAlignment = SnapPointsAlignment.Start,
+            //    SnapPointsType = SnapPointsType.MandatorySingle
+            //};
+            MoviesList.ItemsLayout = new GridItemsLayout(2, ItemsLayoutOrientation.Vertical);
         }
 
         private void HideScrollAtStart()

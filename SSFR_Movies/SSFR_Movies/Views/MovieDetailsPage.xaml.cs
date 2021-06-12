@@ -55,7 +55,9 @@ namespace SSFR_Movies.Views
 
         public MovieDetailsPage()
         {
-            InitializeComponent();            
+            InitializeComponent();
+
+            Initialize();
         }
 
         void Initialize()
@@ -66,8 +68,6 @@ namespace SSFR_Movies.Views
 
         private async void MovieDetailsPage_OnMovieAddedRemovedUpdateUIElements(object sender, EventArgs e)
         {
-            MessagingCenter.Send(this, "ClearSelection");
-
             await Task.WhenAll(
                 AddToFav.ScaleTo(1.50, 500, Easing.SpringOut),
                 AddToFav.ScaleTo(1, 500, Easing.SpringIn));
@@ -80,8 +80,6 @@ namespace SSFR_Movies.Views
                 DependencyService.Get<IToast>().LongAlert("No internet conection, try later..");
                 return;
             }
-
-            Initialize();
 
             Result = ResultSingleton.GetInstance();
 

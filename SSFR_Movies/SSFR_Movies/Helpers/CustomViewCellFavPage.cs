@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using FFImageLoading.Forms;
-using FFImageLoading.Work;
+//using FFImageLoading.Forms;
+//using FFImageLoading.Work;
 using Splat;
 using SSFR_Movies.Converters;
 using SSFR_Movies.Models;
@@ -14,7 +14,8 @@ namespace SSFR_Movies.Helpers
     public class CustomViewCellFavPage : FlexLayout
     {
         #region Controls
-        private readonly Lazy<CachedImage> blurCachedImage = null;
+        //private readonly Lazy<CachedImage> blurCachedImage = null;
+        private readonly Lazy<Image> blurCachedImage = null;
         private readonly Lazy<Image> cachedImage = null;
         private readonly Lazy<Frame> FrameCover = null;
         private readonly Lazy<StackLayout> Container = null;
@@ -28,10 +29,10 @@ namespace SSFR_Movies.Helpers
         private readonly Lazy<Image> unPinFromFavList = null;
         private readonly Lazy<StackLayout> compat = null;
         private readonly TapGestureRecognizer tap = null;
-        private List<ITransformation> Transformations { get; set; } = new()
-        {
-            new FFImageLoading.Transformations.BlurredTransformation(15)
-        };
+        //private List<ITransformation> Transformations { get; set; } = new()
+        //{
+        //    new FFImageLoading.Transformations.BlurredTransformation(15)
+        //};
 
         public Result Result { get; set; }
         #endregion
@@ -71,16 +72,24 @@ namespace SSFR_Movies.Helpers
             };
             BackdropPathSource.SetBinding(UriImageSource.UriProperty, new Binding("BackdropPath", BindingMode.Default, new BackgroundImageUrlConverter()));
 
-            blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            //blurCachedImage = new Lazy<CachedImage>(() => new CachedImage()
+            //{
+            //    HeightRequest = 300,
+            //    WidthRequest = 300,
+            //    Opacity = 60,
+            //    Source = BackdropPathSource,
+            //    Transformations = Transformations,
+            //    HorizontalOptions = LayoutOptions.FillAndExpand,
+            //    Scale = 3,
+            //    VerticalOptions = LayoutOptions.FillAndExpand
+            //});
+            blurCachedImage = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 300,
                 WidthRequest = 300,
                 Opacity = 60,
                 Source = BackdropPathSource,
-                Transformations = Transformations,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                Scale = 3,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                Scale = 3
             });
 
             var PosterPathSource = new UriImageSource()
@@ -93,9 +102,7 @@ namespace SSFR_Movies.Helpers
             cachedImage = new Lazy<Image>(() => new Image()
             {
                 Aspect = Aspect.AspectFill,
-                Source = PosterPathSource,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                Source = PosterPathSource
             });
 
             FrameCover = new Lazy<Frame>(() => new Frame()
@@ -173,9 +180,7 @@ namespace SSFR_Movies.Helpers
             unPinFromFavList = new Lazy<Image>(() => new Image()
             {
                 HeightRequest = 40,
-                WidthRequest = 40,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                WidthRequest = 40
             });
             unPinFromFavList.Value.SetBinding(Image.SourceProperty, "FavoriteMovie");
 
