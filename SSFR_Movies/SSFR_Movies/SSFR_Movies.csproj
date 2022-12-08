@@ -33,7 +33,7 @@
     <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="1.2.0-pre2" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
     <PackageReference Include="XF.Material" Version="1.7.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="StructLinq" Version="0.26.1-dependabot-nuge-0001" />
   </ItemGroup>
